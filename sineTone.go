@@ -6,11 +6,8 @@ import (
 	"io"
 )
 
-const (
-	Name = "SineTone"
-)
-
 type sineTone struct {
+	Name Pstring
 }
 
 func (self *sineTone) Send(addr NetAddr) error {
@@ -38,10 +35,14 @@ func (self *sineTone) writeHeader(w io.Writer) error {
 	if we != nil {
 		return we
 	}
+	we = self.Name.Write(w, byteOrder)
+	if we != nil {
+		return we
+	}
 	return nil
 }
 
 func SineTone() SynthDef {
-	tt := sineTone{}
+	tt := sineTone{NewPstring("SineTone")}
 	return &tt
 }

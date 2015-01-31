@@ -13,8 +13,8 @@ type Pstring struct {
 	String string
 }
 
-func (self *Pstring) Write(w io.Writer, order binary.ByteOrder) error {
-	binary.Write(w, order, self.Length)
+func (self *Pstring) Write(w io.Writer) error {
+	binary.Write(w, byteOrder, self.Length)
 	_, e := w.Write(bytes.NewBufferString(self.String).Bytes())
 	return e
 }

@@ -1,48 +1,15 @@
 package gosc
 
-import (
-	"bytes"
-	"encoding/binary"
-	"io"
-)
-
-type sineTone struct {
-	Name Pstring
-}
-
-func (self *sineTone) Send(addr NetAddr) error {
-	return nil
-}
-
-func (self *sineTone) Write(w io.Writer) error {
-	he := self.writeHeader(w)
-	if he != nil {
-		return he
-	}
-	return nil
-}
-
-func (self *sineTone) writeHeader(w io.Writer) error {
-	_, we := w.Write(bytes.NewBufferString("SCgf").Bytes())
-	if we != nil {
-		return we
-	}
-	we = binary.Write(w, byteOrder, int32(2))
-	if we != nil {
-		return we
-	}
-	we = binary.Write(w, byteOrder, int16(1))
-	if we != nil {
-		return we
-	}
-	we = self.Name.Write(w, byteOrder)
-	if we != nil {
-		return we
-	}
-	return nil
-}
-
 func SineTone() SynthDef {
-	tt := sineTone{NewPstring("SineTone")}
-	return &tt
+	return SynthDef{
+		Name: NewPstring("SineTone"),
+		NumConstants: int32(2),
+		Constants: make([]float32, 0),
+		NumParams: int32(0),
+		InitialParamValues: make([]float32, 0),
+		NumParamNames: int32(0),
+		ParamNames: make([]ParamName,  0),
+		NumUgens: int32(2),
+		Ugens: make([]Ugen, 0),
+	}
 }

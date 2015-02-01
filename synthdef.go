@@ -3,10 +3,12 @@ package gosc
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
 const (
+	SYNTHDEF_START        = "SCgf"
 	SYNTHDEF_FILE_VERSION = 2
 )
 
@@ -103,7 +105,25 @@ func (self *SynthDef) Write(w io.Writer) error {
 	return self.writeBody(w)
 }
 
+// read a synthdef
 func ReadSynthDef(r io.Reader) (*SynthDef, error) {
+	startLen := len(SYNTHDEF_START)
+	start := make([]byte, startLen)
+	read, er := r.Read(start)
+	if er != nil {
+		return nil, er
+	}
+	if read != startLen {
+		return nil, fmt.Errorf("bad synthdef")
+	}
+	if bytes.NewBuffer(start).String() != SYNTHDEF_START {
+		return nil, fmt.Errorf("bad synthdef")
+	}
+	var version int32
+	er = binary.Read(r, byteOrder, version)
+	if er != nil {
+		return nil, er
+	}
 	return nil, nil
 }
 

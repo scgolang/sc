@@ -24,6 +24,8 @@ type SynthDef struct {
 	ParamNames         []ParamName
 	NumUgens           int32
 	Ugens              []Ugen
+	NumVariants        int16
+	Variants           []Variant
 }
 
 type ParamName struct {
@@ -51,6 +53,28 @@ func ReadParamName(r io.Reader) (*ParamName, error) {
 	}
 	pn := ParamName{*name, idx}
 	return &pn, nil
+}
+
+type Variant struct {
+	Name Pstring
+	InitialParamValues []float32
+}
+
+// ReadVariant read a Variant from an io.Reader
+func ReadVariant(r io.Reader, numParams int32) (*Variant, error) {
+	name, err := ReadPstring(r)
+	if err != nil {
+		return nil, err
+	}
+	paramValues := make([]float32, numParams)
+	for i := 0; int32(i) < numParams; i++ {
+		err = binary.Read(r, byteOrder, &paramValues[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	v := Variant{*name, paramValues}
+	return &v, nil
 }
 
 // write a synthdef header
@@ -208,11 +232,44 @@ func ReadSynthDef(r io.Reader) (*SynthDef, error) {
 		return nil, er
 	}
 	// read ugens
-	
+	ugens := make([]Ugen, numUgens)
+	for i := 0; int32(i) < numUgens; i++ {
+		ugen, er := ReadUgen(r)
+		if er != nil {
+			return nil, er
+		}
+		ugens[i] = *ugen
+	}
 	// read number of variants
+	var numVariants int16
+	er = binary.Read(r, byteOrder, &numVariants)
+	if er != nil {
+		return nil, er
+	}
 	// read variants
-	fmt.Printf("read %s\n", defName)
-	return nil, nil
+	variants := make([]Variant, numVariants)
+	for i := 0; int16(i) < numVariants; i++ {
+		v, er := ReadVariant(r, numParams)
+		if er != nil {
+			return nil, er
+		}
+		variants[i] = *v
+	}
+	// fmt.Printf("read %s\n", defName)
+	synthDef := SynthDef{
+		*defName,
+		numConstants,
+		constants,
+		numParams,
+		initialValues,
+		numParamNames,
+		paramNames,
+		numUgens,
+		ugens,
+		numVariants,
+		variants,
+	}
+	return &synthDef, nil
 }
 
 func WriteSynthDef(w io.Writer) error {

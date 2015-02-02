@@ -2,6 +2,7 @@ package gosc
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -15,12 +16,47 @@ type Ugen struct {
 	Outputs []OutputSpec
 }
 
+func (self *Ugen) Dump(w io.Writer) error {
+	var e error
+
+	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name.String)
+	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.Rate)
+	fmt.Fprintf(w, "%-30s %d\n", "NumInputs", self.NumInputs)
+	fmt.Fprintf(w, "%-30s %d\n", "NumOutputs", self.NumOutputs)
+	fmt.Fprintf(w, "%-30s %d\n", "SpecialIndex", self.SpecialIndex)
+	if self.NumInputs > 0 {
+		for i := 0; int32(i) < self.NumInputs; i++ {
+			fmt.Fprintf(w, "\nInput %d:\n", i)
+			e = self.Inputs[i].Dump(w)
+			if e != nil {
+				return e
+			}
+		}
+	}
+	if self.NumOutputs > 0 {
+		for i := 0; int32(i) < self.NumOutputs; i++ {
+			fmt.Fprintf(w, "\nOutput %d:\n", i)
+			e = self.Outputs[i].Dump(w)
+			if e != nil {
+				return e
+			}
+		}
+	}
+	return nil
+}
+
 type InputSpec struct {
 	UgenIndex int32
 	OutputIndex int32
 }
 
-// write an input
+func (self *InputSpec) Dump(w io.Writer) error {
+	fmt.Fprintf(w, "%-30s %d\n", "UgenIndex", self.UgenIndex)
+	fmt.Fprintf(w, "%-30s %d\n", "OutputIndex", self.OutputIndex)
+	return nil
+}
+
+// Write writes an InputSpec to an io.Writer
 func (self *InputSpec) Write(w io.Writer) error {
 	if we := binary.Write(w, byteOrder, self.UgenIndex); we != nil {
 		return we
@@ -42,11 +78,18 @@ func ReadInputSpec(r io.Reader) (*InputSpec, error) {
 	return &is, nil
 }
 
+// OutputSpec ugen output
 type OutputSpec struct {
 	Rate int8
 }
 
-// write an output
+// Dump writes information about this output to an io.Writer
+func (self *OutputSpec) Dump(w io.Writer) error {
+	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.Rate)
+	return nil
+}
+
+// Write writes this output to an io.Writer
 func (self *OutputSpec) Write(w io.Writer) error {
 	return binary.Write(w, byteOrder, self.Rate)
 }

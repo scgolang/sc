@@ -5,7 +5,7 @@ SCLANG=/Applications/SuperCollider/SuperCollider.app/Contents//Resources/sclang
 endif
 
 ifeq ($(PLATFORM),Linux)
-SCLANG=/usr/bin/sclang
+SCLANG=/usr/local/bin/sclang
 endif
 
 SYNTHDEF_GENERATORS := sineTone.sc

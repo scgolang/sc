@@ -14,6 +14,11 @@ type Pstring struct {
 	String string
 }
 
+// Equal determines if one Pstring equals another
+func (self *Pstring) Equals(pstr Pstring) bool {
+	return self.String == pstr.String
+}
+
 func (self *Pstring) Write(w io.Writer) error {
 	e := binary.Write(w, byteOrder, self.Length)
 	if e != nil {

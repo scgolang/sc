@@ -1,7 +1,7 @@
 package gosc
 
-type Synth struct {
-	Node
+type UgenGraph interface {
+	SynthDef() *SynthDef
 }
 
 // Out
@@ -11,20 +11,16 @@ type Synth struct {
 // ---- SinOsc
 //      |
 //      ---- Constant(440)
-type UgenGraph struct {
+type ugenGraph struct {
 	root *Node
 }
 
-func (self *UgenGraph) Walk(visitor NodeVisitor) {
-	// for _, n := range self.root.Group.nodes {
-	// }
+func (self *ugenGraph) SynthDef() *SynthDef {
+	return nil
 }
 
-func (self *UgenGraph) walkFrom(visitor NodeVisitor, node Node) {
-}
-
-func NewUgenGraph(root *Node) *UgenGraph {
-	ugg := UgenGraph{root}
+func NewUgenGraph(root *Node) UgenGraph {
+	ugg := ugenGraph{root}
 	return &ugg
 }
 

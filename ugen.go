@@ -6,7 +6,12 @@ import (
 	"io"
 )
 
-type Ugen struct {
+type Ugen interface {
+	Ar(args ...interface{}) UgenGraph
+	Kr(args ...interface{}) UgenGraph
+}
+
+type UgenSpec struct {
 	Name Pstring
 	Rate int8
 	NumInputs int32
@@ -16,7 +21,7 @@ type Ugen struct {
 	Outputs []OutputSpec
 }
 
-func (self *Ugen) Dump(w io.Writer) error {
+func (self *UgenSpec) Dump(w io.Writer) error {
 	var e error
 
 	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name.String)
@@ -43,6 +48,109 @@ func (self *Ugen) Dump(w io.Writer) error {
 		}
 	}
 	return nil
+}
+
+// write a ugen
+func (self *UgenSpec) Write(w io.Writer) error {
+	// write the synthdef name
+	we := self.Name.Write(w)
+	if we != nil {
+		return we
+	}
+	// audio rate
+	we = binary.Write(w, byteOrder, self.Rate)
+	if we != nil {
+		return we
+	}
+	// one input
+	we = binary.Write(w, byteOrder, self.NumInputs)
+	if we != nil {
+		return we
+	}
+	// one output
+	we = binary.Write(w, byteOrder, self.NumOutputs)
+	if we != nil {
+		return we
+	}
+	// special index
+	we = binary.Write(w, byteOrder, self.SpecialIndex)
+	if we != nil {
+		return we
+	}
+	// inputs
+	for _, i := range self.Inputs {
+		if we = i.Write(w); we != nil {
+			return we
+		}
+	}
+	// outputs
+	for _, o := range self.Outputs {
+		if we = o.Write(w); we != nil {
+			return we
+		}
+	}
+	return nil
+}
+
+// ReadUgen reads a Ugen from an io.Reader
+func ReadUgen(r io.Reader) (*UgenSpec, error) {
+	// read name
+	name, err := ReadPstring(r)
+	if err != nil {
+		return nil, err
+	}
+	// read calculation rate
+	var rate int8
+	err = binary.Read(r, byteOrder, &rate)
+	if err != nil {
+		return nil, err
+	}
+	// read number of inputs
+	var numInputs int32
+	err = binary.Read(r, byteOrder, &numInputs)
+	if err != nil {
+		return nil, err
+	}
+	// read number of outputs
+	var numOutputs int32
+	err = binary.Read(r, byteOrder, &numOutputs)
+	if err != nil {
+		return nil, err
+	}
+	// read special index
+	var specialIndex int16
+	err = binary.Read(r, byteOrder, &specialIndex)
+	if err != nil {
+		return nil, err
+	}
+	// read inputs
+	inputs := make([]InputSpec, numInputs)
+	for i := 0; int32(i) < numInputs; i++ {
+		inspec, err := ReadInputSpec(r)
+		if err != nil {
+			return nil, err
+		}
+		inputs[i] = *inspec
+	}
+	// read outputs
+	outputs := make([]OutputSpec, numOutputs)
+	for i := 0; int32(i) < numOutputs; i++ {
+		outspec, err := ReadOutputSpec(r)
+		if err != nil {
+			return nil, err
+		}
+		outputs[i] = *outspec
+	}
+	ugen := UgenSpec{
+		*name,
+		rate,
+		numInputs,
+		numOutputs,
+		specialIndex,
+		inputs,
+		outputs,
+	}
+	return &ugen, nil
 }
 
 type InputSpec struct {
@@ -102,107 +210,4 @@ func ReadOutputSpec(r io.Reader) (*OutputSpec, error) {
 	}
 	outputSpec := OutputSpec{rate}
 	return &outputSpec, nil
-}
-
-// write a ugen
-func (self *Ugen) Write(w io.Writer) error {
-	// write the synthdef name
-	we := self.Name.Write(w)
-	if we != nil {
-		return we
-	}
-	// audio rate
-	we = binary.Write(w, byteOrder, self.Rate)
-	if we != nil {
-		return we
-	}
-	// one input
-	we = binary.Write(w, byteOrder, self.NumInputs)
-	if we != nil {
-		return we
-	}
-	// one output
-	we = binary.Write(w, byteOrder, self.NumOutputs)
-	if we != nil {
-		return we
-	}
-	// special index
-	we = binary.Write(w, byteOrder, self.SpecialIndex)
-	if we != nil {
-		return we
-	}
-	// inputs
-	for _, i := range self.Inputs {
-		if we = i.Write(w); we != nil {
-			return we
-		}
-	}
-	// outputs
-	for _, o := range self.Outputs {
-		if we = o.Write(w); we != nil {
-			return we
-		}
-	}
-	return nil
-}
-
-// ReadUgen reads a Ugen from an io.Reader
-func ReadUgen(r io.Reader) (*Ugen, error) {
-	// read name
-	name, err := ReadPstring(r)
-	if err != nil {
-		return nil, err
-	}
-	// read calculation rate
-	var rate int8
-	err = binary.Read(r, byteOrder, &rate)
-	if err != nil {
-		return nil, err
-	}
-	// read number of inputs
-	var numInputs int32
-	err = binary.Read(r, byteOrder, &numInputs)
-	if err != nil {
-		return nil, err
-	}
-	// read number of outputs
-	var numOutputs int32
-	err = binary.Read(r, byteOrder, &numOutputs)
-	if err != nil {
-		return nil, err
-	}
-	// read special index
-	var specialIndex int16
-	err = binary.Read(r, byteOrder, &specialIndex)
-	if err != nil {
-		return nil, err
-	}
-	// read inputs
-	inputs := make([]InputSpec, numInputs)
-	for i := 0; int32(i) < numInputs; i++ {
-		inspec, err := ReadInputSpec(r)
-		if err != nil {
-			return nil, err
-		}
-		inputs[i] = *inspec
-	}
-	// read outputs
-	outputs := make([]OutputSpec, numOutputs)
-	for i := 0; int32(i) < numOutputs; i++ {
-		outspec, err := ReadOutputSpec(r)
-		if err != nil {
-			return nil, err
-		}
-		outputs[i] = *outspec
-	}
-	ugen := Ugen{
-		*name,
-		rate,
-		numInputs,
-		numOutputs,
-		specialIndex,
-		inputs,
-		outputs,
-	}
-	return &ugen, nil
 }

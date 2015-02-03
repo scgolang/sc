@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	gosc.NewSynthDef("SineTone", function() {
-		return Out.Ar(0, SinOsc.Ar(440))
+	gosc.NewSynthDef("SineTone", function(ugen Ugen) {
+		return ugen.Ar("Out", 0, ugen.Ar("SinOsc", 440))
 	}).writeDefFile(os.Getcwd())
 }

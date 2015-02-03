@@ -7,8 +7,9 @@ import (
 )
 
 type Ugen interface {
-	Ar(args ...interface{}) UgenGraph
-	Kr(args ...interface{}) UgenGraph
+	Index() int32
+	Ar(name string, args ...interface{}) UgenGraph
+	Kr(name string, args ...interface{}) UgenGraph
 }
 
 type UgenSpec struct {

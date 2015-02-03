@@ -14,8 +14,18 @@ const (
 
 var byteOrder = binary.BigEndian
 
-type SynthDef struct {
-	Name               Pstring
+// SynthDef
+type SynthDef interface {
+	// Dump write info about a synthdef to an io.Writer
+	Dump(w io.Writer) error
+	// Name returns the name of the synthdef
+	Name() string
+	// Load writes a synthdef file to disk and tells a server to load it
+	Load(s Server) error
+}
+
+type synthDef struct {
+	name               Pstring
 	NumConstants       int32
 	Constants          []float32
 	NumParams          int32
@@ -23,13 +33,17 @@ type SynthDef struct {
 	NumParamNames      int32
 	ParamNames         []ParamName
 	NumUgens           int32
-	Ugens              []Ugen
+	Ugens              []UgenSpec
 	NumVariants        int16
 	Variants           []Variant
 }
 
+func (self *synthDef) Name() string {
+	return self.name.String
+}
+
 // Write writes a synthdef to an io.Writer
-func (self *SynthDef) Write(w io.Writer) error {
+func (self *synthDef) Write(w io.Writer) error {
 	if he := self.writeHead(w); he != nil {
 		return he
 	}
@@ -37,10 +51,10 @@ func (self *SynthDef) Write(w io.Writer) error {
 }
 
 // Dump writes information about a SynthDef to an io.Writer
-func (self *SynthDef) Dump(w io.Writer) error {
+func (self *synthDef) Dump(w io.Writer) error {
 	var e error
 	
-	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name.String)
+	fmt.Fprintf(w, "%-30s %s\n", "Name", self.name.String)
 	// write constants
 	fmt.Fprintf(w, "%-30s %d\n", "NumConstants", self.NumConstants)
 	fmt.Fprintf(w, "%s\n", "Constants")
@@ -87,57 +101,8 @@ func (self *SynthDef) Dump(w io.Writer) error {
 	return nil
 }
 
-type ParamName struct {
-	Name  Pstring
-	Index int32
-}
-
-func (p *ParamName) Write(w io.Writer) error {
-	if we := p.Name.Write(w); we != nil {
-		return we
-	}
-	return binary.Write(w, byteOrder, p.Index)
-}
-
-// ReadParamName reads a ParamName from an io.Reader
-func ReadParamName(r io.Reader) (*ParamName, error) {
-	name, err := ReadPstring(r)
-	if err != nil {
-		return nil, err
-	}
-	var idx int32
-	err = binary.Read(r, byteOrder, &idx)
-	if err != nil {
-		return nil, err
-	}
-	pn := ParamName{*name, idx}
-	return &pn, nil
-}
-
-type Variant struct {
-	Name Pstring
-	InitialParamValues []float32
-}
-
-// ReadVariant read a Variant from an io.Reader
-func ReadVariant(r io.Reader, numParams int32) (*Variant, error) {
-	name, err := ReadPstring(r)
-	if err != nil {
-		return nil, err
-	}
-	paramValues := make([]float32, numParams)
-	for i := 0; int32(i) < numParams; i++ {
-		err = binary.Read(r, byteOrder, &paramValues[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	v := Variant{*name, paramValues}
-	return &v, nil
-}
-
 // write a synthdef header
-func (self *SynthDef) writeHead(w io.Writer) error {
+func (self *synthDef) writeHead(w io.Writer) error {
 	_, we := w.Write(bytes.NewBufferString("SCgf").Bytes())
 	if we != nil {
 		return we
@@ -150,7 +115,7 @@ func (self *SynthDef) writeHead(w io.Writer) error {
 }
 
 // write a synthdef body
-func (self *SynthDef) writeBody(w io.Writer) error {
+func (self *synthDef) writeBody(w io.Writer) error {
 	// write constants
 	we := binary.Write(w, byteOrder, self.NumConstants)
 	if we != nil {
@@ -195,8 +160,12 @@ func (self *SynthDef) writeBody(w io.Writer) error {
 	return nil
 }
 
+func (self *synthDef) Load(s Server) error {
+	return nil
+}
+
 // ReadSynthDef reads a synthdef from an io.Reader
-func ReadSynthDef(r io.Reader) (*SynthDef, error) {
+func ReadSynthDef(r io.Reader) (SynthDef, error) {
 	// read the type
 	startLen := len(SYNTHDEF_START)
 	start := make([]byte, startLen)
@@ -283,7 +252,7 @@ func ReadSynthDef(r io.Reader) (*SynthDef, error) {
 		return nil, er
 	}
 	// read ugens
-	ugens := make([]Ugen, numUgens)
+	ugens := make([]UgenSpec, numUgens)
 	for i := 0; int32(i) < numUgens; i++ {
 		ugen, er := ReadUgen(r)
 		if er != nil {
@@ -307,7 +276,7 @@ func ReadSynthDef(r io.Reader) (*SynthDef, error) {
 		variants[i] = *v
 	}
 	// return a new synthdef
-	synthDef := SynthDef{
+	synthDef := synthDef{
 		*defName,
 		numConstants,
 		constants,
@@ -324,11 +293,57 @@ func ReadSynthDef(r io.Reader) (*SynthDef, error) {
 }
 
 // NewSynthDef creates a new SynthDef from a UgenGraphFunc
-func NewSynthDef(name string, f UgenGraphFunc) (*SynthDef, error) {
+func NewSynthDef(name string, f UgenGraphFunc) SynthDef {
 	// this function has to be able to traverse a ugen
 	// graph and turn it into a synth def
+	return nil
+}
 
-	// pname := NewPstring(name)
-	
-	return nil, nil
+type ParamName struct {
+	Name  Pstring
+	Index int32
+}
+
+func (p *ParamName) Write(w io.Writer) error {
+	if we := p.Name.Write(w); we != nil {
+		return we
+	}
+	return binary.Write(w, byteOrder, p.Index)
+}
+
+// ReadParamName reads a ParamName from an io.Reader
+func ReadParamName(r io.Reader) (*ParamName, error) {
+	name, err := ReadPstring(r)
+	if err != nil {
+		return nil, err
+	}
+	var idx int32
+	err = binary.Read(r, byteOrder, &idx)
+	if err != nil {
+		return nil, err
+	}
+	pn := ParamName{*name, idx}
+	return &pn, nil
+}
+
+type Variant struct {
+	Name Pstring
+	InitialParamValues []float32
+}
+
+// ReadVariant read a Variant from an io.Reader
+func ReadVariant(r io.Reader, numParams int32) (*Variant, error) {
+	name, err := ReadPstring(r)
+	if err != nil {
+		return nil, err
+	}
+	paramValues := make([]float32, numParams)
+	for i := 0; int32(i) < numParams; i++ {
+		err = binary.Read(r, byteOrder, &paramValues[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	v := Variant{*name, paramValues}
+	return &v, nil
 }

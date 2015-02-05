@@ -7,8 +7,8 @@ import (
 
 // Input
 type Input struct {
-	UgenIndex   int32 `json:"ugenIndex,omitempty"`
-	OutputIndex int32 `json:"outputIndex,omitempty"`
+	UgenIndex   int32 `json:"ugenIndex"`
+	OutputIndex int32 `json:"outputIndex"`
 }
 
 // Write writes an inputSpec to an io.Writer

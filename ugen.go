@@ -6,39 +6,8 @@ import (
 	"io"
 )
 
-type Ugen interface {
-	Index() int32
-	Name() string
-	Rate() int8
-	NumInputs() int32
-	NumOutputs() int32
-	SpecialIndex() int16
-	Inputs() []Input
-	Outputs() []Output
-}
-
-type Input interface {
-	UgenIndex() int32
-	OutputIndex() int32
-	// Write writes a text representation of an Input
-	// to an io.Writer
-	Dump(w io.Writer) error
-	// Write writes a binary representation of an Input
-	// to an io.Writer
-	Write(w io.Writer) error
-}
-
-type Output interface {
-	Rate() int8
-	// Write writes a text representation of an Output
-	// to an io.Writer
-	Dump(w io.Writer) error
-	// Write writes a binary representation of an Output
-	// to an io.Writer
-	Write(w io.Writer) error
-}
-
-type UgenNode struct {
+// Ugen
+type Ugen struct {
 	name         Pstring
 	rate         int8
 	numInputs    int32
@@ -48,38 +17,41 @@ type UgenNode struct {
 	outputs      []Output
 }
 
-func (self *UgenNode) AddChild(child Node) {
+func (self *Ugen) AddConstant(value float32) {
 }
 
-func (self *UgenNode) Name() string {
+func (self *Ugen) AddUgen(value Ugen) {
+}
+
+func (self *Ugen) Name() string {
 	return self.name.String
 }
 
-func (self *UgenNode) Rate() int8 {
+func (self *Ugen) Rate() int8 {
 	return self.rate
 }
 
-func (self *UgenNode) NumInputs() int32 {
+func (self *Ugen) NumInputs() int32 {
 	return self.numInputs
 }
 
-func (self *UgenNode) NumOutputs() int32 {
+func (self *Ugen) NumOutputs() int32 {
 	return self.numOutputs
 }
 
-func (self *UgenNode) SpecialIndex() int16 {
+func (self *Ugen) SpecialIndex() int16 {
 	return self.specialIndex
 }
 
-func (self *UgenNode) Inputs() []Input {
+func (self *Ugen) Inputs() []Input {
 	return self.inputs
 }
 
-func (self *UgenNode) Outputs() []Output {
+func (self *Ugen) Outputs() []Output {
 	return self.outputs
 }
 
-func (self *UgenNode) Dump(w io.Writer) error {
+func (self *Ugen) Dump(w io.Writer) error {
 	var e error
 
 	fmt.Fprintf(w, "%-30s %s\n", "Name", self.name.String)
@@ -108,8 +80,8 @@ func (self *UgenNode) Dump(w io.Writer) error {
 	return nil
 }
 
-// write a UgenNode
-func (self *UgenNode) Write(w io.Writer) error {
+// write a Ugen
+func (self *Ugen) Write(w io.Writer) error {
 	// write the synthdef name
 	we := self.name.Write(w)
 	if we != nil {
@@ -150,8 +122,8 @@ func (self *UgenNode) Write(w io.Writer) error {
 	return nil
 }
 
-// ReadUgen reads a UgenNode from an io.Reader
-func ReadUgenNode(r io.Reader) (*UgenNode, error) {
+// ReadUgen reads a Ugen from an io.Reader
+func ReadUgen(r io.Reader) (*Ugen, error) {
 	// read name
 	name, err := ReadPstring(r)
 	if err != nil {
@@ -184,22 +156,23 @@ func ReadUgenNode(r io.Reader) (*UgenNode, error) {
 	// read inputs
 	inputs := make([]Input, numInputs)
 	for i := 0; int32(i) < numInputs; i++ {
-		inspec, err := readInputSpec(r)
+		inspec, err := readInput(r)
 		if err != nil {
 			return nil, err
 		}
-		inputs[i] = inspec
+		inputs[i] = *inspec
 	}
 	// read outputs
 	outputs := make([]Output, numOutputs)
 	for i := 0; int32(i) < numOutputs; i++ {
-		outspec, err := readOutputSpec(r)
+		outspec, err := readOutput(r)
 		if err != nil {
 			return nil, err
 		}
-		outputs[i] = outspec
+		outputs[i] = *outspec
 	}
-	u := UgenNode{
+
+	u := Ugen{
 		*name,
 		rate,
 		numInputs,
@@ -211,77 +184,25 @@ func ReadUgenNode(r io.Reader) (*UgenNode, error) {
 	return &u, nil
 }
 
-func newUgen(name string, args ...interface{}) Ugen {
-	return nil
-}
-
-type inputSpec struct {
-	ugenIndex   int32
-	outputIndex int32
-}
-
-func (self *inputSpec) UgenIndex() int32 {
-	return self.ugenIndex
-}
-
-func (self *inputSpec) OutputIndex() int32 {
-	return self.outputIndex
-}
-
-func (self *inputSpec) Dump(w io.Writer) error {
-	fmt.Fprintf(w, "%-30s %d\n", "UgenIndex", self.ugenIndex)
-	fmt.Fprintf(w, "%-30s %d\n", "OutputIndex", self.outputIndex)
-	return nil
-}
-
-// Write writes an inputSpec to an io.Writer
-func (self *inputSpec) Write(w io.Writer) error {
-	if we := binary.Write(w, byteOrder, self.ugenIndex); we != nil {
-		return we
+func Ar(name string, args ...interface{}) (*Ugen, error) {
+	u := Ugen{
+		NewPstring(name),  // name
+		2,                 // rate
+		0,                 // numInputs
+		0,                 // numOutputs
+		0,                 // specialIndex
+		make([]Input, 0),  // inputs
+		make([]Output, 0), // inputs
 	}
-	return binary.Write(w, byteOrder, self.outputIndex)
-}
 
-func readInputSpec(r io.Reader) (Input, error) {
-	var ugenIndex, outputIndex int32
-	err := binary.Read(r, byteOrder, &ugenIndex)
-	if err != nil {
-		return nil, err
+	for _, arg := range args {
+		if fv, isFloat := arg.(float32); isFloat {
+			u.AddConstant(fv)
+		}
+		if ug, isUgen := arg.(Ugen); isUgen {
+			u.AddUgen(ug)
+		}
 	}
-	err = binary.Read(r, byteOrder, &outputIndex)
-	if err != nil {
-		return nil, err
-	}
-	is := inputSpec{ugenIndex, outputIndex}
-	return &is, nil
-}
 
-// OutputSpec ugen output
-type outputSpec struct {
-	rate int8
-}
-
-func (self *outputSpec) Rate() int8 {
-	return self.rate
-}
-
-// Dump writes information about this output to an io.Writer
-func (self *outputSpec) Dump(w io.Writer) error {
-	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.rate)
-	return nil
-}
-
-// Write writes this output to an io.Writer
-func (self *outputSpec) Write(w io.Writer) error {
-	return binary.Write(w, byteOrder, self.rate)
-}
-
-func readOutputSpec(r io.Reader) (Output, error) {
-	var rate int8
-	err := binary.Read(r, byteOrder, &rate)
-	if err != nil {
-		return nil, err
-	}
-	outputSpec := outputSpec{rate}
-	return &outputSpec, nil
+	return &u, nil
 }

@@ -5,7 +5,7 @@ type UgenGraphFunc func(ugen Ugen) UgenGraph
 
 // UgenGraph
 type UgenGraph interface {
-	Root() Node
+	Root() Ugen
 	// SynthDef converts a UgenGraph to a SynthDef
 	SynthDef() SynthDef
 }
@@ -25,23 +25,11 @@ type ugenGraph struct {
 	root Ugen
 }
 
-func (self *ugenGraph) Root() Node {
+func (self *ugenGraph) Root() Ugen {
 	return self.root
 }
 
 // TODO: implement
 func (self *ugenGraph) SynthDef() SynthDef {
-	return nil
-}
-
-// Ar creates a new audio-rate Ugen and returns
-// a UgenGraph that is rooted at this new Ugen.
-func Ar(name string, args ...interface{}) UgenGraph {
-	return nil
-}
-
-// Kr creates a new control-rate Ugen and
-// returns a UgenGraph that is rooted at this new Ugen.
-func Kr(name string, args ...interface{}) UgenGraph {
 	return nil
 }

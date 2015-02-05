@@ -33,7 +33,7 @@ type synthDef struct {
 	NumParamNames      int32
 	ParamNames         []ParamName
 	NumUgens           int32
-	Ugens              []UgenNode
+	Ugens              []Ugen
 	NumVariants        int16
 	Variants           []Variant
 }
@@ -252,9 +252,9 @@ func ReadSynthDef(r io.Reader) (SynthDef, error) {
 		return nil, er
 	}
 	// read ugens
-	ugens := make([]UgenNode, numUgens)
+	ugens := make([]Ugen, numUgens)
 	for i := 0; int32(i) < numUgens; i++ {
-		ugen, er := ReadUgenNode(r)
+		ugen, er := ReadUgen(r)
 		if er != nil {
 			return nil, er
 		}

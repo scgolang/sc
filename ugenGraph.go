@@ -1,4 +1,4 @@
-package gosc
+package sc
 
 // UgenGraphFunc create a UgenGraph
 type UgenGraphFunc func(ugen Ugen) UgenGraph

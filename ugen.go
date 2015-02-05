@@ -1,4 +1,4 @@
-package gosc
+package sc
 
 import (
 	"encoding/binary"

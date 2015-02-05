@@ -16,17 +16,23 @@ const (
 var byteOrder = binary.BigEndian
 
 type SynthDef struct {
-	Name               string      `json:"name,omitempty"`
-	NumConstants       int32       `json:"numConstants,omitempty"`
-	Constants          []float32   `json:"constants,omitempty"`
-	NumParams          int32       `json:"numParams,omitempty"`
-	InitialParamValues []float32   `json:"initialParamValues,omitempty"`
-	NumParamNames      int32       `json:"numParamNames,omitempty"`
-	ParamNames         []ParamName `json:"paramNames,omitempty"`
-	NumUgens           int32       `json:"numUgens,omitempty"`
-	Ugens              []Ugen      `json:"ugens,omitempty"`
-	NumVariants        int16       `json:"numVariants,omitempty"`
-	Variants           []Variant   `json:"variants,omitempty"`
+	// Name is the name of the synthdef
+	Name string `json:"name,omitempty"`
+
+	// Constants is a list of constants that appear in the synth def
+	Constants []float32 `json:"constants,omitempty"`
+
+	// InitialParamValues is an array of initial values for synth params
+	InitialParamValues []float32 `json:"initialParamValues,omitempty"`
+
+	// ParamNames contains the names of the synth parameters
+	ParamNames []ParamName `json:"paramNames,omitempty"`
+
+	// Ugens is the list of ugens that appear in the synth def
+	Ugens []Ugen `json:"ugens,omitempty"`
+
+	// Variants is the list of variants contained in the synth def
+	Variants []Variant `json:"variants,omitempty"`
 }
 
 // Write writes a synthdef to an io.Writer
@@ -59,7 +65,8 @@ func (self *SynthDef) writeHead(w io.Writer) error {
 // write a synthdef body
 func (self *SynthDef) writeBody(w io.Writer) error {
 	// write constants
-	we := binary.Write(w, byteOrder, self.NumConstants)
+	numConstants := int32(len(self.Constants))
+	we := binary.Write(w, byteOrder, numConstants)
 	if we != nil {
 		return we
 	}
@@ -69,7 +76,8 @@ func (self *SynthDef) writeBody(w io.Writer) error {
 		}
 	}
 	// write parameters
-	we = binary.Write(w, byteOrder, self.NumParams)
+	numParams := int32(len(self.InitialParamValues))
+	we = binary.Write(w, byteOrder, numParams)
 	if we != nil {
 		return we
 	}
@@ -79,7 +87,8 @@ func (self *SynthDef) writeBody(w io.Writer) error {
 			return we
 		}
 	}
-	we = binary.Write(w, byteOrder, self.NumParamNames)
+	numParamNames := int32(len(self.ParamNames))
+	we = binary.Write(w, byteOrder, numParamNames)
 	if we != nil {
 		return we
 	}
@@ -220,15 +229,10 @@ func ReadSynthDef(r io.Reader) (*SynthDef, error) {
 	// return a new synthdef
 	synthDef := SynthDef{
 		defName.String(),
-		numConstants,
 		constants,
-		numParams,
 		initialValues,
-		numParamNames,
 		paramNames,
-		numUgens,
 		ugens,
-		numVariants,
 		variants,
 	}
 	return &synthDef, nil

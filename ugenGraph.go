@@ -5,9 +5,9 @@ type UgenGraphFunc func(ugen Ugen) UgenGraph
 
 // UgenGraph
 type UgenGraph interface {
-	Root() Ugen
+	Root() *Ugen
 	// SynthDef converts a UgenGraph to a SynthDef
-	SynthDef() SynthDef
+	SynthDef() *SynthDef
 }
 
 //
@@ -22,14 +22,14 @@ type UgenGraph interface {
 //      +--> Constant(440) (index=0)
 //
 type ugenGraph struct {
-	root Ugen
+	root *Ugen
 }
 
-func (self *ugenGraph) Root() Ugen {
+func (self *ugenGraph) Root() *Ugen {
 	return self.root
 }
 
 // TODO: implement
-func (self *ugenGraph) SynthDef() SynthDef {
+func (self *ugenGraph) SynthDef() *SynthDef {
 	return nil
 }

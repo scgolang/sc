@@ -7,7 +7,7 @@ import (
 
 // Output ugen output
 type Output struct {
-	Rate int8 `json:"rate,omitempty"`
+	Rate int8 `json:"rate"`
 }
 
 // Write writes this output to an io.Writer

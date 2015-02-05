@@ -9,13 +9,11 @@ import (
 
 // Ugen
 type Ugen struct {
-	Name         string   `json:"name,omitempty"`
-	Rate         int8     `json:"rate,omitempty"`
-	NumInputs    int32    `json:"numInputs,omitempty"`
-	NumOutputs   int32    `json:"numOutputs,omitempty"`
-	SpecialIndex int16    `json:"specialIndex,omitempty"`
-	Inputs       []Input  `json:"inputs,omitempty"`
-	Outputs      []Output `json:"outputs,omitempty"`
+	Name         string    `json:"name"`
+	Rate         int8      `json:"rate"`
+	SpecialIndex int16     `json:"specialIndex"`
+	Inputs       []*Input  `json:"inputs"`
+	Outputs      []*Output `json:"outputs"`
 }
 
 func (self *Ugen) AddConstant(value float32) {
@@ -41,12 +39,14 @@ func (self *Ugen) Write(w io.Writer) error {
 		return we
 	}
 	// one input
-	we = binary.Write(w, byteOrder, self.NumInputs)
+	numInputs := int32(len(self.Inputs))
+	we = binary.Write(w, byteOrder, numInputs)
 	if we != nil {
 		return we
 	}
 	// one output
-	we = binary.Write(w, byteOrder, self.NumOutputs)
+	numOutputs := int32(len(self.Outputs))
+	we = binary.Write(w, byteOrder, numOutputs)
 	if we != nil {
 		return we
 	}
@@ -102,29 +102,27 @@ func ReadUgen(r io.Reader) (*Ugen, error) {
 		return nil, err
 	}
 	// read inputs
-	inputs := make([]Input, numInputs)
+	inputs := make([]*Input, numInputs)
 	for i := 0; int32(i) < numInputs; i++ {
-		inspec, err := readInput(r)
+		in, err := readInput(r)
 		if err != nil {
 			return nil, err
 		}
-		inputs[i] = *inspec
+		inputs[i] = in
 	}
 	// read outputs
-	outputs := make([]Output, numOutputs)
+	outputs := make([]*Output, numOutputs)
 	for i := 0; int32(i) < numOutputs; i++ {
-		outspec, err := readOutput(r)
+		out, err := readOutput(r)
 		if err != nil {
 			return nil, err
 		}
-		outputs[i] = *outspec
+		outputs[i] = out
 	}
 
 	u := Ugen{
 		name.String(),
 		rate,
-		numInputs,
-		numOutputs,
 		specialIndex,
 		inputs,
 		outputs,
@@ -134,13 +132,11 @@ func ReadUgen(r io.Reader) (*Ugen, error) {
 
 func Ar(name string, args ...interface{}) (*Ugen, error) {
 	u := Ugen{
-		name,              // name
-		2,                 // rate
-		0,                 // numInputs
-		0,                 // numOutputs
-		0,                 // specialIndex
-		make([]Input, 0),  // inputs
-		make([]Output, 0), // inputs
+		name,               // name
+		2,                  // rate
+		0,                  // specialIndex
+		make([]*Input, 0),  // inputs
+		make([]*Output, 0), // inputs
 	}
 
 	for _, arg := range args {

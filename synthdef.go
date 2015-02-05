@@ -17,22 +17,22 @@ var byteOrder = binary.BigEndian
 
 type SynthDef struct {
 	// Name is the name of the synthdef
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	// Constants is a list of constants that appear in the synth def
-	Constants []float32 `json:"constants,omitempty"`
+	Constants []float32 `json:"constants"`
 
 	// InitialParamValues is an array of initial values for synth params
-	InitialParamValues []float32 `json:"initialParamValues,omitempty"`
+	InitialParamValues []float32 `json:"initialParamValues"`
 
 	// ParamNames contains the names of the synth parameters
-	ParamNames []ParamName `json:"paramNames,omitempty"`
+	ParamNames []ParamName `json:"paramNames"`
 
 	// Ugens is the list of ugens that appear in the synth def
-	Ugens []Ugen `json:"ugens,omitempty"`
+	Ugens []Ugen `json:"ugens"`
 
 	// Variants is the list of variants contained in the synth def
-	Variants []Variant `json:"variants,omitempty"`
+	Variants []Variant `json:"variants"`
 }
 
 // Write writes a synthdef to an io.Writer

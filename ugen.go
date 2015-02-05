@@ -9,48 +9,19 @@ import (
 
 // Ugen
 type Ugen struct {
-	Name         string   `json:'name,omitempty'`
-	Rate         int8     `json:'rate,omitempty'`
-	NumInputs    int32    `json:'numInputs,omitempty'`
-	NumOutputs   int32    `json:'numOutputs,omitempty'`
-	SpecialIndex int16    `json:'specialIndex,omitempty'`
-	Inputs       []Input  `json:'inputs,omitempty'`
-	Outputs      []Output `json:'outputs,omitempty'`
+	Name         string   `json:"name,omitempty"`
+	Rate         int8     `json:"rate,omitempty"`
+	NumInputs    int32    `json:"numInputs,omitempty"`
+	NumOutputs   int32    `json:"numOutputs,omitempty"`
+	SpecialIndex int16    `json:"specialIndex,omitempty"`
+	Inputs       []Input  `json:"inputs,omitempty"`
+	Outputs      []Output `json:"outputs,omitempty"`
 }
 
 func (self *Ugen) AddConstant(value float32) {
 }
 
 func (self *Ugen) AddUgen(value Ugen) {
-}
-
-func (self *Ugen) Dump(w io.Writer) error {
-	var e error
-
-	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name)
-	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.Rate)
-	fmt.Fprintf(w, "%-30s %d\n", "NumInputs", self.NumInputs)
-	fmt.Fprintf(w, "%-30s %d\n", "NumOutputs", self.NumOutputs)
-	fmt.Fprintf(w, "%-30s %d\n", "SpecialIndex", self.SpecialIndex)
-	if self.NumInputs > 0 {
-		for i := 0; int32(i) < self.NumInputs; i++ {
-			fmt.Fprintf(w, "\nInput %d:\n", i)
-			e = self.Inputs[i].Dump(w)
-			if e != nil {
-				return e
-			}
-		}
-	}
-	if self.NumOutputs > 0 {
-		for i := 0; int32(i) < self.NumOutputs; i++ {
-			fmt.Fprintf(w, "\nOutput %d:\n", i)
-			e = self.Outputs[i].Dump(w)
-			if e != nil {
-				return e
-			}
-		}
-	}
-	return nil
 }
 
 // write a Ugen

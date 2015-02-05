@@ -2,20 +2,13 @@ package sc
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io"
 )
 
 // Input
 type Input struct {
-	UgenIndex   int32 `json:'ugenIndex,omitempty'`
-	OutputIndex int32 `json:'outputIndex,omitempty'`
-}
-
-func (self *Input) Dump(w io.Writer) error {
-	fmt.Fprintf(w, "%-30s %d\n", "UgenIndex", self.UgenIndex)
-	fmt.Fprintf(w, "%-30s %d\n", "OutputIndex", self.OutputIndex)
-	return nil
+	UgenIndex   int32 `json:"ugenIndex,omitempty"`
+	OutputIndex int32 `json:"outputIndex,omitempty"`
 }
 
 // Write writes an inputSpec to an io.Writer

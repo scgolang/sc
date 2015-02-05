@@ -3,6 +3,7 @@ package sc
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"io"
 )
@@ -15,17 +16,17 @@ const (
 var byteOrder = binary.BigEndian
 
 type SynthDef struct {
-	Name               string      `json,'name,omitempty'`
-	NumConstants       int32       `json,'numConstants,omitempty'`
-	Constants          []float32   `json,'constants,omitempty'`
-	NumParams          int32       `json,'numParams,omitempty'`
-	InitialParamValues []float32   `json,'initialParamValues,omitempty'`
-	NumParamNames      int32       `json,'numParamNames,omitempty'`
-	ParamNames         []ParamName `json,'paramNames,omitempty'`
-	NumUgens           int32       `json,'numUgens,omitempty'`
-	Ugens              []Ugen      `json,'ugens,omitempty'`
-	NumVariants        int16       `json,'numVariants,omitempty'`
-	Variants           []Variant   `json,'variants,omitempty'`
+	Name               string      `json:"name,omitempty"`
+	NumConstants       int32       `json:"numConstants,omitempty"`
+	Constants          []float32   `json:"constants,omitempty"`
+	NumParams          int32       `json:"numParams,omitempty"`
+	InitialParamValues []float32   `json:"initialParamValues,omitempty"`
+	NumParamNames      int32       `json:"numParamNames,omitempty"`
+	ParamNames         []ParamName `json:"paramNames,omitempty"`
+	NumUgens           int32       `json:"numUgens,omitempty"`
+	Ugens              []Ugen      `json:"ugens,omitempty"`
+	NumVariants        int16       `json:"numVariants,omitempty"`
+	Variants           []Variant   `json:"variants,omitempty"`
 }
 
 // Write writes a synthdef to an io.Writer
@@ -36,55 +37,10 @@ func (self *SynthDef) Write(w io.Writer) error {
 	return self.writeBody(w)
 }
 
-// Dump writes information about a SynthDef to an io.Writer
+// Dump writes json-formatted information about a SynthDef to an io.Writer
 func (self *SynthDef) Dump(w io.Writer) error {
-	var e error
-
-	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name)
-	// write constants
-	fmt.Fprintf(w, "%-30s %d\n", "NumConstants", self.NumConstants)
-	fmt.Fprintf(w, "%s\n", "Constants")
-	for i := 0; int32(i) < self.NumConstants; i++ {
-		fmt.Fprintf(w, "    %-26d %g\n", i, self.Constants[i])
-	}
-	// write params
-	fmt.Fprintf(w, "%-30s %d\n", "NumParams", self.NumParams)
-	if self.NumParams > 0 {
-		fmt.Fprintf(w, "%-30s\n", "Params:")
-		for i := 0; int32(i) < self.NumParams; i++ {
-			fmt.Fprintf(w, "    Initial Value %-12d %g\n", i, self.InitialParamValues[i])
-		}
-	}
-	// write param names
-	fmt.Fprintf(w, "%-30s %d\n", "NumParamNames", self.NumParamNames)
-	if self.NumParamNames > 0 {
-		fmt.Fprintf(w, "%-30s\n", "Param Names:")
-		for i := 0; int32(i) < self.NumParamNames; i++ {
-			fmt.Fprintf(w, "    %-26d %g\n", i, self.ParamNames[i])
-		}
-	}
-	// write ugens and variants
-	fmt.Fprintf(w, "%-30s %d\n", "NumUgens", self.NumUgens)
-	fmt.Fprintf(w, "%-30s %d\n", "NumVariants", self.NumVariants)
-	if self.NumUgens > 0 {
-		for i := 0; int32(i) < self.NumUgens; i++ {
-			fmt.Fprintf(w, "\nUgen %d:\n", i)
-			e = self.Ugens[i].Dump(w)
-			if e != nil {
-				return e
-			}
-		}
-	}
-	if self.NumVariants > 0 {
-		fmt.Fprintf(w, "%-30s\n", "Variants:")
-		for i := 0; int16(i) < self.NumVariants; i++ {
-			e = self.Ugens[i].Dump(w)
-			if e != nil {
-				return e
-			}
-		}
-	}
-	return nil
+	dec := json.NewEncoder(w)
+	return dec.Encode(self)
 }
 
 // write a synthdef header

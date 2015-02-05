@@ -13,13 +13,13 @@ type UgenGraph interface {
 //
 // example graph for SineTone synth
 //
-// Ugen (name=Out, index=1)
+// Ugen (name=Out, index=1, numInputs=2, numOutputs=0)
 // |
-// +--> Constant (value=0, index=1)
+// +--> Constant (index=1, value=0)
 // |
-// +--> Ugen (name=SinOsc, index=0)
+// +--> Ugen (name=SinOsc, index=0, numInputs=1, numOutputs=1)
 //      |
-//      +--> Constant(440) (index=0)
+//      +--> Constant (index=0, value=440)
 //
 type ugenGraph struct {
 	root *Ugen

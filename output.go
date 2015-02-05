@@ -8,23 +8,18 @@ import (
 
 // Output ugen output
 type Output struct {
-	rate int8
-}
-
-// Rate gets the rate of an output
-func (self *Output) Rate() int8 {
-	return self.rate
+	Rate int8 `json:'rate,omitempty'`
 }
 
 // Dump writes information about this output to an io.Writer
 func (self *Output) Dump(w io.Writer) error {
-	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.rate)
+	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.Rate)
 	return nil
 }
 
 // Write writes this output to an io.Writer
 func (self *Output) Write(w io.Writer) error {
-	return binary.Write(w, byteOrder, self.rate)
+	return binary.Write(w, byteOrder, self.Rate)
 }
 
 func readOutput(r io.Reader) (*Output, error) {

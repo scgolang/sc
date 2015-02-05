@@ -11,6 +11,7 @@ type Output struct {
 	rate int8
 }
 
+// Rate gets the rate of an output
 func (self *Output) Rate() int8 {
 	return self.rate
 }

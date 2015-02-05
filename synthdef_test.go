@@ -17,7 +17,7 @@ func TestReadSynthDef(t *testing.T) {
 		t.Fatal(err)
 	}
 	// get the name
-	if synthDef.Name() != "SineTone" {
+	if synthDef.Name != "SineTone" {
 		t.Fatal(fmt.Errorf("wrong synthdef name"))
 	}
 	synthDef.Dump(os.Stdout)

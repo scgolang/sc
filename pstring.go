@@ -10,21 +10,25 @@ import (
 // Pstring is a pascal-format string, which is a byte containing
 // the string length, followed by the bytes of the string
 type Pstring struct {
-	Length int8
-	String string
+	length int8
+	string string
+}
+
+func (self *Pstring) String() string {
+	return self.string
 }
 
 // Equal determines if one Pstring equals another
 func (self *Pstring) Equals(pstr Pstring) bool {
-	return self.String == pstr.String
+	return self.string == pstr.string
 }
 
 func (self *Pstring) Write(w io.Writer) error {
-	e := binary.Write(w, byteOrder, self.Length)
+	e := binary.Write(w, byteOrder, self.length)
 	if e != nil {
 		return e
 	}
-	_, e = w.Write(bytes.NewBufferString(self.String).Bytes())
+	_, e = w.Write(bytes.NewBufferString(self.string).Bytes())
 	return e
 }
 

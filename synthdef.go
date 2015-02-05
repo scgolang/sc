@@ -14,18 +14,8 @@ const (
 
 var byteOrder = binary.BigEndian
 
-// SynthDef
-type SynthDef interface {
-	// Dump write info about a synthdef to an io.Writer
-	Dump(w io.Writer) error
-	// Name returns the name of the synthdef
-	Name() string
-	// Load writes a synthdef file to disk and tells a server to load it
-	Load(s Server) error
-}
-
-type synthDef struct {
-	name               Pstring
+type SynthDef struct {
+	Name               string
 	NumConstants       int32
 	Constants          []float32
 	NumParams          int32
@@ -38,12 +28,8 @@ type synthDef struct {
 	Variants           []Variant
 }
 
-func (self *synthDef) Name() string {
-	return self.name.String
-}
-
 // Write writes a synthdef to an io.Writer
-func (self *synthDef) Write(w io.Writer) error {
+func (self *SynthDef) Write(w io.Writer) error {
 	if he := self.writeHead(w); he != nil {
 		return he
 	}
@@ -51,10 +37,10 @@ func (self *synthDef) Write(w io.Writer) error {
 }
 
 // Dump writes information about a SynthDef to an io.Writer
-func (self *synthDef) Dump(w io.Writer) error {
+func (self *SynthDef) Dump(w io.Writer) error {
 	var e error
 	
-	fmt.Fprintf(w, "%-30s %s\n", "Name", self.name.String)
+	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name)
 	// write constants
 	fmt.Fprintf(w, "%-30s %d\n", "NumConstants", self.NumConstants)
 	fmt.Fprintf(w, "%s\n", "Constants")
@@ -102,7 +88,7 @@ func (self *synthDef) Dump(w io.Writer) error {
 }
 
 // write a synthdef header
-func (self *synthDef) writeHead(w io.Writer) error {
+func (self *SynthDef) writeHead(w io.Writer) error {
 	_, we := w.Write(bytes.NewBufferString("SCgf").Bytes())
 	if we != nil {
 		return we
@@ -115,7 +101,7 @@ func (self *synthDef) writeHead(w io.Writer) error {
 }
 
 // write a synthdef body
-func (self *synthDef) writeBody(w io.Writer) error {
+func (self *SynthDef) writeBody(w io.Writer) error {
 	// write constants
 	we := binary.Write(w, byteOrder, self.NumConstants)
 	if we != nil {
@@ -160,12 +146,12 @@ func (self *synthDef) writeBody(w io.Writer) error {
 	return nil
 }
 
-func (self *synthDef) Load(s Server) error {
+func (self *SynthDef) Load(s Server) error {
 	return nil
 }
 
 // ReadSynthDef reads a synthdef from an io.Reader
-func ReadSynthDef(r io.Reader) (SynthDef, error) {
+func ReadSynthDef(r io.Reader) (*SynthDef, error) {
 	// read the type
 	startLen := len(SYNTHDEF_START)
 	start := make([]byte, startLen)
@@ -276,8 +262,8 @@ func ReadSynthDef(r io.Reader) (SynthDef, error) {
 		variants[i] = *v
 	}
 	// return a new synthdef
-	synthDef := synthDef{
-		*defName,
+	synthDef := SynthDef{
+		defName.String(),
 		numConstants,
 		constants,
 		numParams,
@@ -293,7 +279,7 @@ func ReadSynthDef(r io.Reader) (SynthDef, error) {
 }
 
 // NewSynthDef creates a new SynthDef from a UgenGraphFunc
-func NewSynthDef(name string, f UgenGraphFunc) SynthDef {
+func NewSynthDef(name string, f UgenGraphFunc) *SynthDef {
 	// this function has to be able to traverse a ugen
 	// graph and turn it into a synth def
 	return nil

@@ -1,6 +1,7 @@
 package sc
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -8,13 +9,13 @@ import (
 
 // Ugen
 type Ugen struct {
-	name         Pstring
-	rate         int8
-	numInputs    int32
-	numOutputs   int32
-	specialIndex int16
-	inputs       []Input
-	outputs      []Output
+	Name         string   `json:'name,omitempty'`
+	Rate         int8     `json:'rate,omitempty'`
+	NumInputs    int32    `json:'numInputs,omitempty'`
+	NumOutputs   int32    `json:'numOutputs,omitempty'`
+	SpecialIndex int16    `json:'specialIndex,omitempty'`
+	Inputs       []Input  `json:'inputs,omitempty'`
+	Outputs      []Output `json:'outputs,omitempty'`
 }
 
 func (self *Ugen) AddConstant(value float32) {
@@ -23,55 +24,27 @@ func (self *Ugen) AddConstant(value float32) {
 func (self *Ugen) AddUgen(value Ugen) {
 }
 
-func (self *Ugen) Name() string {
-	return self.name.String
-}
-
-func (self *Ugen) Rate() int8 {
-	return self.rate
-}
-
-func (self *Ugen) NumInputs() int32 {
-	return self.numInputs
-}
-
-func (self *Ugen) NumOutputs() int32 {
-	return self.numOutputs
-}
-
-func (self *Ugen) SpecialIndex() int16 {
-	return self.specialIndex
-}
-
-func (self *Ugen) Inputs() []Input {
-	return self.inputs
-}
-
-func (self *Ugen) Outputs() []Output {
-	return self.outputs
-}
-
 func (self *Ugen) Dump(w io.Writer) error {
 	var e error
 
-	fmt.Fprintf(w, "%-30s %s\n", "Name", self.name.String)
-	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.rate)
-	fmt.Fprintf(w, "%-30s %d\n", "NumInputs", self.numInputs)
-	fmt.Fprintf(w, "%-30s %d\n", "NumOutputs", self.numOutputs)
-	fmt.Fprintf(w, "%-30s %d\n", "SpecialIndex", self.specialIndex)
-	if self.numInputs > 0 {
-		for i := 0; int32(i) < self.numInputs; i++ {
+	fmt.Fprintf(w, "%-30s %s\n", "Name", self.Name)
+	fmt.Fprintf(w, "%-30s %d\n", "Rate", self.Rate)
+	fmt.Fprintf(w, "%-30s %d\n", "NumInputs", self.NumInputs)
+	fmt.Fprintf(w, "%-30s %d\n", "NumOutputs", self.NumOutputs)
+	fmt.Fprintf(w, "%-30s %d\n", "SpecialIndex", self.SpecialIndex)
+	if self.NumInputs > 0 {
+		for i := 0; int32(i) < self.NumInputs; i++ {
 			fmt.Fprintf(w, "\nInput %d:\n", i)
-			e = self.inputs[i].Dump(w)
+			e = self.Inputs[i].Dump(w)
 			if e != nil {
 				return e
 			}
 		}
 	}
-	if self.numOutputs > 0 {
-		for i := 0; int32(i) < self.numOutputs; i++ {
+	if self.NumOutputs > 0 {
+		for i := 0; int32(i) < self.NumOutputs; i++ {
 			fmt.Fprintf(w, "\nOutput %d:\n", i)
-			e = self.outputs[i].Dump(w)
+			e = self.Outputs[i].Dump(w)
 			if e != nil {
 				return e
 			}
@@ -83,38 +56,42 @@ func (self *Ugen) Dump(w io.Writer) error {
 // write a Ugen
 func (self *Ugen) Write(w io.Writer) error {
 	// write the synthdef name
-	we := self.name.Write(w)
+	nameLen := len(self.Name)
+	bw, we := w.Write(bytes.NewBufferString(self.Name).Bytes())
 	if we != nil {
 		return we
 	}
+	if bw != nameLen {
+		return fmt.Errorf("could not write Ugen.Name")
+	}
 	// audio rate
-	we = binary.Write(w, byteOrder, self.rate)
+	we = binary.Write(w, byteOrder, self.Rate)
 	if we != nil {
 		return we
 	}
 	// one input
-	we = binary.Write(w, byteOrder, self.numInputs)
+	we = binary.Write(w, byteOrder, self.NumInputs)
 	if we != nil {
 		return we
 	}
 	// one output
-	we = binary.Write(w, byteOrder, self.numOutputs)
+	we = binary.Write(w, byteOrder, self.NumOutputs)
 	if we != nil {
 		return we
 	}
 	// special index
-	we = binary.Write(w, byteOrder, self.specialIndex)
+	we = binary.Write(w, byteOrder, self.SpecialIndex)
 	if we != nil {
 		return we
 	}
 	// inputs
-	for _, i := range self.inputs {
+	for _, i := range self.Inputs {
 		if we = i.Write(w); we != nil {
 			return we
 		}
 	}
 	// outputs
-	for _, o := range self.outputs {
+	for _, o := range self.Outputs {
 		if we = o.Write(w); we != nil {
 			return we
 		}
@@ -173,7 +150,7 @@ func ReadUgen(r io.Reader) (*Ugen, error) {
 	}
 
 	u := Ugen{
-		*name,
+		name.String(),
 		rate,
 		numInputs,
 		numOutputs,
@@ -186,7 +163,7 @@ func ReadUgen(r io.Reader) (*Ugen, error) {
 
 func Ar(name string, args ...interface{}) (*Ugen, error) {
 	u := Ugen{
-		NewPstring(name),  // name
+		name,              // name
 		2,                 // rate
 		0,                 // numInputs
 		0,                 // numOutputs
@@ -198,9 +175,10 @@ func Ar(name string, args ...interface{}) (*Ugen, error) {
 	for _, arg := range args {
 		if fv, isFloat := arg.(float32); isFloat {
 			u.AddConstant(fv)
-		}
-		if ug, isUgen := arg.(Ugen); isUgen {
+		} else if ug, isUgen := arg.(Ugen); isUgen {
 			u.AddUgen(ug)
+		} else {
+			return nil, fmt.Errorf("ugen arguments must be float32's or ugen's")
 		}
 	}
 

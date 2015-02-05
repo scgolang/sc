@@ -1,4 +1,4 @@
-package gosc
+package sc
 
 type NodeVisitor func(node Node)
 

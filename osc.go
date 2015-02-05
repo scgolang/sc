@@ -1,4 +1,4 @@
-package gosc
+package sc
 
 type NetAddr struct {
 	Addr string

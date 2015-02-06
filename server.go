@@ -35,7 +35,6 @@ func (self *server) Addr() NetAddr {
 
 func (self *server) Boot() error {
 	go self.oscServer.ListenAndDispatch()
-	fmt.Println("osc server listening")
 	cmd := exec.Command(scsynth, "-u", strconv.Itoa(self.addr.Port))
 	// TODO: handle error from Run
 	go cmd.Run()

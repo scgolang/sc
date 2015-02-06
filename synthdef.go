@@ -64,57 +64,67 @@ func (self *synthdef) Rep() *SynthdefRep {
 		make([]Variant, 0),   // variants
 	}
 
-	for _, u := range self.ugens {
-		// convert u to a UgenRep and append it
-		// to rep.Ugens
-		ugenRep := UgenRep{
-			u.name,
-			u.rate,
-			int16(0), // BUG(briansorahan) where does special index come from?
-			make([]*InputRep, 0),
-			// I believe a ugen has an output when it is used as an input
-			// to another ugen, and that this is how we should populate
-			// the UgenRep.Outputs: by looking for other ugens that are using
-			// this one (u) as an input.
-			// [briansorahan]
-			make([]*OutputRep, 0),
-		}
-		// populate the UgenRep's Inputs array
-		for _, in := range u.inputs {
-			// note that outputIndex is actually "index of constant"
-			// if ugenIndex == -1 (i.e. if this input is a constant)
-			// otherwise it determines the index of the unit generator's
-			// output (as determined by ugenIndex) that is connected to
-			// this input
-			var ugenIndex, outputIndex int32
-
-			if in.IsConstant() {
-				ugenIndex = -1
-				// find the constant whose value equals this input
-				constantValue := in.ConstantValue()
-				for i, c := range self.constants {
-					if c == constantValue {
-						outputIndex = int32(i)
-					}
-				}
-			} else {
-				// find the ugen that equals the value of this input
-				ugenInput := in.UgenValue()
-				for i, ui := range self.ugens {
-					if ui == ugenInput {
-						ugenIndex = int32(i)
-					}
-				}
-			}
-
-			// FIXME
-			inputRep := InputRep{ugenIndex, outputIndex}
-			ugenRep.Inputs = append(ugenRep.Inputs, &inputRep)
-		}
-		rep.Ugens = append(rep.Ugens, &ugenRep)
+	for i, u := range self.ugens {
+		ugenRep := self.ugenRep(i, u)
+		rep.Ugens = append(rep.Ugens, ugenRep)
 	}
 
 	return &rep
+}
+
+// ugenRep converts the indexth ugen to a ugen rep
+func (self *synthdef) ugenRep(index int, ugen *Ugen) *UgenRep {
+	// note that if index != 0 then the ugen will have outputs
+	// this is because self.ugens[0] is the root of the ugen tree
+
+	// convert u to a UgenRep and append it
+	// to rep.Ugens
+	ugenRep := UgenRep{
+		ugen.name,
+		ugen.rate,
+		int16(0), // BUG(briansorahan) where does special index come from?
+		make([]*InputRep, 0),
+		// I believe a ugen has an output when it is used as an input
+		// to another ugen, and that this is how we should populate
+		// the UgenRep.Outputs: by looking for other ugens that are using
+		// this one (u) as an input.
+		// [briansorahan]
+		make([]*OutputRep, 0),
+	}
+	// populate the UgenRep's Inputs array
+	for _, in := range ugen.inputs {
+		// note that outputIndex is actually "index of constant"
+		// if ugenIndex == -1 (i.e. if this input is a constant)
+		// otherwise it determines the index of the unit generator's
+		// output (as determined by ugenIndex) that is connected to
+		// this input
+		var ugenIndex, outputIndex int32
+
+		if in.IsConstant() {
+			ugenIndex = -1
+			// find the constant whose value equals this input
+			constantValue := in.ConstantValue()
+			for i, c := range self.constants {
+				if c == constantValue {
+					outputIndex = int32(i)
+				}
+			}
+		} else {
+			// find the ugen that equals the value of this input
+			ugenInput := in.UgenValue()
+			for i, ui := range self.ugens {
+				if ui == ugenInput {
+					ugenIndex = int32(i)
+				}
+			}
+		}
+
+		// FIXME
+		inputRep := InputRep{ugenIndex, outputIndex}
+		ugenRep.Inputs = append(ugenRep.Inputs, &inputRep)
+	}
+
+	return nil
 }
 
 func (self *synthdef) Dump(w io.Writer) error {

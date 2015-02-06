@@ -15,9 +15,9 @@ const (
 
 var byteOrder = binary.BigEndian
 
-// SynthDefRep defines the structure of synth def data as defined
+// SynthdefRep defines the structure of synth def data as defined
 // in http://doc.sccode.org/Reference/Synth-Definition-File-Format.html
-type SynthDefRep struct {
+type SynthdefRep struct {
 	// Name is the name of the synthdef
 	Name string `json:"name"`
 
@@ -31,28 +31,28 @@ type SynthDefRep struct {
 	ParamNames []ParamName `json:"paramNames"`
 
 	// Ugens is the list of ugens that appear in the synth def
-	Ugens []UgenRep `json:"ugens"`
+	Ugens []*UgenRep `json:"ugens"`
 
 	// Variants is the list of variants contained in the synth def
 	Variants []Variant `json:"variants"`
 }
 
 // Write writes a synthdef to an io.Writer
-func (self *SynthDefRep) Write(w io.Writer) error {
+func (self *SynthdefRep) Write(w io.Writer) error {
 	if he := self.writeHead(w); he != nil {
 		return he
 	}
 	return self.writeBody(w)
 }
 
-// Dump writes json-formatted information about a SynthDefRep to an io.Writer
-func (self *SynthDefRep) Dump(w io.Writer) error {
+// Dump writes json-formatted information about a SynthdefRep to an io.Writer
+func (self *SynthdefRep) Dump(w io.Writer) error {
 	dec := json.NewEncoder(w)
 	return dec.Encode(self)
 }
 
 // write a synthdef header
-func (self *SynthDefRep) writeHead(w io.Writer) error {
+func (self *SynthdefRep) writeHead(w io.Writer) error {
 	_, we := w.Write(bytes.NewBufferString("SCgf").Bytes())
 	if we != nil {
 		return we
@@ -65,7 +65,7 @@ func (self *SynthDefRep) writeHead(w io.Writer) error {
 }
 
 // write a synthdef body
-func (self *SynthDefRep) writeBody(w io.Writer) error {
+func (self *SynthdefRep) writeBody(w io.Writer) error {
 	// write constants
 	numConstants := int32(len(self.Constants))
 	we := binary.Write(w, byteOrder, numConstants)
@@ -113,12 +113,12 @@ func (self *SynthDefRep) writeBody(w io.Writer) error {
 	return nil
 }
 
-func (self *SynthDefRep) Load(s Server) error {
+func (self *SynthdefRep) Load(s Server) error {
 	return nil
 }
 
-// readSynthDefRep reads a synthdef from an io.Reader
-func readSynthDefRep(r io.Reader) (*SynthDefRep, error) {
+// readSynthdefRep reads a synthdef from an io.Reader
+func readSynthdefRep(r io.Reader) (*SynthdefRep, error) {
 	// read the type
 	startLen := len(SYNTHDEF_START)
 	start := make([]byte, startLen)
@@ -205,13 +205,13 @@ func readSynthDefRep(r io.Reader) (*SynthDefRep, error) {
 		return nil, er
 	}
 	// read ugens
-	ugens := make([]UgenRep, numUgens)
+	ugens := make([]*UgenRep, numUgens)
 	for i := 0; int32(i) < numUgens; i++ {
 		ugen, er := readUgenRep(r)
 		if er != nil {
 			return nil, er
 		}
-		ugens[i] = *ugen
+		ugens[i] = ugen
 	}
 	// read number of variants
 	var numVariants int16
@@ -229,7 +229,7 @@ func readSynthDefRep(r io.Reader) (*SynthDefRep, error) {
 		variants[i] = *v
 	}
 	// return a new synthdef
-	synthDef := SynthDefRep{
+	synthDef := SynthdefRep{
 		defName.String(),
 		constants,
 		initialValues,

@@ -1,10 +1,38 @@
 newUgen(name string, rate int8, args ...interface{}) (*UgenGraph, error)
 
-UgenGraph:
-- exposes list of contstants
-- exposes number of ugens
-- total number of outputs in graph is one less than number of ugens
-
-1. Initialize a new ugen with an empty list of inputs and an empty list of outputs. This will become the root of the new graph.
+1. Initialize a new ugen with an empty list of inputs and an empty list
+   of outputs. This will become the root of the new graph.
 2. Loop over the args.
-  2.1. If arg is a constant
+  2.1. If arg is a constant append a constantInput to the list of inputs.
+  2.2. If arg is a UgenGraph append a UgenInput to the list of inputs.
+       This input should correspond to the output of the root of the
+       UgenGraph, and the root of the UgenGraph should have an output.
+3. The UgenGraph that is returned should have enough information to
+   generate the binary synthdef that is sent to scsynth.
+
+UgenGraph:
+- exposes list of constants
+- exposes number of ugens
+- total number of outputs in graph is one less than number of ugens,
+  because the root ugen does not have an output
+
+When you attach one UgenGraph to another (ugg2 to ugg1, say)
+- the output of the root of ugg2 becomes an input to ugg1, which
+  means that we need to make sure the root of ugg2 has an output
+  (if it doesn't we need to create one, and to do this we need to know
+   the rate which I believe is just determined by the ugen itself)
+- all ugens visited after the root of ugg2 should have their indices
+  offset by the number of ugens in ugg2
+
+Questions:
+- Does the rate of a ugen determine the rate of all its outputs?
+  I strongly feel that this is true.
+- Do all ugens only have one output?
+  For example, when I do Out.ar(0, SinOsc.ar([440,441])) I get a synthdef
+  with two separate SinOsc ugens that each have one output instead of
+  a single SinOsc ugen with two outputs.
+  If this is true then 'stereo' ugens are actually just two separate ugens.
+- Why does sclang allow inputs of control-rate ugens to be audio-rate?
+  example: SinOsc.kr(SinOsc.ar(1))
+  Answer: Because sclang allows you to do things that don't make sense
+          and degrade performance.

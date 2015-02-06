@@ -12,7 +12,7 @@ func TestReadSynthDef(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	synthDef, err := readSynthDefRep(f)
+	synthDef, err := readSynthdefRep(f)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,13 +26,13 @@ func TestReadSynthDef(t *testing.T) {
 // FIXME
 //
 // func ExampleNewSynthDef() {
-// 	NewSynthDef("SineTone", func() (*UgenGraph, error) {
+// 	NewSynthdef("SineTone", func() (*Ugen, error) {
 // 		sinOsc, err := Ar("SinOsc", float32(440))
 // 		if err != nil {
 // 			return nil, err
 // 		}
-// 		graph, err := Ar("Out", float32(0), sinOsc)
-// 		return NewUgenGraph(graph), err
+// 		root, err := Ar("Out", float32(0), sinOsc)
+// 		return root, err
 // 	}).Dump(os.Stdout)
 // 	// Output:
 // 	// {"name":"SineTone","constants":[440,0],"initialParamValues":[],"paramNames":[],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":0,"outputIndex":0}],"outputs":[]}],"variants":[]}

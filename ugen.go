@@ -36,6 +36,10 @@ func Ir(name string, args ...interface{}) (*Ugen, error) {
 	return newUgen(name, 0, args...)
 }
 
+// Notes for the tree flattening algorithm
+//
+// 
+//
 func newUgen(name string, rate int8, args ...interface{}) (*Ugen, error) {
 	u := Ugen{
 		name,             // name

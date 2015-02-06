@@ -1,0 +1,10 @@
+newUgen(name string, rate int8, args ...interface{}) (*UgenGraph, error)
+
+UgenGraph:
+- exposes list of contstants
+- exposes number of ugens
+- total number of outputs in graph is one less than number of ugens
+
+1. Initialize a new ugen with an empty list of inputs and an empty list of outputs. This will become the root of the new graph.
+2. Loop over the args.
+  2.1. If arg is a constant

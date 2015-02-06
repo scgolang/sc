@@ -1,35 +1,51 @@
 package sc
 
 import (
-	"encoding/binary"
-	"io"
+	"fmt"
 )
 
-// Input
-type Input struct {
-	UgenIndex   int32 `json:"ugenIndex"`
-	OutputIndex int32 `json:"outputIndex"`
+type Input interface {
+	IsConstant() bool
+	ConstantValue() float32
+	UgenValue() *Ugen
 }
 
-// Write writes an inputSpec to an io.Writer
-func (self *Input) Write(w io.Writer) error {
-	if we := binary.Write(w, byteOrder, self.UgenIndex); we != nil {
-		return we
-	}
-	return binary.Write(w, byteOrder, self.OutputIndex)
+type constantInput struct {
+	value float32
 }
 
-func readInput(r io.Reader) (*Input, error) {
-	var ugenIndex, outputIndex int32
-	err := binary.Read(r, byteOrder, &ugenIndex)
-	if err != nil {
-		return nil, err
-	}
-	err = binary.Read(r, byteOrder, &outputIndex)
-	if err != nil {
-		return nil, err
-	}
-	is := Input{ugenIndex, outputIndex}
-	return &is, nil
+func (self *constantInput) IsConstant() bool {
+	return true
 }
 
+func (self *constantInput) ConstantValue() float32 {
+	return self.value
+}
+
+func (self *constantInput) UgenValue() *Ugen {
+	panic(fmt.Errorf("can not convert ugen to constant"))
+}
+
+type ugenInput struct {
+	value *Ugen
+}
+
+func (self *ugenInput) IsConstant() bool {
+	return false
+}
+
+func (self *ugenInput) ConstantValue() float32 {
+	panic(fmt.Errorf("can not convert constant to ugen"))
+}
+
+func (self *ugenInput) UgenValue() *Ugen {
+	return self.value
+}
+
+func ConstantInput(value float32) Input {
+	return &constantInput{value}
+}
+
+func UgenInput(value *Ugen) Input {
+	return &ugenInput{value}
+}

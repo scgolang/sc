@@ -1,14 +1,7 @@
 package sc
 
 // UgenGraphFunc create a UgenGraph
-type UgenGraphFunc func(ugen Ugen) UgenGraph
-
-// UgenGraph
-type UgenGraph interface {
-	Root() *Ugen
-	// SynthDef converts a UgenGraph to a SynthDef
-	SynthDef() *SynthDef
-}
+type UgenGraphFunc func() (*UgenGraph, error)
 
 //
 // example graph for SineTone synth
@@ -21,15 +14,15 @@ type UgenGraph interface {
 //      |
 //      +--> Constant (index=0, value=440)
 //
-type ugenGraph struct {
+type UgenGraph struct {
 	root *Ugen
 }
 
-func (self *ugenGraph) Root() *Ugen {
-	return self.root
+// TODO: implement
+func (self *UgenGraph) SynthDef() SynthDef {
+	return nil
 }
 
-// TODO: implement
-func (self *ugenGraph) SynthDef() *SynthDef {
-	return nil
+func NewUgenGraph(root *Ugen) *UgenGraph {
+	return &UgenGraph{root}
 }

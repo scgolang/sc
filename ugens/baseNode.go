@@ -12,8 +12,6 @@ type baseNode struct {
 	outputs []sc.Output
 }
 
-// public interface
-
 func (self *baseNode) Name() string {
 	return self.name
 }
@@ -38,14 +36,23 @@ func (self *baseNode) Value() interface{} {
 	return *self
 }
 
-// private methods
-
-func (self *baseNode) addConstantInput(val float32) {
-	self.inputs = append(self.inputs, newConstantInput(val))
+// addInput appends an Input to this node's list of inputs
+func (self *baseNode) addInput(in sc.Input) {
+	self.inputs = append(self.inputs, in)
 }
 
-// factory
+// addConstantInput is a helper that wraps a float32 with
+// the constantInput type (which implements the Input interface)
+func (self *baseNode) addConstantInput(val float32) {
+	self.inputs = append(self.inputs, constantInput(val))
+}
 
+// addOutput appends an Output to this node's list of outputs
+func (self *baseNode) addOutput(out sc.Output) {
+	self.outputs = append(self.outputs, out)
+}
+
+// newNode is a factory function for creating new baseNode instances
 func newNode(name string, rate int8) *baseNode {
 	node := baseNode{
 		name,

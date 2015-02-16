@@ -12,3 +12,15 @@ package sc
 
 // UgenGraphFunc create a Ugen graph and return the root ugen
 type UgenGraphFunc func() (*Ugen, error)
+
+type UgenGraph interface {
+}
+
+type ugenGraph struct {
+	root UgenNode
+}
+
+func NewUgenGraph(root UgenNode) UgenGraph {
+	ugg := ugenGraph{root}
+	return &ugg
+}

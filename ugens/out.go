@@ -1,34 +1,27 @@
 package ugens
 
 import (
-	"github.com/briansorahan/sc"
+	"fmt"
 )
 
-var Out = newOut()
-
-// ugen implementation
-type out struct {
-}
-
-func (self *out) Ar(args ...interface{}) sc.UgenNode {
-	return newOutNode(2, args...)
-}
-
-func (self *out) Kr(args ...interface{}) sc.UgenNode {
-	return newOutNode(1, args...)
-}
-
-func (self *out) Ir(args ...interface{}) sc.UgenNode {
-	return newOutNode(0, args...)
-}
-
-func newOut() *out {
-	o := out{}
-	return &o
-}
-
-func newOutNode(rate int8, args ...interface{}) sc.UgenNode {
-	node := newNode("Out", rate)
+// Out write a signal to a bus
+var Out = newUgen("Out", func(node *baseNode, args ...interface{}) {
+	nargs := len(args)
 	// parse arguments
-	return node
-}
+	if nargs < 2 {
+		panic(fmt.Errorf("Out expects at least 2 arguments, but was given %d", nargs))
+	}
+	if bus, isInt := args[0].(int); isInt {
+		node.addConstantInput(float32(bus))
+	} else {
+		panic(fmt.Errorf("Out expects first argument to be int"))
+	}
+	for i := 1; i < nargs; i++ {
+		arg := args[i]
+		if in, isNode := arg.(*baseNode); isNode {
+			node.addInput(in)
+		} else {
+			panic(fmt.Errorf("Out expects ugen arguments"))
+		}
+	}
+})

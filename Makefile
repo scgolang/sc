@@ -11,7 +11,7 @@ endif
 SYNTHDEF_GENERATORS := sineTone.sc
 SUBPKG := ugens
 
-.PHONY: synthdefs clean
+.PHONY: synthdefs clean test
 
 all:
 	go install
@@ -22,3 +22,7 @@ synthdefs:
 
 clean:
 	rm -rf *~ *.scsyndef
+
+test:
+	go test
+	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done

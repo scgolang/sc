@@ -21,3 +21,10 @@ func TestOutOneArgument(t *testing.T) {
 	}()
 	Out.Ar(0)
 }
+
+func TestOut(t *testing.T) {
+	out := Out.Ar(0, SinOsc.Ar())
+	if out == nil {
+		t.Fatalf("out was nil")
+	}
+}

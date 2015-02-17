@@ -28,6 +28,8 @@ func getInput(arg interface{}) sc.Input {
 		return constantInput(cv)
 	}
 	if nv, isNode := arg.(*baseNode); isNode {
+		// add an output to the node
+		nv.ensureOutput()
 		return nv
 	}
 	return nil

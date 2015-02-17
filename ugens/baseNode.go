@@ -47,9 +47,13 @@ func (self *baseNode) addConstantInput(val float32) {
 	self.inputs = append(self.inputs, constantInput(val))
 }
 
-// addOutput appends an Output to this node's list of outputs
-func (self *baseNode) addOutput(out sc.Output) {
-	self.outputs = append(self.outputs, out)
+// ensureOutput ensures that a ugen node has an output with the
+// given rate
+func (self *baseNode) ensureOutput() {
+	numOutputs := len(self.outputs)
+	if numOutputs == 0 {
+		self.outputs = append(self.outputs, output(self.Rate()))
+	}
 }
 
 // newNode is a factory function for creating new baseNode instances

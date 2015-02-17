@@ -6,13 +6,13 @@ import (
 )
 
 // Variant
-type Variant struct {
+type variant struct {
 	Name               Pstring   `json:'name,omitempty'`
 	InitialParamValues []float32 `json:'initialParamValues'`
 }
 
 // ReadVariant read a Variant from an io.Reader
-func ReadVariant(r io.Reader, numParams int32) (*Variant, error) {
+func ReadVariant(r io.Reader, numParams int32) (*variant, error) {
 	name, err := ReadPstring(r)
 	if err != nil {
 		return nil, err
@@ -24,6 +24,6 @@ func ReadVariant(r io.Reader, numParams int32) (*Variant, error) {
 			return nil, err
 		}
 	}
-	v := Variant{*name, paramValues}
+	v := variant{*name, paramValues}
 	return &v, nil
 }

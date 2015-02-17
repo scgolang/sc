@@ -1,25 +1,17 @@
 package ugens
 
-import (
-	"fmt"
-	"github.com/briansorahan/sc"
-)
-
 var SinOsc = newUgen("SinOsc", func(node *baseNode, args ...interface{}) {
-	var in sc.Input
 	nargs := len(args)
+	// default argument values
 	defaultFreq := float32(440)
 	defaultPhase := float32(0)
+	// parse arguments
 	switch (nargs) {
 	case 0:
 		node.addConstantInput(defaultFreq)
 		node.addConstantInput(defaultPhase)
 	case 1:
-		in = getInput(args[0])
-		if in == nil {
-			panic(fmt.Errorf("SinOsc argument %d neither a constant nor a ugen", 1))
-		}
-		node.addInput(in)
+		getInputs(node, args)
 		node.addConstantInput(defaultPhase)
 	case 2:
 		getInputs(node, args)

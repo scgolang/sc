@@ -34,7 +34,7 @@ type SynthdefRep struct {
 	Ugens []*UgenRep `json:"ugens"`
 
 	// Variants is the list of variants contained in the synth def
-	Variants []Variant `json:"variants"`
+	Variants []variant `json:"variants"`
 }
 
 // Write writes a synthdef to an io.Writer
@@ -220,7 +220,7 @@ func readSynthdefRep(r io.Reader) (*SynthdefRep, error) {
 		return nil, er
 	}
 	// read variants
-	variants := make([]Variant, numVariants)
+	variants := make([]variant, numVariants)
 	for i := 0; int16(i) < numVariants; i++ {
 		v, er := ReadVariant(r, numParams)
 		if er != nil {

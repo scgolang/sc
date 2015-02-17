@@ -17,15 +17,13 @@ var SinOsc = newUgen("SinOsc", func(node *baseNode, args ...interface{}) {
 	case 1:
 		in = getInput(args[0])
 		if in == nil {
-			panic(fmt.Errorf("SinOsc.Ar argument %d neither a constant nor a ugen", 1))
+			panic(fmt.Errorf("SinOsc argument %d neither a constant nor a ugen", 1))
 		}
 		node.addInput(in)
 		node.addConstantInput(defaultPhase)
 	case 2:
-		in = getInput(args[0])
-		if in == nil {
-			panic(fmt.Errorf("SinOsc.Ar argument %d was neither a constant nor a ugen", 1))
-		}
-		node.addInput(in)
+		getInputs(node, args)
+	default:
+		panic("Too many arguments to SinOsc")
 	}
 })

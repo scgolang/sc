@@ -1,6 +1,7 @@
 package ugens
 
 import (
+	"fmt"
 	"github.com/briansorahan/sc"
 )
 
@@ -32,5 +33,18 @@ func getInput(arg interface{}) sc.Input {
 	return nil
 }
 
-func parseArgs(node *baseNode, args ...interface{}) {
+// getInputs iterates through ugen arguments and
+// attempts to add inputs to a ugen node
+// it panics if any of the inputs are neither a constant
+// nor a ugen node
+func getInputs(node *baseNode, args ...interface{}) {
+	s := "argument %d was neither a float or a ugen"
+	for i, arg := range args {
+		in := getInput(arg)
+		if in == nil {
+			panic(fmt.Errorf(s, i+1))
+		} else {
+			node.addInput(in)
+		}
+	}
 }

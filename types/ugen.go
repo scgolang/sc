@@ -1,4 +1,4 @@
-package sc
+package types
 
 type Ugen interface {
 	Ar(args ...interface{}) UgenNode

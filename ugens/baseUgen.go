@@ -1,7 +1,7 @@
 package ugens
 
 import (
-	"github.com/briansorahan/sc"
+	. "github.com/briansorahan/sc/types"
 )
 
 const (
@@ -19,19 +19,19 @@ type baseUgen struct {
 	pn   parseNode
 }
 
-func (self *baseUgen) Ar(args ...interface{}) sc.UgenNode {
+func (self *baseUgen) Ar(args ...interface{}) UgenNode {
 	node := newNode(self.name, AudioRate)
 	self.pn(node, args...)
 	return node
 }
 
-func (self *baseUgen) Kr(args ...interface{}) sc.UgenNode {
+func (self *baseUgen) Kr(args ...interface{}) UgenNode {
 	node := newNode(self.name, ControlRate)
 	self.pn(node, args...)
 	return node
 }
 
-func (self *baseUgen) Ir(args ...interface{}) sc.UgenNode {
+func (self *baseUgen) Ir(args ...interface{}) UgenNode {
 	node := newNode(self.name, InitializationRate)
 	self.pn(node, args...)
 	return node

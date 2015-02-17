@@ -1,4 +1,4 @@
-package sc
+package types
 
 type UgenNode interface {
 	Name() string

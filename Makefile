@@ -14,6 +14,7 @@ SUBPKG := ugens
 .PHONY: synthdefs clean test
 
 all:
+	cd types && go install
 	go install
 	for pkg in $(SUBPKG); do cd $$pkg && go install && cd ..; done
 

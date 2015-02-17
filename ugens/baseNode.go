@@ -1,15 +1,15 @@
 package ugens
 
 import (
-	"github.com/briansorahan/sc"
+	. "github.com/briansorahan/sc/types"
 )
 
 // ugen node base type
 type baseNode struct {
 	name string
 	rate int8
-	inputs []sc.Input
-	outputs []sc.Output
+	inputs []Input
+	outputs []Output
 }
 
 func (self *baseNode) Name() string {
@@ -20,11 +20,11 @@ func (self *baseNode) Rate() int8 {
 	return self.rate
 }
 
-func (self *baseNode) Inputs() []sc.Input {
+func (self *baseNode) Inputs() []Input {
 	return self.inputs
 }
 
-func (self *baseNode) Outputs() []sc.Output {
+func (self *baseNode) Outputs() []Output {
 	return self.outputs
 }
 
@@ -37,7 +37,7 @@ func (self *baseNode) Value() interface{} {
 }
 
 // addInput appends an Input to this node's list of inputs
-func (self *baseNode) addInput(in sc.Input) {
+func (self *baseNode) addInput(in Input) {
 	self.inputs = append(self.inputs, in)
 }
 
@@ -61,8 +61,8 @@ func newNode(name string, rate int8) *baseNode {
 	node := baseNode{
 		name,
 		rate,
-		make([]sc.Input, 0),
-		make([]sc.Output, 0),
+		make([]Input, 0),
+		make([]Output, 0),
 	}
 	return &node
 }

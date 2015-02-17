@@ -2,7 +2,7 @@ package ugens
 
 import (
 	"fmt"
-	"github.com/briansorahan/sc"
+	. "github.com/briansorahan/sc/types"
 )
 
 // getConstant attempts to get a float32 value from
@@ -23,7 +23,7 @@ func getConstant(arg interface{}) (float32, bool) {
 // getInput either returns a constant input or a ugen input
 // by running some type assertions on the provided arg
 // if the arg is neither of these, then it returns nil
-func getInput(arg interface{}) sc.Input {
+func getInput(arg interface{}) Input {
 	if cv, isConstant := getConstant(arg); isConstant {
 		return constantInput(cv)
 	}

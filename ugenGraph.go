@@ -15,7 +15,7 @@ import (
 //      +--> Constant (index=0, value=440)
 
 // UgenGraphFunc creates a Ugen graph and return the root ugen
-type UgenGraphFunc func() UgenGraph
+type UgenGraphFunc func() UgenNode
 
 type UgenGraph interface {
 	Root() UgenNode

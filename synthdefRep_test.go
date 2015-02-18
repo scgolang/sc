@@ -2,6 +2,8 @@ package sc
 
 import (
 	"fmt"
+	// . "github.com/briansorahan/sc/types"
+	// . "github.com/briansorahan/sc/ugens"
 	"os"
 	"testing"
 )
@@ -28,7 +30,7 @@ func TestReadSynthDef(t *testing.T) {
 // func ExampleNewSynthDef() {
 // 	NewSynthdef("SineTone", func() UgenNode {
 // 		return Out.Ar(0, SinOsc.Ar(440))
-// 	}).Dump(os.Stdout)
+// 	}).Print(os.Stdout)
 // 	// Output:
 // 	// {"name":"SineTone","constants":[440,0],"initialParamValues":[],"paramNames":[],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":0,"outputIndex":0}],"outputs":[]}],"variants":[]}
 // }

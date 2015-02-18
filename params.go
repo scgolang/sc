@@ -1,34 +1,38 @@
 package sc
 
-import (
-	"encoding/binary"
-	"io"
-)
+import . "github.com/briansorahan/sc/types"
 
-// ParamName represents a parameter name of a synthdef
-type ParamName struct {
-	Name  Pstring `json:'name,omitempty'`
-	Index int32   `json:'index,omitempty'`
+type params struct {
+	params []Param
 }
 
-func (p *ParamName) Write(w io.Writer) error {
-	if we := p.Name.Write(w); we != nil {
-		return we
+func (self *params) Add(name string, defaultValue ...float32) {
+	var p param
+	if len(defaultValue) == 0 {
+		p = param{name, float32(0)}
+	} else {
+		p = param{name, float32(defaultValue[0])}
 	}
-	return binary.Write(w, byteOrder, p.Index)
+	self.params = append(self.params, &p)
 }
 
-// ReadParamName reads a ParamName from an io.Reader
-func ReadParamName(r io.Reader) (*ParamName, error) {
-	name, err := ReadPstring(r)
-	if err != nil {
-		return nil, err
-	}
-	var idx int32
-	err = binary.Read(r, byteOrder, &idx)
-	if err != nil {
-		return nil, err
-	}
-	pn := ParamName{*name, idx}
-	return &pn, nil
+func (self *params) Get() []Param {
+	return self.params
+}
+
+func newParams() *params {
+	return &params{make([]Param, 0)}
+}
+
+type param struct {
+	name string
+	defaultValue float32
+}
+
+func (self *param) Name() string {
+	return self.name
+}
+
+func (self *param) DefaultValue() float32 {
+	return self.defaultValue
 }

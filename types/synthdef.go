@@ -1,7 +1,5 @@
 package types
 
-import "io"
-
 // Synthdef
 type Synthdef interface {
 	// Name returns the name of the synthdef.
@@ -19,15 +17,11 @@ type Synthdef interface {
 	// of the synthdef
 	ParamNames() []string
 
-	// Ugens returns the list of ugens present in
+	// Ugens returns the list of ugen nodes present in
 	// the synthdef
-	Ugens() []Ugen
+	Ugens() []UgenNode
 
 	// Variants returns the list of variants for
 	// a synthdef
 	Variants() []Variant
-
-	// Print prints a human-readable representation of
-	// a synthdef to an io.Writer
-	Print(w io.Writer)
 }

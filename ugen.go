@@ -7,25 +7,25 @@ import (
 	"io"
 )
 
-// UgenRep
-type UgenRep struct {
+// ugen
+type ugen struct {
 	Name         string       `json:"name"`
 	Rate         int8         `json:"rate"`
 	SpecialIndex int16        `json:"specialIndex"`
-	Inputs       []*InputRep  `json:"inputs"`
-	Outputs      []*OutputRep `json:"outputs"`
+	Inputs       []*input  `json:"inputs"`
+	Outputs      []*output `json:"outputs"`
 }
 
-func (self *UgenRep) AppendInput(i *InputRep) {
+func (self *ugen) AppendInput(i *input) {
 	self.Inputs = append(self.Inputs, i)
 }
 
-func (self *UgenRep) AddOutput(o *OutputRep) {
+func (self *ugen) AddOutput(o *output) {
 	self.Outputs = append(self.Outputs, o)
 }
 
 // write a Ugen
-func (self *UgenRep) Write(w io.Writer) error {
+func (self *ugen) Write(w io.Writer) error {
 	// write the synthdef name
 	nameLen := len(self.Name)
 	bw, we := w.Write(bytes.NewBufferString(self.Name).Bytes())
@@ -72,8 +72,8 @@ func (self *UgenRep) Write(w io.Writer) error {
 	return nil
 }
 
-// readUgenRep reads a UgenRep from an io.Reader
-func readUgenRep(r io.Reader) (*UgenRep, error) {
+// readugen reads a ugen from an io.Reader
+func readugen(r io.Reader) (*ugen, error) {
 	// read name
 	name, err := ReadPstring(r)
 	if err != nil {
@@ -104,25 +104,25 @@ func readUgenRep(r io.Reader) (*UgenRep, error) {
 		return nil, err
 	}
 	// read inputs
-	inputs := make([]*InputRep, numInputs)
+	inputs := make([]*input, numInputs)
 	for i := 0; int32(i) < numInputs; i++ {
-		in, err := readInputRep(r)
+		in, err := readinput(r)
 		if err != nil {
 			return nil, err
 		}
 		inputs[i] = in
 	}
 	// read outputs
-	outputs := make([]*OutputRep, numOutputs)
+	outputs := make([]*output, numOutputs)
 	for i := 0; int32(i) < numOutputs; i++ {
-		out, err := readOutputRep(r)
+		out, err := readoutput(r)
 		if err != nil {
 			return nil, err
 		}
 		outputs[i] = out
 	}
 
-	u := UgenRep{
+	u := ugen{
 		name.String(),
 		rate,
 		specialIndex,

@@ -14,7 +14,7 @@ func TestReadSynthDef(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	synthDef, err := readSynthdefRep(f)
+	synthDef, err := readsynthdef(f)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,7 +28,7 @@ func TestReadSynthDef(t *testing.T) {
 // FIXME
 //
 // func ExampleNewSynthDef() {
-// 	NewSynthdef("SineTone", func() UgenNode {
+// 	NewSynthdef("SineTone", func(params Params) UgenNode {
 // 		return Out.Ar(0, SinOsc.Ar(440))
 // 	}).Print(os.Stdout)
 // 	// Output:

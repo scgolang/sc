@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	. "github.com/briansorahan/sc/types"
 	"io"
 )
 
@@ -136,6 +137,17 @@ func newUgen(name string, rate int8) *ugen {
 	u := ugen{
 		name,
 		rate,
+		0, // special index
+		make([]*input, 0),
+		make([]*output, 0),
+	}
+	return &u
+}
+
+func cloneUgen(n UgenNode) *ugen {
+	u := ugen{
+		n.Name(),
+		n.Rate(),
 		0, // special index
 		make([]*input, 0),
 		make([]*output, 0),

@@ -23,12 +23,18 @@ func flatten(root UgenNode, def *synthdef) {
 		if input.IsConstant() {
 			constants.Push(input.(ConstantInput).Value())
 		} else {
-			// flatten(input.Value().(UgenNode), def)
-			flatten(input.(UgenInput).Value(), def)
+			// drill down into the next ugen after ensuring that
+			// it has an output that is used as the input to
+			// this one
+			u := input.(UgenInput).Value()
+			u.EnsureOutput()
+			flatten(u, def)
 		}
 	}
 
 	for val := constants.Pop(); val != nil; val = constants.Pop() {
 		def.AppendConstant(val.(float32))
 	}
+
+	def.AppendUgen(cloneUgen(root))
 }

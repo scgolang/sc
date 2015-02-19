@@ -12,7 +12,7 @@ const (
 
 // parseNode gives ugens a way to parse the arguments they are given
 // to populate the inputs array of a base node
-type parseNode func(node *baseNode, args ...interface{})
+type parseNode func(node *BaseNode, args ...interface{})
 
 type baseUgen struct {
 	name string

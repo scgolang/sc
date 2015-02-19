@@ -2,5 +2,12 @@ package types
 
 type Input interface {
 	IsConstant() bool
-	Value() interface{}
+}
+
+type ConstantInput interface {
+	Value() float32
+}
+
+type UgenInput interface {
+	Value() UgenNode
 }

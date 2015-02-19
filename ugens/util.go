@@ -27,9 +27,9 @@ func getInput(arg interface{}) Input {
 	if cv, isConstant := getConstant(arg); isConstant {
 		return constantInput(cv)
 	}
-	if nv, isNode := arg.(*baseNode); isNode {
+	if nv, isNode := arg.(*BaseNode); isNode {
 		// add an output to the node
-		nv.ensureOutput()
+		nv.EnsureOutput()
 		return nv
 	}
 	return nil
@@ -39,7 +39,7 @@ func getInput(arg interface{}) Input {
 // attempts to add inputs to a ugen node
 // it panics if any of the inputs are neither a constant
 // nor a ugen node
-func getInputs(node *baseNode, args ...interface{}) {
+func getInputs(node *BaseNode, args ...interface{}) {
 	s := "argument %d was neither a float or a ugen"
 	for i, arg := range args {
 		in := getInput(arg)

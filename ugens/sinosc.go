@@ -1,6 +1,6 @@
 package ugens
 
-var SinOsc = newUgen("SinOsc", func(node *baseNode, args ...interface{}) {
+var SinOsc = newUgen("SinOsc", func(node *BaseNode, args ...interface{}) {
 	nargs := len(args)
 	// default argument values
 	defaultFreq := float32(440)

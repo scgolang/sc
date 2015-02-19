@@ -6,6 +6,6 @@ func (self constantInput) IsConstant() bool {
 	return true
 }
 
-func (self constantInput) Value() interface{} {
-	return self
+func (self constantInput) Value() float32 {
+	return float32(self)
 }

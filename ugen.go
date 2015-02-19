@@ -9,9 +9,9 @@ import (
 
 // ugen
 type ugen struct {
-	Name         string       `json:"name"`
-	Rate         int8         `json:"rate"`
-	SpecialIndex int16        `json:"specialIndex"`
+	Name         string    `json:"name"`
+	Rate         int8      `json:"rate"`
+	SpecialIndex int16     `json:"specialIndex"`
 	Inputs       []*input  `json:"inputs"`
 	Outputs      []*output `json:"outputs"`
 }
@@ -130,4 +130,15 @@ func readugen(r io.Reader) (*ugen, error) {
 		outputs,
 	}
 	return &u, nil
+}
+
+func newUgen(name string, rate int8) *ugen {
+	u := ugen{
+		name,
+		rate,
+		0, // special index
+		make([]*input, 0),
+		make([]*output, 0),
+	}
+	return &u
 }

@@ -5,7 +5,7 @@ import (
 )
 
 // Out write a signal to a bus
-var Out = newUgen("Out", func(node *baseNode, args ...interface{}) {
+var Out = newUgen("Out", func(node *BaseNode, args ...interface{}) {
 	nargs := len(args)
 	// parse arguments
 	if nargs < 2 {
@@ -18,7 +18,7 @@ var Out = newUgen("Out", func(node *baseNode, args ...interface{}) {
 	}
 	for i := 1; i < nargs; i++ {
 		arg := args[i]
-		if in, isNode := arg.(*baseNode); isNode {
+		if in, isNode := arg.(*BaseNode); isNode {
 			node.addInput(in)
 		} else {
 			panic(fmt.Errorf("Out expects ugen arguments"))

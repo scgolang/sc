@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	. "github.com/briansorahan/sc/types"
 	"io"
 )
 
@@ -35,6 +36,14 @@ type synthdef struct {
 
 	// Variants is the list of variants contained in the synth def
 	Variants []variant `json:"variants"`
+}
+
+func (self *synthdef) AppendUgen(u *ugen) {
+	self.Ugens = append(self.Ugens, u)
+}
+
+func (self *synthdef) AppendConstant(c float32) {
+	self.Constants = append(self.Constants, c)
 }
 
 // Write writes a synthdef to an io.Writer
@@ -238,4 +247,49 @@ func readsynthdef(r io.Reader) (*synthdef, error) {
 		variants,
 	}
 	return &synthDef, nil
+}
+
+func newsynthdef(name string) *synthdef {
+	def := synthdef{
+		name,
+		make([]float32, 0),
+		make([]float32, 0),
+		make([]ParamName, 0),
+		make([]*ugen, 0),
+		make([]variant, 0),
+	}
+	return &def
+}
+
+// NewSynthdef creates a synthdef by traversing a ugen graph
+//
+// Out.Ar(0, SinOsc.Ar(440))
+//
+// Example 1
+// =========
+// + Out (ugen 1)
+// |
+// +---+ 0 (constant 1)
+// |
+// +---+ SinOsc (ugen 0)
+//     |
+//     +---+ 440 (constant 0)
+//
+//
+// Example 2
+// =========
+// + Out (ugen 1)
+// |
+// +---+ 0 (constant 1)
+// |
+// +---+ SinOsc (ugen 0)
+//     |
+//     +---+ 440 (constant 0)
+//
+func NewSynthdef(name string, graphFunc UgenGraphFunc) *synthdef {
+	def := newsynthdef(name)
+	params := newParams()
+	root := graphFunc(params)
+	flatten(root, def)
+	return def
 }

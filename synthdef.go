@@ -38,6 +38,7 @@ type synthdef struct {
 	Variants []variant `json:"variants"`
 }
 
+// 
 func (self *synthdef) AppendUgen(u *ugen) {
 	self.Ugens = append(self.Ugens, u)
 }

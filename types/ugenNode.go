@@ -5,6 +5,7 @@ type UgenNode interface {
 	Rate() int8
 	Inputs() []Input
 	Outputs() []Output
+	Equals(other UgenNode) bool
 	// EnsureOutput is how we tell a ugen node
 	// that its output is being used as the input to
 	// another ugen node.

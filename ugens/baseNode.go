@@ -36,6 +36,13 @@ func (self *BaseNode) Value() UgenNode {
 	return self
 }
 
+func (self *BaseNode) Equals(other UgenNode) bool {
+	if p, ok := other.(*BaseNode); ok {
+		return p == self
+	}
+	return false
+}
+
 func (self *BaseNode) EnsureOutput() {
 	numOutputs := len(self.outputs)
 	if numOutputs == 0 {

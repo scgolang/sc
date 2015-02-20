@@ -21,11 +21,17 @@ func (self *ugen) AppendInput(i *input) {
 	self.Inputs = append(self.Inputs, i)
 }
 
-func (self *ugen) AddOutput(o *output) {
-	self.Outputs = append(self.Outputs, o)
+// AddOutput ensures that a ugen has an output at self.Rate
+// How do you create a ugen with multiple outputs? -bps
+func (self *ugen) AddOutput() {
+	numOutputs := len(self.Outputs)
+	if numOutputs == 0 {
+		o := output{self.Rate}
+		self.Outputs = append(self.Outputs, &o)
+	}
 }
 
-// write a Ugen
+// Write writes a Ugen
 func (self *ugen) Write(w io.Writer) error {
 	// write the synthdef name
 	nameLen := len(self.Name)

@@ -1,16 +1,10 @@
 package types
 
 type UgenNode interface {
+	// Name returns the name of the ugen node
 	Name() string
+	// Rate returns the rate of the ugen node
 	Rate() int8
+	// Inputs returns the inputs of the ugen node
 	Inputs() []Input
-	Outputs() []Output
-	Equals(other UgenNode) bool
-	// EnsureOutput is how we tell a ugen node
-	// that its output is being used as the input to
-	// another ugen node.
-	// All it has to do is ensure that the node has
-	// at least one output whose rate is that of the
-	// node itself.
-	EnsureOutput()
 }

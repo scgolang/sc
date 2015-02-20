@@ -3,9 +3,8 @@ package sc
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
 	"fmt"
-	. "github.com/briansorahan/sc/types"
+	"github.com/briansorahan/sc/types"
 	"io"
 )
 
@@ -20,111 +19,50 @@ var byteOrder = binary.BigEndian
 // in http://doc.sccode.org/Reference/Synth-Definition-File-Format.html
 type synthdef struct {
 	// Name is the name of the synthdef
-	Name string `json:"name"`
+	Name string `json:"name" xml:"Name,attr"`
 
 	// Constants is a list of constants that appear in the synth def
-	Constants []float32 `json:"constants"`
+	Constants []float32 `json:"constants" xml:"Constants>Constant"`
 
 	// InitialParamValues is an array of initial values for synth params
-	InitialParamValues []float32 `json:"initialParamValues"`
+	InitialParamValues []float32 `json:"initialParamValues" xml:"InitialParamValues>initialParamValue"`
 
 	// ParamNames contains the names of the synth parameters
-	ParamNames []ParamName `json:"paramNames"`
+	ParamNames []ParamName `json:"paramNames" xml:"ParamNames>ParamName"`
 
 	// Ugens is the list of ugens that appear in the synth def
-	Ugens []*ugen `json:"ugens"`
+	Ugens []*ugen `json:"ugens" xml:"Ugens>Ugen"`
 
 	// Variants is the list of variants contained in the synth def
-	Variants []variant `json:"variants"`
+	Variants []variant `json:"variants" xml:"Variants>Variant"`
 }
 
-// 
-func (self *synthdef) AppendUgen(u *ugen) {
+// AddUgen returns an input pointing to either the (newly created)
+// last position in the ugens array if this ugen has never been
+// added before or the ugens existing position in the Ugens array
+func (self *synthdef) AddUgen(u *ugen) *input {
+	for i, v := range self.Ugens {
+		if u == v {
+			return &input{int32(i), 0}
+		}
+	}
+	idx := len(self.Constants)
 	self.Ugens = append(self.Ugens, u)
+	return &input{int32(idx), 0}
 }
 
-func (self *synthdef) AppendConstant(c float32) {
+// AddConstant returns an input pointing to either the (newly created)
+// last position in the constants array if this constant has never been
+// added before or the constants existing position in the Constants array
+func (self *synthdef) AddConstant(c float32) *input {
+	for i, d := range self.Constants {
+		if c == d {
+			return &input{-1, int32(i)}
+		}
+	}
+	idx := len(self.Constants)
 	self.Constants = append(self.Constants, c)
-}
-
-// Write writes a synthdef to an io.Writer
-func (self *synthdef) Write(w io.Writer) error {
-	if he := self.writeHead(w); he != nil {
-		return he
-	}
-	return self.writeBody(w)
-}
-
-// Dump writes json-formatted information about a synthdef to an io.Writer
-func (self *synthdef) Dump(w io.Writer) error {
-	dec := json.NewEncoder(w)
-	return dec.Encode(self)
-}
-
-// write a synthdef header
-func (self *synthdef) writeHead(w io.Writer) error {
-	_, we := w.Write(bytes.NewBufferString("SCgf").Bytes())
-	if we != nil {
-		return we
-	}
-	we = binary.Write(w, byteOrder, int32(SYNTHDEF_VERSION))
-	if we != nil {
-		return we
-	}
-	return binary.Write(w, byteOrder, int16(1))
-}
-
-// write a synthdef body
-func (self *synthdef) writeBody(w io.Writer) error {
-	// write constants
-	numConstants := int32(len(self.Constants))
-	we := binary.Write(w, byteOrder, numConstants)
-	if we != nil {
-		return we
-	}
-	for _, c := range self.Constants {
-		if we = binary.Write(w, byteOrder, c); we != nil {
-			return we
-		}
-	}
-	// write parameters
-	numParams := int32(len(self.InitialParamValues))
-	we = binary.Write(w, byteOrder, numParams)
-	if we != nil {
-		return we
-	}
-	for _, p := range self.InitialParamValues {
-		we = binary.Write(w, byteOrder, p)
-		if we != nil {
-			return we
-		}
-	}
-	numParamNames := int32(len(self.ParamNames))
-	we = binary.Write(w, byteOrder, numParamNames)
-	if we != nil {
-		return we
-	}
-	for _, p := range self.ParamNames {
-		if we = p.Write(w); we != nil {
-			return we
-		}
-	}
-	// number of ugens
-	if binary.Write(w, byteOrder, int32(1)); we != nil {
-		return we
-	}
-
-	// TODO: write ugens
-
-	// number of variants
-	if we = binary.Write(w, byteOrder, int16(0)); we != nil {
-		return we
-	}
-	return nil
-}
-
-func (self *synthdef) Load(s Server) error {
-	return nil
+	return &input{-1, int32(idx)}
 }
 
 // readsynthdef reads a synthdef from an io.Reader
@@ -287,7 +225,7 @@ func newsynthdef(name string) *synthdef {
 //     |
 //     +---+ 440 (constant 0)
 //
-func NewSynthdef(name string, graphFunc UgenGraphFunc) *synthdef {
+func NewSynthdef(name string, graphFunc types.UgenGraphFunc) *synthdef {
 	def := newsynthdef(name)
 	params := newParams()
 	root := graphFunc(params)

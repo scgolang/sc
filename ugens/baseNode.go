@@ -9,7 +9,6 @@ type BaseNode struct {
 	name string
 	rate int8
 	inputs []Input
-	outputs []Output
 }
 
 func (self *BaseNode) Name() string {
@@ -24,30 +23,12 @@ func (self *BaseNode) Inputs() []Input {
 	return self.inputs
 }
 
-func (self *BaseNode) Outputs() []Output {
-	return self.outputs
-}
-
 func (self *BaseNode) IsConstant() bool {
 	return false
 }
 
 func (self *BaseNode) Value() UgenNode {
 	return self
-}
-
-func (self *BaseNode) Equals(other UgenNode) bool {
-	if p, ok := other.(*BaseNode); ok {
-		return p == self
-	}
-	return false
-}
-
-func (self *BaseNode) EnsureOutput() {
-	numOutputs := len(self.outputs)
-	if numOutputs == 0 {
-		self.outputs = append(self.outputs, output(self.rate))
-	}
 }
 
 // addInput appends an Input to this node's list of inputs
@@ -67,7 +48,6 @@ func newNode(name string, rate int8) *BaseNode {
 		name,
 		rate,
 		make([]Input, 0),
-		make([]Output, 0),
 	}
 	return &node
 }

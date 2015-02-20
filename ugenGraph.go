@@ -27,9 +27,10 @@ func flatten(root UgenNode, def *synthdef) *ugen {
 			// drill down into the next ugen after ensuring that
 			// it has an output that is used as the input to
 			// this one
-			u := input.(UgenInput).Value()
-			u.EnsureOutput()
-			def.AddUgen(flatten(u, def))
+			un := input.(UgenInput).Value()
+			u := cloneUgen(un)
+			u.AddOutput()
+			def.AddUgen(flatten(un, def))
 		}
 	}
 

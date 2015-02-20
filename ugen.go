@@ -10,11 +10,11 @@ import (
 
 // ugen
 type ugen struct {
-	Name         string    `json:"name"`
-	Rate         int8      `json:"rate"`
-	SpecialIndex int16     `json:"specialIndex"`
-	Inputs       []*input  `json:"inputs"`
-	Outputs      []*output `json:"outputs"`
+	Name         string    `json:"name" xml:"name,attr"`
+	Rate         int8      `json:"rate" xml:"rate,attr"`
+	SpecialIndex int16     `json:"specialIndex" xml:"specialIndex,attr"`
+	Inputs       []*input  `json:"inputs" xml:"Inputs>Input"`
+	Outputs      []*output `json:"outputs" xml:"Outputs>Output"`
 }
 
 func (self *ugen) AppendInput(i *input) {

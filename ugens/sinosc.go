@@ -13,9 +13,7 @@ var SinOsc = newUgen("SinOsc", func(node *BaseNode, args ...interface{}) {
 	case 1:
 		getInputs(node, args...)
 		node.addConstantInput(defaultPhase)
-	case 2:
-		getInputs(node, args...)
 	default:
-		panic("Too many arguments to SinOsc")
+		getInputs(node, args...)
 	}
 })

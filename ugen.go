@@ -23,12 +23,8 @@ func (self *ugen) AppendInput(i *input) {
 
 // AddOutput ensures that a ugen has an output at self.Rate
 // How do you create a ugen with multiple outputs? -bps
-func (self *ugen) AddOutput() {
-	numOutputs := len(self.Outputs)
-	if numOutputs == 0 {
-		o := output{self.Rate}
-		self.Outputs = append(self.Outputs, &o)
-	}
+func (self *ugen) AddOutput(o *output) {
+	self.Outputs = append(self.Outputs, o)
 }
 
 // Write writes a Ugen
@@ -154,9 +150,15 @@ func cloneUgen(n UgenNode) *ugen {
 	u := ugen{
 		n.Name(),
 		n.Rate(),
-		0, // special index
+		// special index
+		0,
+		// inputs get added at synthdef-creation time
 		make([]*input, 0),
 		make([]*output, 0),
+	}
+	// add outputs
+	for _, out := range n.Outputs() {
+		u.AddOutput(&output{out.Rate()})
 	}
 	return &u
 }

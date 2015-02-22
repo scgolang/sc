@@ -9,6 +9,7 @@ type BaseNode struct {
 	name string
 	rate int8
 	inputs []Input
+	outputs []Output
 }
 
 func (self *BaseNode) Name() string {
@@ -31,6 +32,16 @@ func (self *BaseNode) Value() UgenNode {
 	return self
 }
 
+func (self *BaseNode) IsOutput() {
+	if len(self.outputs) == 0 {
+		self.outputs = append(self.outputs, output(self.rate))
+	}
+}
+
+func (self *BaseNode) Outputs() []Output {
+	return self.outputs
+}
+
 // addInput appends an Input to this node's list of inputs
 func (self *BaseNode) addInput(in Input) {
 	self.inputs = append(self.inputs, in)
@@ -48,6 +59,7 @@ func newNode(name string, rate int8) *BaseNode {
 		name,
 		rate,
 		make([]Input, 0),
+		make([]Output, 0),
 	}
 	return &node
 }

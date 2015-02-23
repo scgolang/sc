@@ -10,8 +10,10 @@ endif
 
 SYNTHDEF_GENERATORS := sineTone.sc sineTone2.sc
 SUBPKG := ugens
+TOOLS := sdef.go
+TOOLS := $(addprefix tools/,$(TOOLS))
 
-.PHONY: synthdefs clean test
+.PHONY: synthdefs clean test tools
 
 all:
 	cd types && go install
@@ -22,8 +24,11 @@ synthdefs:
 	for sd in $(SYNTHDEF_GENERATORS); do $(SCLANG) $$sd; done
 
 clean:
-	rm -rf *~ *.scsyndef
+	rm -rf *~ *.scsyndef $(TOOLS)
 
 test:
 	go test
 	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done
+
+tools:
+	for t in $(TOOLS); do go build $$t; done

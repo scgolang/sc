@@ -8,13 +8,13 @@ import (
 	"testing"
 )
 
-func TestReadSynthDef(t *testing.T) {
+func TestReadSynthdef(t *testing.T) {
 	// read a synthdef file created by sclang
 	f, err := os.Open("SineTone.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}
-	synthDef, err := readsynthdef(f)
+	synthDef, err := ReadSynthdef(f)
 	if err != nil {
 		t.Fatal(err)
 	}

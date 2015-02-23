@@ -21,11 +21,13 @@ func flatten(root UgenNode, def *synthdef) *input {
 	for i := len(inputs)-1; i >= 0; i-- {
 		input := inputs[i]
 		if input.IsConstant() {
+			// push a float32
 			stack.Push(input.(ConstantInput).Value())
 		} else {
-			// drill down into the next ugen
 			ugenNode := input.(UgenInput).Value()
-			stack.Push(ugenNode)
+			// recurse with the next ugen as root
+			// and push an *input
+			stack.Push(flatten(ugenNode, def))
 		}
 	}
 
@@ -35,8 +37,10 @@ func flatten(root UgenNode, def *synthdef) *input {
 	for val := stack.Pop(); val != nil; val = stack.Pop() {
 		if floatVal, isFloat := val.(float32); isFloat {
 			in = def.AddConstant(floatVal)
-		} else if nodeVal, isNode := val.(UgenNode); isNode {
-			in = flatten(nodeVal, def)
+		} else if inputVal, isInput := val.(*input); isInput {
+			in = inputVal
+		} else {
+			panic("input was neither a float nor")
 		}
 		u.AppendInput(in)
 	}

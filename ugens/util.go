@@ -27,8 +27,9 @@ func getInput(arg interface{}) Input {
 	if cv, isConstant := getConstant(arg); isConstant {
 		return constantInput(cv)
 	}
-	if nv, isNode := arg.(*BaseNode); isNode {
-		return nv
+	if bv, isBase := arg.(*BaseNode); isBase {
+		bv.IsOutput()
+		return bv
 	}
 	return nil
 }
@@ -42,7 +43,7 @@ func getInputs(node *BaseNode, args ...interface{}) {
 	for i, arg := range args {
 		in := getInput(arg)
 		if in == nil {
-			panic(fmt.Errorf(s, i+1))
+			panic(fmt.Errorf(s, i))
 		} else {
 			node.addInput(in)
 		}

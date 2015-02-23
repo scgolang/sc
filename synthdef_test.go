@@ -1,7 +1,6 @@
 package sc
 
 import (
-	"encoding/json"
 	"fmt"
 	. "github.com/briansorahan/sc/types"
 	. "github.com/briansorahan/sc/ugens"
@@ -23,22 +22,21 @@ func TestReadSynthDef(t *testing.T) {
 	if synthDef.Name != "SineTone" {
 		t.Fatal(fmt.Errorf("wrong synthdef name"))
 	}
-	enc := json.NewEncoder(os.Stdout)
-	if err = enc.Encode(synthDef); err != nil {
-		t.Fatal(err)
-	}
 }
 
-func TestNewSynthDef(t *testing.T) {
+func TestNewSynthdef(t *testing.T) {
 	def := NewSynthdef("SineTone", func(params Params) UgenNode {
-		//sc-> Out.ar(0, SinOsc.ar(440, SinOsc.ar(0.1), 0.5));
-		return Out.Ar(0, SinOsc.Ar(440, SinOsc.Ar(0.1), 0.5))
+		return Out.Ar(0, SinOsc.Ar(440))
 	})
 	if def == nil {
 		t.Fatalf("nil synthdef")
 	}
-	enc := json.NewEncoder(os.Stdout)
-	if err := enc.Encode(def); err != nil {
-		t.Fatal(err)
-	}
+}
+
+func ExampleNewSynthdef() {
+	NewSynthdef("SineTone", func(params Params) UgenNode {
+		return Out.Ar(0, SinOsc.Ar(440))
+	}).WriteJSON(os.Stdout)
+	// Output:
+	// {"name":"SineTone","constants":[440,0],"initialParamValues":[],"paramNames":[],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":0,"outputIndex":0}],"outputs":[]}],"variants":[]}
 }

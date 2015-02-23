@@ -8,7 +8,7 @@ ifeq ($(PLATFORM),Linux)
 SCLANG=/usr/bin/sclang
 endif
 
-SYNTHDEF_GENERATORS := sineTone.sc
+SYNTHDEF_GENERATORS := sineTone.sc sineTone2.sc
 SUBPKG := ugens
 
 .PHONY: synthdefs clean test

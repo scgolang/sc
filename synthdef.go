@@ -3,6 +3,7 @@ package sc
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"github.com/briansorahan/sc/types"
 	"io"
@@ -46,7 +47,7 @@ func (self *synthdef) AddUgen(u *ugen) *input {
 			return &input{int32(i), 0}
 		}
 	}
-	idx := len(self.Constants)
+	idx := len(self.Ugens)
 	self.Ugens = append(self.Ugens, u)
 	return &input{int32(idx), 0}
 }
@@ -63,6 +64,11 @@ func (self *synthdef) AddConstant(c float32) *input {
 	idx := len(self.Constants)
 	self.Constants = append(self.Constants, c)
 	return &input{-1, int32(idx)}
+}
+
+func (self *synthdef) WriteJSON(w io.Writer) error {
+	enc := json.NewEncoder(w)
+	return enc.Encode(self)
 }
 
 // readsynthdef reads a synthdef from an io.Reader

@@ -20,19 +20,19 @@ type baseUgen struct {
 }
 
 func (self *baseUgen) Ar(args ...interface{}) UgenNode {
-	node := newNode(self.name, AudioRate)
+	node := newNode(self.name, AudioRate, 0)
 	self.pn(node, args...)
 	return node
 }
 
 func (self *baseUgen) Kr(args ...interface{}) UgenNode {
-	node := newNode(self.name, ControlRate)
+	node := newNode(self.name, ControlRate, 0)
 	self.pn(node, args...)
 	return node
 }
 
 func (self *baseUgen) Ir(args ...interface{}) UgenNode {
-	node := newNode(self.name, InitializationRate)
+	node := newNode(self.name, InitializationRate, 0)
 	self.pn(node, args...)
 	return node
 }

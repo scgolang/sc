@@ -8,6 +8,7 @@ import (
 type BaseNode struct {
 	name string
 	rate int8
+	specialIndex int16
 	inputs []Input
 	outputs []Output
 }
@@ -18,6 +19,10 @@ func (self *BaseNode) Name() string {
 
 func (self *BaseNode) Rate() int8 {
 	return self.rate
+}
+
+func (self *BaseNode) SpecialIndex() int16 {
+	return self.specialIndex
 }
 
 func (self *BaseNode) Inputs() []Input {
@@ -43,11 +48,25 @@ func (self *BaseNode) IsOutput() {
 }
 
 func (self *BaseNode) Mul(f float32) UgenNode {
-	return nil
+	if f == float32(1) {
+		return self
+	}
+	node := newNode("BinaryOpUGen", self.rate, 2)
+	node.addInput(self)
+	node.addConstantInput(f)
+	self.IsOutput()
+	return node
 }
 
 func (self *BaseNode) Add(f float32) UgenNode {
-	return nil
+	if f == float32(0) {
+		return self
+	}
+	node := newNode("BinaryOpUGen", self.rate, 0)
+	node.addInput(self)
+	node.addConstantInput(f)
+	self.IsOutput()
+	return node
 }
 
 // addInput appends an Input to this node's list of inputs
@@ -62,10 +81,11 @@ func (self *BaseNode) addConstantInput(val float32) {
 }
 
 // newNode is a factory function for creating new BaseNode instances
-func newNode(name string, rate int8) *BaseNode {
+func newNode(name string, rate int8, specialIndex int16) *BaseNode {
 	node := BaseNode{
 		name,
 		rate,
+		specialIndex,
 		make([]Input, 0),
 		make([]Output, 0),
 	}

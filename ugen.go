@@ -150,8 +150,7 @@ func cloneUgen(n UgenNode) *ugen {
 	u := ugen{
 		n.Name(),
 		n.Rate(),
-		// special index
-		0,
+		n.SpecialIndex(),
 		// inputs get added at synthdef-creation time
 		make([]*input, 0),
 		make([]*output, 0),

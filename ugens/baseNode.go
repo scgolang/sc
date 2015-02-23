@@ -24,6 +24,10 @@ func (self *BaseNode) Inputs() []Input {
 	return self.inputs
 }
 
+func (self *BaseNode) Outputs() []Output {
+	return self.outputs
+}
+
 func (self *BaseNode) IsConstant() bool {
 	return false
 }
@@ -38,8 +42,12 @@ func (self *BaseNode) IsOutput() {
 	}
 }
 
-func (self *BaseNode) Outputs() []Output {
-	return self.outputs
+func (self *BaseNode) Mul(f float32) UgenNode {
+	return nil
+}
+
+func (self *BaseNode) Add(f float32) UgenNode {
+	return nil
 }
 
 // addInput appends an Input to this node's list of inputs

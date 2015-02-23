@@ -71,8 +71,8 @@ func (self *synthdef) WriteJSON(w io.Writer) error {
 	return enc.Encode(self)
 }
 
-// readsynthdef reads a synthdef from an io.Reader
-func readsynthdef(r io.Reader) (*synthdef, error) {
+// ReadSynthdef reads a synthdef from an io.Reader
+func ReadSynthdef(r io.Reader) (*synthdef, error) {
 	// read the type
 	startLen := len(SYNTHDEF_START)
 	start := make([]byte, startLen)

@@ -8,7 +8,10 @@ ifeq ($(PLATFORM),Linux)
 SCLANG=/usr/bin/sclang
 endif
 
-SYNTHDEF_GENERATORS := sineTone.sc sineTone2.sc
+SYNTHDEFS := sineTone.sc          \
+             sineTone2.sc         \
+             sineTone3.sc
+
 SUBPKG := ugens
 TOOLS := sdef.go
 TOOLS := $(addprefix tools/,$(TOOLS))
@@ -21,7 +24,7 @@ all:
 	for pkg in $(SUBPKG); do cd $$pkg && go install && cd ..; done
 
 synthdefs:
-	for sd in $(SYNTHDEF_GENERATORS); do $(SCLANG) $$sd; done
+	for sd in $(SYNTHDEFS); do $(SCLANG) $$sd; done
 
 clean:
 	rm -rf *~ *.scsyndef $(TOOLS)

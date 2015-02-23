@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/briansorahan/sc/types"
 	"io"
+	"os"
 )
 
 const (
@@ -66,9 +67,26 @@ func (self *synthdef) AddConstant(c float32) *input {
 	return &input{-1, int32(idx)}
 }
 
+// Write writes a binary representation of a synthdef to an io.Writer.
+// The binary representation written by this method is
+// the data that scsynth expects at its /d_recv endpoint.
+func (self *synthdef) Write(w io.Writer) error {
+	return nil
+}
+
+// WriteJSON writes a json-formatted representation of a
+// synthdef to an io.Writer
 func (self *synthdef) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
 	return enc.Encode(self)
+}
+
+func (self *synthdef) CompareToFile(f string) (bool, error) {
+	_, err := os.Open(f)
+	if err != nil {
+		return false, err
+	}
+	return false, nil
 }
 
 // ReadSynthdef reads a synthdef from an io.Reader

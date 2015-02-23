@@ -11,17 +11,5 @@ var Out = newUgen("Out", func(node *BaseNode, args ...interface{}) {
 	if nargs < 2 {
 		panic(fmt.Errorf("Out expects at least 2 arguments, but was given %d", nargs))
 	}
-	if bus, isInt := args[0].(int); isInt {
-		node.addConstantInput(float32(bus))
-	} else {
-		panic(fmt.Errorf("Out expects first argument to be int"))
-	}
-	for i := 1; i < nargs; i++ {
-		arg := args[i]
-		if in, isNode := arg.(*BaseNode); isNode {
-			node.addInput(in)
-		} else {
-			panic(fmt.Errorf("Out expects ugen arguments"))
-		}
-	}
+	getInputs(node, args...)
 })

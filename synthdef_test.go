@@ -25,7 +25,7 @@ func TestReadSynthdef(t *testing.T) {
 }
 
 func TestNewSynthdef(t *testing.T) {
-	def := NewSynthdef("SineTone", func(params Params) UgenNode {
+	def := NewSynthdef("SineTone", func() UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440))
 	})
 	if def == nil {
@@ -34,7 +34,7 @@ func TestNewSynthdef(t *testing.T) {
 }
 
 func ExampleNewSynthdef() {
-	NewSynthdef("SineTone", func(params Params) UgenNode {
+	NewSynthdef("SineTone", func() UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440))
 	}).WriteJSON(os.Stdout)
 	// Output:
@@ -42,9 +42,16 @@ func ExampleNewSynthdef() {
 }
 
 func ExampleNewSynthdefSineTone2() {
-	NewSynthdef("SineTone2", func(params Params) UgenNode {
+	NewSynthdef("SineTone2", func() UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440, SinOsc.Ar(0.1, 0)).Mul(0.5))
 	}).WriteJSON(os.Stdout)
 	// Output:
 	// {"name":"SineTone2","constants":[0.1,0,440,0.5],"initialParamValues":[],"paramNames":[],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[{"rate":2}]},{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":2},{"ugenIndex":0,"outputIndex":0}],"outputs":[{"rate":2}]},{"name":"BinaryOpUGen","rate":2,"specialIndex":2,"inputs":[{"ugenIndex":1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":3}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":2,"outputIndex":0}],"outputs":[]}],"variants":[]}
+}
+
+func ExampleNewSynthdefParams() {
+	NewSynthdef("SineTone4", func() UgenNode {
+		freq := NewParam("freq").SetDefault(440)
+		return Out.Ar(0, SinOsc.Ar(freq))
+	})
 }

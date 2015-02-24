@@ -11,10 +11,12 @@ endif
 SYNTHDEFS := sineTone.sc          \
              sineTone2.sc         \
              sineTone3.sc         \
-             sineTone4.sc
+             sineTone4.sc         \
+             sineTone5.sc
 
 SUBPKG := ugens
 PROGS := sdef
+TOOLS := sdef.go
 TOOLS := $(addprefix tools/,$(TOOLS))
 
 .PHONY: synthdefs clean test tools

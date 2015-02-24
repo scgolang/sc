@@ -7,14 +7,15 @@ import (
 
 // ParamName represents a parameter name of a synthdef
 type ParamName struct {
-	Name  Pstring `json:'name,omitempty'`
+	Name  string `json:'name,omitempty'`
 	Index int32   `json:'index,omitempty'`
 }
 
 func (p *ParamName) Write(w io.Writer) error {
-	if we := p.Name.Write(w); we != nil {
-		return we
-	}
+	// FIXME
+	// if we := p.Name.Write(w); we != nil {
+	// 	return we
+	// }
 	return binary.Write(w, byteOrder, p.Index)
 }
 
@@ -29,6 +30,6 @@ func ReadParamName(r io.Reader) (*ParamName, error) {
 	if err != nil {
 		return nil, err
 	}
-	pn := ParamName{*name, idx}
+	pn := ParamName{name.String(), idx}
 	return &pn, nil
 }

@@ -10,10 +10,11 @@ endif
 
 SYNTHDEFS := sineTone.sc          \
              sineTone2.sc         \
-             sineTone3.sc
+             sineTone3.sc         \
+             sineTone4.sc
 
 SUBPKG := ugens
-TOOLS := sdef.go
+PROGS := sdef
 TOOLS := $(addprefix tools/,$(TOOLS))
 
 .PHONY: synthdefs clean test tools
@@ -27,7 +28,7 @@ synthdefs:
 	for sd in $(SYNTHDEFS); do $(SCLANG) $$sd; done
 
 clean:
-	rm -rf *~ *.scsyndef $(TOOLS)
+	rm -rf *~ *.scsyndef $(PROGS)
 
 test:
 	go test

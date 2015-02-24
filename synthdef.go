@@ -251,8 +251,6 @@ func newsynthdef(name string) *synthdef {
 //
 func NewSynthdef(name string, graphFunc types.UgenGraphFunc) *synthdef {
 	def := newsynthdef(name)
-	params := newParams()
-	root := graphFunc(params)
-	flatten(root, def)
+	flatten(graphFunc(), def)
 	return def
 }

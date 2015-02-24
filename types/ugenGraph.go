@@ -1,6 +1,6 @@
 package types
 
-type UgenGraphFunc func(params Params) UgenNode
+type UgenGraphFunc func() UgenNode
 
 type UgenGraph interface {
 	Root() UgenNode

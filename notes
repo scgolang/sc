@@ -2,6 +2,8 @@
 // generates)
 newUgen(name string, rate int8, args ...interface{}) (*UgenGraph, error)
 
+
+
 ## Method 1 -- one pass
 
 1. Initialize a new ugen with an empty list of inputs and an empty list
@@ -28,18 +30,30 @@ When you attach one UgenGraph to another (ugg2 to ugg1, say)
 - all ugens visited after the root of ugg2 should have their indices
   offset by the number of ugens in ugg2
 
+
+
 ## Method 2 -- two passes
 
-This method
+Splitting the algorithm into two passes should make each pass
+simpler than Method 1.
 
-Questions:
+### Pass 1 -- Create UgenGraph
+
+### Pass 2 -- Create SynthRep from UgenGraph
+
+
+
+## Questions
+
 - Does the rate of a ugen determine the rate of all its outputs?
   I strongly feel that this is true.
+  
 - Do all ugens only have one output?
   For example, when I do Out.ar(0, SinOsc.ar([440,441])) I get a synthdef
   with two separate SinOsc ugens that each have one output instead of
   a single SinOsc ugen with two outputs.
   If this is true then 'stereo' ugens are actually just two separate ugens.
+  
 - Why does sclang allow inputs of control-rate ugens to be audio-rate?
   example: SinOsc.kr(SinOsc.ar(1))
   Answer: Because sclang allows you to do things that don't make sense

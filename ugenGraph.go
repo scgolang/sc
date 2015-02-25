@@ -14,26 +14,32 @@ func newGraph(root UgenNode) *ugenGraph {
 	return &ugenGraph{root}
 }
 
-func flatten(root UgenNode, def *synthdef) *input {
+func flatten(graph UgenGraph, params Params, def *synthdef) {
+	// pl := params.List()
+	flattenNode(graph.Root(), params, def)
+}
+
+func flattenNode(node UgenNode, params Params, def *synthdef) *input {
 	stack := NewStack()
-	inputs := root.Inputs()
+	inputs := node.Inputs()
 	// iterate through ugen inputs in reverse order
 	for i := len(inputs)-1; i >= 0; i-- {
 		input := inputs[i]
 		if input.IsConstant() {
 			// push a float32
 			stack.Push(input.(ConstantInput).Value())
+		// } else if param, isParam := input.(Param); isParam {
+			// add a ugen input that doesn't need to be flattened
 		} else {
 			ugenNode := input.(UgenInput).Value()
-			// recurse with the next ugen as root
-			// and push an *input
-			stack.Push(flatten(ugenNode, def))
+			// recurse with the next ugen as root and push an *input
+			stack.Push(flattenNode(ugenNode, params, def))
 		}
 	}
 
 	// add inputs to root
 	var in *input
-	u := cloneUgen(root)
+	u := cloneUgen(node)
 	for val := stack.Pop(); val != nil; val = stack.Pop() {
 		if floatVal, isFloat := val.(float32); isFloat {
 			in = def.AddConstant(floatVal)

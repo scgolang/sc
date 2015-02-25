@@ -25,7 +25,7 @@ func TestReadSynthdef(t *testing.T) {
 }
 
 func TestNewSynthdef(t *testing.T) {
-	def := NewSynthdef("SineTone", func() UgenNode {
+	def := NewSynthdef("SineTone", func(params Params) UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440))
 	})
 	if def == nil {
@@ -34,7 +34,7 @@ func TestNewSynthdef(t *testing.T) {
 }
 
 func ExampleNewSynthdef() {
-	NewSynthdef("SineTone", func() UgenNode {
+	NewSynthdef("SineTone", func(params Params) UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440))
 	}).WriteJSON(os.Stdout)
 	// Output:
@@ -42,7 +42,7 @@ func ExampleNewSynthdef() {
 }
 
 func ExampleNewSynthdefSineTone2() {
-	NewSynthdef("SineTone2", func() UgenNode {
+	NewSynthdef("SineTone2", func(params Params) UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440, SinOsc.Ar(0.1, 0)).Mul(0.5))
 	}).WriteJSON(os.Stdout)
 	// Output:
@@ -50,8 +50,8 @@ func ExampleNewSynthdefSineTone2() {
 }
 
 func ExampleNewSynthdefParams() {
-	NewSynthdef("SineTone4", func() UgenNode {
-		freq := NewParam("freq").SetDefault(440)
+	NewSynthdef("SineTone4", func(params Params) UgenNode {
+		freq := params.Add("freq").SetDefault(440)
 		return Out.Ar(0, SinOsc.Ar(freq))
 	})
 }

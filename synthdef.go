@@ -225,32 +225,10 @@ func newsynthdef(name string) *synthdef {
 }
 
 // NewSynthdef creates a synthdef by traversing a ugen graph
-//
-// Out.Ar(0, SinOsc.Ar(440))
-//
-// Example 1
-// =========
-// + Out (ugen 1)
-// |
-// +---+ 0 (constant 1)
-// |
-// +---+ SinOsc (ugen 0)
-//     |
-//     +---+ 440 (constant 0)
-//
-//
-// Example 2
-// =========
-// + Out (ugen 1)
-// |
-// +---+ 0 (constant 1)
-// |
-// +---+ SinOsc (ugen 0)
-//     |
-//     +---+ 440 (constant 0)
-//
 func NewSynthdef(name string, graphFunc types.UgenGraphFunc) *synthdef {
 	def := newsynthdef(name)
-	flatten(graphFunc(), def)
+	params := newParams()
+	graph := newGraph(graphFunc(params))
+	flatten(graph, params, def)
 	return def
 }

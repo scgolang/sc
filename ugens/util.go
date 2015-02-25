@@ -31,6 +31,9 @@ func getInput(arg interface{}) Input {
 		bv.IsOutput()
 		return bv
 	}
+	if pv, isParam := arg.(Param); isParam {
+		return pv
+	}
 	return nil
 }
 

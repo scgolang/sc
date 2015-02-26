@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"github.com/briansorahan/sc/types"
+	. "github.com/briansorahan/sc/types"
 	"io"
 	"os"
 )
@@ -65,6 +65,14 @@ func (self *synthdef) AddConstant(c float32) *input {
 	idx := len(self.Constants)
 	self.Constants = append(self.Constants, c)
 	return &input{-1, int32(idx)}
+}
+
+// AddParams will do nothing if there are no synthdef params.
+// If there are synthdef params it will
+// (1) Add their default values to initialParamValues
+// (2) Add their names/indices to paramNames
+// (3) Add a Control ugen as the first ugen
+func (self *synthdef) AddParams(p Params) {
 }
 
 // Write writes a binary representation of a synthdef to an io.Writer.
@@ -225,10 +233,20 @@ func newsynthdef(name string) *synthdef {
 }
 
 // NewSynthdef creates a synthdef by traversing a ugen graph
-func NewSynthdef(name string, graphFunc types.UgenGraphFunc) *synthdef {
+func NewSynthdef(name string, graphFunc UgenGraphFunc) *synthdef {
 	def := newsynthdef(name)
+	// It would be nice to parse synthdef params from function arguments
+	// with the reflect package, but see
+	// https://groups.google.com/forum/#!topic/golang-nuts/nM_ZhL7fuGc
+	// for discussion of the (im)possibility of getting function argument
+	// names at runtime.
+	// Since this is not possible, what we need to do is let users add
+	// synthdef params anywhere in their UgenGraphFunc using the Params interface.
+	// Then in order to correctly map the values passed when creating 
+	// a synth node they have to be passed in the same order
+	// they were created in the UgenGraphFunc.
 	params := newParams()
-	graph := newGraph(graphFunc(params))
-	flatten(graph, params, def)
+	root := graphFunc(params)
+	flatten(root, params, def)
 	return def
 }

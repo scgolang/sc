@@ -1,39 +1,19 @@
 package sc
 
-import . "github.com/briansorahan/sc/types"
+import (
+	. "github.com/briansorahan/sc/types"
+)
 
-type ugenGraph struct {
-	root UgenNode
-}
-
-func (self *ugenGraph) Root() UgenNode {
-	return self.root
-}
-
-func newGraph(root UgenNode) *ugenGraph {
-	return &ugenGraph{root}
-}
-
-func flatten(graph UgenGraph, params Params, def *synthdef) {
-	// pl := params.List()
-	flattenNode(graph.Root(), params, def)
-}
-
-func flattenNode(node UgenNode, params Params, def *synthdef) *input {
+func flatten(node UgenNode, params Params, def *synthdef) *input {
 	stack := NewStack()
 	inputs := node.Inputs()
 	// iterate through ugen inputs in reverse order
 	for i := len(inputs)-1; i >= 0; i-- {
-		input := inputs[i]
-		if input.IsConstant() {
-			// push a float32
-			stack.Push(input.(ConstantInput).Value())
-		// } else if param, isParam := input.(Param); isParam {
-			// add a ugen input that doesn't need to be flattened
+		in := inputs[i]
+		if node, isNode := in.(UgenNode); isNode {
+			stack.Push(flatten(node, params, def))
 		} else {
-			ugenNode := input.(UgenInput).Value()
-			// recurse with the next ugen as root and push an *input
-			stack.Push(flattenNode(ugenNode, params, def))
+			stack.Push(in)
 		}
 	}
 
@@ -41,12 +21,18 @@ func flattenNode(node UgenNode, params Params, def *synthdef) *input {
 	var in *input
 	u := cloneUgen(node)
 	for val := stack.Pop(); val != nil; val = stack.Pop() {
-		if floatVal, isFloat := val.(float32); isFloat {
-			in = def.AddConstant(floatVal)
+		if intVal, isInt := val.(int); isInt {
+			in = def.AddConstant(float32(intVal))
+		} else if floatVal, isFloat32 := val.(float32); isFloat32 {
+			in = def.AddConstant(float32(floatVal))
+		} else if floatVal, isFloat64 := val.(float64); isFloat64 {
+			in = def.AddConstant(float32(floatVal))
+		} else if paramVal, isParam := val.(Param); isParam {
+			in = &input{0, paramVal.Index()}
 		} else if inputVal, isInput := val.(*input); isInput {
 			in = inputVal
 		} else {
-			panic("input was neither a float nor")
+			panic("ugen inputs must be constant, param, or ugens")
 		}
 		u.AppendInput(in)
 	}

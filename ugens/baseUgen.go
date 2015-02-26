@@ -5,39 +5,37 @@ import (
 )
 
 const (
-	InitializationRate = 0
-	ControlRate        = 1
-	AudioRate          = 2
+	initializationRate = 0
+	controlRate        = 1
+	audioRate          = 2
 )
 
-// parseNode gives ugens a way to parse the arguments they are given
-// to populate the inputs array of a base node
-type parseNode func(node *BaseNode, args ...interface{})
-
 type baseUgen struct {
-	name string
-	pn   parseNode
+	name     string
+	defaults []float32
 }
 
 func (self *baseUgen) Ar(args ...interface{}) UgenNode {
-	node := newNode(self.name, AudioRate, 0)
-	self.pn(node, args...)
-	return node
+	return self.atRate(audioRate, args...)
 }
 
 func (self *baseUgen) Kr(args ...interface{}) UgenNode {
-	node := newNode(self.name, ControlRate, 0)
-	self.pn(node, args...)
-	return node
+	return self.atRate(controlRate, args...)
 }
 
 func (self *baseUgen) Ir(args ...interface{}) UgenNode {
-	node := newNode(self.name, InitializationRate, 0)
-	self.pn(node, args...)
+	return self.atRate(initializationRate, args...)
+}
+
+func (self *baseUgen) atRate(rate int8, args ...interface{}) UgenNode {
+	node := newNode(self.name, rate, 0)
+	withDefaults := applyDefaults(self.defaults, args...)
+	getInputs(node, withDefaults...)
+	// getInputs(node, args...)
 	return node
 }
 
-func newUgen(name string, pn parseNode) *baseUgen {
-	base := baseUgen{name, pn}
+func newUgen(name string, defaults []float32) *baseUgen {
+	base := baseUgen{name, defaults}
 	return &base
 }

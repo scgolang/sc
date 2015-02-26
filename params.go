@@ -85,7 +85,7 @@ func (self *control) Add(val float32) UgenNode {
 	return self
 }
 
-type controlOutput int8
+type controlOutput struct {}
 
 func (self *controlOutput) Rate() int8 {
 	return 1
@@ -93,7 +93,7 @@ func (self *controlOutput) Rate() int8 {
 
 func newControl(numOutputs int) UgenNode {
 	outputs := make([]Output, numOutputs)
-	o := controlOutput(1)
+	o := controlOutput{}
 	for i := 0; i < numOutputs; i++ {
 		outputs[i] = &o
 	}

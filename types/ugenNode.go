@@ -7,8 +7,12 @@ type UgenNode interface {
 	Rate() int8
 	// SpecialIndex returns the special index of the ugen node
 	SpecialIndex() int16
-	// Inputs returns the inputs of the ugen node
-	Inputs() []Input
+	// Inputs returns the inputs of the ugen node.
+	// Inputs can be
+	// (1) Constant (float32)
+	// (2) Control (synthdef param)
+	// (3) UgenNode
+	Inputs() []interface{}
 	// Outputs returns the outputs of the ugen node
 	Outputs() []Output
 	// Mul multiplies the output of a ugen node by a constant

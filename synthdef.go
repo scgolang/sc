@@ -131,7 +131,7 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 		return nil, fmt.Errorf("multiple synthdefs not supported")
 	}
 	// read synthdef name
-	defName, er := ReadPstring(r)
+	defName, er := readPstring(r)
 	if er != nil {
 		return nil, er
 	}
@@ -172,7 +172,7 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 	// read param names
 	paramNames := make([]ParamName, numParamNames)
 	for i := 0; int32(i) < numParamNames; i++ {
-		pn, er := ReadParamName(r)
+		pn, er := readParamName(r)
 		if er != nil {
 			return nil, er
 		}
@@ -202,7 +202,7 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 	// read variants
 	variants := make([]variant, numVariants)
 	for i := 0; int16(i) < numVariants; i++ {
-		v, er := ReadVariant(r, numParams)
+		v, er := readVariant(r, numParams)
 		if er != nil {
 			return nil, er
 		}

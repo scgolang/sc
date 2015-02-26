@@ -11,9 +11,9 @@ type variant struct {
 	InitialParamValues []float32 `json:'initialParamValues'`
 }
 
-// ReadVariant read a Variant from an io.Reader
-func ReadVariant(r io.Reader, numParams int32) (*variant, error) {
-	name, err := ReadPstring(r)
+// readVariant read a Variant from an io.Reader
+func readVariant(r io.Reader, numParams int32) (*variant, error) {
+	name, err := readPstring(r)
 	if err != nil {
 		return nil, err
 	}

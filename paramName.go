@@ -19,9 +19,9 @@ func (p *ParamName) Write(w io.Writer) error {
 	return binary.Write(w, byteOrder, p.Index)
 }
 
-// ReadParamName reads a ParamName from an io.Reader
-func ReadParamName(r io.Reader) (*ParamName, error) {
-	name, err := ReadPstring(r)
+// readParamName reads a ParamName from an io.Reader
+func readParamName(r io.Reader) (*ParamName, error) {
+	name, err := readPstring(r)
 	if err != nil {
 		return nil, err
 	}

@@ -32,14 +32,14 @@ func (self *Pstring) Write(w io.Writer) error {
 	return e
 }
 
-// NewPstring create a new Pstring
-func NewPstring(s string) Pstring {
+// newPstring create a new Pstring
+func newPstring(s string) Pstring {
 	length := len(s)
 	return Pstring{int8(length), s}
 }
 
-// ReadPstring reads a Pstring from an io.Reader
-func ReadPstring(r io.Reader) (*Pstring, error) {
+// readPstring reads a Pstring from an io.Reader
+func readPstring(r io.Reader) (*Pstring, error) {
 	var length int8
 	e := binary.Read(r, byteOrder, &length)
 	if e != nil {

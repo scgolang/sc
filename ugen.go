@@ -78,7 +78,7 @@ func (self *ugen) Write(w io.Writer) error {
 // readugen reads a ugen from an io.Reader
 func readugen(r io.Reader) (*ugen, error) {
 	// read name
-	name, err := ReadPstring(r)
+	name, err := readPstring(r)
 	if err != nil {
 		return nil, err
 	}

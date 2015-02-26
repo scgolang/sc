@@ -1,5 +1,7 @@
 package types
 
+type UgenGraphFunc func(params Params) UgenNode
+
 type UgenNode interface {
 	// Name returns the name of the ugen node
 	Name() string

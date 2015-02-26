@@ -73,6 +73,18 @@ func (self *synthdef) AddConstant(c float32) *input {
 // (2) Add their names/indices to paramNames
 // (3) Add a Control ugen as the first ugen
 func (self *synthdef) AddParams(p Params) {
+	paramList := p.List()
+	numParams := len(paramList)
+	self.InitialParamValues = make([]float32, numParams)
+	self.ParamNames = make([]ParamName, numParams)
+	for i, param := range paramList {
+		self.InitialParamValues[i] = param.GetDefault()
+		self.ParamNames[i] = ParamName{param.Name(),param.Index()}
+	}
+	if numParams > 0 {
+		control := []*ugen{cloneUgen(p.Control())}
+		self.Ugens = append(control, self.Ugens...)
+	}
 }
 
 // Write writes a binary representation of a synthdef to an io.Writer.
@@ -247,6 +259,7 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *synthdef {
 	// they were created in the UgenGraphFunc.
 	params := newParams()
 	root := graphFunc(params)
+	def.AddParams(params)
 	flatten(root, params, def)
 	return def
 }

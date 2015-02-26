@@ -7,23 +7,23 @@ import (
 	"io"
 )
 
-// Pstring is a pascal-format string, which is a byte containing
+// pstring is a pascal-format string, which is a byte containing
 // the string length, followed by the bytes of the string
-type Pstring struct {
+type pstring struct {
 	length int8
 	string string
 }
 
-func (self *Pstring) String() string {
+func (self *pstring) String() string {
 	return self.string
 }
 
-// Equal determines if one Pstring equals another
-func (self *Pstring) Equals(pstr Pstring) bool {
+// Equal determines if one pstring equals another
+func (self *pstring) Equals(pstr pstring) bool {
 	return self.string == pstr.string
 }
 
-func (self *Pstring) Write(w io.Writer) error {
+func (self *pstring) Write(w io.Writer) error {
 	e := binary.Write(w, byteOrder, self.length)
 	if e != nil {
 		return e
@@ -32,14 +32,15 @@ func (self *Pstring) Write(w io.Writer) error {
 	return e
 }
 
-// newPstring create a new Pstring
-func newPstring(s string) Pstring {
+// newPstring create a new pstring
+func newPstring(s string) *pstring {
 	length := len(s)
-	return Pstring{int8(length), s}
+	p := pstring{int8(length), s}
+	return &p
 }
 
-// readPstring reads a Pstring from an io.Reader
-func readPstring(r io.Reader) (*Pstring, error) {
+// readPstring reads a pstring from an io.Reader
+func readPstring(r io.Reader) (*pstring, error) {
 	var length int8
 	e := binary.Read(r, byteOrder, &length)
 	if e != nil {
@@ -53,7 +54,7 @@ func readPstring(r io.Reader) (*Pstring, error) {
 	if read != int(length) {
 		return nil, fmt.Errorf("could not read %d bytes", length)
 	}
-	ps := Pstring{
+	ps := pstring{
 		length,
 		bytes.NewBuffer(s).String(),
 	}

@@ -6,8 +6,12 @@ type params struct {
 	l []Param
 }
 
-func (self *params) Add(name string) Param {
-	p := newParam(name)
+func (self *params) Add(name string, initialValue ...float32) Param {
+	idx := len(self.l)
+	p := newParam(name, int32(idx))
+	if len(initialValue) > 0 {
+		p.SetDefault(initialValue[0])
+	}
 	self.l = append(self.l, p)
 	return p
 }
@@ -48,8 +52,8 @@ func (self *param) SetDefault(val float32) Param {
 	return self
 }
 
-func newParam(name string) Param {
-	p := param{name, 0, 0}
+func newParam(name string, index int32) Param {
+	p := param{name, index, 0}
 	return &p
 }
 

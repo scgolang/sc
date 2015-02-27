@@ -65,7 +65,7 @@ Unit Generators for [sc][1].
 | OnePole                     | No        |
 | OneZero                     | No        |
 | Osc                         | No        |
-| Out                         | No        |
+| Out                         | Yes       |
 | Pan2                        | No        |
 | Pan4                        | No        |
 | PanAz                       | No        |
@@ -75,13 +75,13 @@ Unit Generators for [sc][1].
 | Pulse                       | No        |
 | PulseCount                  | No        |
 | PulseDivider                | No        |
-| RLPF                        | No        |
+| RLPF                        | Yes       |
 | Resonz                      | No        |
 | Ringz                       | No        |
 | Rotate2                     | No        |
-| Saw                         | No        |
+| Saw                         | Yes       |
 | Shaper                      | No        |
-| SinOsc                      | No        |
+| SinOsc                      | Yes       |
 | Slew                        | No        |
 | SyncSaw                     | No        |
 | TDelay                      | No        |

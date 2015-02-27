@@ -57,3 +57,16 @@ func ExampleNewSynthdefParams() {
 	// Output:
 	// {"name":"SineTone4","constants":[0],"initialParamValues":[440],"paramNames":[{"Name":"freq","Index":0}],"ugens":[{"name":"Control","rate":1,"specialIndex":0,"inputs":[],"outputs":[{"rate":1}]},{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":0,"outputIndex":0},{"ugenIndex":-1,"outputIndex":0}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":1,"outputIndex":0}],"outputs":[]}],"variants":[]}
 }
+
+func ExampleSynthdefParams2() {
+	NewSynthdef("SawTone1", func(params Params) UgenNode {
+		// arg freq=440, cutoff=1200, q=0.5;
+		// Out.ar(0, RLPF.ar(Saw.ar(freq), cutoff, q));
+		freq := params.Add("freq", 440)
+		cutoff := params.Add("cutoff", 1200)
+		q := params.Add("q", 0.5)
+		return Out.Ar(0, RLPF.Ar(Saw.Ar(freq), cutoff, q))
+	}).WriteJSON(os.Stdout)
+	// Output:
+	// {"name":"SawTone1","constants":[0],"initialParamValues":[440,1200,0.5],"paramNames":[{"Name":"freq","Index":0},{"Name":"cutoff","Index":1},{"Name":"q","Index":2}],"ugens":[{"name":"Control","rate":1,"specialIndex":0,"inputs":[],"outputs":[{"rate":1},{"rate":1},{"rate":1}]},{"name":"Saw","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":0,"outputIndex":0}],"outputs":[{"rate":2}]},{"name":"RLPF","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":1,"outputIndex":0},{"ugenIndex":0,"outputIndex":1},{"ugenIndex":0,"outputIndex":2}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":2,"outputIndex":0}],"outputs":[]}],"variants":[]}
+}

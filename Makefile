@@ -12,7 +12,7 @@ SYNTHDEFS := sineTone.sc          \
              sineTone2.sc         \
              sineTone3.sc         \
              sineTone4.sc         \
-             sineTone5.sc
+             sawTone1.sc
 
 SUBPKG := ugens
 PROGS := sdef

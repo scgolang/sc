@@ -8,11 +8,14 @@ ifeq ($(PLATFORM),Linux)
 SCLANG=/usr/bin/sclang
 endif
 
-SYNTHDEFS := sineTone.sc          \
-             sineTone2.sc         \
-             sineTone3.sc         \
-             sineTone4.sc         \
-             sawTone1.sc
+SYNTHDEFS := SineTone            \
+             SineTone2           \
+             SineTone3           \
+             SineTone4           \
+             SawTone1            \
+             Beats
+
+SYNTHDEFS := $(addsuffix .scsyndef,$(SYNTHDEFS))
 
 SUBPKG := ugens
 PROGS := sdef
@@ -26,8 +29,10 @@ all:
 	go install
 	for pkg in $(SUBPKG); do cd $$pkg && go install && cd ..; done
 
-synthdefs:
-	for sd in $(SYNTHDEFS); do $(SCLANG) $$sd; done
+%.scsyndef: %.sc
+	sclang $<
+
+synthdefs: $(SYNTHDEFS)
 
 clean:
 	rm -rf *~ *.scsyndef $(PROGS)

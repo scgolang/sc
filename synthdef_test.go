@@ -60,11 +60,8 @@ func ExampleNewSynthdefParams() {
 
 func ExampleSynthdefParams2() {
 	NewSynthdef("SawTone1", func(params Params) UgenNode {
-		// arg freq=440, cutoff=1200, q=0.5;
-		// Out.ar(0, RLPF.ar(Saw.ar(freq), cutoff, q));
 		freq := params.Add("freq", 440)
-		cutoff := params.Add("cutoff", 1200)
-		q := params.Add("q", 0.5)
+		cutoff, q := params.Add("cutoff", 1200), params.Add("q", 0.5)
 		return Out.Ar(0, RLPF.Ar(Saw.Ar(freq), cutoff, q))
 	}).WriteJSON(os.Stdout)
 	// Output:

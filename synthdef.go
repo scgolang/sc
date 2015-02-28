@@ -11,15 +11,15 @@ import (
 )
 
 const (
-	SYNTHDEF_START   = "SCgf"
-	SYNTHDEF_VERSION = 2
+	synthdefStart   = "SCgf"
+	synthdefVersion = 2
 )
 
 var byteOrder = binary.BigEndian
 
 // synthdef defines the structure of synth def data as defined
 // in http://doc.sccode.org/Reference/Synth-Definition-File-Format.html
-type synthdef struct {
+type Synthdef struct {
 	// Name is the name of the synthdef
 	Name string `json:"name" xml:"Name,attr"`
 
@@ -36,13 +36,13 @@ type synthdef struct {
 	Ugens []*ugen `json:"ugens" xml:"Ugens>Ugen"`
 
 	// Variants is the list of variants contained in the synth def
-	Variants []variant `json:"variants" xml:"Variants>Variant"`
+	Variants []*Variant `json:"variants" xml:"Variants>Variant"`
 }
 
 // AddUgen returns an input pointing to either the (newly created)
 // last position in the ugens array if this ugen has never been
 // added before or the ugens existing position in the Ugens array
-func (self *synthdef) AddUgen(u *ugen) *input {
+func (self *Synthdef) AddUgen(u *ugen) *input {
 	for i, v := range self.Ugens {
 		if u == v {
 			return &input{int32(i), 0}
@@ -56,7 +56,7 @@ func (self *synthdef) AddUgen(u *ugen) *input {
 // AddConstant returns an input pointing to either the (newly created)
 // last position in the constants array if this constant has never been
 // added before or the constants existing position in the Constants array
-func (self *synthdef) AddConstant(c float32) *input {
+func (self *Synthdef) AddConstant(c float32) *input {
 	for i, d := range self.Constants {
 		if c == d {
 			return &input{-1, int32(i)}
@@ -72,7 +72,7 @@ func (self *synthdef) AddConstant(c float32) *input {
 // (1) Add their default values to initialParamValues
 // (2) Add their names/indices to paramNames
 // (3) Add a Control ugen as the first ugen
-func (self *synthdef) AddParams(p Params) {
+func (self *Synthdef) AddParams(p Params) {
 	paramList := p.List()
 	numParams := len(paramList)
 	self.InitialParamValues = make([]float32, numParams)
@@ -90,18 +90,104 @@ func (self *synthdef) AddParams(p Params) {
 // Write writes a binary representation of a synthdef to an io.Writer.
 // The binary representation written by this method is
 // the data that scsynth expects at its /d_recv endpoint.
-func (self *synthdef) Write(w io.Writer) error {
+func (self *Synthdef) Write(w io.Writer) error {
+	written, err := w.Write(bytes.NewBufferString(synthdefStart).Bytes())
+	if written != len(synthdefStart) {
+		return fmt.Errorf("Could not write synthdef")
+	}
+	if err != nil {
+		return err
+	}
+	// write synthdef version
+	err = binary.Write(w, byteOrder, int32(synthdefVersion))
+	if err != nil {
+		return err
+	}
+	// write number of synthdefs
+	err = binary.Write(w, byteOrder, int32(1))
+	if err != nil {
+		return err
+	}
+	// write synthdef name
+	name := newPstring(self.Name)
+	err = name.Write(w)
+	if err != nil {
+		return err
+	}
+	// write number of constants
+	err = binary.Write(w, byteOrder, int32(len(self.Constants)))
+	if err != nil {
+		return err
+	}
+	// write constant values
+	for _, constant := range self.Constants {
+		err = binary.Write(w, byteOrder, constant)
+		if err != nil {
+			return err
+		}
+	}
+	// write number of params
+	err = binary.Write(w, byteOrder, int32(len(self.ParamNames)))
+	if err != nil {
+		return err
+	}
+	// write initial param values
+	// BUG(briansorahan) what happens in sclang when a ugen graph func
+	//                   does not provide initial param values? do they
+	//                   not appear in the synthdef? default to 0?
+	for _, val := range self.InitialParamValues {
+		err = binary.Write(w, byteOrder, val)
+		if err != nil {
+			return err
+		}
+	}
+	// write number of param names
+	err = binary.Write(w, byteOrder, int32(len(self.ParamNames)))
+	if err != nil {
+		return err
+	}
+	// write param names
+	for _, p := range self.ParamNames {
+		err = p.Write(w)
+		if err != nil {
+			return err
+		}
+	}
+	// write number of ugens
+	err = binary.Write(w, byteOrder, int32(len(self.Ugens)))
+	if err != nil {
+		return err
+	}
+	// write ugens
+	for _, u := range self.Ugens {
+		err = u.Write(w)
+		if err != nil {
+			return err
+		}
+	}
+	// write number of variants
+	err = binary.Write(w, byteOrder, int16(len(self.Variants)))
+	if err != nil {
+		return err
+	}
+	// write variants
+	for _, v := range self.Variants {
+		err = v.Write(w)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 // WriteJSON writes a json-formatted representation of a
 // synthdef to an io.Writer
-func (self *synthdef) WriteJSON(w io.Writer) error {
+func (self *Synthdef) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
 	return enc.Encode(self)
 }
 
-func (self *synthdef) CompareToFile(f string) (bool, error) {
+func (self *Synthdef) CompareToFile(f string) (bool, error) {
 	_, err := os.Open(f)
 	if err != nil {
 		return false, err
@@ -110,9 +196,9 @@ func (self *synthdef) CompareToFile(f string) (bool, error) {
 }
 
 // ReadSynthdef reads a synthdef from an io.Reader
-func ReadSynthdef(r io.Reader) (*synthdef, error) {
+func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 	// read the type
-	startLen := len(SYNTHDEF_START)
+	startLen := len(synthdefStart)
 	start := make([]byte, startLen)
 	read, er := r.Read(start)
 	if er != nil {
@@ -121,7 +207,7 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 	if read != startLen {
 		return nil, fmt.Errorf("bad synthdef")
 	}
-	if bytes.NewBuffer(start).String() != SYNTHDEF_START {
+	if bytes.NewBuffer(start).String() != synthdefStart {
 		return nil, fmt.Errorf("bad synthdef")
 	}
 	// read version
@@ -130,7 +216,7 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 	if er != nil {
 		return nil, er
 	}
-	if version != SYNTHDEF_VERSION {
+	if version != synthdefVersion {
 		return nil, fmt.Errorf("bad synthdef version %d", version)
 	}
 	// read number of synth defs
@@ -212,16 +298,16 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 		return nil, er
 	}
 	// read variants
-	variants := make([]variant, numVariants)
+	variants := make([]*Variant, numVariants)
 	for i := 0; int16(i) < numVariants; i++ {
 		v, er := readVariant(r, numParams)
 		if er != nil {
 			return nil, er
 		}
-		variants[i] = *v
+		variants[i] = v
 	}
 	// return a new synthdef
-	synthDef := synthdef{
+	synthDef := Synthdef{
 		defName.String(),
 		constants,
 		initialValues,
@@ -232,20 +318,20 @@ func ReadSynthdef(r io.Reader) (*synthdef, error) {
 	return &synthDef, nil
 }
 
-func newsynthdef(name string) *synthdef {
-	def := synthdef{
+func newsynthdef(name string) *Synthdef {
+	def := Synthdef{
 		name,
 		make([]float32, 0),
 		make([]float32, 0),
 		make([]ParamName, 0),
 		make([]*ugen, 0),
-		make([]variant, 0),
+		make([]*Variant, 0),
 	}
 	return &def
 }
 
 // NewSynthdef creates a synthdef by traversing a ugen graph
-func NewSynthdef(name string, graphFunc UgenGraphFunc) *synthdef {
+func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 	def := newsynthdef(name)
 	// It would be nice to parse synthdef params from function arguments
 	// with the reflect package, but see
@@ -264,7 +350,7 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *synthdef {
 	return def
 }
 
-func flatten(node UgenNode, params Params, def *synthdef) *input {
+func flatten(node UgenNode, params Params, def *Synthdef) *input {
 	stack := NewStack()
 	inputs := node.Inputs()
 	// iterate through ugen inputs in reverse order

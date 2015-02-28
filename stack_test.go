@@ -5,7 +5,7 @@ import (
 )
 
 func TestStackPushPop(t *testing.T) {
-	s := NewStack()
+	s := newStack()
 	if s == nil {
 		t.Fatalf("NewStack returned nil")
 	}

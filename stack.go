@@ -1,10 +1,5 @@
 package sc
 
-type Stack interface {
-	Push(val interface{})
-	Pop() interface{}
-}
-
 type stack struct {
 	l []interface{}
 }
@@ -23,7 +18,7 @@ func (self *stack) Pop() interface{} {
 	return el
 }
 
-func NewStack() Stack {
+func newStack() *stack {
 	s := stack{make([]interface{}, 0)}
 	return &s
 }

@@ -378,7 +378,7 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 }
 
 func flatten(node UgenNode, params Params, def *Synthdef) *input {
-	stack := NewStack()
+	stack := newStack()
 	inputs := node.Inputs()
 	// iterate through ugen inputs in reverse order
 	for i := len(inputs)-1; i >= 0; i-- {

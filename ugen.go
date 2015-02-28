@@ -1,9 +1,7 @@
 package sc
 
 import (
-	"bytes"
 	"encoding/binary"
-	"fmt"
 	. "github.com/briansorahan/sc/types"
 	"io"
 )
@@ -30,46 +28,42 @@ func (self *ugen) AddOutput(o *output) {
 // Write writes a Ugen
 func (self *ugen) Write(w io.Writer) error {
 	// write the synthdef name
-	nameLen := len(self.Name)
-	bw, we := w.Write(bytes.NewBufferString(self.Name).Bytes())
-	if we != nil {
-		return we
+	err := newPstring(self.Name).Write(w)
+	if err != nil {
+		return err
 	}
-	if bw != nameLen {
-		return fmt.Errorf("could not write Ugen.Name")
+	// write rate
+	err = binary.Write(w, byteOrder, self.Rate)
+	if err != nil {
+		return err
 	}
-	// audio rate
-	we = binary.Write(w, byteOrder, self.Rate)
-	if we != nil {
-		return we
-	}
-	// one input
+	// write inputs
 	numInputs := int32(len(self.Inputs))
-	we = binary.Write(w, byteOrder, numInputs)
-	if we != nil {
-		return we
+	err = binary.Write(w, byteOrder, numInputs)
+	if err != nil {
+		return err
 	}
-	// one output
+	// write outputs
 	numOutputs := int32(len(self.Outputs))
-	we = binary.Write(w, byteOrder, numOutputs)
-	if we != nil {
-		return we
+	err = binary.Write(w, byteOrder, numOutputs)
+	if err != nil {
+		return err
 	}
 	// special index
-	we = binary.Write(w, byteOrder, self.SpecialIndex)
-	if we != nil {
-		return we
+	err = binary.Write(w, byteOrder, self.SpecialIndex)
+	if err != nil {
+		return err
 	}
 	// inputs
 	for _, i := range self.Inputs {
-		if we = i.Write(w); we != nil {
-			return we
+		if err = i.Write(w); err != nil {
+			return err
 		}
 	}
 	// outputs
 	for _, o := range self.Outputs {
-		if we = o.Write(w); we != nil {
-			return we
+		if err = o.Write(w); err != nil {
+			return err
 		}
 	}
 	return nil

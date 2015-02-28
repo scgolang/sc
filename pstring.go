@@ -23,6 +23,7 @@ func (self *pstring) Equals(pstr pstring) bool {
 	return self.string == pstr.string
 }
 
+// Write writes a pstring to an io.Writer
 func (self *pstring) Write(w io.Writer) error {
 	e := binary.Write(w, byteOrder, self.length)
 	if e != nil {

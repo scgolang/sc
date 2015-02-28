@@ -2,7 +2,6 @@ package sc
 
 import (
 	"github.com/briansorahan/go-osc/osc"
-	. "github.com/briansorahan/sc/types"
 	"log"
 	"os"
 	"os/exec"
@@ -18,7 +17,7 @@ const (
 	listenAddr  = "127.0.0.1"
 )
 
-type server struct {
+type Server struct {
 	ErrChan    chan error
 	addr       NetAddr
 	statusChan chan *osc.OscMessage
@@ -27,12 +26,12 @@ type server struct {
 	scsynth    *exec.Cmd
 }
 
-func (self *server) Addr() NetAddr {
+func (self *Server) Addr() NetAddr {
 	return self.addr
 }
 
 // Status gets the status of scsynth
-func (self *server) Status() (ServerStatus, error) {
+func (self *Server) Status() (*ServerStatus, error) {
 	statusReq := osc.NewOscMessage("/status")
 	err := self.oscClient.Send(statusReq)
 	if err != nil {
@@ -43,8 +42,13 @@ func (self *server) Status() (ServerStatus, error) {
 	return newStatus(msg)
 }
 
+// Send a synthdef to scsynth
+func (self *Server) Send(def *Synthdef) error {
+	return nil
+}
+
 // Start starts scsynth
-func (self *server) Start() error {
+func (self *Server) Start() error {
 	port := strconv.Itoa(self.addr.Port)
 	self.scsynth = exec.Command(scsynth, "-u", port)
 	go func() {
@@ -64,7 +68,7 @@ func (self *server) Start() error {
 	return nil
 }
 
-func (self *server) Close() error {
+func (self *Server) Close() error {
 	var oscErr error
 	if self.oscServer != nil {
 		oscErr = self.oscServer.Close()
@@ -80,14 +84,14 @@ func (self *server) Close() error {
 	}
 }
 
-func (self *server) stopScsynth() error {
+func (self *Server) stopScsynth() error {
 	if self.scsynth != nil {
 		return syscall.Kill(self.scsynth.Process.Pid, syscall.SIGKILL)
 	}
 	return nil
 }
 
-func NewServer(addr NetAddr) Server {
+func NewServer(addr NetAddr) *Server {
 	oscClient := osc.NewOscClient(addr.Addr, addr.Port)
 	oscServer := osc.NewOscServer(listenAddr, listenPort)
 	statusChan := make(chan *osc.OscMessage)
@@ -99,7 +103,7 @@ func NewServer(addr NetAddr) Server {
 	go func() {
 		errChan <- oscServer.ListenAndDispatch()
 	}()
-	s := server{
+	s := Server{
 		errChan,
 		addr,
 		statusChan,

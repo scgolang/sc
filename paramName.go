@@ -11,12 +11,12 @@ type ParamName struct {
 	Index int32   `json:'index,omitempty'`
 }
 
-func (p *ParamName) Write(w io.Writer) error {
-	// FIXME
-	// if we := p.Name.Write(w); we != nil {
-	// 	return we
-	// }
-	return binary.Write(w, byteOrder, p.Index)
+func (self *ParamName) Write(w io.Writer) error {
+	err := newPstring(self.Name).Write(w)
+	if err != nil {
+		return err
+	}
+	return binary.Write(w, byteOrder, int32(self.Index))
 }
 
 // readParamName reads a ParamName from an io.Reader

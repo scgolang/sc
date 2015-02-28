@@ -10,4 +10,8 @@ func TestServerStatus(t *testing.T) {
 	if s == nil {
 		t.Fatal(fmt.Errorf("NewServer returned nil"))
 	}
+	err := s.Start()
+	if err != nil {
+		t.Fatal(err)
+	}
 }

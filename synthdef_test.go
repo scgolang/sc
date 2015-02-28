@@ -33,6 +33,22 @@ func TestNewSynthdef(t *testing.T) {
 	}
 }
 
+func TestCompareToFile(t *testing.T) {
+	def := NewSynthdef("SineTone", func(params Params) UgenNode {
+		return Out.Ar(0, SinOsc.Ar(440))
+	})
+	if def == nil {
+		t.Fatalf("nil synthdef")
+	}
+	same, err := def.CompareToFile("SineTone.scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang-generated version")
+	}
+}
+
 func ExampleNewSynthdef() {
 	NewSynthdef("SineTone", func(params Params) UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440))

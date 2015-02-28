@@ -105,7 +105,7 @@ func (self *Synthdef) Write(w io.Writer) error {
 		return err
 	}
 	// write number of synthdefs
-	err = binary.Write(w, byteOrder, int32(1))
+	err = binary.Write(w, byteOrder, int16(1))
 	if err != nil {
 		return err
 	}
@@ -212,6 +212,7 @@ func (self *Synthdef) CompareToFile(path string) (bool, error) {
 func compareBytes(a, b []byte) bool {
 	la, lb := len(a), len(b)
 	if la != lb {
+		fmt.Println("different lengths a=%d b=%d", la, lb)
 		return false
 	}
 	for i, octet := range a {

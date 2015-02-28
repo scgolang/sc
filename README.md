@@ -9,7 +9,11 @@ golang client for Supercollider
 go get github.com/briansorahan/sc
 ```
 
-Take a look at the [godocs](http://godoc.org/github.com/briansorahan/sc) for usage.
+## Usage
+
+Take a look at the [godocs](http://godoc.org/github.com/briansorahan/sc).
+
+## See also
 
 This project was inspired by
 

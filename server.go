@@ -2,7 +2,7 @@ package sc
 
 import (
 	"github.com/briansorahan/go-osc/osc"
-	"log"
+	"io"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -12,14 +12,17 @@ import (
 
 const (
 	scsynth     = "/usr/bin/scsynth"
-	DefaultPort = 57117
+	defaultPort = 57117
 	listenPort  = 57118
 	listenAddr  = "127.0.0.1"
 )
 
 type Server struct {
+	// ErrChan is a channel that emits errors from
+	// the goroutine that runs scsynth
 	ErrChan    chan error
 	addr       NetAddr
+	options    ServerOptions
 	statusChan chan *osc.OscMessage
 	oscClient  *osc.OscClient
 	oscServer  *osc.OscServer
@@ -35,7 +38,6 @@ func (self *Server) Status() (*ServerStatus, error) {
 	statusReq := osc.NewOscMessage("/status")
 	err := self.oscClient.Send(statusReq)
 	if err != nil {
-		log.Println("Failed to send /status message")
 		return nil, err
 	}
 	msg := <-self.statusChan
@@ -52,20 +54,40 @@ func (self *Server) Start() error {
 	port := strconv.Itoa(self.addr.Port)
 	self.scsynth = exec.Command(scsynth, "-u", port)
 	go func() {
-		self.ErrChan <-self.scsynth.Run()
+		self.ErrChan <- self.scsynth.Run()
 	}()
+	if self.options.EchoScsynthStdout {
+		go func() {
+			scsynthStdout, err := self.scsynth.StdoutPipe()
+			if err != nil {
+				self.ErrChan <-err
+				return
+			}
+			for {
+				_, err = io.Copy(os.Stdout, scsynthStdout)
+				if err != nil {
+					self.ErrChan <-err
+					return
+				}
+			}
+		}()
+	}
 	// stop scsynth on interrupts and kills
 	c := make(chan os.Signal)
 	go func() {
 		<-c
-		err := self.stopScsynth()
-		if err != nil {
-			log.Fatal(err)
-		}
+		self.stopScsynth()
 		os.Exit(1)
 	}()
 	signal.Notify(c, os.Interrupt, os.Kill)
 	return nil
+}
+
+func (self *Server) Wait() error {
+	if self.scsynth == nil {
+		return nil
+	}
+	return self.scsynth.Wait()
 }
 
 func (self *Server) Close() error {
@@ -91,7 +113,11 @@ func (self *Server) stopScsynth() error {
 	return nil
 }
 
-func NewServer(addr NetAddr) *Server {
+type ServerOptions struct {
+	EchoScsynthStdout bool
+}
+
+func NewServer(addr NetAddr, options ServerOptions) *Server {
 	oscClient := osc.NewOscClient(addr.Addr, addr.Port)
 	oscServer := osc.NewOscServer(listenAddr, listenPort)
 	statusChan := make(chan *osc.OscMessage)
@@ -106,6 +132,7 @@ func NewServer(addr NetAddr) *Server {
 	s := Server{
 		errChan,
 		addr,
+		options,
 		statusChan,
 		oscClient,
 		oscServer,

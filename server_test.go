@@ -6,7 +6,11 @@ import (
 )
 
 func TestServerStatus(t *testing.T) {
-	s := NewServer(NetAddr{"127.0.0.1", DefaultPort})
+	addr := NetAddr{"127.0.0.1", defaultPort}
+	options := ServerOptions{
+		EchoScsynthStdout: true,
+	}
+	s := NewServer(addr, options)
 	if s == nil {
 		t.Fatal(fmt.Errorf("NewServer returned nil"))
 	}

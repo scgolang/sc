@@ -1,3 +1,4 @@
+# Get the path to sclang
 PLATFORM := $(shell uname -s)
 
 ifeq ($(PLATFORM),Darwin)
@@ -8,6 +9,7 @@ ifeq ($(PLATFORM),Linux)
 SCLANG=/usr/bin/sclang
 endif
 
+# Synthdefs needed for testing
 SYNTHDEFS := SineTone            \
              SineTone2           \
              SineTone3           \
@@ -16,13 +18,13 @@ SYNTHDEFS := SineTone            \
              Beats
 
 SYNTHDEFS := $(addsuffix .scsyndef,$(SYNTHDEFS))
+SYNTHDEFS := $(addprefix synthdefs/,$(SYNTHDEFS))
 
 SUBPKG := ugens
-PROGS := sdef status inspect runServer quit
-TOOLS := sdef.go status.go inspect.go runServer.go quit.go
-TOOLS := $(addprefix tools/,$(TOOLS))
+EXAMPLES := $(wildcard examples/*.go)
+EXAMPLES_BIN := $(patsubst examples/%.go,%,$(EXAMPLES))
 
-.PHONY: synthdefs clean test tools
+.PHONY: synthdefs clean test tools examples clean_bin
 
 all:
 	cd types && go install
@@ -35,11 +37,11 @@ all:
 synthdefs: $(SYNTHDEFS)
 
 clean:
-	rm -rf *~ *.scsyndef $(PROGS)
+	rm -rf *~ *.scsyndef $(EXAMPLES_BIN)
 
 test:
 	go test
 	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done
 
-tools:
-	for t in $(TOOLS); do go build $$t; done
+examples:
+	for src in $(EXAMPLES); do go build $$src; done

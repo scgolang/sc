@@ -5,10 +5,6 @@ import (
 	"github.com/briansorahan/go-osc/osc"
 )
 
-const (
-	StatusOscAddress = "/status.reply"
-)
-
 type ServerStatus struct {
 	NumUgens          int32
 	NumSynths         int32
@@ -21,7 +17,7 @@ type ServerStatus struct {
 }
 
 func newStatus(msg *osc.OscMessage) (*ServerStatus, error) {
-	if msg.Address != StatusOscAddress {
+	if msg.Address != statusOscAddress {
 		errmsg := "Can not get status from message with address %s"
 		return nil, fmt.Errorf(errmsg, msg.Address)
 	}

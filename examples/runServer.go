@@ -27,19 +27,12 @@ func main() {
 			}
 		}
 	}()
-	done := make(chan error)
-	go func() {
-		done <-server.Run()
-	}()
-	// time.Sleep(3 * time.Second)
-	// status, err := server.Status()
-	// if err != nil {
-	// 	log.Println("Could not get server status")
-	// 	log.Fatal(err)
-	// }
-	// if status == nil {
-	// 	log.Fatalf("status was nil")
-	// }
+	done := server.Run()
+	err = server.Status()
+	if err != nil {
+		log.Println("Could not get server status")
+		log.Fatal(err)
+	}
 	err = <-done
 	if err != nil {
 		log.Fatal(err)

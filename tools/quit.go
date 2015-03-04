@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	listenPort  = 571400
+	listenPort  = 57150
 	listenAddr  = "127.0.0.1"
 )
 
@@ -19,12 +19,12 @@ func main() {
 	}
 	oscServer := osc.NewOscServer(listenAddr, listenPort)
 	errChan := make(chan error)
-	statusChan := make(chan *osc.OscMessage)
-	err = oscServer.AddMsgHandler("/status.reply", func(msg *osc.OscMessage) {
-		statusChan <- msg
+	doneChan := make(chan *osc.OscMessage)
+	err = oscServer.AddMsgHandler("/done", func(msg *osc.OscMessage) {
+		doneChan <- msg
 	})
 	if err != nil {
-		log.Println("could not send status message")
+		log.Println("could not send quit message")
 		log.Fatal(err)
 	}
 	go func() {
@@ -34,15 +34,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("sending status request")
-	statusReq := osc.NewOscMessage("/status")
-	err = oscServer.SendTo(addr, statusReq)
+	log.Println("sending quit request")
+	quitReq := osc.NewOscMessage("/quit")
+	err = oscServer.SendTo(addr, quitReq)
 	if err != nil {
 		log.Fatal(err)
 	}
 	select {
-	case statusResp := <-statusChan:
-		osc.PrintOscMessage(statusResp)
+	case quitResp := <-doneChan:
+		osc.PrintOscMessage(quitResp)
 	case err := <-errChan:
 		log.Fatal(err)
 	}

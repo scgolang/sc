@@ -18,8 +18,8 @@ SYNTHDEFS := SineTone            \
 SYNTHDEFS := $(addsuffix .scsyndef,$(SYNTHDEFS))
 
 SUBPKG := ugens
-PROGS := sdef status inspect runServer
-TOOLS := sdef.go status.go inspect.go runServer.go
+PROGS := sdef status inspect runServer quit
+TOOLS := sdef.go status.go inspect.go runServer.go quit.go
 TOOLS := $(addprefix tools/,$(TOOLS))
 
 .PHONY: synthdefs clean test tools

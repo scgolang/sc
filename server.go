@@ -1,11 +1,9 @@
 package sc
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/briansorahan/go-osc/osc"
 	"io"
-	"log"
 	"net"
 	"os"
 	"os/exec"
@@ -23,15 +21,18 @@ const (
 	listenAddr       = "127.0.0.1"
 	statusOscAddress = "/status.reply"
 	doneOscAddress   = "/done"
+	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
 	DumpOff          = 0
 	DumpParsed       = 1
 	DumpContents     = 2
 	DumpAll          = 3
+	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/s_new
 	AddToHead        = 0
 	AddToTail        = 1
 	AddBefore        = 2
 	AddAfter         = 3
 	AddReplace       = 4
+	// see http://doc.sccode.org/Reference/default_group.html
 	RootNodeID       = 0
 	DefaultGroupID   = 1
 )
@@ -48,9 +49,13 @@ type Server struct {
 	scsynth *exec.Cmd
 	// doneChan relays the /done message that comes
 	// from scsynth
-	doneChan chan error
+	doneChan chan *osc.OscMessage
 	// next synth node ID
 	nextSynthID int32
+}
+
+type defLoaded struct {
+	Name string
 }
 
 // Status gets the status of scsynth
@@ -60,28 +65,34 @@ func (self *Server) Status() error {
 	if err != nil {
 		return err
 	}
-	log.Println("status message sent")
 	return nil
 }
 
-// SendDef sends a synthdef to scsynth
+// SendDef sends a synthdef to scsynth.
+// This method blocks until a /done message is received
+// indicating that the synthdef was loaded
 func (self *Server) SendDef(def *Synthdef) error {
-	buf := bytes.NewBuffer(make([]byte, 0))
-	err := def.Write(buf)
+	msg := osc.NewOscMessage("/d_recv")
+	db, err := def.Bytes()
 	if err != nil {
 		return err
 	}
-	msg := osc.NewOscMessage("/d_recv")
-	msg.Append(buf.Bytes())
-	// sclang seems to do this, not quite sure why
-	// the second argument is supposed to be an osc
-	// message it will send when it loads the synthdef
-	msg.Append(int32(0))
+	msg.Append(db)
 	self.oscServer.SendTo(self.addr, msg)
+	done := <-self.doneChan
+	// error if this message was not an ack of the synthdef
+	errmsg := "expected /done with /d_recv argument"
+	if done.CountArguments() != 1 {
+		return fmt.Errorf(errmsg)
+	}
+	if addr, isString := done.Arguments[0].(string); !isString || addr != "/d_recv" {
+		return fmt.Errorf(errmsg)
+	}
 	return nil
 }
 
 // DumpOSC sends a /dumpOSC message to scsynth
+// level should be DumpOff, DumpParsed, DumpContents, DumpAll
 func (self *Server) DumpOSC(level int32) error {
 	dumpReq := osc.NewOscMessage("/dumpOSC")
 	dumpReq.Append(level)
@@ -89,7 +100,6 @@ func (self *Server) DumpOSC(level int32) error {
 	if err != nil {
 		return err
 	}
-	log.Println("dumpOSC message sent")
 	return nil
 }
 
@@ -104,7 +114,6 @@ func (self *Server) NewSynth(name string, id, action, target int32) error {
 	if err != nil {
 		return err
 	}
-	log.Println("s_new message sent")
 	return nil
 }
 
@@ -118,13 +127,21 @@ func (self *Server) NewGroup(id, action, target int32) error {
 	if err != nil {
 		return err
 	}
-	log.Println("g_new message sent")
 	return nil
 }
 
 // NextSynthID
 func (self *Server) NextSynthID() int32 {
 	return atomic.AddInt32(&self.nextSynthID, 1)
+}
+
+func (self *Server) ClearSched() error {
+	clear := osc.NewOscMessage("/clearSched")
+	err := self.oscServer.SendTo(self.addr, clear)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // Run runs scsynth in a new goroutine and sends
@@ -137,7 +154,6 @@ func (self *Server) Run() chan error {
 	running := make(chan error)
 	go func() {
 		running <-self.scsynth.Run()
-		log.Println("scsynth done")
 	}()
 	// give scsynth a little time to get ready
 	time.Sleep(200 * time.Millisecond)
@@ -199,11 +215,9 @@ func NewServer(addr string, port int, options ServerOptions) (*Server, error) {
 	oscServer.AddMsgHandler(statusOscAddress, func(msg *osc.OscMessage) {
 		statusChan <- msg
 	})
-	doneChan := make(chan error)
+	doneChan := make(chan *osc.OscMessage)
 	oscServer.AddMsgHandler(doneOscAddress, func(msg *osc.OscMessage) {
-		// TODO: figure out if there was an error?
-		// Maybe also relay /fail messages on this channel?
-		doneChan <- nil
+		doneChan <- msg
 	})
 	errChan := make(chan error)
 	go func() {
@@ -214,7 +228,6 @@ func NewServer(addr string, port int, options ServerOptions) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("server listening")	
 	portStr := strconv.Itoa(port)
 	scsynth := exec.Command(scsynth, "-u", portStr)
 	if options.EchoScsynthStdout {

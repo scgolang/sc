@@ -188,6 +188,17 @@ func (self *Synthdef) WriteJSON(w io.Writer) error {
 	return enc.Encode(self)
 }
 
+// Bytes writes a synthdef to a byte array
+func (self *Synthdef) Bytes() ([]byte, error) {
+	arr := make([]byte, 0)
+	buf := bytes.NewBuffer(arr)
+	err := self.Write(buf)
+	if err != nil {
+		return arr, err
+	}
+	return buf.Bytes(), nil
+}
+
 // CompareToFile compares this synthdef to a synthdef
 // stored on disk
 func (self *Synthdef) CompareToFile(path string) (bool, error) {

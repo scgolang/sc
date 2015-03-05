@@ -3,5 +3,5 @@
 sdef
 status
 inspect
-runServer
+runserver
 quit

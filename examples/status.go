@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	listenPort  = 571400
+	listenPort  = 57240
 	listenAddr  = "127.0.0.1"
 )
 

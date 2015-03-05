@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+// Print a hex dump of a binary file
+// This can be useful when debugging synthdefs
 func main() {
 	f, err := os.Open(os.Args[1])
 	if err != nil {

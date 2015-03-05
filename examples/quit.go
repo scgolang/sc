@@ -11,7 +11,7 @@ const (
 	listenAddr  = "127.0.0.1"
 )
 
-// Request status from scsynth
+// Send a /quit message to scsynth
 func main() {
 	addr, err := net.ResolveUDPAddr("udp", "127.0.0.1:57130")
 	if err != nil {

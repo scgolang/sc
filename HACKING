@@ -1,0 +1,13 @@
+How to add a Ugen
+-----------------
+All the supported ugens are created by files in the
+ugens/ directory.
+It should be *very* simple to add new ugens.
+For example, the code for the RLPF ugen (http://doc.sccode.org/Classes/RLPF.html) is
+
+package ugens
+var RLPF = newUgen("RLPF", []float32{0, 440, 1})
+
+The newUgen function takes two arguments:
+1. The name of the ugen
+2. The default values of the arguments of the ugen

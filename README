@@ -45,10 +45,11 @@ I intend to support
 
 1. Starting, stopping, and monitoring the status of scsynth
 2. Defining new synthdefs in go and sending them to scsynth
-3. A patterns API similar to what sclang exposes
-4. A way to play back patterns using a metronome
-5. MIDI input/output
-6. OSC input/output
+3. As many of the ugens that supercollider ships with as possible
+4. A patterns API similar to what sclang exposes
+5. A way to play back patterns using a metronome
+6. MIDI input/output
+7. OSC input/output
 
 Thanks
 ------

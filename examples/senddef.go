@@ -10,7 +10,7 @@ import (
 
 func main() {
 	options := ServerOptions{
-		EchoScsynthStdout: true,
+		EchoScsynthStdout: false,
 	}
 	server, err := NewServer("127.0.0.1", 51670, options)
 	if err != nil {
@@ -20,16 +20,10 @@ func main() {
 		return Out.Ar(0, SinOsc.Ar(440))
 	})
 	done := server.Run()
-	err = server.DumpOSC(DumpAll)
-	if err != nil {
-		log.Fatal(err)
-	}
-	time.Sleep(500 * time.Millisecond)
 	err = server.SendDef(def)
 	if err != nil {
 		log.Fatal(err)
 	}
-	time.Sleep(5000 * time.Millisecond)
 	err = server.NewSynth("SineTone", server.NextSynthID(), AddToHead, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)

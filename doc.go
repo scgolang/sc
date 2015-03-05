@@ -1,2 +1,4 @@
-// SuperCollider client written in golang.
+/*
+SuperCollider client written in golang.
+*/
 package sc

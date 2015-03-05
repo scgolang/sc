@@ -22,6 +22,10 @@ const (
 	listenAddr       = "127.0.0.1"
 	statusOscAddress = "/status.reply"
 	doneOscAddress   = "/done"
+	DumpOff          = 0x00
+	DumpParsed       = 0x01
+	DumpContents     = 0x02
+	DumpAll          = 0x03
 )
 
 type Server struct {
@@ -50,7 +54,7 @@ func (self *Server) Status() error {
 	return nil
 }
 
-// Send a synthdef to scsynth
+// SendDef sends a synthdef to scsynth
 func (self *Server) SendDef(def *Synthdef) error {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	err := def.Write(buf)
@@ -59,7 +63,52 @@ func (self *Server) SendDef(def *Synthdef) error {
 	}
 	msg := osc.NewOscMessage("/d_recv")
 	msg.Append(buf.Bytes())
+	// sclang seems to do this, not quite sure why
+	// the second argument is supposed to be an osc
+	// message it will send when it loads the synthdef
+	msg.Append(int32(0))
 	self.oscServer.SendTo(self.addr, msg)
+	return nil
+}
+
+// DumpOSC sends a /dumpOSC message to scsynth
+func (self *Server) DumpOSC(level int32) error {
+	dumpReq := osc.NewOscMessage("/dumpOSC")
+	dumpReq.Append(level)
+	err := self.oscServer.SendTo(self.addr, dumpReq)
+	if err != nil {
+		return err
+	}
+	log.Println("dumpOSC message sent")
+	return nil
+}
+
+func (self *Server) NewSynth(name string, id, action, target int32) error {
+	synthReq := osc.NewOscMessage("/s_new")
+	synthReq.Append(name)
+	synthReq.Append(id)
+	synthReq.Append(action)
+	synthReq.Append(target)
+	synthReq.Append(int32(0))
+	err := self.oscServer.SendTo(self.addr, synthReq)
+	if err != nil {
+		return err
+	}
+	log.Println("s_new message sent")
+	return nil
+}
+
+// NewGroup
+func (self *Server) NewGroup(id, action, target int32) error {
+	dumpReq := osc.NewOscMessage("/g_new")
+	dumpReq.Append(id)
+	dumpReq.Append(action)
+	dumpReq.Append(target)
+	err := self.oscServer.SendTo(self.addr, dumpReq)
+	if err != nil {
+		return err
+	}
+	log.Println("g_new message sent")
 	return nil
 }
 
@@ -84,12 +133,19 @@ func (self *Server) Run() chan error {
 		case err := <-running:
 			panic(err)
 		case <-self.StatusChan:
-			return running
+			goto add_default_group
 		default:
 			time.Sleep(200 * time.Millisecond)
 			self.Status()
 		}
 	}
+add_default_group:
+	go func() {
+		err := self.NewGroup(1, 0, 0)
+		if err != nil {
+			running <-err
+		}
+	}()
 	return running
 }
 

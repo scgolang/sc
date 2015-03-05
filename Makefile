@@ -18,7 +18,6 @@ SYNTHDEFS := SineTone            \
              Beats
 
 SYNTHDEFS := $(addsuffix .scsyndef,$(SYNTHDEFS))
-# SYNTHDEFS := $(addprefix synthdefs/,$(SYNTHDEFS))
 
 SUBPKG := ugens
 EXAMPLES := $(wildcard examples/*.go)

@@ -11,6 +11,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "%s FILE\n", os.Args[0])
 }
 
+// Write json data describing the structure of a synthdef
 func main() {
 	if len(os.Args) < 2 {
 		usage()

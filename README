@@ -6,7 +6,7 @@ supercollider server from go programs.
 Why
 ---
 Supercollider has a well-deserved reputation for being difficult
-to learn. I believe that the sclang is a big reason for this.
+to learn. I believe that sclang is a big reason for this.
 I also believe that golang is quite easy to learn, hence
 replacing sclang with golang makes a lot of sense to me.
 
@@ -20,7 +20,14 @@ $ go get github.com/briansorahan/sc
 
 Test
 ----
+There are a handful of synthdef files that are necessary for
+the tests, so you have to
+
 $ make test
+
+instead of
+
+$ go test
 
 Usage
 -----
@@ -35,6 +42,7 @@ See https://github.com/briansorahan/sc/blob/master/CONTRIBUTING
 Roadmap
 --------
 I intend to support
+
 1. Starting, stopping, and monitoring the status of scsynth
 2. Defining new synthdefs in go and sending them to scsynth
 3. A patterns API similar to what sclang exposes

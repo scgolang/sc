@@ -1,6 +1,7 @@
 package sc
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/briansorahan/go-osc/osc"
 	"io"
@@ -50,7 +51,15 @@ func (self *Server) Status() error {
 }
 
 // Send a synthdef to scsynth
-func (self *Server) Send(def *Synthdef) error {
+func (self *Server) SendDef(def *Synthdef) error {
+	buf := bytes.NewBuffer(make([]byte, 0))
+	err := def.Write(buf)
+	if err != nil {
+		return err
+	}
+	msg := osc.NewOscMessage("/d_recv")
+	msg.Append(buf.Bytes())
+	self.oscServer.SendTo(self.addr, msg)
 	return nil
 }
 

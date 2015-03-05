@@ -1,0 +1,45 @@
+What
+----
+This package provides a way to interface directly with the
+supercollider server from go programs.
+
+Why
+---
+Supercollider has a well-deserved reputation for being difficult
+to learn. I believe that the sclang is a big reason for this.
+I also believe that golang is quite easy to learn, hence
+replacing sclang with golang makes a lot of sense to me.
+
+Install
+-------
+First, and most importantly, you must have supercollider
+installed (go to http://supercollider.github.io/download.html).
+Next, you must install go (from https://golang.org/dl).
+Then
+$ go get github.com/briansorahan/sc
+
+Usage
+-----
+Find godocs at http://godoc.org/github.com/briansorahan/sc.
+Also, take a look at some of the example programs in the
+examples/ directory.
+
+Develop
+-------
+See https://github.com/briansorahan/sc/blob/master/CONTRIBUTING
+
+Roadmap
+--------
+I intend to support
+1. Starting, stopping, and monitoring the status of scsynth
+2. Defining new synthdefs in go and sending them to scsynth
+3. A patterns API similar to what sclang exposes
+4. A way to play back patterns using a metronome
+5. MIDI input/output
+6. OSC input/output
+
+Thanks
+------
+This project is hugely indebted to
+(1) The supercollider developer community, and
+(2) Overtone (https://github.com/overtone/overtone)

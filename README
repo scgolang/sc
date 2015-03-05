@@ -18,6 +18,10 @@ Next, you must install go (from https://golang.org/dl).
 Then
 $ go get github.com/briansorahan/sc
 
+Test
+----
+$ make test
+
 Usage
 -----
 Find godocs at http://godoc.org/github.com/briansorahan/sc.

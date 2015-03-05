@@ -39,7 +39,7 @@ synthdefs: $(SYNTHDEFS)
 clean:
 	rm -rf *~ *.scsyndef $(EXAMPLES_BIN)
 
-test:
+test: $(SYNTHDEFS)
 	go test
 	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done
 

@@ -18,7 +18,7 @@ SYNTHDEFS := SineTone            \
              Beats
 
 SYNTHDEFS := $(addsuffix .scsyndef,$(SYNTHDEFS))
-SYNTHDEFS := $(addprefix synthdefs/,$(SYNTHDEFS))
+# SYNTHDEFS := $(addprefix synthdefs/,$(SYNTHDEFS))
 
 SUBPKG := ugens
 EXAMPLES := $(wildcard examples/*.go)
@@ -31,7 +31,7 @@ all:
 	go install
 	for pkg in $(SUBPKG); do cd $$pkg && go install && cd ..; done
 
-%.scsyndef: %.sc
+%.scsyndef: synthdefs/%.sc
 	sclang $<
 
 synthdefs: $(SYNTHDEFS)

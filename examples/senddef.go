@@ -30,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 	time.Sleep(5000 * time.Millisecond)
-	err = server.NewSynth("SineTone", 1000, 0, 1)
+	err = server.NewSynth("SineTone", server.NextSynthID(), AddToHead, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"strconv"
+	"sync/atomic"
 	"syscall"
 	"time"
 )
@@ -31,6 +32,8 @@ const (
 	AddBefore        = 2
 	AddAfter         = 3
 	AddReplace       = 4
+	RootNodeID       = 0
+	DefaultGroupID   = 1
 )
 
 type Server struct {
@@ -46,6 +49,8 @@ type Server struct {
 	// doneChan relays the /done message that comes
 	// from scsynth
 	doneChan chan error
+	// next synth node ID
+	nextSynthID int32
 }
 
 // Status gets the status of scsynth
@@ -117,6 +122,11 @@ func (self *Server) NewGroup(id, action, target int32) error {
 	return nil
 }
 
+// NextSynthID
+func (self *Server) NextSynthID() int32 {
+	return atomic.AddInt32(&self.nextSynthID, 1)
+}
+
 // Run runs scsynth in a new goroutine and sends
 // any errors on the returned channel.
 // This method will not return until
@@ -146,7 +156,7 @@ func (self *Server) Run() chan error {
 	}
 add_default_group:
 	go func() {
-		err := self.NewGroup(1, 0, 0)
+		err := self.NewGroup(DefaultGroupID, AddToHead, RootNodeID)
 		if err != nil {
 			running <-err
 		}
@@ -235,6 +245,7 @@ func NewServer(addr string, port int, options ServerOptions) (*Server, error) {
 		oscServer,
 		scsynth,
 		doneChan,
+		1000,
 	}
 	// stop scsynth on interrupts and kills
 	c := make(chan os.Signal)

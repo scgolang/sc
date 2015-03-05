@@ -22,10 +22,15 @@ const (
 	listenAddr       = "127.0.0.1"
 	statusOscAddress = "/status.reply"
 	doneOscAddress   = "/done"
-	DumpOff          = 0x00
-	DumpParsed       = 0x01
-	DumpContents     = 0x02
-	DumpAll          = 0x03
+	DumpOff          = 0
+	DumpParsed       = 1
+	DumpContents     = 2
+	DumpAll          = 3
+	AddToHead        = 0
+	AddToTail        = 1
+	AddBefore        = 2
+	AddAfter         = 3
+	AddReplace       = 4
 )
 
 type Server struct {

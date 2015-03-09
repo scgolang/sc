@@ -13,7 +13,13 @@ const (
 // Control arrays that get handed to EnvGen
 var Env = newEnv()
 
-type envelope struct {
+type envelope interface {
+	// InputsArray provides EnvGen with the data it needs
+	// to get a list of inputs
+	InputsArray() []interface{}
+}
+
+type envelopeImpl struct {
 	levels      []interface{}
 	times       []interface{}
 	curvetype   int
@@ -22,13 +28,7 @@ type envelope struct {
 	loopNode    interface{}
 }
 
-type Envelope interface {
-	// InputsArray provides EnvGen with the data it needs
-	// to
-	InputsArray() []interface{}
-}
-
-func (self *envelope) InputsArray() []interface{} {
+func (self *envelopeImpl) InputsArray() []interface{} {
 	numSegments := len(self.levels)
 	arr := make([]interface{}, 4*numSegments)
 	arr[0] = self.levels[0]

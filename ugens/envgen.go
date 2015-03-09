@@ -29,7 +29,7 @@ func (self *envGen) atRate(rate int8, args ...interface{}) UgenNode {
 	if len(args) == 0 {
 		panic("EnvGen needs an Envelope as the first argument")
 	}
-	if envelope, isEnvelope := args[0].(Envelope); isEnvelope {
+	if envelope, isEnvelope := args[0].(envelope); isEnvelope {
 		envArray = envelope.InputsArray()
 	} else {
 		panic("EnvGen needs an Envelope as the first argument")

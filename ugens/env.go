@@ -48,10 +48,10 @@ type env struct {
 }
 
 // Perc http://doc.sccode.org/Classes/Env.html#*perc
-func (self *env) Perc(args ...interface{}) Envelope {
+func (self *env) Perc(args ...interface{}) envelope {
 	defaults := []float32{0.01, 1, 1, -4}
 	withDefaults := applyDefaults(defaults, args...)
-	e := envelope{
+	e := envelopeImpl{
 		[]interface{}{float32(0), withDefaults[2], float32(0)},
 		[]interface{}{withDefaults[0], withDefaults[1]},
 		specialCurveType,

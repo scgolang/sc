@@ -81,11 +81,11 @@ func (self *control) Outputs() []Output {
 	return self.outputs
 }
 
-func (self *control) Mul(val float32) UgenNode {
+func (self *control) Mul(val interface{}) UgenNode {
 	return self
 }
 
-func (self *control) Add(val float32) UgenNode {
+func (self *control) Add(val interface{}) UgenNode {
 	return self
 }
 

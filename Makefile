@@ -10,14 +10,16 @@ SCLANG=/usr/bin/sclang
 endif
 
 # Synthdefs needed for testing
-SYNTHDEFS := SineTone            \
-             SineTone2           \
-             SineTone3           \
-             SineTone4           \
-             SawTone1            \
-             Beats
+SYNTHDEFS := synthdefs.sc
+COMPILED_SYNTHDEFS := Beats            \
+                      Envgen1          \
+                      SawTone1         \
+                      SineTone         \
+                      SineTone2        \
+                      SineTone3        \
+                      SineTone4
 
-SYNTHDEFS := $(addsuffix .scsyndef,$(SYNTHDEFS))
+COMPILED_SYNTHDEFS := $(addsuffix .scsyndef,$(COMPILED_SYNTHDEFS))
 
 SUBPKG := ugens
 EXAMPLES := $(wildcard examples/*.go)
@@ -30,15 +32,15 @@ all:
 	go install
 	for pkg in $(SUBPKG); do cd $$pkg && go install && cd ..; done
 
-%.scsyndef: synthdefs/%.sc
+%.scsyndef: synthdefs.sc
 	sclang $<
 
-synthdefs: $(SYNTHDEFS)
+synthdefs: $(COMPILED_SYNTHDEFS)
 
 clean:
-	rm -rf *~ *.scsyndef $(EXAMPLES_BIN)
+	rm -rf *~ $(COMPILED_SYNTHDEFS) $(EXAMPLES_BIN) *.gosyndef
 
-test: $(SYNTHDEFS)
+test: $(COMPILED_SYNTHDEFS)
 	go test
 	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done
 

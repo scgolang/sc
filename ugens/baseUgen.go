@@ -31,7 +31,6 @@ func (self *baseUgen) atRate(rate int8, args ...interface{}) UgenNode {
 	node := newNode(self.name, rate, 0)
 	withDefaults := applyDefaults(self.defaults, args...)
 	getInputs(node, withDefaults...)
-	// getInputs(node, args...)
 	return node
 }
 

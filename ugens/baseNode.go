@@ -39,30 +39,25 @@ func (self *BaseNode) IsOutput() {
 	}
 }
 
-func (self *BaseNode) Mul(f float32) UgenNode {
-	if f == float32(1) {
-		return self
-	}
+func (self *BaseNode) Mul(val interface{}) UgenNode {
 	node := newNode("BinaryOpUGen", self.rate, 2)
 	node.addInput(self)
-	node.addInput(f)
-	self.IsOutput()
+	node.addInput(val)
 	return node
 }
 
-func (self *BaseNode) Add(f float32) UgenNode {
-	if f == float32(0) {
-		return self
-	}
+func (self *BaseNode) Add(val interface{}) UgenNode {
 	node := newNode("BinaryOpUGen", self.rate, 0)
 	node.addInput(self)
-	node.addInput(f)
-	self.IsOutput()
+	node.addInput(val)
 	return node
 }
 
 // addInput appends an Input to this node's list of inputs
 func (self *BaseNode) addInput(in interface{}) {
+	if node, isNode := in.(*BaseNode); isNode {
+		node.IsOutput()
+	}
 	self.inputs = append(self.inputs, in)
 }
 

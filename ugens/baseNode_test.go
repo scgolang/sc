@@ -23,8 +23,8 @@ func TestIsOutput(t *testing.T) {
 
 func TestAddUgenInput(t *testing.T) {
 	s := SinOsc.Ar(440)
-	if _, isBase := s.(*BaseNode); !isBase {
-		t.Fatalf("SinOsc.Ar did not return *BaseNode")
+	if _, isBase := s.(*baseNode); !isBase {
+		t.Fatalf("SinOsc.Ar did not return *baseNode")
 	}
 	Out.Ar(0, s)
 	outputs := s.Outputs()

@@ -1,5 +1,6 @@
 *~
 *.scsyndef
+*.gosyndef
 sdef
 status
 inspect

@@ -60,11 +60,6 @@ func TestSynthdefEnvgen(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err := os.Create("Envgen1.gosyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	def.Write(f)
 	if !same {
 		t.Fatalf("synthdef different from sclang-generated version")
 	}

@@ -17,8 +17,8 @@ type UgenNode interface {
 	Outputs() []Output
 	// Mul multiplies the output of a ugen node by a constant
 	// and returns a new ugen node representing the resulting audio stream
-	Mul(f float32) UgenNode
+	Mul(val interface{}) UgenNode
 	// Add adds a constant to the output of a ugen node
 	// and returns a new ugen node representing the resulting audio stream
-	Add(f float32) UgenNode
+	Add(val interface{}) UgenNode
 }

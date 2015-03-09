@@ -49,6 +49,27 @@ func TestCompareToFile(t *testing.T) {
 	}
 }
 
+func TestSynthdefEnvgen(t *testing.T) {
+	def := NewSynthdef("Envgen1", func(params Params) UgenNode {
+		return Out.Ar(0, PinkNoise.Ar().Mul(EnvGen.Kr(Env.Perc(), 1, 1, 0, 1, 2)))
+	})
+	if def == nil {
+		t.Fatalf("nil synthdef")
+	}
+	same, err := def.CompareToFile("Envgen1.scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, err := os.Create("Envgen1.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	def.Write(f)
+	if !same {
+		t.Fatalf("synthdef different from sclang-generated version")
+	}
+}
+
 func ExampleNewSynthdef() {
 	NewSynthdef("SineTone", func(params Params) UgenNode {
 		return Out.Ar(0, SinOsc.Ar(440))

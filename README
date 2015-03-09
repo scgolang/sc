@@ -10,6 +10,18 @@ to learn. I believe that sclang is a big reason for this.
 I also believe that golang is quite easy to learn, hence
 replacing sclang with golang makes a lot of sense to me.
 
+Who
+---
+See https://github.com/briansorahan/sc/blob/master/AUTHORS
+
+What this is not
+----------------
+sc is not intended for livecoding (for more about livecoding see
+http://en.wikipedia.org/wiki/Live_coding). I may decide someday
+to support some livecoding-esque features, but for now the
+goal is to be able to build cross-platform desktop music
+applications that use supercollider as the audio engine.
+
 Install
 -------
 First, and most importantly, you must have supercollider

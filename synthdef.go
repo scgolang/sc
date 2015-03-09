@@ -223,7 +223,7 @@ func (self *Synthdef) CompareToFile(path string) (bool, error) {
 func compareBytes(a, b []byte) bool {
 	la, lb := len(a), len(b)
 	if la != lb {
-		fmt.Println("different lengths a=%d b=%d", la, lb)
+		fmt.Printf("different lengths a=%d b=%d\n", la, lb)
 		return false
 	}
 	for i, octet := range a {
@@ -417,7 +417,7 @@ func flatten(node UgenNode, params Params, def *Synthdef) *input {
 		} else if inputVal, isInput := val.(*input); isInput {
 			in = inputVal
 		} else {
-			panic("ugen inputs must be constant, param, or ugens")
+			panic(fmt.Errorf("ugen inputs must be constant, param, or ugens (%v)", val))
 		}
 		u.AppendInput(in)
 	}

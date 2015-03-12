@@ -6,17 +6,17 @@ import (
 )
 
 func TestPerc(t *testing.T) {
-	e := Env.Perc(C(0.01), C(1), C(1), C(-4))
+	e := EnvPerc{}
 	expect := []float32{0, 2, -99, -99, 1, 0.01, 5, -4, 0, 1, 5, -4}
 	verifyInputs(t, expect, e.InputsArray())
 }
 
 func TestLinen(t *testing.T) {
-	e := Env.Linen(C(0.01), C(1), C(1), C(1), CurveLinear)
+	e := EnvLinen{}
 	expect := []float32{0, 3, -99, -99, 1, 0.01, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0}
 	verifyInputs(t, expect, e.InputsArray())
+	f := EnvLinen{CurveType:CurveWelch}
 	expectWelch := []float32{0, 3, -99, -99, 1, 0.01, 4, 0, 1, 1, 4, 0, 0, 1, 4, 0}
-	f := Env.Linen(C(0.01), C(1), C(1), C(1), CurveWelch)
 	verifyInputs(t, expectWelch, f.InputsArray())
 }
 

@@ -29,7 +29,7 @@ Unit Generators for [sc][1].
 | Dust                        | No        |
 | Dust2                       | No        |
 | Env                         | No        |
-| EnvGen                      | No        |
+| EnvGen                      | Yes       |
 | FFT                         | No        |
 | FSinOsc                     | No        |
 | Formlet                     | No        |
@@ -70,7 +70,7 @@ Unit Generators for [sc][1].
 | Pan4                        | No        |
 | PanAz                       | No        |
 | PanB2                       | No        |
-| PinkNoise                   | No        |
+| PinkNoise                   | Yes       |
 | PlayBuf                     | No        |
 | Pulse                       | No        |
 | PulseCount                  | No        |

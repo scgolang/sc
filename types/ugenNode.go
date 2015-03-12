@@ -12,13 +12,7 @@ type UgenNode interface {
 	// (1) Constant (float32)
 	// (2) Control (synthdef param)
 	// (3) UgenNode
-	Inputs() []interface{}
+	Inputs() []Input
 	// Outputs returns the outputs of the ugen node
 	Outputs() []Output
-	// Mul multiplies the output of a ugen node by a constant
-	// and returns a new ugen node representing the resulting audio stream
-	Mul(val interface{}) UgenNode
-	// Add adds a constant to the output of a ugen node
-	// and returns a new ugen node representing the resulting audio stream
-	Add(val interface{}) UgenNode
 }

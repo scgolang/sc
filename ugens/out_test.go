@@ -5,10 +5,9 @@ import (
 )
 
 func TestOut(t *testing.T) {
-	out := Out.Ar(0, SinOsc.Ar())
-	if out == nil {
-		t.Fatalf("out was nil")
-	}
+	bus := C(0)
+	sin := SinOsc{}.Rate(AR)
+	out := Out{bus, sin}.Rate(AR)
 	inputs := out.Inputs()
 	numInputs := len(inputs)
 	if numInputs != 2 {

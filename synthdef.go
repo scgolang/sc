@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	. "github.com/briansorahan/sc/types"
+	. "github.com/briansorahan/sc/ugens"
 	"io"
 	"io/ioutil"
 	"os"
@@ -73,13 +74,14 @@ func (self *Synthdef) AddConstant(c float32) *input {
 // (1) Add their default values to initialParamValues
 // (2) Add their names/indices to paramNames
 // (3) Add a Control ugen as the first ugen
-func (self *Synthdef) AddParams(p Params) {
+func (self *Synthdef) AddParams(p *Params) {
+	// HACK convert Params to an interface type
 	paramList := p.List()
 	numParams := len(paramList)
 	self.InitialParamValues = make([]float32, numParams)
 	self.ParamNames = make([]ParamName, numParams)
 	for i, param := range paramList {
-		self.InitialParamValues[i] = param.GetDefault()
+		self.InitialParamValues[i] = param.GetInitialValue()
 		self.ParamNames[i] = ParamName{param.Name(),param.Index()}
 	}
 	if numParams > 0 {
@@ -244,10 +246,11 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 		return nil, er
 	}
 	if read != startLen {
-		return nil, fmt.Errorf("bad synthdef")
+		return nil, fmt.Errorf("Only read %d bytes of synthdef file", read)
 	}
-	if bytes.NewBuffer(start).String() != synthdefStart {
-		return nil, fmt.Errorf("bad synthdef")
+	actual := bytes.NewBuffer(start).String()
+	if actual != synthdefStart {
+		return nil, fmt.Errorf("synthdef started with %s instead of %s", actual, synthdefStart)
 	}
 	// read version
 	var version int32
@@ -382,14 +385,14 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 	// Then in order to correctly map the values passed when creating 
 	// a synth node they have to be passed in the same order
 	// they were created in the UgenGraphFunc.
-	params := newParams()
+	params := NewParams()
 	root := graphFunc(params)
 	def.AddParams(params)
 	flatten(root, params, def)
 	return def
 }
 
-func flatten(node UgenNode, params Params, def *Synthdef) *input {
+func flatten(node UgenNode, params *Params, def *Synthdef) *input {
 	stack := newStack()
 	inputs := node.Inputs()
 	// iterate through ugen inputs in reverse order
@@ -406,13 +409,9 @@ func flatten(node UgenNode, params Params, def *Synthdef) *input {
 	var in *input
 	u := cloneUgen(node)
 	for val := stack.Pop(); val != nil; val = stack.Pop() {
-		if intVal, isInt := val.(int); isInt {
-			in = def.AddConstant(float32(intVal))
-		} else if floatVal, isFloat32 := val.(float32); isFloat32 {
-			in = def.AddConstant(float32(floatVal))
-		} else if floatVal, isFloat64 := val.(float64); isFloat64 {
-			in = def.AddConstant(float32(floatVal))
-		} else if paramVal, isParam := val.(Param); isParam {
+		if cval, isc := val.(C); isc {
+			in = def.AddConstant(float32(cval))
+		} else if paramVal, isParam := val.(*Param); isParam {
 			in = &input{0, paramVal.Index()}
 		} else if inputVal, isInput := val.(*input); isInput {
 			in = inputVal

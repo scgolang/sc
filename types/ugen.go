@@ -1,7 +1,9 @@
 package types
 
+// UGen http://doc.sccode.org/Classes/UGen.html
 type Ugen interface {
-	Ar(args ...interface{}) UgenNode
-	Kr(args ...interface{}) UgenNode
-	Ir(args ...interface{}) UgenNode
+	// Rate creates a ugen at one of the supported rates.
+	// Supported rates are AR, KR, and IR.
+	// Unsupported rates cause a runtime panic.
+	Rate(int8) UgenNode
 }

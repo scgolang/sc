@@ -1,47 +1,39 @@
 package ugens
 
-import (
-	. "github.com/briansorahan/sc/types"
-)
+import . "github.com/briansorahan/sc/types"
 
-var EnvGen = newEnvGen()
-
-type envGen struct {
-	name     string
-	defaults []float32
+type EnvGen struct {
+	Env        Envelope
+	Gate       Input
+	LevelScale Input
+	LevelBias  Input
+	TimeScale  Input
+	Done int
 }
 
-func (self *envGen) Ar(args ...interface{}) UgenNode {
-	return self.atRate(audioRate, args...)
-}
-
-func (self *envGen) Kr(args ...interface{}) UgenNode {
-	return self.atRate(controlRate, args...)
-}
-
-func (self *envGen) Ir(args ...interface{}) UgenNode {
-	return self.atRate(initializationRate, args...)
-}
-
-func (self *envGen) atRate(rate int8, args ...interface{}) UgenNode {
-	var envArray []interface{}
-	// sclang throws if the first arg is not an Env, so we do the same
-	if len(args) == 0 {
-		panic("EnvGen needs an Envelope as the first argument")
+func (self *EnvGen) defaults() {
+	if self.Gate == nil {
+		self.Gate = C(1)
 	}
-	if envelope, isEnvelope := args[0].(Envelope); isEnvelope {
-		envArray = envelope.InputsArray()
-	} else {
-		panic("EnvGen needs an Envelope as the first argument")
+	if self.LevelScale == nil {
+		self.LevelScale = C(1)
 	}
-	node := newNode(self.name, rate, 0)
-	withDefaults := applyDefaults(self.defaults, args[1:]...)
-	inputs := append(withDefaults, envArray...)
-	getInputs(node, inputs...)
+	if self.LevelBias == nil {
+		self.LevelBias = C(0)
+	}
+	if self.TimeScale == nil {
+		self.TimeScale = C(1)
+	}
+}
+
+// Rate ugen implementation
+func (self EnvGen) Rate(rate int8) *BaseNode {
+	checkRate(rate)
+	(&self).defaults()
+	node := newNode("EnvGen", rate, 0)
+	ls, lb := self.LevelScale, self.LevelBias
+	node.addInputs(self.Gate, ls, lb, self.TimeScale)
+	node.addInput(C(float32(self.Done)))
+	node.addInputs(self.Env.InputsArray()...)
 	return node
-}
-
-func newEnvGen() *envGen {
-	eg := envGen{"EnvGen", []float32{1, 1, 0, 1, 2}}
-	return &eg
 }

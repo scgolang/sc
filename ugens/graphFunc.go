@@ -1,10 +1,11 @@
-package sc
+package ugens
 
 import (
 	. "github.com/briansorahan/sc/types"
 )
 
-type UgenGraphFunc func(params Params) UgenNode
+// HACK convert Params to an interface type
+type UgenGraphFunc func(params *Params) UgenNode
 
 type PlayFunc func() UgenNode
 

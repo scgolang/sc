@@ -5,94 +5,132 @@ package ugens
 // 0.5, 1, 5, -4, -- second segment: level, time, curve type, curvature
 // 0, 0.2, 5, 4 -- and so on
 
-import (
-	. "github.com/briansorahan/sc/types"
-)
+import . "github.com/briansorahan/sc/types"
 
 const (
-	CurveStep        = 0
-	CurveLinear      = 1
-	CurveExponential = 2
-	CurveSine        = 3
-	CurveWelch       = 4
-	CurveCustom      = 5
-	CurveSquared     = 6
-	CurveCubed       = 7
+	CurveStep        = C(0)
+	CurveLinear      = C(1)
+	CurveExponential = C(2)
+	CurveSine        = C(3)
+	CurveWelch       = C(4)
+	CurveCustom      = C(5)
+	CurveSquared     = C(6)
+	CurveCubed       = C(7)
 )
 
-// Env is not a ugen, but rather a way to generate
-// Control arrays that get handed to EnvGen
-var Env = newEnv()
-
-type Envelope interface {
-	// InputsArray provides EnvGen with the data it needs
-	// to get a list of inputs
-	InputsArray() []Input
+// EnvLinen http://doc.sccode.org/Classes/Env.html#*linen
+type EnvLinen struct {
+	Attack, Sustain, Release, Level, CurveType Input
 }
 
-type envelopeImpl struct {
-	levels      []Input
-	times       []Input
-	curvetype   int
-	curveature  Input
-	releaseNode Input
-	loopNode    Input
+func (self *EnvLinen) defaults() {
+	if self.Attack == nil {
+		self.Attack = C(0.01)
+	}
+	if self.Sustain == nil {
+		self.Sustain = C(1)
+	}
+	if self.Release == nil {
+		self.Release = C(1)
+	}
+	if self.Level == nil {
+		self.Level = C(1)
+	}
+	if self.CurveType == nil {
+		self.CurveType = C(1)
+	}
 }
 
-func (self *envelopeImpl) InputsArray() []Input {
-	numSegments := len(self.levels)
+func (self EnvLinen) InputsArray() []Input {
+	(&self).defaults()
+	levels := []Input{C(0), self.Level, self.Level, C(0)}
+	times := []Input{self.Attack, self.Sustain, self.Release}
+	e := Env{levels, times, self.CurveType, C(0), C(-99), C(-99)}
+	return e.InputsArray()
+}
+
+// EnvTriangle http://doc.sccode.org/Classes/Env.html#*triangle
+type EnvTriangle struct {
+	Dur, Level Input
+}
+
+func (self *EnvTriangle) defaults() {
+	if self.Dur == nil {
+		self.Dur = C(1)
+	}
+	if self.Level == nil {
+		self.Level = C(1)
+	}
+}
+
+func (self EnvTriangle) InputsArray() []Input {
+	levels := []Input{C(0), self.Level, C(0)}
+	d := self.Dur.Mul(C(0.5))
+	times := []Input{d, d}
+	e := Env{levels, times, CurveLinear, C(0), C(-99), C(-99)}
+	return e.InputsArray()
+}
+
+// EnvSine http://doc.sccode.org/Classes/Env.html#*sine
+type EnvSine struct {
+	Dur, Level Input
+}
+
+func (self EnvSine) InputsArray() []Input {
+	levels := []Input{C(0), self.Level, C(0)}
+	d := self.Dur.Mul(C(0.5))
+	times := []Input{d, d}
+	e := Env{levels, times, CurveSine, C(0), C(-99), C(-99)}
+	return e.InputsArray()
+}
+
+// EnvPerc http://doc.sccode.org/Classes/Env.html#*perc
+type EnvPerc struct {
+	Attack, Release, Level, Curvature Input
+}
+
+func (self *EnvPerc) defaults() {
+	if self.Attack == nil {
+		self.Attack = C(0.01)
+	}
+	if self.Release == nil {
+		self.Release = C(1)
+	}
+	if self.Level == nil {
+		self.Level = C(1)
+	}
+	if self.Curvature == nil {
+		self.Curvature = C(-4)
+	}
+}
+
+func (self EnvPerc) InputsArray() []Input {
+	(&self).defaults()
+	levels := []Input{C(0), self.Level, C(0)}
+	times := []Input{self.Attack, self.Release}
+	crv := self.Curvature
+	e := Env{levels, times, CurveCustom, crv, C(-99), C(-99)}
+	return e.InputsArray()
+}
+
+type Env struct {
+	Levels                                      []Input
+	Times                                       []Input
+	CurveType, Curvature, ReleaseNode, LoopNode Input
+}
+
+func (self *Env) InputsArray() []Input {
+	numSegments := len(self.Levels)
 	arr := make([]Input, 4*numSegments)
-	arr[0] = self.levels[0]
+	arr[0] = self.Levels[0]
 	arr[1] = C(float32(numSegments - 1))
-	arr[2] = self.releaseNode
-	arr[3] = self.loopNode
-	for i, t := range self.times {
-		arr[(4*i)+4] = self.levels[i+1]
+	arr[2] = self.ReleaseNode
+	arr[3] = self.LoopNode
+	for i, t := range self.Times {
+		arr[(4*i)+4] = self.Levels[i+1]
 		arr[(4*i)+5] = t
-		arr[(4*i)+6] = C(float32(self.curvetype))
-		arr[(4*i)+7] = self.curveature
+		arr[(4*i)+6] = self.CurveType
+		arr[(4*i)+7] = self.Curvature
 	}
 	return arr
-}
-
-type env struct {
-}
-
-// Linen http://doc.sccode.org/Classes/Env.html#*linen
-func (self *env) Linen(at, st, rt, level Input, curvetype int) Envelope {
-	levels := []Input{C(0), level, level, C(0)}
-	times := []Input{at, st, rt}
-	e := envelopeImpl{levels, times, curvetype, C(0), C(-99), C(-99)}
-	return &e
-}
-
-// Triangle http://doc.sccode.org/Classes/Env.html#*triangle
-func (self *env) Triangle(dur, level Input) Envelope {
-	levels := []Input{C(0), level, C(0)}
-	d := dur.Mul(C(0.5))
-	times := []Input{d, d}
-	e := envelopeImpl{levels, times, CurveLinear, C(0), C(-99), C(-99)}
-	return &e
-}
-
-// Triangle http://doc.sccode.org/Classes/Env.html#*triangle
-func (self *env) Sine(dur, level Input) Envelope {
-	levels := []Input{C(0), level, C(0)}
-	d := dur.Mul(C(0.5))
-	times := []Input{d, d}
-	e := envelopeImpl{levels, times, CurveSine, C(0), C(-99), C(-99)}
-	return &e
-}
-
-// Perc http://doc.sccode.org/Classes/Env.html#*perc
-func (self *env) Perc(at, rt, level, curveature Input) Envelope {
-	levels := []Input{C(0), level, C(0)}
-	times := []Input{at, rt}
-	e := envelopeImpl{levels, times, CurveCustom, curveature, C(-99), C(-99)}
-	return &e
-}
-
-func newEnv() *env {
-	eg := env{}
-	return &eg
 }

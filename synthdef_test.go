@@ -68,7 +68,7 @@ func TestSynthdefEnvgen(t *testing.T) {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
 		level, curveature := C(1), C(-4)
-		perc := Env.Perc(attack, release, level, curveature)
+		perc := EnvPerc{attack, release, level, curveature}
 		gate, levelScale, levelBias, timeScale := C(1), C(1), C(0), C(1)
 		ampEnv := EnvGen{perc, gate, levelScale, levelBias, timeScale, FreeEnclosing}.Rate(KR)
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)

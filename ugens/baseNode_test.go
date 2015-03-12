@@ -6,7 +6,7 @@ import (
 
 func TestAddConstantInput(t *testing.T) {
 	n := newNode("foo", 2, 0)
-	n.addInput(3.14)
+	n.addInput(C(3.14))
 	if inputs := n.Inputs(); len(inputs) != 1 {
 		t.Fatalf("len(inputs) was %d", len(inputs))
 	}
@@ -22,11 +22,11 @@ func TestIsOutput(t *testing.T) {
 }
 
 func TestAddUgenInput(t *testing.T) {
-	s := SinOsc.Ar(440)
-	if _, isBase := s.(*baseNode); !isBase {
-		t.Fatalf("SinOsc.Ar did not return *baseNode")
+	s := SinOsc{}.Rate(AR)
+	if s == nil {
+		t.Fatalf("SinOsc.Rate returned nil")
 	}
-	Out.Ar(0, s)
+	Out{C(0), s}.Rate(AR)
 	outputs := s.Outputs()
 	if numOutputs := len(outputs); numOutputs != 1 {
 		t.Fatalf("number of SinOsc outputs was %d", numOutputs)

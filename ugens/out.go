@@ -1,3 +1,15 @@
 package ugens
 
-var Out = newUgen("Out", []float32{0})
+import . "github.com/briansorahan/sc/types"
+
+// Out
+type Out struct {
+	Bus      C
+	Channels Input
+}
+
+func (self Out) Rate(rate int8) *BaseNode {
+	n := newNode("Out", rate, 0)
+	n.addInputs(self.Bus, self.Channels)
+	return n
+}

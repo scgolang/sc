@@ -32,4 +32,9 @@ SynthDef(\SineTone4, {
     Out.ar(0, SinOsc.ar(freq));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\UseParam, {
+	arg freq=200;
+	Out.ar(0, SinOsc.ar(freq + 20));
+}).writeDefFile(File.getcwd);
+
 0.exit;

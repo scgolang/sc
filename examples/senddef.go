@@ -16,8 +16,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	def := NewSynthdef("SineTone", func(params Params) UgenNode {
-		return Out.Ar(0, SinOsc.Ar(440))
+	// HACK convert Params to an interface type
+	def := NewSynthdef("SineTone", func(params *Params) UgenNode {
+		return Out.Ar(C(0), SinOsc.Ar(C(440)))
 	})
 	done := server.Run()
 	err = server.SendDef(def)

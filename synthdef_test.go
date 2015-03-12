@@ -25,8 +25,10 @@ func TestReadSynthdef(t *testing.T) {
 }
 
 func TestNewSynthdef(t *testing.T) {
-	def := NewSynthdef("SineTone", func(params Params) UgenNode {
-		return Out.Ar(0, SinOsc.Ar(440))
+	def := NewSynthdef("SineTone", func(params *Params) UgenNode {
+		bus, freq, phase := C(0), C(440), C(0)
+		sine := SinOsc{freq, phase}.Rate(AR)
+		return Out{bus, sine}.Rate(AR)
 	})
 	if def == nil {
 		t.Fatalf("nil synthdef")
@@ -34,12 +36,24 @@ func TestNewSynthdef(t *testing.T) {
 }
 
 func TestCompareToFile(t *testing.T) {
-	def := NewSynthdef("SineTone", func(params Params) UgenNode {
-		return Out.Ar(0, SinOsc.Ar(440))
+	def := NewSynthdef("SineTone", func(params *Params) UgenNode {
+		bus, freq := C(0), C(440)
+		sine := SinOsc{Freq:freq}.Rate(AR)
+		return Out{bus, sine}.Rate(AR)
 	})
 	if def == nil {
 		t.Fatalf("nil synthdef")
 	}
+
+	f, err := os.Create("SineTone.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = def.Write(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	same, err := def.CompareToFile("SineTone.scsyndef")
 	if err != nil {
 		t.Fatal(err)
@@ -50,8 +64,15 @@ func TestCompareToFile(t *testing.T) {
 }
 
 func TestSynthdefEnvgen(t *testing.T) {
-	def := NewSynthdef("Envgen1", func(params Params) UgenNode {
-		return Out.Ar(0, PinkNoise.Ar().Mul(EnvGen.Kr(Env.Perc(), 1, 1, 0, 1, 2)))
+	def := NewSynthdef("Envgen1", func(params *Params) UgenNode {
+		bus := C(0)
+		attack, release := C(0.01), C(1)
+		level, curveature := C(1), C(-4)
+		perc := Env.Perc(attack, release, level, curveature)
+		gate, levelScale, levelBias, timeScale := C(1), C(1), C(0), C(1)
+		ampEnv := EnvGen{perc, gate, levelScale, levelBias, timeScale, FreeEnclosing}.Rate(KR)
+		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)
+		return Out{bus, noise}.Rate(AR)
 	})
 	if def == nil {
 		t.Fatalf("nil synthdef")
@@ -66,35 +87,45 @@ func TestSynthdefEnvgen(t *testing.T) {
 }
 
 func ExampleNewSynthdef() {
-	NewSynthdef("SineTone", func(params Params) UgenNode {
-		return Out.Ar(0, SinOsc.Ar(440))
+	NewSynthdef("SineTone", func(params *Params) UgenNode {
+		bus := C(0)
+		sine := SinOsc{}.Rate(AR)
+		return Out{bus, sine}.Rate(AR)
 	}).WriteJSON(os.Stdout)
 	// Output:
 	// {"name":"SineTone","constants":[440,0],"initialParamValues":[],"paramNames":[],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":0,"outputIndex":0}],"outputs":[]}],"variants":[]}
 }
 
 func ExampleNewSynthdefSineTone2() {
-	NewSynthdef("SineTone2", func(params Params) UgenNode {
-		return Out.Ar(0, SinOsc.Ar(440, SinOsc.Ar(0.1, 0)).Mul(0.5))
+	NewSynthdef("SineTone2", func(params *Params) UgenNode {
+		bus := C(0)
+		freq:= C(440)
+		phase := SinOsc{Freq: C(0.1)}.Rate(AR)
+		out := SinOsc{freq, phase}.Rate(AR).Mul(C(0.5))
+		return Out{bus, out}.Rate(AR)
 	}).WriteJSON(os.Stdout)
 	// Output:
 	// {"name":"SineTone2","constants":[0.1,0,440,0.5],"initialParamValues":[],"paramNames":[],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[{"rate":2}]},{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":2},{"ugenIndex":0,"outputIndex":0}],"outputs":[{"rate":2}]},{"name":"BinaryOpUGen","rate":2,"specialIndex":2,"inputs":[{"ugenIndex":1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":3}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":2,"outputIndex":0}],"outputs":[]}],"variants":[]}
 }
 
 func ExampleNewSynthdefParams() {
-	NewSynthdef("SineTone4", func(params Params) UgenNode {
-		freq := params.Add("freq").SetDefault(440)
-		return Out.Ar(0, SinOsc.Ar(freq))
+	NewSynthdef("SineTone4", func(params *Params) UgenNode {
+		freq := params.Add("freq", 440)
+		bus, sine := C(0), SinOsc{freq, C(0)}.Rate(AR)
+		return Out{bus, sine}.Rate(AR)
 	}).WriteJSON(os.Stdout)
 	// Output:
 	// {"name":"SineTone4","constants":[0],"initialParamValues":[440],"paramNames":[{"Name":"freq","Index":0}],"ugens":[{"name":"Control","rate":1,"specialIndex":0,"inputs":[],"outputs":[{"rate":1}]},{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":0,"outputIndex":0},{"ugenIndex":-1,"outputIndex":0}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":1,"outputIndex":0}],"outputs":[]}],"variants":[]}
 }
 
 func ExampleSynthdefParams2() {
-	NewSynthdef("SawTone1", func(params Params) UgenNode {
+	NewSynthdef("SawTone1", func(params *Params) UgenNode {
 		freq := params.Add("freq", 440)
 		cutoff, q := params.Add("cutoff", 1200), params.Add("q", 0.5)
-		return Out.Ar(0, RLPF.Ar(Saw.Ar(freq), cutoff, q))
+		bus := C(0)
+		saw := Saw{freq}.Rate(AR)
+		out := RLPF{saw, cutoff, q}.Rate(AR)
+		return Out{bus, out}.Rate(AR)
 	}).WriteJSON(os.Stdout)
 	// Output:
 	// {"name":"SawTone1","constants":[0],"initialParamValues":[440,1200,0.5],"paramNames":[{"Name":"freq","Index":0},{"Name":"cutoff","Index":1},{"Name":"q","Index":2}],"ugens":[{"name":"Control","rate":1,"specialIndex":0,"inputs":[],"outputs":[{"rate":1},{"rate":1},{"rate":1}]},{"name":"Saw","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":0,"outputIndex":0}],"outputs":[{"rate":2}]},{"name":"RLPF","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":1,"outputIndex":0},{"ugenIndex":0,"outputIndex":1},{"ugenIndex":0,"outputIndex":2}],"outputs":[{"rate":2}]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":2,"outputIndex":0}],"outputs":[]}],"variants":[]}

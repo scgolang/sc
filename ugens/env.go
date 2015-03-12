@@ -5,6 +5,10 @@ package ugens
 // 0.5, 1, 5, -4, -- second segment: level, time, curve type, curvature
 // 0, 0.2, 5, 4 -- and so on
 
+import (
+	. "github.com/briansorahan/sc/types"
+)
+
 const (
 	CurveStep        = 0
 	CurveLinear      = 1
@@ -23,29 +27,29 @@ var Env = newEnv()
 type Envelope interface {
 	// InputsArray provides EnvGen with the data it needs
 	// to get a list of inputs
-	InputsArray() []interface{}
+	InputsArray() []Input
 }
 
 type envelopeImpl struct {
-	levels      []interface{}
-	times       []interface{}
+	levels      []Input
+	times       []Input
 	curvetype   int
-	curveature  interface{}
-	releaseNode interface{}
-	loopNode    interface{}
+	curveature  Input
+	releaseNode Input
+	loopNode    Input
 }
 
-func (self *envelopeImpl) InputsArray() []interface{} {
+func (self *envelopeImpl) InputsArray() []Input {
 	numSegments := len(self.levels)
-	arr := make([]interface{}, 4*numSegments)
+	arr := make([]Input, 4*numSegments)
 	arr[0] = self.levels[0]
-	arr[1] = float32(numSegments - 1)
+	arr[1] = C(float32(numSegments - 1))
 	arr[2] = self.releaseNode
 	arr[3] = self.loopNode
 	for i, t := range self.times {
 		arr[(4*i)+4] = self.levels[i+1]
 		arr[(4*i)+5] = t
-		arr[(4*i)+6] = float32(self.curvetype)
+		arr[(4*i)+6] = C(float32(self.curvetype))
 		arr[(4*i)+7] = self.curveature
 	}
 	return arr
@@ -54,53 +58,37 @@ func (self *envelopeImpl) InputsArray() []interface{} {
 type env struct {
 }
 
-// Perc http://doc.sccode.org/Classes/Env.html#*perc
-func (self *env) Perc(args ...interface{}) Envelope {
-	defaults := []float32{0.01, 1, 1, -4}
-	withDefaults := applyDefaults(defaults, args...)
-	e := envelopeImpl{
-		[]interface{}{float32(0), withDefaults[2], float32(0)},
-		[]interface{}{withDefaults[0], withDefaults[1]},
-		CurveCustom,
-		withDefaults[3],
-		float32(-99),
-		float32(-99),
-	}
+// Linen http://doc.sccode.org/Classes/Env.html#*linen
+func (self *env) Linen(at, st, rt, level Input, curvetype int) Envelope {
+	levels := []Input{C(0), level, level, C(0)}
+	times := []Input{at, st, rt}
+	e := envelopeImpl{levels, times, curvetype, C(0), C(-99), C(-99)}
 	return &e
 }
 
-// Linen http://doc.sccode.org/Classes/Env.html#*linen
-func (self *env) Linen(args ...interface{}) Envelope {
-	defaults := []float32{0.01, 1, 1, 1, 1}
-	withDefaults := applyDefaults(defaults, args...)
-	levels := []interface{}{
-		float32(0),
-		withDefaults[3],
-		withDefaults[3], // sustain level
-		float32(0),
-	}
-	times := []interface{}{
-		withDefaults[0],
-		withDefaults[1],
-		withDefaults[2],
-	}
-	var curve int
-	switch v := withDefaults[4].(type) {
-	case int:
-		curve = v
-	case float32:
-		curve = int(v)
-	default:
-		panic("curve must be either int or float32")
-	}
-	e := envelopeImpl{
-		levels,
-		times,
-		curve,
-		float32(0),
-		float32(-99),
-		float32(-99),
-	}
+// Triangle http://doc.sccode.org/Classes/Env.html#*triangle
+func (self *env) Triangle(dur, level Input) Envelope {
+	levels := []Input{C(0), level, C(0)}
+	d := dur.Mul(C(0.5))
+	times := []Input{d, d}
+	e := envelopeImpl{levels, times, CurveLinear, C(0), C(-99), C(-99)}
+	return &e
+}
+
+// Triangle http://doc.sccode.org/Classes/Env.html#*triangle
+func (self *env) Sine(dur, level Input) Envelope {
+	levels := []Input{C(0), level, C(0)}
+	d := dur.Mul(C(0.5))
+	times := []Input{d, d}
+	e := envelopeImpl{levels, times, CurveSine, C(0), C(-99), C(-99)}
+	return &e
+}
+
+// Perc http://doc.sccode.org/Classes/Env.html#*perc
+func (self *env) Perc(at, rt, level, curveature Input) Envelope {
+	levels := []Input{C(0), level, C(0)}
+	times := []Input{at, rt}
+	e := envelopeImpl{levels, times, CurveCustom, curveature, C(-99), C(-99)}
 	return &e
 }
 

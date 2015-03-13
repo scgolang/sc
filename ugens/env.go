@@ -64,7 +64,7 @@ func (self Env) InputsArray() []Input {
 	return arr
 }
 
-// EnvLinen http://doc.sccode.org/Classes/Env.html#linen
+// EnvLinen creates a new envelope which has a trapezoidal shape
 type EnvLinen struct {
 	Attack, Sustain, Release, Level, CurveType Input
 }
@@ -97,7 +97,7 @@ func (self EnvLinen) InputsArray() []Input {
 	return e.InputsArray()
 }
 
-// EnvTriangle http://doc.sccode.org/Classes/Env.html#triangle
+// EnvTriangle creates a new envelope that has a triangle shape
 type EnvTriangle struct {
 	Dur, Level Input
 }
@@ -121,7 +121,7 @@ func (self EnvTriangle) InputsArray() []Input {
 	return e.InputsArray()
 }
 
-// EnvSine http://doc.sccode.org/Classes/Env.html#sine
+// EnvSine creates a new envelope which has a hanning window shape
 type EnvSine struct {
 	Dur, Level Input
 }
@@ -145,7 +145,7 @@ func (self EnvSine) InputsArray() []Input {
 	return e.InputsArray()
 }
 
-// EnvPerc http://doc.sccode.org/Classes/Env.html#perc
+// EnvPerc creates a new envelope that has a percussive shape
 type EnvPerc struct {
 	Attack, Release, Level, Curvature Input
 }
@@ -192,7 +192,7 @@ func (self Pairs) Swap(i, j int) {
 	self[i], self[j] = self[j], self[i]
 }
 
-// EnvPairs http://doc.sccode.org/Classes/Env.html#pairs
+// EnvPairs creates a new envelope from coordinates/pairs
 type EnvPairs struct {
 	Pairs     Pairs
 	CurveType C
@@ -221,7 +221,8 @@ type TLC struct {
 	Curve C
 }
 
-// EnvTLC represents an array of (time, level, curve) triplets
+// EnvTLC creates a new envelope from an array of (time, level, curve) triplets
+// This is renamed from Env.xyc
 type EnvTLC []TLC
 
 func (self EnvTLC) Len() int {
@@ -296,6 +297,7 @@ func (self EnvADSR) InputsArray() []Input {
 	return e.InputsArray()
 }
 
+// EnvDADSR is EnvADSR with its onset delayed by D seconds
 type EnvDADSR struct {
 	Delay, A, D, S, R, Peak, Curve, Bias Input
 }
@@ -342,6 +344,7 @@ func (self EnvDADSR) InputsArray() []Input {
 	return e.InputsArray()
 }
 
+// EnvASR is an attack-sustain-release envelope
 type EnvASR struct {
 	A, S, R, Curve Input
 }
@@ -370,6 +373,8 @@ func (self EnvASR) InputsArray() []Input {
 	return e.InputsArray()
 }
 
+// EnvCutoff creates an envelope with no attack segment.
+// It simply sustains at the peak level until released.
 type EnvCutoff struct {
 	R, Level, CurveType Input
 }

@@ -10,6 +10,9 @@ const (
 	ACCEPTABLE_FLOAT_ERROR = 0.0001
 )
 
+// All of the expected values in these tests were generated
+// with sclang using SCIDE.
+
 func TestPerc(t *testing.T) {
 	e := EnvPerc{}
 	expect := []float32{0, 2, -99, -99, 1, 0.01, 5, -4, 0, 1, 5, -4}

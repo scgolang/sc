@@ -22,6 +22,48 @@ const (
 	CurveCubed       = C(7)
 )
 
+type Env struct {
+	Levels      []Input
+	Times       []Input
+	CurveTypes  []Input
+	Curvature   Input
+	ReleaseNode Input
+	LoopNode    Input
+}
+
+func (self *Env) defaults() {
+	if self.Levels == nil {
+		self.Levels = []Input{C(0), C(1), C(0)}
+	}
+	if self.Times == nil {
+		self.Times = []Input{C(1), C(1)}
+	}
+	if self.CurveTypes == nil {
+		self.CurveTypes = []Input{CurveLinear, CurveLinear}
+	}
+}
+
+func (self Env) InputsArray() []Input {
+	lc, lt := len(self.CurveTypes), len(self.Times)
+	if lc != lt {
+		panic(fmt.Errorf("%d curve types != %d times", lc, lt))
+	}
+	(&self).defaults()
+	numSegments := len(self.Levels) - 1
+	arr := make([]Input, 4*(numSegments+1))
+	arr[0] = self.Levels[0]
+	arr[1] = C(numSegments)
+	arr[2] = self.ReleaseNode
+	arr[3] = self.LoopNode
+	for i, t := range self.Times {
+		arr[(4*i)+4] = self.Levels[i+1]
+		arr[(4*i)+5] = t
+		arr[(4*i)+6] = self.CurveTypes[i]
+		arr[(4*i)+7] = self.Curvature
+	}
+	return arr
+}
+
 // EnvLinen http://doc.sccode.org/Classes/Env.html#linen
 type EnvLinen struct {
 	Attack, Sustain, Release, Level, CurveType Input
@@ -209,44 +251,36 @@ func (self EnvTLC) InputsArray() []Input {
 	return e.InputsArray()
 }
 
-type Env struct {
-	Levels      []Input
-	Times       []Input
-	CurveTypes  []Input
-	Curvature   Input
-	ReleaseNode Input
-	LoopNode    Input
+// EnvADSR represents the ever-popular ADSR envelope
+type EnvADSR struct {
+	A, D, S, R, Peak, Curve, Bias Input
 }
 
-func (self *Env) defaults() {
-	if self.Levels == nil {
-		self.Levels = []Input{C(0), C(1), C(0)}
+func (self *EnvADSR) defaults() {
+	if self.A == nil {
+		self.A = C(0.01)
 	}
-	if self.Times == nil {
-		self.Times = []Input{C(1), C(1)}
+	if self.D == nil {
+		self.D = C(0.3)
 	}
-	if self.CurveTypes == nil {
-		self.CurveTypes = []Input{CurveLinear, CurveLinear}
+	if self.S == nil {
+		self.S = C(0.5)
+	}
+	if self.R == nil {
+		self.R = C(1)
 	}
 }
 
-func (self Env) InputsArray() []Input {
-	lc, lt := len(self.CurveTypes), len(self.Times)
-	if lc != lt {
-		panic(fmt.Errorf("%d curve types != %d times", lc, lt))
-	}
+func (self EnvADSR) InputsArray() []Input {
 	(&self).defaults()
-	numSegments := len(self.Levels) - 1
-	arr := make([]Input, 4*(numSegments+1))
-	arr[0] = self.Levels[0]
-	arr[1] = C(numSegments)
-	arr[2] = self.ReleaseNode
-	arr[3] = self.LoopNode
-	for i, t := range self.Times {
-		arr[(4*i)+4] = self.Levels[i+1]
-		arr[(4*i)+5] = t
-		arr[(4*i)+6] = self.CurveTypes[i]
-		arr[(4*i)+7] = self.Curvature
+	levels := []Input{
+		C(0).Add(self.Bias),
+		self.Peak.Add(self.Bias),
+		self.S.Add(self.Bias),
+		C(0).Add(self.Bias),
 	}
-	return arr
+	times := []Input{self.A, self.D, self.R}
+	cts := []Input{CurveCustom, CurveCustom, CurveCustom}
+	e := Env{levels, times, cts, self.Curve, C(2), C(-99)}
+	return e.InputsArray()
 }

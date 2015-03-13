@@ -269,6 +269,15 @@ func (self *EnvADSR) defaults() {
 	if self.R == nil {
 		self.R = C(1)
 	}
+	if self.Peak == nil {
+		self.Peak = C(1)
+	}
+	if self.Curve == nil {
+		self.Curve = C(-4)
+	}
+	if self.Bias == nil {
+		self.Bias = C(0)
+	}
 }
 
 func (self EnvADSR) InputsArray() []Input {
@@ -284,3 +293,114 @@ func (self EnvADSR) InputsArray() []Input {
 	e := Env{levels, times, cts, self.Curve, C(2), C(-99)}
 	return e.InputsArray()
 }
+
+type EnvDADSR struct {
+	Delay, A, D, S, R, Peak, Curve, Bias Input
+}
+
+func (self *EnvDADSR) defaults() {
+	if self.Delay == nil {
+		self.Delay = C(0.1)
+	}
+	if self.A == nil {
+		self.A = C(0.01)
+	}
+	if self.D == nil {
+		self.D = C(0.3)
+	}
+	if self.S == nil {
+		self.S = C(0.5)
+	}
+	if self.R == nil {
+		self.R = C(1)
+	}
+	if self.Peak == nil {
+		self.Peak = C(1)
+	}
+	if self.Curve == nil {
+		self.Curve = C(-4)
+	}
+	if self.Bias == nil {
+		self.Bias = C(0)
+	}
+}
+
+func (self EnvDADSR) InputsArray() []Input {
+	(&self).defaults()
+	levels := []Input{
+		C(0),
+		C(0).Add(self.Bias),
+		self.Peak.Add(self.Bias),
+		self.S.Add(self.Bias),
+		C(0).Add(self.Bias),
+	}
+	times := []Input{self.Delay, self.A, self.D, self.R}
+	cts := []Input{CurveCustom, CurveCustom, CurveCustom, CurveCustom}
+	e := Env{levels, times, cts, self.Curve, C(3), C(-99)}
+	return e.InputsArray()
+}
+
+type EnvASR struct {
+	A, S, R, Curve Input
+}
+
+func (self *EnvASR) defaults() {
+	if self.A == nil {
+		self.A = C(0.01)
+	}
+	if self.S == nil {
+		self.S = C(1)
+	}
+	if self.R == nil {
+		self.R = C(1)
+	}
+	if self.Curve == nil {
+		self.Curve = C(-4)
+	}
+}
+
+func (self EnvASR) InputsArray() []Input {
+	(&self).defaults()
+	levels := []Input{C(0), self.S, C(0)}
+	times := []Input{self.A, self.R}
+	cts := []Input{CurveCustom, CurveCustom}
+	e := Env{levels, times, cts, self.Curve, C(1), C(-99)}
+	return e.InputsArray()
+}
+
+type EnvCutoff struct {
+	R, Level, CurveType Input
+}
+
+func (self *EnvCutoff) defaults() {
+	if self.R == nil {
+		self.R = C(0.1)
+	}
+	if self.Level == nil {
+		self.Level = C(1)
+	}
+	if self.CurveType == nil {
+		self.CurveType = CurveLinear
+	}
+}
+
+func (self EnvCutoff) InputsArray() []Input {
+	(&self).defaults()
+	levels := []Input{self.Level, C(0)}
+	times := []Input{self.R}
+	cts := []Input{self.CurveType}
+	e := Env{levels, times, cts, C(0), C(0), C(-99)}
+	return e.InputsArray()
+}
+
+// I don't understand Env.circle [bps]
+//
+// Env.circle([0, 1, 0], [0.01, 0.5, 0.2]).asArray;
+// => [ 0, 2, -99, -99, 1, 0.01, 1, 0, 0, 0.5, 1, 0 ]
+//
+// Shouldn't loopNode be set to one of the envelope breakpoints?
+//
+// type EnvCircle struct {
+// 	Levels, Times []Input
+// 	Curve         Input
+// }

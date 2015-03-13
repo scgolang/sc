@@ -82,8 +82,8 @@ func (self *BaseNode) addInputs(ins ...Input) {
 	}
 }
 
-// newNode is a factory function for creating new BaseNode instances
-func newNode(name string, rate int8, specialIndex int16) *BaseNode {
+// NewNode is a factory function for creating new BaseNode instances
+func NewNode(name string, rate int8, specialIndex int16) *BaseNode {
 	node := BaseNode{
 		name,
 		rate,

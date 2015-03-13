@@ -47,6 +47,8 @@ Find godocs at http://godoc.org/github.com/briansorahan/sc.
 Also, take a look at some of the example programs in the
 examples/ directory.
 
+The list of supported ugens is here: https://github.com/briansorahan/sc/blob/master/ugens/README.md
+
 Develop
 -------
 See https://github.com/briansorahan/sc/blob/master/CONTRIBUTING

@@ -1,6 +1,6 @@
 # ugens
 
-Unit Generators for [sc][1].
+Unit Generators for sc.
 
 # coverage
 
@@ -28,7 +28,7 @@ Unit Generators for [sc][1].
 | DelayN                      | No        |
 | Dust                        | No        |
 | Dust2                       | No        |
-| Env                         | No        |
+| Env                         | Yes       |
 | EnvGen                      | Yes       |
 | FFT                         | No        |
 | FSinOsc                     | No        |
@@ -94,5 +94,3 @@ Unit Generators for [sc][1].
 | WhiteNoise                  | No        |
 | XFade2                      | No        |
 | XLine                       | No        |
-
-[1]: http://godoc.org/github.com/briansorahan/sc

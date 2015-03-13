@@ -12,14 +12,14 @@ import (
 )
 
 const (
-	CurveStep        = C(0)
-	CurveLinear      = C(1)
-	CurveExponential = C(2)
-	CurveSine        = C(3)
-	CurveWelch       = C(4)
-	CurveCustom      = C(5)
-	CurveSquared     = C(6)
-	CurveCubed       = C(7)
+	CurveStep    = C(0)
+	CurveLinear  = C(1)
+	CurveExp     = C(2)
+	CurveSine    = C(3)
+	CurveWelch   = C(4)
+	CurveCustom  = C(5)
+	CurveSquared = C(6)
+	CurveCubed   = C(7)
 )
 
 type Env struct {
@@ -112,6 +112,7 @@ func (self *EnvTriangle) defaults() {
 }
 
 func (self EnvTriangle) InputsArray() []Input {
+	(&self).defaults()
 	levels := []Input{C(0), self.Level, C(0)}
 	d := self.Dur.Mul(C(0.5))
 	times := []Input{d, d}
@@ -194,11 +195,11 @@ func (self Pairs) Swap(i, j int) {
 // EnvPairs http://doc.sccode.org/Classes/Env.html#pairs
 type EnvPairs struct {
 	Pairs     Pairs
-	CurveType float32
+	CurveType C
 }
 
 func (self EnvPairs) InputsArray() []Input {
-	sort.Sort(self.Pairs)
+	sort.Sort(&(self.Pairs))
 	lp := len(self.Pairs)
 	levels := make([]Input, lp)
 	times := make([]Input, lp-1)
@@ -206,8 +207,8 @@ func (self EnvPairs) InputsArray() []Input {
 	for i, p := range self.Pairs {
 		levels[i] = C(p[1])
 		if i > 0 {
-			times[i-1] = C(p[0] - p[0])
-			cts[i-1] = C(self.CurveType)
+			times[i-1] = C(p[0] - self.Pairs[i-1][0])
+			cts[i-1] = self.CurveType
 		}
 	}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
@@ -216,7 +217,8 @@ func (self EnvPairs) InputsArray() []Input {
 
 // TLC (time, level, curve) triplet
 type TLC struct {
-	T, L, C float32
+	Time, Level float32
+	Curve C
 }
 
 // EnvTLC represents an array of (time, level, curve) triplets
@@ -227,7 +229,7 @@ func (self EnvTLC) Len() int {
 }
 
 func (self EnvTLC) Less(i, j int) bool {
-	return self[i].T < self[j].T
+	return self[i].Time < self[j].Time
 }
 
 func (self EnvTLC) Swap(i, j int) {
@@ -241,10 +243,10 @@ func (self EnvTLC) InputsArray() []Input {
 	times := make([]Input, lp-1)
 	cts := make([]Input, lp-1)
 	for i, tlc := range self {
-		levels[i] = C(tlc.L)
+		levels[i] = C(tlc.Level)
 		if i > 0 {
-			times[i-1] = C(tlc.T - tlc.T)
-			cts[i-1] = C(tlc.C)
+			times[i-1] = C(tlc.Time - self[i-1].Time)
+			cts[i-1] = self[i-1].Curve
 		}
 	}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}

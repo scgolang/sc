@@ -222,7 +222,8 @@ type TLC struct {
 }
 
 // EnvTLC creates a new envelope from an array of (time, level, curve) triplets
-// This is renamed from Env.xyc
+// This is renamed from Env.xyc.
+// The Curve value of the last triplet is ignored.
 type EnvTLC []TLC
 
 func (self EnvTLC) Len() int {

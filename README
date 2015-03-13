@@ -19,21 +19,24 @@ What this is not
 sc is not intended for livecoding (for more about livecoding see
 http://en.wikipedia.org/wiki/Live_coding). I may decide someday
 to support some livecoding-esque features, but for now the
-goal is to be able to build cross-platform desktop music
-applications that use supercollider as the audio engine.
+goal is to be able to build desktop music applications
+that use supercollider as the audio engine.
 
 Install
 -------
 First, and most importantly, you must have supercollider
 installed (go to http://supercollider.github.io/download.html).
+
 Next, you must install go (from https://golang.org/dl).
+
 Then
 $ go get github.com/briansorahan/sc
 
 Test
 ----
 There are a handful of synthdef files that are necessary for
-the tests, so you have to
+the tests. These synthdef files are created by sclang,
+so you have to
 
 $ make test
 
@@ -60,5 +63,6 @@ See https://github.com/briansorahan/sc/milestones
 Thanks
 ------
 This project is hugely indebted to
-(1) The supercollider developer community, and
+
+(1) The supercollider developer community
 (2) Overtone (https://github.com/overtone/overtone)

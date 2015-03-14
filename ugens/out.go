@@ -9,7 +9,7 @@ type Out struct {
 }
 
 func (self Out) Rate(rate int8) *BaseNode {
-	n := newNode("Out", rate, 0)
+	n := NewNode("Out", rate, 0)
 	n.addInputs(self.Bus, self.Channels)
 	return n
 }

@@ -30,7 +30,7 @@ func (self *EnvGen) defaults() {
 func (self EnvGen) Rate(rate int8) *BaseNode {
 	checkRate(rate)
 	(&self).defaults()
-	node := newNode("EnvGen", rate, 0)
+	node := NewNode("EnvGen", rate, 0)
 	ls, lb := self.LevelScale, self.LevelBias
 	node.addInputs(self.Gate, ls, lb, self.TimeScale)
 	node.addInput(C(float32(self.Done)))

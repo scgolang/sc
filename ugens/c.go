@@ -12,7 +12,7 @@ func (self C) Val() float32 {
 
 func (self C) Mul(val Input) Input {
 	switch v := val.(type) {
-	case *BaseNode:
+	case *Node:
 		return v.Mul(self)
 	case C:
 		return C(v * self)
@@ -23,11 +23,15 @@ func (self C) Mul(val Input) Input {
 
 func (self C) Add(val Input) Input {
 	switch v := val.(type) {
-	case *BaseNode:
+	case *Node:
 		return v.Add(self)
 	case C:
 		return C(v + self)
 	default:
 		panic("input was neither ugen nor constant")
 	}
+}
+
+func (self C) IsMulti() bool {
+	return false
 }

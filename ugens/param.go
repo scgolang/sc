@@ -44,12 +44,16 @@ func (self *Param) GetInitialValue() float32 {
 	return self.val
 }
 
+func (self *Param) Add(in Input) Input {
+	return BinOpAdd(KR, self, in)
+}
+
 func (self *Param) Mul(in Input) Input {
 	return BinOpMul(KR, self, in)
 }
 
-func (self *Param) Add(in Input) Input {
-	return BinOpAdd(KR, self, in)
+func (self *Param) IsMulti() bool {
+	return false
 }
 
 func newParam(name string, index int32, initialValue float32) *Param {
@@ -82,12 +86,16 @@ func (self *Control) Outputs() []Output {
 	return self.outputs
 }
 
+func (self *Control) Add(val Input) Input {
+	return self
+}
+
 func (self *Control) Mul(val Input) Input {
 	return self
 }
 
-func (self *Control) Add(val Input) Input {
-	return self
+func (self *Control) IsMulti() bool {
+	return false
 }
 
 type ControlOutput struct {}

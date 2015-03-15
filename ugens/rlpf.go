@@ -22,12 +22,11 @@ func (self *RLPF) defaults() {
 }
 
 func (self RLPF) Rate(rate int8) *BaseNode {
-	checkRate(rate)
-	(&self).defaults()
-	n := NewNode("RLPF", rate, 0)
 	if self.In == nil {
 		panic("RLPF expects In to not be nil")
 	}
-	n.addInputs(self.In, self.Freq, self.RQ)
+	checkRate(rate)
+	(&self).defaults()
+	n := NewNode("RLPF", rate, 0, self.In, self.Freq, self.RQ)
 	return n
 }

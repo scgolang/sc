@@ -68,27 +68,33 @@ func (self *BaseNode) Add(val Input) Input {
 }
 
 // addInput appends an Input to this node's list of inputs
-func (self *BaseNode) addInput(in Input) {
-	if node, isNode := in.(*BaseNode); isNode {
-		node.IsOutput()
-	}
-	self.inputs = append(self.inputs, in)
-}
+// func (self *BaseNode) addInput(in Input) {
+
+// 	if node, isNode := in.(*BaseNode); isNode {
+// 		node.IsOutput()
+// 	}
+// 	self.inputs = append(self.inputs, in)
+// }
 
 // addInputs appends some Inputs to this node's list of inputs
-func (self *BaseNode) addInputs(ins ...Input) {
-	for _, in := range ins {
-		self.addInput(in)
-	}
-}
+// func (self *BaseNode) addInputs(ins ...Input) {
+// 	for _, in := range ins {
+// 		self.addInput(in)
+// 	}
+// }
 
 // NewNode is a factory function for creating new BaseNode instances
-func NewNode(name string, rate int8, specialIndex int16) *BaseNode {
+func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *BaseNode {
+	for _, in := range inputs {
+		if node, isNode := in.(*BaseNode); isNode {
+			node.IsOutput()
+		}
+	}
 	node := BaseNode{
 		name,
 		rate,
 		specialIndex,
-		make([]Input, 0),
+		inputs,
 		make([]Output, 0),
 	}
 	return &node

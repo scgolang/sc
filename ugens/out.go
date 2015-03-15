@@ -9,7 +9,7 @@ type Out struct {
 }
 
 func (self Out) Rate(rate int8) *BaseNode {
-	n := NewNode("Out", rate, 0)
-	n.addInputs(self.Bus, self.Channels)
-	return n
+	// If self.Channels is an array, we need to expand it
+	// to multiple individual inputs
+	return NewNode("Out", rate, 0, self.Bus, self.Channels)
 }

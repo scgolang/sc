@@ -18,7 +18,6 @@ func (self *SinOsc) defaults() {
 func (self SinOsc) Rate(rate int8) *BaseNode {
 	checkRate(rate)
 	(&self).defaults()
-	n := NewNode("SinOsc", rate, 0)
-	n.addInputs(self.Freq, self.Phase)
+	n := NewNode("SinOsc", rate, 0, self.Freq, self.Phase)
 	return n
 }

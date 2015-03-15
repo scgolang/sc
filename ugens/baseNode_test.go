@@ -5,8 +5,7 @@ import (
 )
 
 func TestAddConstantInput(t *testing.T) {
-	n := NewNode("foo", 2, 0)
-	n.addInput(C(3.14))
+	n := NewNode("foo", 2, 0, C(3.14))
 	if inputs := n.Inputs(); len(inputs) != 1 {
 		t.Fatalf("len(inputs) was %d", len(inputs))
 	}

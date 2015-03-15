@@ -13,9 +13,8 @@ func (self *Saw) defaults() {
 	}
 }
 
-func (self Saw) Rate(rate int8) *BaseNode {
+func (self Saw) Rate(rate int8) *Node {
 	checkRate(rate)
 	(&self).defaults()
-	n := NewNode("Saw", rate, 0, self.Freq)
-	return n
+	return NewNode("Saw", rate, 0, self.Freq)
 }

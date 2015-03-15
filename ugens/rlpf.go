@@ -21,7 +21,7 @@ func (self *RLPF) defaults() {
 	}
 }
 
-func (self RLPF) Rate(rate int8) *BaseNode {
+func (self RLPF) Rate(rate int8) *Node {
 	if self.In == nil {
 		panic("RLPF expects In to not be nil")
 	}

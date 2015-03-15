@@ -27,16 +27,11 @@ func (self *EnvGen) defaults() {
 }
 
 // Rate ugen implementation
-func (self EnvGen) Rate(rate int8) *BaseNode {
+func (self EnvGen) Rate(rate int8) *Node {
 	checkRate(rate)
 	(&self).defaults()
 	ins := []Input{self.Gate, self.LevelScale, self.LevelBias}
 	ins = append(ins, self.TimeScale, C(float32(self.Done)))
 	ins = append(ins, self.Env.InputsArray()...)
 	return NewNode("EnvGen", rate, 0, ins...)
-	// ls, lb := self.LevelScale, self.LevelBias
-	// node.addInputs(self.Gate, ls, lb, self.TimeScale)
-	// node.addInput()
-	// node.addInputs(self.Env.InputsArray()...)
-	// return node
 }

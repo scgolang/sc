@@ -6,4 +6,5 @@ package types
 type Input interface {
 	Mul(val Input) Input
 	Add(val Input) Input
+	IsMulti() bool
 }

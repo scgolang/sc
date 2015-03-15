@@ -25,77 +25,84 @@ const (
 )
 
 // ugen node base type
-type BaseNode struct {
+type Node struct {
 	name         string
 	rate         int8
 	specialIndex int16
 	inputs       []Input
 	outputs      []Output
+	isMulti      bool
+	multi        *MultiNode
 }
 
-func (self *BaseNode) Name() string {
+func (self *Node) Name() string {
 	return self.name
 }
 
-func (self *BaseNode) Rate() int8 {
+func (self *Node) Rate() int8 {
 	return self.rate
 }
 
-func (self *BaseNode) SpecialIndex() int16 {
+func (self *Node) SpecialIndex() int16 {
 	return self.specialIndex
 }
 
-func (self *BaseNode) Inputs() []Input {
+func (self *Node) Inputs() []Input {
 	return self.inputs
 }
 
-func (self *BaseNode) Outputs() []Output {
+func (self *Node) Outputs() []Output {
 	return self.outputs
 }
 
-func (self *BaseNode) IsOutput() {
+func (self *Node) IsOutput() {
 	if len(self.outputs) == 0 {
 		self.outputs = append(self.outputs, output(self.rate))
 	}
 }
 
-func (self *BaseNode) Mul(val Input) Input {
+func (self *Node) Mul(val Input) Input {
 	return BinOpMul(self.rate, self, val)
 }
 
-func (self *BaseNode) Add(val Input) Input {
+func (self *Node) Add(val Input) Input {
 	return BinOpAdd(self.rate, self, val)
 }
 
-// addInput appends an Input to this node's list of inputs
-// func (self *BaseNode) addInput(in Input) {
+func (self *Node) IsMulti() bool {
+	return self.multi != nil && self.isMulti
+}
 
-// 	if node, isNode := in.(*BaseNode); isNode {
-// 		node.IsOutput()
-// 	}
-// 	self.inputs = append(self.inputs, in)
-// }
+func (self *Node) Nodes() []UgenNode {
+	if !self.IsMulti() {
+		return self.multi.Nodes()
+	}
+	panic("Can not get node array from single node")
+}
 
-// addInputs appends some Inputs to this node's list of inputs
-// func (self *BaseNode) addInputs(ins ...Input) {
-// 	for _, in := range ins {
-// 		self.addInput(in)
-// 	}
-// }
-
-// NewNode is a factory function for creating new BaseNode instances
-func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *BaseNode {
+// NewNode is a factory function for creating new Node instances
+func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *Node {
+	isMulti := false
+	// If any inphts are multi inputs, then this node
+	// should get promoted to a multi node
 	for _, in := range inputs {
-		if node, isNode := in.(*BaseNode); isNode {
+		if node, isNode := in.(*Node); isNode {
+			// If it is a multi-node then this node
+			// should also become a multi-node
+			if node.IsMulti() {
+				isMulti = true
+			}
 			node.IsOutput()
 		}
 	}
-	node := BaseNode{
+	node := Node{
 		name,
 		rate,
 		specialIndex,
 		inputs,
 		make([]Output, 0),
+		isMulti,
+		nil,
 	}
 	return &node
 }

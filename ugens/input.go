@@ -24,7 +24,7 @@ func expand(inputs ...Input) [][]Input {
 	sz := 0
 	for _, in := range inputs {
 		if multi, isMulti := in.(MultiInput); isMulti {
-			ins := multi.Inputs()
+			ins := multi.InputArray()
 			l := len(ins)
 			if l > sz {
 				sz = l
@@ -46,7 +46,7 @@ func expand(inputs ...Input) [][]Input {
 			in := inputs[j]
 
 			if multi, isMulti := in.(MultiInput); isMulti {
-				ins := multi.Inputs()
+				ins := multi.InputArray()
 				brr[j] = ins[j % len(ins)]
 			} else {
 				brr[j] = in

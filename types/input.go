@@ -12,5 +12,5 @@ type Input interface {
 // cascading multi-channel expansion.
 // See http://doc.sccode.org/Guides/Multichannel-Expansion.html
 type MultiInput interface {
-	Inputs() []Input
+	InputArray() []Input
 }

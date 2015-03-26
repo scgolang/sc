@@ -6,7 +6,7 @@ type MultiNode struct {
 	nodes []*Node
 }
 
-func (self *MultiNode) Inputs() []Input {
+func (self *MultiNode) InputArray() []Input {
 	l := len(self.nodes)
 	inputs := make([]Input, l)
 	for i, n := range self.nodes {

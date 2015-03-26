@@ -37,4 +37,8 @@ SynthDef(\UseParam, {
 	Out.ar(0, SinOsc.ar(freq + 20));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\SimpleMulti, {
+	Out.ar(0, SinOsc.ar([440, 441]));
+}).writeDefFile(File.getcwd);
+
 0.exit;

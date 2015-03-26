@@ -24,6 +24,10 @@ func (self *Inputs) Mul(val Input) Input {
 	return &Inputs{ia}
 }
 
+func (self *Inputs) InputArray() []Input {
+	return self.inputs
+}
+
 func Multi(inputs ...Input) *Inputs{
 	return &Inputs{inputs}
 }

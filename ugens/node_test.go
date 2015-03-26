@@ -26,8 +26,12 @@ func TestAddUgenInput(t *testing.T) {
 		t.Fatalf("SinOsc.Rate returned nil")
 	}
 	Out{C(0), s}.Rate(AR)
-	outputs := s.Outputs()
-	if numOutputs := len(outputs); numOutputs != 1 {
-		t.Fatalf("number of SinOsc outputs was %d", numOutputs)
+	if sn, isNode := s.(*Node); isNode {
+		outputs := sn.Outputs()
+		if numOutputs := len(outputs); numOutputs != 1 {
+			t.Fatalf("number of SinOsc outputs was %d", numOutputs)
+		}
+	} else {
+		t.Fatalf("SinOsc with no multi inputs should return *Node")
 	}
 }

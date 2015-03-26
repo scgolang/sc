@@ -15,7 +15,7 @@ func (self *SinOsc) defaults() {
 	}
 }
 
-func (self SinOsc) Rate(rate int8) *Node {
+func (self SinOsc) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
 	return NewNode("SinOsc", rate, 0, self.Freq, self.Phase)

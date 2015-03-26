@@ -52,10 +52,6 @@ func (self *Param) Mul(in Input) Input {
 	return BinOpMul(KR, self, in)
 }
 
-func (self *Param) IsMulti() bool {
-	return false
-}
-
 func newParam(name string, index int32, initialValue float32) *Param {
 	p := Param{name, index, initialValue}
 	return &p
@@ -92,10 +88,6 @@ func (self *Control) Add(val Input) Input {
 
 func (self *Control) Mul(val Input) Input {
 	return self
-}
-
-func (self *Control) IsMulti() bool {
-	return false
 }
 
 type ControlOutput struct {}

@@ -32,6 +32,6 @@ func (self C) Add(val Input) Input {
 	}
 }
 
-func (self C) IsMulti() bool {
-	return false
+func (self C) Equals(val C) bool {
+	return float32(self) == float32(val)
 }

@@ -6,13 +6,13 @@ type MultiNode struct {
 	nodes []*Node
 }
 
-func (self *MultiNode) Nodes() []UgenNode {
+func (self *MultiNode) Inputs() []Input {
 	l := len(self.nodes)
-	nodes := make([]UgenNode, l)
+	inputs := make([]Input, l)
 	for i, n := range self.nodes {
-		nodes[i] = n
+		inputs[i] = n
 	}
-	return nodes
+	return inputs
 }
 
 // Input implementation
@@ -33,10 +33,6 @@ func (self *MultiNode) Mul(val Input) Input {
 		a[i] = BinOpMul(n.Rate(), n, val)
 	}
 	return &MultiNode{a}
-}
-
-func (self *MultiNode) IsMulti() bool {
-	return true
 }
 
 func NewMultiNode(nodes ...*Node) *MultiNode {

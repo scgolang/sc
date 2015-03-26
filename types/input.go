@@ -6,5 +6,11 @@ package types
 type Input interface {
 	Mul(val Input) Input
 	Add(val Input) Input
-	IsMulti() bool
+}
+
+// MultiInput is the interface of an input that causes
+// cascading multi-channel expansion.
+// See http://doc.sccode.org/Guides/Multichannel-Expansion.html
+type MultiInput interface {
+	Inputs() []Input
 }

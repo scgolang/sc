@@ -31,8 +31,6 @@ type Node struct {
 	specialIndex int16
 	inputs       []Input
 	outputs      []Output
-	isMulti      bool
-	multi        *MultiNode
 }
 
 func (self *Node) Name() string {
@@ -69,40 +67,23 @@ func (self *Node) Add(val Input) Input {
 	return BinOpAdd(self.rate, self, val)
 }
 
-func (self *Node) IsMulti() bool {
-	return self.multi != nil && self.isMulti
-}
-
-func (self *Node) Nodes() []UgenNode {
-	if !self.IsMulti() {
-		return self.multi.Nodes()
-	}
-	panic("Can not get node array from single node")
-}
-
 // NewNode is a factory function for creating new Node instances
 func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *Node {
-	isMulti := false
-	// If any inphts are multi inputs, then this node
+	n := new(Node)
+	n.name = name
+	n.rate = rate
+	n.specialIndex = specialIndex
+	n.inputs = make([]Input, len(inputs))
+	n.outputs = make([]Output, 0)
+
+	// If any inputs are multi inputs, then this node
 	// should get promoted to a multi node
-	for _, in := range inputs {
-		if node, isNode := in.(*Node); isNode {
-			// If it is a multi-node then this node
-			// should also become a multi-node
-			if node.IsMulti() {
-				isMulti = true
-			}
+	for i, input := range inputs {
+		if node, isNode := input.(*Node); isNode {
 			node.IsOutput()
 		}
+		n.inputs[i] = input
 	}
-	node := Node{
-		name,
-		rate,
-		specialIndex,
-		inputs,
-		make([]Output, 0),
-		isMulti,
-		nil,
-	}
-	return &node
+
+	return n
 }

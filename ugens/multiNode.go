@@ -15,6 +15,10 @@ func (self *MultiNode) InputArray() []Input {
 	return inputs
 }
 
+func (self *MultiNode) Nodes() []*Node {
+	return self.nodes
+}
+
 // Input implementation
 func (self *MultiNode) Add(val Input) Input {
 	l := len(self.nodes)

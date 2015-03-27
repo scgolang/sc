@@ -16,28 +16,28 @@ const (
 func TestPerc(t *testing.T) {
 	e := EnvPerc{}
 	expect := []float32{0, 2, -99, -99, 1, 0.01, 5, -4, 0, 1, 5, -4}
-	verifyInputs(t, expect, e.InputsArray())
+	verifyInputs(t, expect, e.Inputs())
 }
 
 func TestLinen(t *testing.T) {
 	e := EnvLinen{}
 	expect := []float32{0, 3, -99, -99, 1, 0.01, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0}
-	verifyInputs(t, expect, e.InputsArray())
+	verifyInputs(t, expect, e.Inputs())
 	f := EnvLinen{CurveType:CurveWelch}
 	expectWelch := []float32{0, 3, -99, -99, 1, 0.01, 4, 0, 1, 1, 4, 0, 0, 1, 4, 0}
-	verifyInputs(t, expectWelch, f.InputsArray())
+	verifyInputs(t, expectWelch, f.Inputs())
 }
 
 func TestTriangle(t *testing.T) {
 	e := EnvTriangle{}
 	expect := []float32{0, 2, -99, -99, 1, 0.5, 1, 0, 0, 0.5, 1, 0}
-	verifyInputs(t, expect, e.InputsArray())
+	verifyInputs(t, expect, e.Inputs())
 }
 
 func TestSine(t *testing.T) {
 	e := EnvSine{}
 	expect := []float32{0, 2, -99, -99, 1, 0.5, 3, 0, 0, 0.5, 3, 0}
-	verifyInputs(t, expect, e.InputsArray())
+	verifyInputs(t, expect, e.Inputs())
 }
 
 func TestPairs(t *testing.T) {
@@ -50,7 +50,7 @@ func TestPairs(t *testing.T) {
 		CurveExp,
 	}
 	expect := []float32{1, 2, -99, -99, 0.5, 2.1, 2, 0, 1.4, 0.9, 2, 0}
-	verifyInputs(t, expect, e.InputsArray())
+	verifyInputs(t, expect, e.Inputs())
 }
 
 func TestTLC(t *testing.T) {
@@ -61,7 +61,7 @@ func TestTLC(t *testing.T) {
 	})
 	// 1 2 -99 -99 0.5 2.1 1 0 1.4 0.9000001 1 0
 	expect := []float32{1, 2, -99, -99, 0.5, 2.1, 3, 0, 1.4, 0.9, 1, 0}
-	verifyInputs(t, expect, e.InputsArray())
+	verifyInputs(t, expect, e.Inputs())
 }
 
 func verifyInputs(t *testing.T, expect []float32, inputs []Input) {

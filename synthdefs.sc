@@ -41,4 +41,10 @@ SynthDef(\SimpleMulti, {
 	Out.ar(0, SinOsc.ar([440, 441]));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Cascade, {
+    var mod1 = SinOsc.ar([440, 441]);
+    var mod2 = SinOsc.ar(mod1);
+    Out.ar(0, SinOsc.ar(mod2));
+}).writeDefFile(File.getcwd);
+
 0.exit;

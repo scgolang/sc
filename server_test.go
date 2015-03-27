@@ -9,7 +9,7 @@ import (
 
 func TestServerStatus(t *testing.T) {
 	options := ServerOptions{
-		EchoScsynthStdout: true,
+		EchoScsynthStdout: false,
 	}
 	s, err := NewServer("127.0.0.1", scsynthPort, options)
 	if err != nil {

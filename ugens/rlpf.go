@@ -21,12 +21,11 @@ func (self *RLPF) defaults() {
 	}
 }
 
-func (self RLPF) Rate(rate int8) *Node {
+func (self RLPF) Rate(rate int8) Input {
 	if self.In == nil {
 		panic("RLPF expects In to not be nil")
 	}
 	checkRate(rate)
 	(&self).defaults()
-	n := NewNode("RLPF", rate, 0, self.In, self.Freq, self.RQ)
-	return n
+	return UgenInput("RLPF", rate, 0, self.In, self.Freq, self.RQ)
 }

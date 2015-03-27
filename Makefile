@@ -10,14 +10,16 @@ SCLANG=/usr/bin/sclang
 endif
 
 # Synthdefs needed for testing
-SYNTHDEFS := synthdefs.sc
 COMPILED_SYNTHDEFS := Beats            \
                       Envgen1          \
                       SawTone1         \
                       SineTone         \
                       SineTone2        \
                       SineTone3        \
-                      SineTone4
+                      SineTone4        \
+                      UseParams        \
+                      Cascade          \
+                      SimpleMulti
 
 COMPILED_SYNTHDEFS := $(addsuffix .scsyndef,$(COMPILED_SYNTHDEFS))
 

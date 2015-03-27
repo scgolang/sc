@@ -395,13 +395,30 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 func flatten(node UgenNode, params *Params, def *Synthdef) *input {
 	stack := newStack()
 	inputs := node.Inputs()
+
 	// iterate through ugen inputs in reverse order
 	for i := len(inputs)-1; i >= 0; i-- {
-		in := inputs[i]
-		if node, isNode := in.(UgenNode); isNode {
+		i1 := inputs[i]
+
+		if node, isNode := i1.(UgenNode); isNode {
 			stack.Push(flatten(node, params, def))
+		} else if multi, isMulti := i1.(MultiInput); isMulti {
+			ins := multi.InputArray()
+			jns := make([]*input, 0)
+
+			for _, in := range ins {
+				if ugen, isUgen := in.(UgenNode); isUgen {
+					jns = append(jns, flatten(ugen, params, def))
+				} else {
+					stack.Push(in)
+				}
+			}
+
+			for m := range jns {
+				stack.Push(jns[len(jns)-m-1])
+			}
 		} else {
-			stack.Push(in)
+			stack.Push(i1)
 		}
 	}
 

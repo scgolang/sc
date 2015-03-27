@@ -86,24 +86,28 @@ func TestSynthdefEnvgen(t *testing.T) {
 	}
 }
 
-// FIXME
-// func TestSimpleMulti(t *testing.T) {
-// 	def := NewSynthdef("SimpleMulti", func(p *Params) UgenNode {
-// 		bus, freq := C(0), Multi(C(440), C(441))
-// 		sine := SinOsc{Freq:freq}.Rate(AR)
-// 		return Out{bus, sine}.Rate(AR)
-// 	})
-// 	if def == nil {
-// 		t.Fatalf("nil synthdef")
-// 	}
-// 	same, err := def.CompareToFile("SimpleMulti.scsyndef")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	if !same {
-// 		t.Fatalf("synthdef different from sclang-generated version")
-// 	}
-// }
+func TestSimpleMulti(t *testing.T) {
+	def := NewSynthdef("SimpleMulti", func(p *Params) UgenNode {
+		bus, freq := C(0), Multi(C(440), C(441))
+		sine := SinOsc{Freq:freq}.Rate(AR)
+		return Out{bus, sine}.Rate(AR)
+	})
+	if def == nil {
+		t.Fatalf("nil synthdef")
+	}
+	f, err := os.Create("SimpleMulti.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	def.Write(f)
+	same, err := def.CompareToFile("SimpleMulti.scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang-generated version")
+	}
+}
 
 func ExampleNewSynthdef() {
 	NewSynthdef("SineTone", func(params *Params) UgenNode {

@@ -43,7 +43,7 @@ func (self *Env) defaults() {
 	}
 }
 
-func (self Env) InputsArray() []Input {
+func (self Env) Inputs() []Input {
 	lc, lt := len(self.CurveTypes), len(self.Times)
 	if lc != lt {
 		panic(fmt.Errorf("%d curve types != %d times", lc, lt))
@@ -87,14 +87,14 @@ func (self *EnvLinen) defaults() {
 	}
 }
 
-func (self EnvLinen) InputsArray() []Input {
+func (self EnvLinen) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{C(0), self.Level, self.Level, C(0)}
 	times := []Input{self.Attack, self.Sustain, self.Release}
 	ct := self.CurveType
 	cts := []Input{ct, ct, ct}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvTriangle creates a new envelope that has a triangle shape
@@ -111,14 +111,14 @@ func (self *EnvTriangle) defaults() {
 	}
 }
 
-func (self EnvTriangle) InputsArray() []Input {
+func (self EnvTriangle) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{C(0), self.Level, C(0)}
 	d := self.Dur.Mul(C(0.5))
 	times := []Input{d, d}
 	cts := []Input{CurveLinear, CurveLinear}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvSine creates a new envelope which has a hanning window shape
@@ -135,14 +135,14 @@ func (self *EnvSine) defaults() {
 	}
 }
 
-func (self EnvSine) InputsArray() []Input {
+func (self EnvSine) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{C(0), self.Level, C(0)}
 	d := self.Dur.Mul(C(0.5))
 	times := []Input{d, d}
 	cts := []Input{CurveSine, CurveSine}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvPerc creates a new envelope that has a percussive shape
@@ -165,14 +165,14 @@ func (self *EnvPerc) defaults() {
 	}
 }
 
-func (self EnvPerc) InputsArray() []Input {
+func (self EnvPerc) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{C(0), self.Level, C(0)}
 	times := []Input{self.Attack, self.Release}
 	cts := []Input{CurveCustom, CurveCustom}
 	crv := self.Curvature
 	e := Env{levels, times, cts, crv, C(-99), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // Pairs are pairs of floats: the first float is time,
@@ -198,7 +198,7 @@ type EnvPairs struct {
 	CurveType C
 }
 
-func (self EnvPairs) InputsArray() []Input {
+func (self EnvPairs) Inputs() []Input {
 	sort.Sort(&(self.Pairs))
 	lp := len(self.Pairs)
 	levels := make([]Input, lp)
@@ -212,7 +212,7 @@ func (self EnvPairs) InputsArray() []Input {
 		}
 	}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // TLC (time, level, curve) triplet
@@ -238,7 +238,7 @@ func (self EnvTLC) Swap(i, j int) {
 	self[i], self[j] = self[j], self[i]
 }
 
-func (self EnvTLC) InputsArray() []Input {
+func (self EnvTLC) Inputs() []Input {
 	sort.Sort(self)
 	lp := len(self)
 	levels := make([]Input, lp)
@@ -252,7 +252,7 @@ func (self EnvTLC) InputsArray() []Input {
 		}
 	}
 	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvADSR represents the ever-popular ADSR envelope
@@ -284,7 +284,7 @@ func (self *EnvADSR) defaults() {
 	}
 }
 
-func (self EnvADSR) InputsArray() []Input {
+func (self EnvADSR) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{
 		C(0).Add(self.Bias),
@@ -295,7 +295,7 @@ func (self EnvADSR) InputsArray() []Input {
 	times := []Input{self.A, self.D, self.R}
 	cts := []Input{CurveCustom, CurveCustom, CurveCustom}
 	e := Env{levels, times, cts, self.Curve, C(2), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvDADSR is EnvADSR with its onset delayed by D seconds
@@ -330,7 +330,7 @@ func (self *EnvDADSR) defaults() {
 	}
 }
 
-func (self EnvDADSR) InputsArray() []Input {
+func (self EnvDADSR) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{
 		C(0),
@@ -342,7 +342,7 @@ func (self EnvDADSR) InputsArray() []Input {
 	times := []Input{self.Delay, self.A, self.D, self.R}
 	cts := []Input{CurveCustom, CurveCustom, CurveCustom, CurveCustom}
 	e := Env{levels, times, cts, self.Curve, C(3), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvASR is an attack-sustain-release envelope
@@ -365,13 +365,13 @@ func (self *EnvASR) defaults() {
 	}
 }
 
-func (self EnvASR) InputsArray() []Input {
+func (self EnvASR) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{C(0), self.S, C(0)}
 	times := []Input{self.A, self.R}
 	cts := []Input{CurveCustom, CurveCustom}
 	e := Env{levels, times, cts, self.Curve, C(1), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // EnvCutoff creates an envelope with no attack segment.
@@ -392,13 +392,13 @@ func (self *EnvCutoff) defaults() {
 	}
 }
 
-func (self EnvCutoff) InputsArray() []Input {
+func (self EnvCutoff) Inputs() []Input {
 	(&self).defaults()
 	levels := []Input{self.Level, C(0)}
 	times := []Input{self.R}
 	cts := []Input{self.CurveType}
 	e := Env{levels, times, cts, C(0), C(0), C(-99)}
-	return e.InputsArray()
+	return e.Inputs()
 }
 
 // I don't understand Env.circle [bps]

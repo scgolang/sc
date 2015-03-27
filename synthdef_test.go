@@ -95,12 +95,30 @@ func TestSimpleMulti(t *testing.T) {
 	if def == nil {
 		t.Fatalf("nil synthdef")
 	}
-	f, err := os.Create("SimpleMulti.gosyndef")
+	same, err := def.CompareToFile("SimpleMulti.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}
-	def.Write(f)
-	same, err := def.CompareToFile("SimpleMulti.scsyndef")
+	if !same {
+		t.Fatalf("synthdef different from sclang-generated version")
+	}
+}
+
+func TestCascade(t *testing.T) {
+	// var mod1 = SinOsc.ar([440, 441]);
+	// var mod2 = SinOsc.ar(mod1);
+	// Out.ar(0, SinOsc.ar(mod2));
+	def := NewSynthdef("Cascade", func(p *Params) UgenNode {
+		bus := C(0)
+		freq := Multi(C(440), C(441))
+		mod1 := SinOsc{Freq: freq}.Rate(AR)
+		mod2 := SinOsc{Freq: mod1}.Rate(AR)
+		return Out{bus, SinOsc{Freq: mod2}.Rate(AR)}.Rate(AR)
+	})
+	if def == nil {
+		t.Fatalf("nil synthdef")
+	}
+	same, err := def.CompareToFile("Cascade.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

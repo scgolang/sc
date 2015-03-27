@@ -82,6 +82,14 @@ func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *Node 
 		if node, isNode := input.(*Node); isNode {
 			node.IsOutput()
 		}
+		// add outputs to any nodes in a MultiInput
+		if multi, isMulti := input.(MultiInput); isMulti {
+			for _, in := range multi.InputArray() {
+				if n, isn := in.(*Node); isn {
+					n.IsOutput()
+				}
+			}
+		}
 		n.inputs[i] = input
 	}
 

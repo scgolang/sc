@@ -1,6 +1,5 @@
 package ugens
 
-import "fmt"
 import . "github.com/briansorahan/sc/types"
 
 // UgenInput creates a ugen suitable for use as an input to other ugens.
@@ -14,7 +13,6 @@ func UgenInput(name string, rate int8, specialIndex int16, inputs ...Input) Inpu
 	// return MultiNode
 	a := make([]*Node, len(expanded))
 	for i := range a {
-		fmt.Printf("expanded[%d] %v\n", i, expanded[i])
 		a[i] = NewNode(name, rate, specialIndex, expanded[i]...)
 	}
 	return NewMultiNode(a...)
@@ -38,7 +36,6 @@ func expand(inputs ...Input) [][]Input {
 		return [][]Input{inputs}
 	}
 
-	fmt.Printf("sz %v\n", sz)
 	n := len(inputs)
 	arr := make([][]Input, sz)
 

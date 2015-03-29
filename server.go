@@ -2,7 +2,7 @@ package sc
 
 import (
 	"fmt"
-	"github.com/briansorahan/go-osc/osc"
+	"github.com/briansorahan/osc"
 	"io"
 	"net"
 	"os"
@@ -44,12 +44,12 @@ type Server struct {
 	OscErrChan chan error
 	addr       net.Addr
 	options    ServerOptions
-	StatusChan chan *osc.OscMessage
-	oscServer *osc.OscServer
+	StatusChan chan *osc.Message
+	oscServer *osc.Server
 	scsynth *exec.Cmd
 	// doneChan relays the /done message that comes
 	// from scsynth
-	doneChan chan *osc.OscMessage
+	doneChan chan *osc.Message
 	// next synth node ID
 	nextSynthID int32
 }
@@ -60,7 +60,7 @@ type defLoaded struct {
 
 // Status gets the status of scsynth
 func (self *Server) Status() error {
-	statusReq := osc.NewOscMessage("/status")
+	statusReq := osc.NewMessage("/status")
 	err := self.oscServer.SendTo(self.addr, statusReq)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (self *Server) Status() error {
 // This method blocks until a /done message is received
 // indicating that the synthdef was loaded
 func (self *Server) SendDef(def *Synthdef) error {
-	msg := osc.NewOscMessage("/d_recv")
+	msg := osc.NewMessage("/d_recv")
 	db, err := def.Bytes()
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func (self *Server) SendDef(def *Synthdef) error {
 // DumpOSC sends a /dumpOSC message to scsynth
 // level should be DumpOff, DumpParsed, DumpContents, DumpAll
 func (self *Server) DumpOSC(level int32) error {
-	dumpReq := osc.NewOscMessage("/dumpOSC")
+	dumpReq := osc.NewMessage("/dumpOSC")
 	dumpReq.Append(level)
 	err := self.oscServer.SendTo(self.addr, dumpReq)
 	if err != nil {
@@ -104,7 +104,7 @@ func (self *Server) DumpOSC(level int32) error {
 }
 
 func (self *Server) NewSynth(name string, id, action, target int32) error {
-	synthReq := osc.NewOscMessage("/s_new")
+	synthReq := osc.NewMessage("/s_new")
 	synthReq.Append(name)
 	synthReq.Append(id)
 	synthReq.Append(action)
@@ -119,7 +119,7 @@ func (self *Server) NewSynth(name string, id, action, target int32) error {
 
 // NewGroup
 func (self *Server) NewGroup(id, action, target int32) error {
-	dumpReq := osc.NewOscMessage("/g_new")
+	dumpReq := osc.NewMessage("/g_new")
 	dumpReq.Append(id)
 	dumpReq.Append(action)
 	dumpReq.Append(target)
@@ -136,7 +136,7 @@ func (self *Server) NextSynthID() int32 {
 }
 
 func (self *Server) ClearSched() error {
-	clear := osc.NewOscMessage("/clearSched")
+	clear := osc.NewMessage("/clearSched")
 	err := self.oscServer.SendTo(self.addr, clear)
 	if err != nil {
 		return err
@@ -182,7 +182,7 @@ add_default_group:
 
 // Quit sends a /quit message to scsynth
 func (self *Server) Quit() error {
-	quitReq := osc.NewOscMessage("/quit")
+	quitReq := osc.NewMessage("/quit")
 	return self.oscServer.SendTo(self.addr, quitReq)
 }
 
@@ -210,13 +210,13 @@ type ServerOptions struct {
 }
 
 func NewServer(addr string, port int, options ServerOptions) (*Server, error) {
-	oscServer := osc.NewOscServer(listenAddr, listenPort)
-	statusChan := make(chan *osc.OscMessage)
-	oscServer.AddMsgHandler(statusOscAddress, func(msg *osc.OscMessage) {
+	oscServer := osc.NewServer(listenAddr, listenPort)
+	statusChan := make(chan *osc.Message)
+	oscServer.AddMsgHandler(statusOscAddress, func(msg *osc.Message) {
 		statusChan <- msg
 	})
-	doneChan := make(chan *osc.OscMessage)
-	oscServer.AddMsgHandler(doneOscAddress, func(msg *osc.OscMessage) {
+	doneChan := make(chan *osc.Message)
+	oscServer.AddMsgHandler(doneOscAddress, func(msg *osc.Message) {
 		doneChan <- msg
 	})
 	errChan := make(chan error)

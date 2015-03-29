@@ -8,7 +8,7 @@ type EnvGen struct {
 	LevelScale Input
 	LevelBias  Input
 	TimeScale  Input
-	Done int
+	Done       int
 }
 
 func (self *EnvGen) defaults() {

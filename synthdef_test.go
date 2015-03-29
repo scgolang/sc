@@ -38,7 +38,7 @@ func TestNewSynthdef(t *testing.T) {
 func TestCompareToFile(t *testing.T) {
 	def := NewSynthdef("SineTone", func(params *Params) UgenNode {
 		bus, freq := C(0), C(440)
-		sine := SinOsc{Freq:freq}.Rate(AR)
+		sine := SinOsc{Freq: freq}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
 	})
 	if def == nil {
@@ -89,7 +89,7 @@ func TestSynthdefEnvgen(t *testing.T) {
 func TestSimpleMulti(t *testing.T) {
 	def := NewSynthdef("SimpleMulti", func(p *Params) UgenNode {
 		bus, freq := C(0), Multi(C(440), C(441))
-		sine := SinOsc{Freq:freq}.Rate(AR)
+		sine := SinOsc{Freq: freq}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
 	})
 	if def == nil {
@@ -127,6 +127,46 @@ func TestCascade(t *testing.T) {
 	}
 }
 
+func TestAllpassExample(t *testing.T) {
+	def := NewSynthdef("AllpassExample", func(p *Params) UgenNode {
+		noise := WhiteNoise{}.Rate(AR).Mul(C(0.1))
+
+		line := XLine{
+			Start: C(0.0001),
+			End:   C(0.01),
+			Dur:   C(20),
+			Done:  0,
+		}.Rate(KR)
+
+		all := AllpassC{
+			In:       noise,
+			MaxDelay: C(0.01),
+			Delay:    line,
+			Decay:    C(0.2),
+		}.Rate(AR)
+
+		return Out{C(0), all}.Rate(AR)
+	})
+	if def == nil {
+		t.Fatalf("nil synthdef")
+	}
+	f, err := os.Create("AllpassExample.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = def.Write(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	same, err := def.CompareToFile("AllpassExample.scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang-generated version")
+	}
+}
+
 func ExampleNewSynthdef() {
 	NewSynthdef("SineTone", func(params *Params) UgenNode {
 		bus := C(0)
@@ -140,7 +180,7 @@ func ExampleNewSynthdef() {
 func ExampleNewSynthdefSineTone2() {
 	NewSynthdef("SineTone2", func(params *Params) UgenNode {
 		bus := C(0)
-		freq:= C(440)
+		freq := C(440)
 		phase := SinOsc{Freq: C(0.1)}.Rate(AR)
 		out := SinOsc{freq, phase}.Rate(AR).Mul(C(0.5))
 		return Out{bus, out}.Rate(AR)

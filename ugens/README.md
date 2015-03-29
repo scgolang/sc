@@ -6,7 +6,7 @@ Unit Generators for sc.
 
 | Ugen Name                   | Supported |
 |:---------------------------:|:---------:|
-| AllpassC                    | No        |
+| AllpassC                    | Yes       |
 | AllpassL                    | No        |
 | AllpassN                    | No        |
 | BPF                         | No        |
@@ -91,6 +91,6 @@ Unit Generators for sc.
 | VarSaw                      | No        |
 | VOsc                        | No        |
 | VOsc3                       | No        |
-| WhiteNoise                  | No        |
+| WhiteNoise                  | Yes       |
 | XFade2                      | No        |
-| XLine                       | No        |
+| XLine                       | Yes       |

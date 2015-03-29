@@ -19,6 +19,23 @@ SynthDef(\SineTone, {
     Out.ar(0, SinOsc.ar(440));
 }).writeDefFile(File.getcwd);
 
+//                   Out
+//                   /\
+//                  /  \
+//                 0    BinaryOpUgen
+//                         /\
+//                        /  \
+//                  SinOsc    0.5
+//                    /\
+//                   /  \
+//                440    SinOsc
+//                         /\
+//                        /  \
+//                     0.1    0
+//
+// constants: [0.1, 0, 440, 0.5]
+// ugens: [SinOsc(0.1), SinOsc(440), BinaryOpUgen, Out]
+//
 SynthDef(\SineTone2, {
     Out.ar(0, SinOsc.ar(440, SinOsc.ar(0.1), 0.5));
 }).writeDefFile(File.getcwd);
@@ -45,6 +62,14 @@ SynthDef(\Cascade, {
     var mod1 = SinOsc.ar([440, 441]);
     var mod2 = SinOsc.ar(mod1);
     Out.ar(0, SinOsc.ar(mod2));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\AllpassExample, {
+    // var noise = WhiteNoise.ar(0.1);
+    // var line = XLine.kr(0.0001, 0.01, 20);
+    // var all = AllpassC.ar(noise, 0.01, line, 0.2);
+    // Out.ar(0, all);
+    Out.ar(0, AllpassC.ar(WhiteNoise.ar(0.1), 0.01, XLine.kr(0.0001, 0.01, 20), 0.2));
 }).writeDefFile(File.getcwd);
 
 0.exit;

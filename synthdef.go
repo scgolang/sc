@@ -392,51 +392,57 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 	return def
 }
 
-func flatten(node UgenNode, params *Params, def *Synthdef) *input {
+func flatten(root UgenNode, params *Params, def *Synthdef) {
 	stack := newStack()
-	inputs := node.Inputs()
-
-	// iterate through ugen inputs in reverse order
-	for i := len(inputs)-1; i >= 0; i-- {
-		i1 := inputs[i]
-
-		if node, isNode := i1.(UgenNode); isNode {
-			stack.Push(flatten(node, params, def))
-		} else if multi, isMulti := i1.(MultiInput); isMulti {
-			ins := multi.InputArray()
-			jns := make([]*input, 0)
-
-			for _, in := range ins {
-				if ugen, isUgen := in.(UgenNode); isUgen {
-					jns = append(jns, flatten(ugen, params, def))
-				} else {
-					stack.Push(in)
-				}
-			}
-
-			for m := range jns {
-				stack.Push(jns[len(jns)-m-1])
-			}
-		} else {
-			stack.Push(i1)
-		}
-	}
+	errmsg := "ugen inputs must be constant, param, or ugens (%v)"
+	flattenz(root, params, def, stack)
 
 	// add inputs to root
 	var in *input
-	u := cloneUgen(node)
 	for val := stack.Pop(); val != nil; val = stack.Pop() {
 		if cval, isc := val.(C); isc {
 			in = def.AddConstant(float32(cval))
 		} else if paramVal, isParam := val.(*Param); isParam {
 			in = &input{0, paramVal.Index()}
-		} else if inputVal, isInput := val.(*input); isInput {
-			in = inputVal
+		} else if uval, isUgen := val.(*ugen); isUgen {
+			in = def.AddUgen(uval)
 		} else {
-			panic(fmt.Errorf("ugen inputs must be constant, param, or ugens (%v)", val))
+			panic(fmt.Errorf(errmsg, val))
 		}
 		u.AppendInput(in)
 	}
 
-	return def.AddUgen(u)
+	def.AddUgen(u)
 }
+
+func flattenz(node UgenNode, params *Params, def *Synthdef, stack *stack) *ugen {
+	inputs := node.Inputs()
+	// iterate through ugen inputs in reverse order
+	for i := len(inputs)-1; i >= 0; i-- {
+		i1 := inputs[i]
+
+		if node, isNode := i1.(UgenNode); isNode {
+			stack.Push(flattenz(node, params, def, stack))
+		} else if multi, isMulti := i1.(MultiInput); isMulti {
+			ins := multi.InputArray()
+
+			for _, i2 := range ins {
+				if ugen, isUgen := i2.(UgenNode); isUgen {
+					flattenz(ugen, params, def, stack)
+				} else {
+					stack.Push(i2)
+				}
+			}
+		} else {
+			stack.Push(i1)
+		}
+	}
+}
+
+// We have to walk the ugen tree and push values onto the stack that
+// we will use to construct the synthdef. We also need to add the
+// proper inputs to each ugen in the tree.
+// The problem with the current implementation is that a ugen is
+// converted to an input when you add it to the synthdef.
+// We don't want to add it to the synthdef as soon as we process
+// its inputs, but otherwise it's hard to know where to add the inputs.

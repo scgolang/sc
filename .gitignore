@@ -4,6 +4,6 @@
 sdef
 status
 inspect
-runserver
+runServer
 quit
 senddef

@@ -19,18 +19,23 @@ SynthDef(\SineTone, {
     Out.ar(0, SinOsc.ar(440));
 }).writeDefFile(File.getcwd);
 
+//
 //                   Out
-//                   /\
-//                  /  \
+//                    |
+//                 +-------+
+//                 |       |
 //                 0    BinaryOpUgen
-//                         /\
-//                        /  \
+//                         |
+//                    +--------+
+//                    |        |
 //                  SinOsc    0.5
-//                    /\
-//                   /  \
+//                    |
+//                 +-------+
+//                 |       |
 //                440    SinOsc
-//                         /\
-//                        /  \
+//                         |
+//                      +-----+
+//                      |     |
 //                     0.1    0
 //
 // constants: [0.1, 0, 440, 0.5]
@@ -64,6 +69,26 @@ SynthDef(\Cascade, {
     Out.ar(0, SinOsc.ar(mod2));
 }).writeDefFile(File.getcwd);
 
+//                                 Out
+//                                  |
+//                              +-------+
+//                              |       |
+//                              0       AllpassC
+//                                         |
+//                          +--------+--------+--------+
+//                          |        |        |        |
+//               BinaryOpUgen      0.01     XLine     0.2
+//                  |                         |
+//              +--------+          +------+-------+-------+
+//              |        |          |      |       |       |
+//      WhiteNoise      0.1      0.0001   0.01     20      0
+//
+// constants: [0.1, 0.0001, 0.01, 20, 0, 0.2]
+//
+// ugens: [WhiteNoise, BinaryOpUgen, XLine, AllpassC, Out]
+//
+// should ugens get pushed onto the stack?
+//                                       
 SynthDef(\AllpassExample, {
     // var noise = WhiteNoise.ar(0.1);
     // var line = XLine.kr(0.0001, 0.01, 20);

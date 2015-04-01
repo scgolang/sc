@@ -19,6 +19,31 @@ const (
 
 var byteOrder = binary.BigEndian
 
+// ugenInput is a helper type used when parsing
+// a ugen graph. When we are parsing a ugen graph
+// we maintain a stack of ugenInput's that will
+// all get added to the synthdef after the whole
+// graph has been traversed.
+type ugenInput struct {
+	// ugen is the ugen that will get added to the synthdef
+	ugen  *ugen
+	// node is the UgenNode visited while walking the ugen graph.
+	// To ensure that we don't add a given ugen twice, we compare
+	// a UgenNode to the node members of all the ugenInput's on
+	// the ugens stack
+	node UgenNode
+	// input is the input that ugens that have this ugen as an input
+	// should add to their list of inputs
+	input *input
+}
+
+// constantInput is a helper type used when parsing
+// ugen graphs.
+type constantInput struct {
+	constant C
+	input    *input
+}
+
 // synthdef defines the structure of synth def data as defined
 // in http://doc.sccode.org/Reference/Synth-Definition-File-Format.html
 type Synthdef struct {
@@ -39,55 +64,12 @@ type Synthdef struct {
 
 	// Variants is the list of variants contained in the synth def
 	Variants []*Variant `json:"variants" xml:"Variants>Variant"`
-}
 
-// AddUgen returns an input pointing to either the (newly created)
-// last position in the ugens array if this ugen has never been
-// added before or the ugens existing position in the Ugens array
-func (self *Synthdef) AddUgen(u *ugen) *input {
-	for i, v := range self.Ugens {
-		if u == v {
-			return &input{int32(i), 0}
-		}
-	}
-	idx := len(self.Ugens)
-	self.Ugens = append(self.Ugens, u)
-	return &input{int32(idx), 0}
-}
+	// ugens is a stack we use when parsing a ugen graph
+	ugenStack []*ugenInput
 
-// AddConstant returns an input pointing to either the (newly created)
-// last position in the constants array if this constant has never been
-// added before or the constants existing position in the Constants array
-func (self *Synthdef) AddConstant(c float32) *input {
-	for i, d := range self.Constants {
-		if c == d {
-			return &input{-1, int32(i)}
-		}
-	}
-	idx := len(self.Constants)
-	self.Constants = append(self.Constants, c)
-	return &input{-1, int32(idx)}
-}
-
-// AddParams will do nothing if there are no synthdef params.
-// If there are synthdef params it will
-// (1) Add their default values to initialParamValues
-// (2) Add their names/indices to paramNames
-// (3) Add a Control ugen as the first ugen
-func (self *Synthdef) AddParams(p *Params) {
-	// HACK convert Params to an interface type
-	paramList := p.List()
-	numParams := len(paramList)
-	self.InitialParamValues = make([]float32, numParams)
-	self.ParamNames = make([]ParamName, numParams)
-	for i, param := range paramList {
-		self.InitialParamValues[i] = param.GetInitialValue()
-		self.ParamNames[i] = ParamName{param.Name(),param.Index()}
-	}
-	if numParams > 0 {
-		control := []*ugen{cloneUgen(p.Control())}
-		self.Ugens = append(control, self.Ugens...)
-	}
+	// constants is a stack we use when parsing a ugen graph
+	constantStack []*constantInput
 }
 
 // Write writes a binary representation of a synthdef to an io.Writer.
@@ -356,8 +338,212 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 		paramNames,
 		ugens,
 		variants,
+		make([]*ugenInput, 0),
+		make([]*constantInput, 0),
 	}
 	return &synthDef, nil
+}
+
+// addUgens adds all the ugens from ugenStack to
+// the synthdef
+func (self *Synthdef) addUgens() {
+	for i, uin := 0, self.popUgenInput(); uin != nil; uin = self.popUgenInput() {
+		uin.input.UgenIndex = int32(i)
+		self.Ugens = append(self.Ugens, uin.ugen)
+		i = i + 1
+	}
+}
+
+// addConstants adds all the constants
+func (self *Synthdef) addConstants() {
+	for i, cin := 0, self.popConstantInput(); cin != nil; cin = self.popConstantInput() {
+		cin.input.OutputIndex = int32(i)
+		self.Constants = append(self.Constants, float32(cin.constant))
+		i = i + 1
+	}
+}
+
+// AddParams will do nothing if there are no synthdef params.
+// If there are synthdef params it will
+// (1) Add their default values to initialParamValues
+// (2) Add their names/indices to paramNames
+// (3) Add a Control ugen as the first ugen
+func (self *Synthdef) AddParams(p *Params) {
+	// HACK convert Params to an interface type
+	paramList := p.List()
+	numParams := len(paramList)
+	self.InitialParamValues = make([]float32, numParams)
+	self.ParamNames = make([]ParamName, numParams)
+	for i, param := range paramList {
+		self.InitialParamValues[i] = param.GetInitialValue()
+		self.ParamNames[i] = ParamName{param.Name(), param.Index()}
+	}
+	if numParams > 0 {
+		control := []*ugen{cloneUgen(p.Control())}
+		self.Ugens = append(control, self.Ugens...)
+	}
+}
+
+// pushUgenInput pushes a ugenInput onto ugenStack
+func (self *Synthdef) pushUgenInput(uin *ugenInput) *ugenInput {
+	for _, euin := range self.ugenStack {
+		if uin.node == euin.node {
+			return euin
+		}
+	}
+	self.ugenStack = append(self.ugenStack, uin)
+	return uin
+}
+
+// popUgenInput pops a ugenInput from ugenStack
+func (self *Synthdef) popUgenInput() *ugenInput {
+	l := len(self.ugenStack)
+	if l == 0 {
+		return nil
+	}
+	uin := self.ugenStack[l-1]
+	self.ugenStack = self.ugenStack[0:l-1]
+	return uin
+}
+
+// pushConstantInput pushes a constantInput onto constantStack
+// returns the existing constantInput if the one you were
+// trying to push has the same C value as one that is already
+// on the stack
+func (self *Synthdef) pushConstantInput(cin *constantInput) *constantInput {
+	for _, ecin := range self.constantStack {
+		if float32(ecin.constant) == float32(cin.constant) {
+			return ecin
+		}
+	}
+	self.constantStack = append(self.constantStack, cin)
+	return cin
+}
+
+// popConstantInput pops a constantInput from constantStack
+func (self *Synthdef) popConstantInput() *constantInput {
+	l := len(self.constantStack)
+	if l == 0 {
+		return nil
+	}
+	cin := self.constantStack[l-1]
+	self.constantStack = self.constantStack[0:l-1]
+	return cin
+}
+
+// visitUgen visits a ugen node, processing all its inputs
+// from last to first. since this method is not meant to visit
+// ugens that are inputs to other ugens (see visitUgenInput).
+// this method should only be used for visiting the root of a
+// ugen graph
+func (self *Synthdef) visitUgen(node UgenNode) {
+	inputs := node.Inputs()
+	inputStack := newStack()
+	u := cloneUgen(node)
+	uin := ugenInput{u, node, placeholderInput()}
+
+	self.pushUgenInput(&uin)
+
+	// iterate through ugen inputs in reverse order
+	for i := len(inputs) - 1; i >= 0; i-- {
+		i1 := inputs[i]
+
+		if node, isNode := i1.(UgenNode); isNode {
+			// flatten this ugen, return an input
+			inputStack.Push(self.visitUgenInput(node))
+		} else if multi, isMulti := i1.(MultiInput); isMulti {
+			ins := multi.InputArray()
+
+			for _, i2 := range ins {
+				if ugen, isUgen := i2.(UgenNode); isUgen {
+					inputStack.Push(self.visitUgenInput(ugen))
+				} else if c, isc := i1.(C); isc {
+					inputStack.Push(self.visitConstantInput(c))
+				} else {
+					panic("unrecognized input type")
+				}
+			}
+		} else if c, isc := i1.(C); isc {
+			inputStack.Push(self.visitConstantInput(c))
+		} else {
+			panic("unrecognized input type")
+		}
+	}
+
+	// add the inputs
+	for val := inputStack.Pop(); val != nil; val = inputStack.Pop() {
+		switch in := val.(type) {
+		case *ugenInput:
+			u.AppendInput(in.input)
+			break
+		case *constantInput:
+			u.AppendInput(in.input)
+			break
+		}
+	}
+}
+
+// visitUgenInput visits a ugen that is being used as
+// an input to another ugen
+func (self *Synthdef) visitUgenInput(node UgenNode) *ugenInput {
+	inputs := node.Inputs()
+	inputStack := newStack()
+	u := cloneUgen(node)
+
+	uin := ugenInput{u, node, placeholderInput()}
+	self.pushUgenInput(&uin)
+
+	// iterate through ugen inputs in reverse order
+	for i := len(inputs) - 1; i >= 0; i-- {
+		i1 := inputs[i]
+
+		if node, isNode := i1.(UgenNode); isNode {
+			// flatten this ugen, return an input
+			inputStack.Push(self.visitUgenInput(node))
+		} else if multi, isMulti := i1.(MultiInput); isMulti {
+			ins := multi.InputArray()
+
+			for _, i2 := range ins {
+				if ugen, isUgen := i2.(UgenNode); isUgen {
+					inputStack.Push(self.visitUgenInput(ugen))
+				} else if c, isc := i1.(C); isc {
+					inputStack.Push(self.visitConstantInput(c))
+				} else {
+					panic("unrecognized input type")
+				}
+			}
+		} else if c, isc := i1.(C); isc {
+			inputStack.Push(self.visitConstantInput(c))
+		} else {
+			panic("unrecognized input type")
+		}
+	}
+
+	for val := inputStack.Pop(); val != nil; val = inputStack.Pop() {
+		switch in := val.(type) {
+		case *ugenInput:
+			u.AppendInput(in.input)
+			break
+		case *constantInput:
+			u.AppendInput(in.input)
+			break
+		}
+	}
+
+	return &uin
+}
+
+// visitConstantInput visits a constant ugen input
+func (self *Synthdef) visitConstantInput(c C) *constantInput {
+	cin := &constantInput{c, &input{-1, 0}}
+	return self.pushConstantInput(cin)
+}
+
+func (self *Synthdef) flatten(root UgenNode, params *Params) {
+	self.AddParams(params)
+	self.visitUgen(root)
+	self.addUgens()
+	self.addConstants()
 }
 
 func newsynthdef(name string) *Synthdef {
@@ -368,6 +554,8 @@ func newsynthdef(name string) *Synthdef {
 		make([]ParamName, 0),
 		make([]*ugen, 0),
 		make([]*Variant, 0),
+		make([]*ugenInput, 0),     // ugens stack
+		make([]*constantInput, 0), // constants stack
 	}
 	return &def
 }
@@ -382,67 +570,78 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 	// names at runtime.
 	// Since this is not possible, what we need to do is let users add
 	// synthdef params anywhere in their UgenGraphFunc using the Params interface.
-	// Then in order to correctly map the values passed when creating 
+	// Then in order to correctly map the values passed when creating
 	// a synth node they have to be passed in the same order
 	// they were created in the UgenGraphFunc.
 	params := NewParams()
 	root := graphFunc(params)
-	def.AddParams(params)
-	flatten(root, params, def)
+	def.flatten(root, params)
 	return def
 }
 
-func flatten(root UgenNode, params *Params, def *Synthdef) {
-	stack := newStack()
-	errmsg := "ugen inputs must be constant, param, or ugens (%v)"
-	flattenz(root, params, def, stack)
-
-	// add inputs to root
-	var in *input
-	for val := stack.Pop(); val != nil; val = stack.Pop() {
-		if cval, isc := val.(C); isc {
-			in = def.AddConstant(float32(cval))
-		} else if paramVal, isParam := val.(*Param); isParam {
-			in = &input{0, paramVal.Index()}
-		} else if uval, isUgen := val.(*ugen); isUgen {
-			in = def.AddUgen(uval)
-		} else {
-			panic(fmt.Errorf(errmsg, val))
-		}
-		u.AppendInput(in)
-	}
-
-	def.AddUgen(u)
+func placeholderInput() *input {
+	return &input{-2, 0}
 }
 
-func flattenz(node UgenNode, params *Params, def *Synthdef, stack *stack) *ugen {
-	inputs := node.Inputs()
-	// iterate through ugen inputs in reverse order
-	for i := len(inputs)-1; i >= 0; i-- {
-		i1 := inputs[i]
+// Here we can see why it is not sufficient to simply
+// scan the inputs at a given depth.
+//
+// If we had L and R stacks, what would they look like?
+//
+// L: [[BinaryOpUgen][WhiteNoise, 0.1]]
+//
+//                                 Out
+//                                  |
+//                              +-------+
+//                              |       |
+//                              0       AllpassC
+//                                         |
+//                          +--------+--------+--------+
+//                          |        |        |        |
+//               BinaryOpUgen      0.01     XLine     0.2
+//                  |                         |
+//              +--------+          +------+-------+-------+
+//              |        |          |      |       |       |
+//      WhiteNoise     SinOsc    0.0001   0.01   SinOsc    0
+//                       |                         |
+//                   +-------+                 +-------+
+//                   |       |                 |       |
+//                  0.6      0               0.02      0
+//
+// constants: [0.6, 0, 0.02, 0.0001, 0.01, 0.2]
+//
+// ugens: [SinOsc(0.6), WhiteNoise, BinaryOpUgen, SinOsc(0.02), XLine, AllpassC, Out]
 
-		if node, isNode := i1.(UgenNode); isNode {
-			stack.Push(flattenz(node, params, def, stack))
-		} else if multi, isMulti := i1.(MultiInput); isMulti {
-			ins := multi.InputArray()
+// WhiteNoise => BinaryOpUgen
+// SinOsc(0.6) => BinaryOpUgen
+// BinaryOpUgen => AllpassC
+// SinOsc(0.02) => XLine
+// XLine => AllpassC
+// AllpassC => Out
+//
+// Why does SinOsc(0.6) come before WhiteNoise above!?!?!?
 
-			for _, i2 := range ins {
-				if ugen, isUgen := i2.(UgenNode); isUgen {
-					flattenz(ugen, params, def, stack)
-				} else {
-					stack.Push(i2)
-				}
-			}
-		} else {
-			stack.Push(i1)
-		}
-	}
-}
 
-// We have to walk the ugen tree and push values onto the stack that
-// we will use to construct the synthdef. We also need to add the
-// proper inputs to each ugen in the tree.
-// The problem with the current implementation is that a ugen is
-// converted to an input when you add it to the synthdef.
-// We don't want to add it to the synthdef as soon as we process
-// its inputs, but otherwise it's hard to know where to add the inputs.
+
+// We need to add constants and ugens to the synthdef in depth-first order.
+// If we let the root node be depth=0, then in the graph above we have
+// depth=1 => 0 AllpassC
+// depth=2 => BinaryOpUgen 0.01 XLine 0.2
+// depth=3 => WhiteNoise 0.1 0.0001 0.01 20 0
+//
+// So the data structure we need for this could be [][]Input, but how
+// do we keep track of the inputs for each ugen?
+// This makes me think I should use [][]interface{} to store
+// *ugenInput and constantInput*
+
+
+
+// Ugen Graph Traversal Pseudocode
+//
+// VisitAt(0, root)
+//
+// func VisitAt(depth, node) {
+//     for input in Reverse(node.Inputs()) {
+//         if constant {
+//     }
+// }

@@ -3,11 +3,75 @@ SynthDef(\Beats, {
     Out.ar(0, SinOsc.ar(lfo), SinOsc.ar(lfo));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\foo, {
+    Out.ar(0, SinOsc.ar() * Blip.ar());
+}).writeDefFile(File.getcwd);
+
+SynthDef(\bar, {
+    Out.ar(0, SinOsc.ar(mul: Blip.ar()));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\baz, {
+    Out.ar(0, Blip.ar(mul: SinOsc.ar()));
+}).writeDefFile(File.getcwd);
+
+//
+// NewSynthdef("sub", func(p *Params) UgenNode {
+//     blip, sine := Blip{}.Rate(AR), SinOsc{}.Rate(AR)
+//     Out{C(0), sine.Sub(blip)}.Rate(AR)
+// })
+//
+//                 Out
+//                  |
+//             +---------+
+//             |         |
+//             0    BinaryOpUGen(sub)
+//                       |
+//                  +---------+
+//                  |         |
+//               SinOsc      Blip
+//                  |         |
+//               +-----+   +-----+
+//               |     |   |     |
+//              440    0  440   200
+//
+// constants: [440, 0, 200]
+//
+// ugens: [SinOsc, Blip, BinaryOpUGen, Out]
+//
+SynthDef(\sub, {
+    Out.ar(0, SinOsc.ar() - Blip.ar());
+}).writeDefFile(File.getcwd);
+
+//
+//                              Out
+//                               |
+//                          +---------+
+//                          |         |
+//                          0    BinaryOpUgen
+//                                    |
+//                               +---------+
+//                               |         |
+//                          PinkNoise    EnvGen
+//                                         |
+//           +---+---+---+---+---+---+---+---+---+----+---+---+---+---+---+---+
+//           |   |   |   |   |   |   |   |   |   |    |   |   |   |   |   |   |
+//           1   1   0   1   2   0   2  -99 -99  1  0.01  5  -4   0   1   5  -4
+//
+// constants: [1, 0, 2, -99, 0.01, 5, -4]
+//
+// ugens: [EnvGen, PinkNoise, BinaryOpUgen, Out]
+//
 SynthDef(\Envgen1, {
     // EnvGen.kr(Env.perc, doneAction: 2); becomes
     // EnvGen.kr(1, 1, 0, 1, 2,
     //           0, 2, -99, -99, 1, 0.01, 5, -4, 0, 1, 5, -4);
     Out.ar(0, PinkNoise.ar(EnvGen.kr(Env.perc, doneAction: 2)));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SameSame, {
+    var s = SinOsc.ar(220);
+    Out.ar(0, [s, s]);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\SawTone1, {
@@ -24,7 +88,7 @@ SynthDef(\SineTone, {
 //                    |
 //                 +-------+
 //                 |       |
-//                 0    BinaryOpUgen
+//                 0    BinaryOpUgen(mul)
 //                         |
 //                    +--------+
 //                    |        |
@@ -39,12 +103,36 @@ SynthDef(\SineTone, {
 //                     0.1    0
 //
 // constants: [0.1, 0, 440, 0.5]
+//
 // ugens: [SinOsc(0.1), SinOsc(440), BinaryOpUgen, Out]
 //
 SynthDef(\SineTone2, {
     Out.ar(0, SinOsc.ar(440, SinOsc.ar(0.1), 0.5));
 }).writeDefFile(File.getcwd);
 
+//
+//                  Out
+//                   |
+//                +------+
+//                |      |
+//                0    BinaryOpUgen(add)
+//                         |
+//                    +---------+
+//                    |         |
+//                 SinOsc      0.5
+//                   |
+//               +-------+
+//               |       |
+//              440    SinOsc
+//                       |
+//                  +---------+
+//                  |         |
+//                 0.1        0
+//
+// constants: [0.1, 0, 440, 0.5]
+//
+// ugens:
+//
 SynthDef(\SineTone3, {
     Out.ar(0, SinOsc.ar(440, SinOsc.ar(0.1), add: 0.5));
 }).writeDefFile(File.getcwd);
@@ -87,14 +175,13 @@ SynthDef(\Cascade, {
 //
 // ugens: [WhiteNoise, BinaryOpUgen, XLine, AllpassC, Out]
 //
-// should ugens get pushed onto the stack?
-//                                       
 SynthDef(\AllpassExample, {
     // var noise = WhiteNoise.ar(0.1);
     // var line = XLine.kr(0.0001, 0.01, 20);
     // var all = AllpassC.ar(noise, 0.01, line, 0.2);
     // Out.ar(0, all);
-    Out.ar(0, AllpassC.ar(WhiteNoise.ar(0.1), 0.01, XLine.kr(0.0001, 0.01, 20), 0.2));
+    // Out.ar(0, AllpassC.ar(WhiteNoise.ar(SinOsc.ar(0.6)), 0.01, XLine.kr(0.0001, 0.01, SinOsc.kr(0.02)), 0.2));
+    Out.ar(0, AllpassC.ar(WhiteNoise.ar() * SinOsc.ar(0.6), 0.01, XLine.kr(0.0001, 0.01, SinOsc.kr(0.02)), 0.2));
 }).writeDefFile(File.getcwd);
 
 0.exit;

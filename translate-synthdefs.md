@@ -60,11 +60,14 @@ There is a very subtle difference between the two though. You have to inspect th
 synthdef file and look at the order of the inputs to BinaryOpUGen. The BinaryOpUGen in the
 `foo` synthdef effectively looks like `BinaryOpUGen.ar(SinOsc.ar(), Blip.ar())`
 but the one from the `baz` synthdef looks like `BinaryOpUGen.ar(Blip.ar(), SinOsc.ar())`.
-The inputs are switched! Why would this be the case?
+
+The inputs are switched!
+
+Why would this be the case?
 
 #### golang
 
-In sc there is only one way to multiply two ugens: with the `Mul` method.
+In [sc](http://godoc.org/github.com/briansorahan/sc) there is only one way to multiply two ugens: with the `Mul` method.
 
 This will sort SinOsc before Blip:
 

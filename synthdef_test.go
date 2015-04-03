@@ -77,6 +77,14 @@ func TestSynthdefEnvgen(t *testing.T) {
 	if def == nil {
 		t.Fatalf("nil synthdef")
 	}
+	f, err := os.Create("Envgen1.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = def.Write(f)
+	if err != nil {
+		t.Fatal(err)
+	}
 	same, err := def.CompareToFile("Envgen1.scsyndef")
 	if err != nil {
 		t.Fatal(err)
@@ -94,6 +102,14 @@ func TestSimpleMulti(t *testing.T) {
 	})
 	if def == nil {
 		t.Fatalf("nil synthdef")
+	}
+	f, err := os.Create("SimpleMulti.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = def.Write(f)
+	if err != nil {
+		t.Fatal(err)
 	}
 	same, err := def.CompareToFile("SimpleMulti.scsyndef")
 	if err != nil {
@@ -127,46 +143,45 @@ func TestCascade(t *testing.T) {
 	}
 }
 
-// FIXME
-// func TestAllpassExample(t *testing.T) {
-// 	def := NewSynthdef("AllpassExample", func(p *Params) UgenNode {
-// 		noise := WhiteNoise{}.Rate(AR).Mul(C(0.1))
+func TestAllpassExample(t *testing.T) {
+	def := NewSynthdef("AllpassExample", func(p *Params) UgenNode {
+		noise := WhiteNoise{}.Rate(AR).Mul(C(0.1))
 
-// 		line := XLine{
-// 			Start: C(0.0001),
-// 			End:   C(0.01),
-// 			Dur:   C(20),
-// 			Done:  0,
-// 		}.Rate(KR)
+		line := XLine{
+			Start: C(0.0001),
+			End:   C(0.01),
+			Dur:   C(20),
+			Done:  0,
+		}.Rate(KR)
 
-// 		all := AllpassC{
-// 			In:       noise,
-// 			MaxDelay: C(0.01),
-// 			Delay:    line,
-// 			Decay:    C(0.2),
-// 		}.Rate(AR)
+		all := AllpassC{
+			In:       noise,
+			MaxDelay: C(0.01),
+			Delay:    line,
+			Decay:    C(0.2),
+		}.Rate(AR)
 
-// 		return Out{C(0), all}.Rate(AR)
-// 	})
-// 	if def == nil {
-// 		t.Fatalf("nil synthdef")
-// 	}
-// 	f, err := os.Create("AllpassExample.gosyndef")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	err = def.Write(f)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	same, err := def.CompareToFile("AllpassExample.scsyndef")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	if !same {
-// 		t.Fatalf("synthdef different from sclang-generated version")
-// 	}
-// }
+		return Out{C(0), all}.Rate(AR)
+	})
+	if def == nil {
+		t.Fatalf("nil synthdef")
+	}
+	f, err := os.Create("AllpassExample.gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = def.Write(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	same, err := def.CompareToFile("AllpassExample.scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang-generated version")
+	}
+}
 
 func ExampleNewSynthdef() {
 	NewSynthdef("SineTone", func(params *Params) UgenNode {

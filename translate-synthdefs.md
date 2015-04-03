@@ -1,8 +1,60 @@
-TODO: this should be a proper guide on how to translate synthdefs!
+## Translating synthdefs from sclang to golang
 
-For now this is just an account of some the subtleties I have discovered
-that people will have to take into account when translating
-synthdefs from sclang to golang.
+One of the first things you must learn in order to be able to use SuperCollider
+is how to write synthdefs. After reading this guide you should be pretty
+comfortable with creating synthdefs.
+
+This guide assumes that you are comfortable with reading and writing
+synthdefs in sclang. If you aren't I suggest reading [this][2]
+and play around with creating synthdefs with sclang a bit
+before deciding to write them in go.
+
+### Ugen Inputs
+
+In [sc][1] all ugen inputs are implementations of the [Input][3]
+interface. This has some very important ramifications on how
+you write synthdefs.
+
+First of all, unlike sclang, you can not use numeric literals as inputs to ugens.
+
+Every constant input to a ugen must be wrapped with the [C][4] type.
+
+This means that most synthdefs written in go will be a bit more
+verbose than their sclang counterparts. But I believe this is the
+best way to have polymorphic ugen inputs.
+
+### Synthdef Parameters
+
+Since go is statically typed language, the UgenGraphFunc type
+
+```go
+type UgenGraphFunc func(params *Params) UgenNode
+```
+
+### Examples
+
+#### sine
+
+SuperCollider:
+
+```SuperCollider
+SynthDef(\sine, {
+    Out.ar(0, SinOsc.ar());
+});
+```
+
+Go:
+
+```go
+NewSynthdef("sine", func(p *Params) UgenNode {
+    Out{C(0), SinOsc{}.Rate(AR)}.Rate(AR)
+})
+```
+
+## Problems
+
+Below are some of the subtle differences encountered when 
+translating synthdefs from sclang to golang.
 
 ### BinaryOpUgen
 
@@ -67,7 +119,7 @@ Why would this be the case?
 
 #### golang
 
-In [sc](http://godoc.org/github.com/briansorahan/sc) there is only one way to multiply two ugens: with the `Mul` method.
+In [sc][1] there is only one way to multiply two ugens: with the `Mul` method.
 
 This will sort SinOsc before Blip:
 
@@ -101,3 +153,8 @@ but the order of the inputs to BinaryOpUGen will be switched.
 
 Luckily the `+` and `*` operators are commutative, so the order of the inputs
 to the resulting BinaryOpUGen does not matter.
+
+[1]: http://godoc.org/github.com/briansorahan/sc
+[2]: http://doc.sccode.org/Tutorials/Getting-Started/10-SynthDefs-and-Synths.html
+[3]: http://godoc.org/github.com/briansorahan/sc/types#Input
+[4]: http://godoc.org/github.com/briansorahan/sc/ugens#C

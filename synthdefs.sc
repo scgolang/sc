@@ -131,12 +131,23 @@ SynthDef(\SineTone2, {
 //
 // constants: [0.1, 0, 440, 0.5]
 //
-// ugens:
+// ugens: [SinOsc(0.1), SinOsc(440), BinaryOpUGen, Out]
 //
 SynthDef(\SineTone3, {
     Out.ar(0, SinOsc.ar(440, SinOsc.ar(0.1), add: 0.5));
 }).writeDefFile(File.getcwd);
 
+//
+//                 Out
+//                  |
+//               +-----+
+//               |     |
+//               0   SinOsc
+//                     |
+//                 +-------+
+//                 |       |
+//             Control     0
+//
 SynthDef(\SineTone4, {
     arg freq=440;
     Out.ar(0, SinOsc.ar(freq));
@@ -147,6 +158,12 @@ SynthDef(\UseParam, {
 	Out.ar(0, SinOsc.ar(freq + 20));
 }).writeDefFile(File.getcwd);
 
+//                        Out
+//                         |
+//              +----------+-----------+
+//              |          |           |
+//              0     SinOsc(440)  SinOsc(441)
+//
 SynthDef(\SimpleMulti, {
 	Out.ar(0, SinOsc.ar([440, 441]));
 }).writeDefFile(File.getcwd);
@@ -176,12 +193,7 @@ SynthDef(\Cascade, {
 // ugens: [WhiteNoise, BinaryOpUgen, XLine, AllpassC, Out]
 //
 SynthDef(\AllpassExample, {
-    // var noise = WhiteNoise.ar(0.1);
-    // var line = XLine.kr(0.0001, 0.01, 20);
-    // var all = AllpassC.ar(noise, 0.01, line, 0.2);
-    // Out.ar(0, all);
-    // Out.ar(0, AllpassC.ar(WhiteNoise.ar(SinOsc.ar(0.6)), 0.01, XLine.kr(0.0001, 0.01, SinOsc.kr(0.02)), 0.2));
-    Out.ar(0, AllpassC.ar(WhiteNoise.ar() * SinOsc.ar(0.6), 0.01, XLine.kr(0.0001, 0.01, SinOsc.kr(0.02)), 0.2));
+    Out.ar(0, AllpassC.ar(WhiteNoise.ar(0.1), 0.01, XLine.kr(0.0001, 0.01, 20), 0.2));
 }).writeDefFile(File.getcwd);
 
 0.exit;

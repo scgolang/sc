@@ -31,3 +31,7 @@ func readinput(r io.Reader) (*input, error) {
 	is := input{ugenIndex, outputIndex}
 	return &is, nil
 }
+
+func newInput(ugenIndex, outputIndex int32) *input {
+	return &input{ugenIndex, outputIndex}
+}

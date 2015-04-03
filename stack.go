@@ -18,6 +18,10 @@ func (self *stack) Pop() interface{} {
 	return el
 }
 
+func (self *stack) Size() int {
+	return len(self.l)
+}
+
 func newStack() *stack {
 	s := stack{make([]interface{}, 0)}
 	return &s

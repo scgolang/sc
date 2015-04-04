@@ -15,12 +15,12 @@ SynthDef(\baz, {
     Out.ar(0, Blip.ar(mul: SinOsc.ar()));
 }).writeDefFile(File.getcwd);
 
-//
+
 // NewSynthdef("sub", func(p *Params) UgenNode {
 //     blip, sine := Blip{}.Rate(AR), SinOsc{}.Rate(AR)
 //     Out{C(0), sine.Sub(blip)}.Rate(AR)
 // })
-//
+
 //                 Out
 //                  |
 //             +---------+
@@ -66,7 +66,7 @@ SynthDef(\Envgen1, {
     // EnvGen.kr(Env.perc, doneAction: 2); becomes
     // EnvGen.kr(1, 1, 0, 1, 2,
     //           0, 2, -99, -99, 1, 0.01, 5, -4, 0, 1, 5, -4);
-    Out.ar(0, PinkNoise.ar(EnvGen.kr(Env.perc, doneAction: 2)));
+    Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\SameSame, {
@@ -194,6 +194,43 @@ SynthDef(\Cascade, {
 //
 SynthDef(\AllpassExample, {
     Out.ar(0, AllpassC.ar(WhiteNoise.ar(0.1), 0.01, XLine.kr(0.0001, 0.01, 20), 0.2));
+}).writeDefFile(File.getcwd);
+
+//                                  Out
+//                                   |
+//                             +-----------+
+//                             |           |
+//                             0        AllpassN
+//                                         |
+//                       +-----------+-----------+-----------+
+//                       |           |           |           |
+//                 BinaryOpUgen     0.2         0.2          3
+//                       |
+//                +-------------+
+//                |             |
+//              Decay      WhiteNoise
+//                |
+//          +-------------+
+//          |             |
+//     BinaryOpUGen      0.2
+//          |
+//    +------------+
+//    |            |
+//   Dust         0.5
+//    |
+//    1
+//
+// constants: [1, 0.5, 0.2, 3, 0]
+//
+// ugens: [Dust, BinaryOpUGen(Dust, 0.5), Decay, WhiteNoise, BinaryOpUGen(Decay, WhiteNoise), AllpassN, Out]
+//
+SynthDef(\AllpassnExample, {
+    var noise = WhiteNoise.ar();
+    var dust = Dust.ar(1, 0.5);
+    var decay = Decay.ar(dust, 0.2, noise);
+    var sig = AllpassN.ar(decay, 0.2, 0.2, 3);
+    Out.ar(0, sig);
+    // Out.ar(0, AllpassN.ar(Decay.ar(Dust.ar(1, 0.5), 0.2, WhiteNoise.ar()), 0.2, 0.2, 3));
 }).writeDefFile(File.getcwd);
 
 0.exit;

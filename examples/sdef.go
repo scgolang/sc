@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	. "github.com/briansorahan/sc"
 	"os"
@@ -8,7 +9,9 @@ import (
 
 func usage() {
 	fmt.Fprintf(os.Stderr, "Usage:\n")
-	fmt.Fprintf(os.Stderr, "%s FILE\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "%s [OPTIONS] FILE\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "OPTIONS\n")
+	fmt.Fprintf(os.Stderr, "  -format json|xml       Output format\n")
 }
 
 // Write json data describing the structure of a synthdef
@@ -17,7 +20,9 @@ func main() {
 		usage()
 		os.Exit(1)
 	}
-	r, err := os.Open(os.Args[1])
+	format := flag.String("format", "json", "Output format")
+	flag.Parse()
+	r, err := os.Open(flag.Arg(0))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		os.Exit(1)
@@ -27,5 +32,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		os.Exit(1)
 	}
-	d.WriteJSON(os.Stdout)
+	if *format == "json" {
+		d.WriteJSON(os.Stdout)
+	} else {
+		d.WriteXML(os.Stdout)
+	}
 }

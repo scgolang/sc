@@ -10,7 +10,7 @@ import (
 
 func main() {
 	options := ServerOptions{
-		EchoScsynthStdout: false,
+		EchoScsynthStdout: true,
 	}
 	server, err := NewServer("127.0.0.1", 51670, options)
 	if err != nil {
@@ -18,17 +18,19 @@ func main() {
 	}
 	// HACK convert Params to an interface type
 	def := NewSynthdef("SineTone", func(params *Params) UgenNode {
-		return Out.Ar(C(0), SinOsc.Ar(C(440)))
+		return Out{C(0), SinOsc{}.Rate(AR)}.Rate(AR)
 	})
 	done := server.Run()
 	err = server.SendDef(def)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = server.NewSynth("SineTone", server.NextSynthID(), AddToHead, DefaultGroupID)
+	sid := server.NextSynthID()
+	err = server.NewSynth("SineTone", sid, AddToHead, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("added synth %d\n", sid)
 	time.Sleep(1000 * time.Millisecond)
 	server.Quit()
 	err = <-done

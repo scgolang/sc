@@ -28,8 +28,18 @@ best way to have polymorphic ugen inputs.
 Since go is statically typed language, the UgenGraphFunc type
 
 ```go
-type UgenGraphFunc func(params *Params) UgenNode
+type UgenGraphFunc func(p *Params) UgenNode
 ```
+
+provides a way to add parameters to synthdefs by doing
+
+```go
+p.Add("freq", 440)
+```
+
+There is no way to use go's `reflect` package to get function argument
+names at runtime (which I think would be the best way to specify synth
+arguments), so I think this is the next best option.
 
 ### Examples
 

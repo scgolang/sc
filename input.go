@@ -6,8 +6,8 @@ import (
 )
 
 type input struct {
-	UgenIndex   int32 `json:"ugenIndex"`
-	OutputIndex int32 `json:"outputIndex"`
+	UgenIndex   int32 `json:"ugenIndex" xml:"ugenIndex,attr"`
+	OutputIndex int32 `json:"outputIndex" xml:"outputIndex,attr"`
 }
 
 // Write writes an input to an io.Writer

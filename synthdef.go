@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	. "github.com/briansorahan/sc/types"
 	. "github.com/briansorahan/sc/ugens"
@@ -142,6 +143,11 @@ func (self *Synthdef) Write(w io.Writer) error {
 // synthdef to an io.Writer
 func (self *Synthdef) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
+	return enc.Encode(self)
+}
+
+func (self *Synthdef) WriteXML(w io.Writer) error {
+	enc := xml.NewEncoder(w)
 	return enc.Encode(self)
 }
 
@@ -316,12 +322,12 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 	return &synthDef, nil
 }
 
-// AddParams will do nothing if there are no synthdef params.
+// addParams will do nothing if there are no synthdef params.
 // If there are synthdef params it will
 // (1) Add their default values to initialParamValues
 // (2) Add their names/indices to paramNames
 // (3) Add a Control ugen as the first ugen
-func (self *Synthdef) AddParams(p *Params) {
+func (self *Synthdef) addParams(p *Params) {
 	// HACK convert Params to an interface type
 	paramList := p.List()
 	numParams := len(paramList)
@@ -374,7 +380,7 @@ func (self *Synthdef) addConstant(c C) int {
 
 // flatten
 func (self *Synthdef) flatten(root UgenNode, params *Params) {
-	self.AddParams(params)
+	self.addParams(params)
 	// get a topologically sorted ugens list
 	ugenNodes := topsort(root)
 
@@ -462,24 +468,6 @@ func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
 	return def
 }
 
-//                                 Out
-//                                  |
-//                              +-------+
-//                              |       |
-//                              0       AllpassC
-//                                         |
-//                          +--------+--------+--------+
-//                          |        |        |        |
-//               BinaryOpUgen      0.01     XLine     0.2
-//                  |                         |
-//              +--------+          +------+-------+-------+
-//              |        |          |      |       |       |
-//      WhiteNoise      0.1      0.0001   0.01     20      0
-//
-// constants: [0.1, 0.0001, 0.01, 20, 0, 0.2]
-//
-// ugens: [WhiteNoise, BinaryOpUgen, XLine, AllpassC, Out]
-
 // topsort performs a depth-first-search of a ugen tree
 func topsort(root UgenNode) []UgenNode {
 	stack := newStack()
@@ -499,44 +487,23 @@ func topsortr(root UgenNode, stack *stack) {
 	stack.Push(root)
 	inputs := root.Inputs()
 	n := len(inputs)
-	if root.Name() == "BinaryOpUGen" {
-		for _, input := range inputs {
-			switch v := input.(type) {
-			case UgenNode:
-				topsortr(v, stack)
-				break
-			case MultiInput:
-				mins := v.InputArray()
-				for j := len(mins)-1; j >= 0; j-- {
-					min := mins[j]
-					switch w := min.(type) {
-					case UgenNode:
-						topsortr(w, stack)
-						break
-					}
+	for i := n - 1; i >= 0; i-- {
+		input := inputs[i]
+		switch v := input.(type) {
+		case UgenNode:
+			topsortr(v, stack)
+			break
+		case MultiInput:
+			mins := v.InputArray()
+			for j := len(mins)-1; j >= 0; j-- {
+				min := mins[j]
+				switch w := min.(type) {
+				case UgenNode:
+					topsortr(w, stack)
+					break
 				}
-				break
 			}
-		}
-	} else {
-		for i := n - 1; i >= 0; i-- {
-			input := inputs[i]
-			switch v := input.(type) {
-			case UgenNode:
-				topsortr(v, stack)
-				break
-			case MultiInput:
-				mins := v.InputArray()
-				for j := len(mins)-1; j >= 0; j-- {
-					min := mins[j]
-					switch w := min.(type) {
-					case UgenNode:
-						topsortr(w, stack)
-						break
-					}
-				}
-				break
-			}
+			break
 		}
 	}
 }

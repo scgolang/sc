@@ -1,10 +1,5 @@
 package ugens
 
-// 0, 3, -99, -99, -- starting level, num segments, releaseNode, loopNode
-// 1, 0.1, 5, 4, -- first segment: level, time, curve type, curvature
-// 0.5, 1, 5, -4, -- second segment: level, time, curve type, curvature
-// 0, 0.2, 5, 4 -- and so on
-
 import (
 	"fmt"
 	. "github.com/briansorahan/sc/types"
@@ -12,19 +7,33 @@ import (
 )
 
 const (
+	// A flat envelope segment
 	CurveStep    = C(0)
+	// A linear envelope segment
 	CurveLinear  = C(1)
+	// An exponential envelope segment
 	CurveExp     = C(2)
+	// A sinusoidal shaped envelope segment
 	CurveSine    = C(3)
+	// A sinusoidal segment shaped like the sides of a welch window
 	CurveWelch   = C(4)
+	// An undocumented (on doc.sccode.org) envelope segment shape
 	CurveCustom  = C(5)
+	// A squared envelope segment
 	CurveSquared = C(6)
+	// A cubed envelope segment
 	CurveCubed   = C(7)
 )
 
+// Env is a specification for a breakpoint envelope
 type Env struct {
+	// Levels is the array of levels
 	Levels      []Input
+	// Times is the array of durations (in seconds).
+	// The length of this array should be one less than the
+	// Levels array.
 	Times       []Input
+	// CurveTypes determines the shape of each envelope segment.
 	CurveTypes  []Input
 	Curvature   Input
 	ReleaseNode Input
@@ -44,6 +53,11 @@ func (self *Env) defaults() {
 }
 
 func (self Env) Inputs() []Input {
+	// This is how the inputs array is constructed:
+	// 0, 3, -99, -99, -- starting level, num segments, releaseNode, loopNode
+	// 1, 0.1, 5, 4, -- first segment: level, time, curve type, curvature
+	// 0.5, 1, 5, -4, -- second segment: level, time, curve type, curvature
+	// 0, 0.2, 5, 4 -- and so on
 	lc, lt := len(self.CurveTypes), len(self.Times)
 	if lc != lt {
 		panic(fmt.Errorf("%d curve types != %d times", lc, lt))

@@ -7,8 +7,8 @@ Unit Generators for sc.
 | Ugen Name                   | Supported |
 |:---------------------------:|:---------:|
 | AllpassC                    | Yes       |
-| AllpassL                    | No        |
-| AllpassN                    | No        |
+| AllpassL                    | Yes       |
+| AllpassN                    | Yes       |
 | BPF                         | No        |
 | BRF                         | No        |
 | Balance2                    | No        |
@@ -20,7 +20,7 @@ Unit Generators for sc.
 | CombL                       | No        |
 | CombN                       | No        |
 | Crackle                     | No        |
-| Decay                       | No        |
+| Decay                       | Yes       |
 | Decay2                      | No        |
 | DecodeB2                    | No        |
 | DelayC                      | No        |

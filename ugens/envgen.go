@@ -2,13 +2,24 @@ package ugens
 
 import . "github.com/briansorahan/sc/types"
 
+// EnvGen plays back breakpoint envelopes.
+// The envelopes must implement the Envelope interface.
+// The envelope and the arguments for LevelScale, LevelBias,
+// and TimeScale are polled when the EnvGen is triggered and
+// remain constant for the duration of the envelope.
 type EnvGen struct {
-	Env        Envelope
-	Gate       Input
+	// Env determines the shape of the envelope
+	Env Envelope
+	// Gate triggers then envelope and holds it open while > 0
+	Gate Input
+	// LevelScale scales the levels of the breakpoints
 	LevelScale Input
-	LevelBias  Input
-	TimeScale  Input
-	Done       int
+	// LevelBias offsets the levels of the breakpoints
+	LevelBias Input
+	// TimeScale scales the durations of the segments
+	TimeScale Input
+	// Done is the ugen done action
+	Done int
 }
 
 func (self *EnvGen) defaults() {
@@ -26,7 +37,9 @@ func (self *EnvGen) defaults() {
 	}
 }
 
-// Rate ugen implementation
+// Rate creates a new ugen at a specific rate.
+// If rate is an unsupported value this method will cause
+// a runtime panic.
 func (self EnvGen) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()

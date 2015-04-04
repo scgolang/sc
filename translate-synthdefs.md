@@ -34,7 +34,9 @@ type UgenGraphFunc func(p *Params) UgenNode
 provides a way to add parameters to synthdefs by doing
 
 ```go
-p.Add("freq", 440)
+freq := p.Add("freq", 440)
+// use freq as a ugen input
+return Out{C(0), SinOsc{Freq:freq}.Rate(AR)}.Rate(AR)
 ```
 
 There is no way to use go's `reflect` package to get function argument

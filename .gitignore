@@ -1,6 +1,9 @@
 *~
 *.scsyndef
 *.gosyndef
+*.xml
+*.json
+*.svg
 sdef
 status
 inspect

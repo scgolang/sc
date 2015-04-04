@@ -28,6 +28,6 @@ func (self *Inputs) InputArray() []Input {
 	return self.inputs
 }
 
-func Multi(inputs ...Input) *Inputs{
+func Multi(inputs ...Input) *Inputs {
 	return &Inputs{inputs}
 }

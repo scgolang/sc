@@ -2,8 +2,8 @@ package ugens
 
 import . "github.com/briansorahan/sc/types"
 
-// AllpassC allpass delay with cubic interpolation
-type AllpassC struct {
+// AllpassL allpass delay with linear interpolation
+type AllpassL struct {
 	// In is the input signal
 	In Input
 	// MaxDelay is maximum delay time in seconds.
@@ -18,7 +18,7 @@ type AllpassC struct {
 	Decay Input
 }
 
-func (self *AllpassC) defaults() {
+func (self *AllpassL) defaults() {
 	if self.MaxDelay == nil {
 		self.MaxDelay = C(0.2)
 	}
@@ -30,14 +30,11 @@ func (self *AllpassC) defaults() {
 	}
 }
 
-// Rate creates a new ugen at a specific rate.
-// If rate is an unsupported value this method will cause
-// a runtime panic.
-func (self AllpassC) Rate(rate int8) Input {
+func (self AllpassL) Rate(rate int8) Input {
 	if self.In == nil {
-		panic("AllpassC expects In to not be nil")
+		panic("AllpassL expects In to not be nil")
 	}
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("AllpassC", rate, 0, self.In, self.MaxDelay, self.Delay, self.Decay)
+	return UgenInput("AllpassL", rate, 0, self.In, self.MaxDelay, self.Delay, self.Decay)
 }

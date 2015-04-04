@@ -18,7 +18,13 @@ COMPILED_SYNTHDEFS := Beats            \
                       SineTone3        \
                       SineTone4        \
                       UseParams        \
+                      SameSame         \
                       Cascade          \
+                      foo              \
+                      bar              \
+                      baz              \
+                      AllpassExample   \
+                      AllpassnExample  \
                       SimpleMulti
 
 COMPILED_SYNTHDEFS := $(addsuffix .scsyndef,$(COMPILED_SYNTHDEFS))

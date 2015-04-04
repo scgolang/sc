@@ -10,3 +10,4 @@ inspect
 runServer
 quit
 senddef
+binop

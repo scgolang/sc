@@ -2,6 +2,9 @@ package ugens
 
 import . "github.com/briansorahan/sc/types"
 
+// XLine generates an exponential curve from the start value to
+// the end value. Both the start and end values must be non-zero
+// and have the same sign.
 type XLine struct {
 	Start Input
 	End   Input
@@ -21,7 +24,9 @@ func (self *XLine) defaults() {
 	}
 }
 
-// Rate ugen implementation
+// Rate creates a new ugen at a specific rate.
+// If rate is an unsupported value this method will cause
+// a runtime panic.
 func (self XLine) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()

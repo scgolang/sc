@@ -20,6 +20,16 @@ func (self *MultiNode) Nodes() []*Node {
 }
 
 // Input implementation
+func (self *MultiNode) Mul(val Input) Input {
+	l := len(self.nodes)
+	a := make([]*Node, l)
+	for i, n := range self.nodes {
+		a[i] = BinOpMul(n.Rate(), n, val)
+	}
+	return &MultiNode{a}
+}
+
+// Input implementation
 func (self *MultiNode) Add(val Input) Input {
 	l := len(self.nodes)
 	a := make([]*Node, l)
@@ -29,12 +39,11 @@ func (self *MultiNode) Add(val Input) Input {
 	return &MultiNode{a}
 }
 
-// Input implementation
-func (self *MultiNode) Mul(val Input) Input {
+func (self *MultiNode) MulAdd(mul, add Input) Input {
 	l := len(self.nodes)
 	a := make([]*Node, l)
 	for i, n := range self.nodes {
-		a[i] = BinOpMul(n.Rate(), n, val)
+		a[i] = MulAdd(n.Rate(), n, mul, add)
 	}
 	return &MultiNode{a}
 }

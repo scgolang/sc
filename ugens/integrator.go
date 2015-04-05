@@ -2,7 +2,10 @@ package ugens
 
 import . "github.com/briansorahan/sc/types"
 
-// Integrator integrates an input signal with a leak
+// Integrator integrates an input signal with a leak.
+// The formula used is
+//
+//     out(0) = in(0) + (coef * out(-1))
 type Integrator struct {
 	// In is the input signal
 	In Input

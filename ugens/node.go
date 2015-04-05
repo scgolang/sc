@@ -67,6 +67,10 @@ func (self *Node) Add(val Input) Input {
 	return BinOpAdd(self.rate, self, val)
 }
 
+func (self *Node) MulAdd(mul, add Input) Input {
+	return MulAdd(self.rate, self, mul, add)
+}
+
 // NewNode is a factory function for creating new Node instances
 func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *Node {
 	n := new(Node)

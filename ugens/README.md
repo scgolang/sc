@@ -44,7 +44,7 @@ Unit Generators for sc.
 | HPF                         | No        |
 | IFFT                        | No        |
 | Impulse                     | No        |
-| Integrator                  | No        |
+| Integrator                  | Yes       |
 | Klang                       | No        |
 | Klank                       | No        |
 | Latch                       | No        |
@@ -62,6 +62,8 @@ Unit Generators for sc.
 | LinPan2                     | No        |
 | Line                        | No        |
 | Median                      | No        |
+| MouseX                      | No        |
+| MouseY                      | No        |
 | OnePole                     | No        |
 | OneZero                     | No        |
 | Osc                         | No        |

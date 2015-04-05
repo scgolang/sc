@@ -32,6 +32,25 @@ func (self C) Add(val Input) Input {
 	}
 }
 
+func (self C) MulAdd(mul, add Input) Input {
+	switch v := mul.(type) {
+	case *Node:
+		return v.MulAdd(self, add)
+	case C:
+		switch w := add.(type) {
+		case *Node:
+			// FIXME
+			return w.MulAdd(self, mul)
+		case C:
+			return C(v*self + w)
+		default:
+			panic("input was neither ugen nor constant")
+		}
+	default:
+		panic("input was neither ugen nor constant")
+	}
+}
+
 func (self C) Equals(val C) bool {
 	return float32(self) == float32(val)
 }

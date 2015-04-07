@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"github.com/ajstarks/svgo"
 	. "github.com/briansorahan/sc/types"
 	. "github.com/briansorahan/sc/ugens"
 	"io"
@@ -44,6 +45,13 @@ type Synthdef struct {
 	// seen is an array of ugen nodes that have been added
 	// to the synthdef
 	seen []UgenNode
+
+	// root is the root of the ugen tree that defines this synthdef
+	// this is used, for example, when drawing an svg representation
+	// of the synthdef
+	root UgenNode
+	// width and height of the ugen tree
+	width, depth int
 }
 
 // Write writes a binary representation of a synthdef to an io.Writer.
@@ -309,7 +317,7 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 		}
 		variants[i] = v
 	}
-	// return a new synthdef
+	// TODO: use newsynthdef here
 	synthDef := Synthdef{
 		defName.String(),
 		constants,
@@ -318,8 +326,129 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 		ugens,
 		variants,
 		make([]UgenNode, 0),
+		nil,
+		0,
+		0,
 	}
 	return &synthDef, nil
+}
+
+// WriteSVG writes an svg representation of a synthdef
+// to an io.Writer
+func (self *Synthdef) WriteSVG(w io.Writer) error {
+	canvas := svg.New(w)
+	// 
+	canvas.Start(self.width * 50, self.depth)
+	canvas.End()
+	return nil
+}
+
+// flatten
+func (self *Synthdef) flatten(params *Params) {
+	self.addParams(params)
+	// get a topologically sorted ugens list
+	ugenNodes := self.topsort(self.root)
+
+	for _, ugenNode := range ugenNodes {
+		// add ugen to synthdef
+		ugen, _ := self.addUgen(ugenNode)
+		// add inputs to synthdef and to ugen
+		inputs := ugenNode.Inputs()
+
+		var in *input
+
+		for _, input := range inputs {
+			switch v := input.(type) {
+			case UgenNode:
+				_, idx := self.addUgen(v)
+				// will we ever need to use a different output index? [bps]
+				in = newInput(int32(idx), 0)
+				break
+			case C:
+				idx := self.addConstant(v)
+				in = newInput(-1, int32(idx))
+				break
+			case *Param:
+				idx := v.Index()
+				in = newInput(0, idx)
+				break
+			case MultiInput:
+				mins := v.InputArray()
+				for _, min := range mins {
+					switch x := min.(type) {
+					case UgenNode:
+						_, idx := self.addUgen(x)
+						// will we ever need to use a different output index? [bps]
+						in = newInput(int32(idx), 0)
+						break
+					case C:
+						idx := self.addConstant(x)
+						in = newInput(-1, int32(idx))
+						break
+					case *Param:
+						idx := x.Index()
+						in = newInput(0, idx)
+						break
+					}
+					ugen.AppendInput(in)
+				}
+				continue
+				// default:
+				// 	fmt.Printf("unrecognized input type: %v\n", v)
+			}
+			ugen.AppendInput(in)
+		}
+	}
+}
+
+// topsort performs a depth-first-search of a ugen tree
+func (self *Synthdef) topsort(root UgenNode) []UgenNode {
+	stack := newStack()
+	self.topsortr(root, stack, 0)
+	n := stack.Size()
+	ugens := make([]UgenNode, n)
+	i := 0
+	for v := stack.Pop(); v != nil; v = stack.Pop() {
+		ugens[i] = v.(UgenNode)
+		i = i + 1
+	}
+	return ugens
+}
+
+// topsortr performs a depth-first-search of a ugen tree
+func (self *Synthdef) topsortr(root UgenNode, stack *stack, depth int) {
+	if depth > self.depth {
+		self.depth = depth
+	}
+	width := 0
+	stack.Push(root)
+	inputs := root.Inputs()
+	n := len(inputs)
+	for i := n - 1; i >= 0; i-- {
+		input := inputs[i]
+		switch v := input.(type) {
+		case UgenNode:
+			width = width + 1
+			self.topsortr(v, stack, depth+1)
+			break
+		case MultiInput:
+			// multi input
+			mins := v.InputArray()
+			for j := len(mins) - 1; j >= 0; j-- {
+				min := mins[j]
+				switch w := min.(type) {
+				case UgenNode:
+					width = width + 1
+					self.topsortr(w, stack, depth+1)
+					break
+				}
+			}
+			break
+		}
+	}
+	if width > self.width {
+		self.width = width
+	}
 }
 
 // addParams will do nothing if there are no synthdef params.
@@ -378,65 +507,7 @@ func (self *Synthdef) addConstant(c C) int {
 	return l
 }
 
-// flatten
-func (self *Synthdef) flatten(root UgenNode, params *Params) {
-	self.addParams(params)
-	// get a topologically sorted ugens list
-	ugenNodes := topsort(root)
-
-	for _, ugenNode := range ugenNodes {
-		// add ugen to synthdef
-		ugen, _ := self.addUgen(ugenNode)
-		// add inputs to synthdef and to ugen
-		inputs := ugenNode.Inputs()
-
-		var in *input
-
-		for _, input := range inputs {
-			switch v := input.(type) {
-			case UgenNode:
-				_, idx := self.addUgen(v)
-				// will we ever need to use a different output index? [bps]
-				in = newInput(int32(idx), 0)
-				break
-			case C:
-				idx := self.addConstant(v)
-				in = newInput(-1, int32(idx))
-				break
-			case *Param:
-				idx := v.Index()
-				in = newInput(0, idx)
-				break
-			case MultiInput:
-				mins := v.InputArray()
-				for _, min := range mins {
-					switch x := min.(type) {
-					case UgenNode:
-						_, idx := self.addUgen(x)
-						// will we ever need to use a different output index? [bps]
-						in = newInput(int32(idx), 0)
-						break
-					case C:
-						idx := self.addConstant(x)
-						in = newInput(-1, int32(idx))
-						break
-					case *Param:
-						idx := x.Index()
-						in = newInput(0, idx)
-						break
-					}
-					ugen.AppendInput(in)
-				}
-				continue
-			// default:
-			// 	fmt.Printf("unrecognized input type: %v\n", v)
-			}
-			ugen.AppendInput(in)
-		}
-	}
-}
-
-func newsynthdef(name string) *Synthdef {
+func newsynthdef(name string, root UgenNode) *Synthdef {
 	def := Synthdef{
 		name,
 		make([]float32, 0),
@@ -445,65 +516,28 @@ func newsynthdef(name string) *Synthdef {
 		make([]*ugen, 0),
 		make([]*Variant, 0),
 		make([]UgenNode, 0), // seen
+		root,
+		0,
+		0,
 	}
 	return &def
 }
 
 // NewSynthdef creates a synthdef by traversing a ugen graph
 func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
-	def := newsynthdef(name)
 	// It would be nice to parse synthdef params from function arguments
 	// with the reflect package, but see
 	// https://groups.google.com/forum/#!topic/golang-nuts/nM_ZhL7fuGc
 	// for discussion of the (im)possibility of getting function argument
 	// names at runtime.
 	// Since this is not possible, what we need to do is let users add
-	// synthdef params anywhere in their UgenGraphFunc using the Params interface.
+	// synthdef params anywhere in their UgenGraphFunc using Params.
 	// Then in order to correctly map the values passed when creating
 	// a synth node they have to be passed in the same order
 	// they were created in the UgenGraphFunc.
 	params := NewParams()
 	root := graphFunc(params)
-	def.flatten(root, params)
+	def := newsynthdef(name, root)
+	def.flatten(params)
 	return def
-}
-
-// topsort performs a depth-first-search of a ugen tree
-func topsort(root UgenNode) []UgenNode {
-	stack := newStack()
-	topsortr(root, stack)
-	n := stack.Size()
-	ugens := make([]UgenNode, n)
-	i := 0
-	for v := stack.Pop(); v != nil; v = stack.Pop() {
-		ugens[i] = v.(UgenNode)
-		i = i + 1
-	}
-	return ugens
-}
-
-// topsortr performs a depth-first-search of a ugen tree
-func topsortr(root UgenNode, stack *stack) {
-	stack.Push(root)
-	inputs := root.Inputs()
-	n := len(inputs)
-	for i := n - 1; i >= 0; i-- {
-		input := inputs[i]
-		switch v := input.(type) {
-		case UgenNode:
-			topsortr(v, stack)
-			break
-		case MultiInput:
-			mins := v.InputArray()
-			for j := len(mins)-1; j >= 0; j-- {
-				min := mins[j]
-				switch w := min.(type) {
-				case UgenNode:
-					topsortr(w, stack)
-					break
-				}
-			}
-			break
-		}
-	}
 }

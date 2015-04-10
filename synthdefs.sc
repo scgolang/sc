@@ -241,4 +241,11 @@ SynthDef(\FSinOscExample, {
     Out.ar(0, FSinOsc.ar(FSinOsc.ar(XLine.kr(4, 401, 8), 0.0, 200, 800)) * 0.2);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\BPFExample, {
+    var line = XLine.kr(0.7,300,20);
+    var saw = Saw.ar(200,0.5);
+    var sine = FSinOsc.kr(line,0,3600,4000);
+    Out.ar(0, BPF.ar(saw, sine, 0.3));
+}).writeDefFile(File.getcwd);
+
 0.exit;

@@ -29,7 +29,7 @@ COMPILED_SYNTHDEFS := Beats            \
 
 COMPILED_SYNTHDEFS := $(addsuffix .scsyndef,$(COMPILED_SYNTHDEFS))
 
-SUBPKG := ugens
+SUBPKG := ugens pattern
 EXAMPLES := $(wildcard examples/*.go)
 EXAMPLES_BIN := $(patsubst examples/%.go,%,$(EXAMPLES))
 

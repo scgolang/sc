@@ -2,7 +2,7 @@ package sc
 
 import (
 	"fmt"
-	"github.com/briansorahan/go-osc/osc"
+	"github.com/briansorahan/osc"
 )
 
 type ServerStatus struct {
@@ -16,7 +16,7 @@ type ServerStatus struct {
 	ActualSampleRate  float64
 }
 
-func newStatus(msg *osc.OscMessage) (*ServerStatus, error) {
+func newStatus(msg *osc.Message) (*ServerStatus, error) {
 	if msg.Address != statusOscAddress {
 		errmsg := "Can not get status from message with address %s"
 		return nil, fmt.Errorf(errmsg, msg.Address)

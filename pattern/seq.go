@@ -1,19 +1,13 @@
 package pattern
 
-// Seq cycles over a list of values. The repeats variable gives
-// the number of times to repeat the entire list.
-type Seq struct {
-	Repeats int
-	Values  []interface{}
-}
-
-func (self Seq) Stream() chan interface{} {
-	l := len(self.Values)
+// Seq cycles over a list of values repeats times.
+func Seq(repeats int, values ...interface{}) chan interface{} {
+	l := len(values)
 	c := make(chan interface{})
 	go func() {
-		for r := 0; r < self.Repeats; r++ {
+		for r := 0; r < repeats; r++ {
 			for i := 0; i < l; i++ {
-				c <- self.Values[i]
+				c <- values[i]
 			}
 		}
 		close(c)

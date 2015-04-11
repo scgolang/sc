@@ -2,24 +2,21 @@ package pattern
 
 import "math/rand"
 
-type Xrand struct {
-	Length int
-	Values []interface{}
-}
-
-func (self Xrand) Stream() chan interface{} {
-	l := len(self.Values)
+// Xrand emits length values randomly selected from the provided
+// array, where an element will not be emitted two times in a row
+func Xrand(length int, values ...interface{}) chan interface{} {
+	l := len(values)
 	c := make(chan interface{})
 	last := -1
 	var n int
 	go func() {
-		for i := 0; i < self.Length; i++ {
+		for i := 0; i < length; i++ {
 			n = rand.Intn(l)
 			// ensure that n is not the last one
 			for n == last {
 				n = rand.Intn(l)
 			}
-			c <-self.Values[n]
+			c <-values[n]
 			last = n
 		}
 		close(c)

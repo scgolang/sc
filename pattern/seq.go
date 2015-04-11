@@ -7,24 +7,16 @@ type Seq struct {
 	Values  []interface{}
 }
 
-func (self Seq) Stream(ticks Ticks) Values {
+func (self Seq) Stream() chan interface{} {
 	l := len(self.Values)
-	vc := make(chan interface{})
+	c := make(chan interface{})
 	go func() {
-		i, repeats := 0, 0
-		for _ = range ticks {
-			vc <- self.Values[i]
-			i = i + 1
-			if i == l {
-				repeats = repeats + 1
-				if repeats == self.Repeats {
-					// done
-					close(vc)
-					break
-				}
-				i = 0
+		for r := 0; r < self.Repeats; r++ {
+			for i := 0; i < l; i++ {
+				c <- self.Values[i]
 			}
 		}
+		close(c)
 	}()
-	return vc
+	return c
 }

@@ -9,7 +9,7 @@ type Shuf struct {
 	Values  []interface{}
 }
 
-func (self Shuf) Stream(ticks Ticks) Values {
+func (self Shuf) Stream() chan interface{} {
 	l := len(self.Values)
 	c := make(chan interface{})
 	perm := rand.Perm(l)
@@ -19,6 +19,7 @@ func (self Shuf) Stream(ticks Ticks) Values {
 				c <-self.Values[i]
 			}
 		}
+		close(c)
 	}()
 	return c
 }

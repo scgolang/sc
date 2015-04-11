@@ -7,14 +7,13 @@ type Xrand struct {
 	Values []interface{}
 }
 
-func (self Xrand) Stream(ticks Ticks) Values {
+func (self Xrand) Stream() chan interface{} {
 	l := len(self.Values)
 	c := make(chan interface{})
 	last := -1
 	var n int
 	go func() {
 		for i := 0; i < self.Length; i++ {
-			_ = <-ticks
 			n = rand.Intn(l)
 			// ensure that n is not the last one
 			for n == last {
@@ -23,6 +22,7 @@ func (self Xrand) Stream(ticks Ticks) Values {
 			c <-self.Values[n]
 			last = n
 		}
+		close(c)
 	}()
 	return c
 }

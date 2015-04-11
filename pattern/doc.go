@@ -5,11 +5,3 @@
 // it can transform something that emits uint64 ticks to something
 // that emits interface{} values.
 package pattern
-
-type Ticks chan uint64
-
-type Values chan interface{}
-
-type Pattern interface {
-	Stream(ticks Ticks) Values
-}

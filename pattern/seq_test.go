@@ -14,16 +14,7 @@ func testReps(repeats int, dur time.Duration, t *testing.T) {
 	// one repeat
 	list := []interface{}{"foo", "bar", "baz"}
 	pat := Seq{repeats, list}
-	tc := make(chan uint64)
-	go func() {
-		i := 0
-		for _ = range time.NewTicker(20 * time.Millisecond).C {
-			tc <-uint64(i)
-			i = i + 1
-		}
-		
-	}()
-	str := pat.Stream(Ticks(tc))
+	str := pat.Stream()
 	l := make([]interface{}, 0)
 	for v := range str {
 		l = append(l, v)

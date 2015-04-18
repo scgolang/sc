@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"github.com/ajstarks/svgo"
+	"github.com/awalterschulze/gographviz"
 	. "github.com/briansorahan/sc/types"
 	. "github.com/briansorahan/sc/ugens"
 	"io"
@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	synthdefStart   = "SCgf"
-	synthdefVersion = 2
+	synthdefStart     = "SCgf"
+	synthdefVersion   = 2
+	constantUgenIndex = -1
 )
 
 var byteOrder = binary.BigEndian
@@ -333,14 +334,53 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 	return &synthDef, nil
 }
 
-// WriteSVG writes an svg representation of a synthdef
-// to an io.Writer
-func (self *Synthdef) WriteSVG(w io.Writer) error {
-	canvas := svg.New(w)
-	// 
-	canvas.Start(self.width * 50, self.depth)
-	canvas.End()
-	return nil
+// WriteGraph writes a dot-formatted representation of
+// a synthdef's ugen graph to an io.Writer. See
+// http://www.graphviz.org/content/dot-language.
+func (self *Synthdef) WriteGraph(w io.Writer) error {
+	graph := gographviz.NewGraph()
+	graph.SetName(self.Name)
+	graph.SetDir(true)
+	for i, ugen := range self.Ugens {
+		ustr := fmt.Sprintf("%s_%d", ugen.Name, i)
+		graph.AddNode(self.Name, ustr, nil)
+		for _, input := range ugen.Inputs {
+			if input.UgenIndex == -1 {
+				c := self.Constants[input.OutputIndex]
+				cstr := fmt.Sprintf("%f", c)
+				graph.AddNode(ustr, cstr, nil)
+				graph.AddEdge(cstr, ustr, true, nil)
+			} else {
+				subgraph := self.addsub(input.UgenIndex, self.Ugens[input.UgenIndex])
+				graph.AddSubGraph(ustr, subgraph.Name, nil)
+				graph.AddEdge(subgraph.Name, ustr, true, nil)
+			}
+		}
+	}
+	gstr := graph.String()
+	_, writeErr := w.Write(bytes.NewBufferString(gstr).Bytes())
+	return writeErr
+}
+
+// addsub creates a subgraph rooted at a particular ugen
+func (self *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
+	graph := gographviz.NewGraph()
+	ustr := fmt.Sprintf("%s_%d", ugen.Name, idx)
+	graph.SetName(ustr)
+	graph.SetDir(true)
+	for _, input := range ugen.Inputs {
+		if input.UgenIndex == -1 {
+			c := self.Constants[input.OutputIndex]
+			cstr := fmt.Sprintf("%f", c)
+			graph.AddNode(ustr, cstr, nil)
+			graph.AddEdge(cstr, ustr, true, nil)
+		} else {
+			subgraph := self.addsub(input.UgenIndex, self.Ugens[input.UgenIndex])
+			graph.AddSubGraph(ustr, subgraph.Name, nil)
+			graph.AddEdge(subgraph.Name, ustr, true, nil)
+		}
+	}
+	return graph
 }
 
 // flatten

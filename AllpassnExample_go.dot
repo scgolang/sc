@@ -1,0 +1,47 @@
+digraph AllpassnExample {
+	1.000000->Dust_0;
+	Dust_0->BinaryOpUGen_1;
+	0.500000->BinaryOpUGen_1;
+	BinaryOpUGen_1->Decay_2;
+	0.200000->Decay_2;
+	Decay_2->BinaryOpUGen_4;
+	WhiteNoise_3->BinaryOpUGen_4;
+	BinaryOpUGen_4->AllpassN_5;
+	0.200000->AllpassN_5;
+	0.200000->AllpassN_5;
+	3.000000->AllpassN_5;
+	0.000000->Out_6;
+	AllpassN_5->Out_6;
+	subgraph AllpassN_5 {
+	0.200000;
+	3.000000;
+
+}
+;
+	subgraph BinaryOpUGen_1 {
+	0.500000;
+
+}
+;
+	subgraph BinaryOpUGen_4 {
+
+}
+;
+	subgraph Decay_2 {
+	0.200000;
+
+}
+;
+	subgraph Dust_0 {
+	1.000000;
+
+}
+;
+	subgraph WhiteNoise_3 {
+
+}
+;
+	0.000000;
+	Out_6;
+
+}

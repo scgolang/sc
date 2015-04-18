@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/briansorahan/go-osc/osc"
+	"github.com/briansorahan/osc"
 	"log"
 	"net"
 )
@@ -17,10 +17,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	oscServer := osc.NewOscServer(listenAddr, listenPort)
+	oscServer := osc.NewServer(listenAddr, listenPort)
 	errChan := make(chan error)
-	statusChan := make(chan *osc.OscMessage)
-	err = oscServer.AddMsgHandler("/status.reply", func(msg *osc.OscMessage) {
+	statusChan := make(chan *osc.Message)
+	err = oscServer.AddMsgHandler("/status.reply", func(msg *osc.Message) {
 		statusChan <- msg
 	})
 	if err != nil {
@@ -35,14 +35,14 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("sending status request")
-	statusReq := osc.NewOscMessage("/status")
+	statusReq := osc.NewMessage("/status")
 	err = oscServer.SendTo(addr, statusReq)
 	if err != nil {
 		log.Fatal(err)
 	}
 	select {
 	case statusResp := <-statusChan:
-		osc.PrintOscMessage(statusResp)
+		osc.PrintMessage(statusResp)
 	case err := <-errChan:
 		log.Fatal(err)
 	}

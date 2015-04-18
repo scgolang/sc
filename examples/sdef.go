@@ -11,7 +11,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "Usage:\n")
 	fmt.Fprintf(os.Stderr, "%s [OPTIONS] FILE\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "OPTIONS\n")
-	fmt.Fprintf(os.Stderr, "  -format json|xml       Output format\n")
+	fmt.Fprintf(os.Stderr, "  -format json|xml|dot       Output format\n")
 }
 
 // Write json data describing the structure of a synthdef
@@ -34,6 +34,8 @@ func main() {
 	}
 	if *format == "json" {
 		d.WriteJSON(os.Stdout)
+	} else if *format == "dot" {
+		d.WriteGraph(os.Stdout)
 	} else {
 		d.WriteXML(os.Stdout)
 	}

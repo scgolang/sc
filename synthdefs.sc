@@ -1,3 +1,22 @@
+//
+//                  Out
+//                   |
+//               +-------+
+//               |       |
+//               0     SinOsc
+//                       |
+//               +-----------+
+//               |           |
+//          BinaryOpUGen     0
+//               |
+//           +-------+
+//           |       |
+//         SinOsc   440
+//           |
+//        +-----+
+//        |     |
+//       0.2    0
+//
 SynthDef(\Beats, {
     var lfo = SinOsc.kr(0.2, add: 440);
     Out.ar(0, SinOsc.ar(lfo), SinOsc.ar(lfo));

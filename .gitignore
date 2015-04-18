@@ -1,13 +1,1 @@
 *~
-*.scsyndef
-*.gosyndef
-*.xml
-*.json
-*.svg
-sdef
-status
-inspect
-runServer
-quit
-senddef
-binop

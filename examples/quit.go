@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/briansorahan/go-osc/osc"
+	"github.com/briansorahan/osc"
 	"log"
 	"net"
 )
@@ -17,10 +17,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	oscServer := osc.NewOscServer(listenAddr, listenPort)
+	oscServer := osc.NewServer(listenAddr, listenPort)
 	errChan := make(chan error)
-	doneChan := make(chan *osc.OscMessage)
-	err = oscServer.AddMsgHandler("/done", func(msg *osc.OscMessage) {
+	doneChan := make(chan *osc.Message)
+	err = oscServer.AddMsgHandler("/done", func(msg *osc.Message) {
 		doneChan <- msg
 	})
 	if err != nil {
@@ -35,14 +35,14 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("sending quit request")
-	quitReq := osc.NewOscMessage("/quit")
+	quitReq := osc.NewMessage("/quit")
 	err = oscServer.SendTo(addr, quitReq)
 	if err != nil {
 		log.Fatal(err)
 	}
 	select {
 	case quitResp := <-doneChan:
-		osc.PrintOscMessage(quitResp)
+		osc.PrintMessage(quitResp)
 	case err := <-errChan:
 		log.Fatal(err)
 	}

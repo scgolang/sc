@@ -334,21 +334,31 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 	return &synthDef, nil
 }
 
+func newGraph(name string) *gographviz.Graph {
+	g := gographviz.NewGraph()
+	g.SetName(name)
+	g.SetDir(true)
+	g.AddAttr(name, "rankdir", "BT")
+	// g.AddAttr(name, "ordering", "in")
+	return g
+}
+
+var constAttrs = map[string]string{"shape":"plaintext"}
+
 // WriteGraph writes a dot-formatted representation of
 // a synthdef's ugen graph to an io.Writer. See
 // http://www.graphviz.org/content/dot-language.
 func (self *Synthdef) WriteGraph(w io.Writer) error {
-	graph := gographviz.NewGraph()
-	graph.SetName(self.Name)
-	graph.SetDir(true)
+	graph := newGraph(self.Name)
 	for i, ugen := range self.Ugens {
 		ustr := fmt.Sprintf("%s_%d", ugen.Name, i)
 		graph.AddNode(self.Name, ustr, nil)
-		for _, input := range ugen.Inputs {
+		for j := len(ugen.Inputs)-1; j >= 0; j-- {
+			input := ugen.Inputs[j]
 			if input.UgenIndex == -1 {
 				c := self.Constants[input.OutputIndex]
 				cstr := fmt.Sprintf("%f", c)
-				graph.AddNode(ustr, cstr, nil)
+				graph.AddNode(ustr, cstr, constAttrs)
 				graph.AddEdge(cstr, ustr, true, nil)
 			} else {
 				subgraph := self.addsub(input.UgenIndex, self.Ugens[input.UgenIndex])
@@ -364,15 +374,14 @@ func (self *Synthdef) WriteGraph(w io.Writer) error {
 
 // addsub creates a subgraph rooted at a particular ugen
 func (self *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
-	graph := gographviz.NewGraph()
 	ustr := fmt.Sprintf("%s_%d", ugen.Name, idx)
-	graph.SetName(ustr)
-	graph.SetDir(true)
-	for _, input := range ugen.Inputs {
+	graph := newGraph(ustr)
+	for j := len(ugen.Inputs)-1; j >= 0; j-- {
+		input := ugen.Inputs[j]
 		if input.UgenIndex == -1 {
 			c := self.Constants[input.OutputIndex]
 			cstr := fmt.Sprintf("%f", c)
-			graph.AddNode(ustr, cstr, nil)
+			graph.AddNode(ustr, cstr, constAttrs)
 			graph.AddEdge(cstr, ustr, true, nil)
 		} else {
 			subgraph := self.addsub(input.UgenIndex, self.Ugens[input.UgenIndex])

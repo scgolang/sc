@@ -1,1 +1,15 @@
 *~
+*.scsyndef
+*.gosyndef
+*.svg
+*.dot
+*.log
+core
+binop
+inspect
+status
+quit
+runServer
+sdef
+senddef
+status

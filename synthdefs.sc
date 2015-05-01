@@ -87,10 +87,32 @@ SynthDef(\FSinOscExample, {
 }).writeDefFile(File.getcwd);
 
 SynthDef(\BPFExample, {
-    var line = XLine.kr(0.7,300,20);
-    var saw = Saw.ar(200,0.5);
-    var sine = FSinOsc.kr(line,0,3600,4000);
+    var line = XLine.kr(0.7, 300, 20);
+    var saw = Saw.ar(200, 0.5);
+    var sine = FSinOsc.kr(line, 0, 3600, 4000);
     Out.ar(0, BPF.ar(saw, sine, 0.3));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\BRFExample, {
+    var line = XLine.kr(0.7, 300, 20);
+    var saw = Saw.ar(200, 0.5);
+    var sine = FSinOsc.kr(line, 0, 3800, 4000);
+    Out.ar(0, BRF.ar(saw, sine, 0.3));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\Balance2Example, {
+    var l = LFSaw.ar(44);
+    var r = Pulse.ar(33);
+    var pos = FSinOsc.kr(0.5);
+    var level = 0.1;
+    Out.ar(0, Balance2.ar(l, r, pos, level));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\BlipExample, {
+    var freq = XLine.kr(20000, 200, 6);
+    var harms = 100;
+    var mul = 0.2;
+    Out.ar(0, Blip.ar(freq, harms, mul));
 }).writeDefFile(File.getcwd);
 
 0.exit;

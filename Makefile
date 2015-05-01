@@ -9,26 +9,7 @@ ifeq ($(PLATFORM),Linux)
 SCLANG=/usr/bin/sclang
 endif
 
-# Synthdefs needed for testing
-COMPILED_SYNTHDEFS := Beats            \
-                      Envgen1          \
-                      SawTone1         \
-                      SineTone         \
-                      SineTone2        \
-                      SineTone3        \
-                      SineTone4        \
-                      UseParams        \
-                      SameSame         \
-                      Cascade          \
-                      foo              \
-                      bar              \
-                      baz              \
-                      AllpassExample   \
-                      AllpassnExample  \
-                      SimpleMulti
-
-COMPILED_SYNTHDEFS := $(addsuffix .scsyndef,$(COMPILED_SYNTHDEFS))
-
+SYNTHDEF := Beats.scsyndef
 SUBPKG := ugens pattern
 EXAMPLES := $(wildcard examples/*.go)
 EXAMPLES_BIN := $(patsubst examples/%.go,%,$(EXAMPLES))
@@ -43,14 +24,14 @@ all:
 %.scsyndef: synthdefs.sc
 	sclang $<
 
-synthdefs: $(COMPILED_SYNTHDEFS)
-
 clean:
-	rm -rf *~ $(COMPILED_SYNTHDEFS) $(EXAMPLES_BIN) *.gosyndef
+	rm -rf *~ $(EXAMPLES_BIN) *.scsyndef *.gosyndef *.svg *.dot
 
-test: $(COMPILED_SYNTHDEFS)
+test: $(SYNTHDEF)
 	go test
 	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done
 
 examples:
 	for src in $(EXAMPLES); do go build $$src; done
+
+graphs:

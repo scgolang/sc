@@ -2,7 +2,7 @@ package ugens
 
 import . "github.com/briansorahan/sc/types"
 
-// LFPulse a resonant low pass filter
+// LFPulse a non-band-limited pulse oscillator
 type LFPulse struct {
 	// Freq in Hz
 	Freq Input

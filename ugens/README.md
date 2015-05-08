@@ -12,7 +12,7 @@ Unit Generators for sc.
 | BPF                         | No        |
 | BRF                         | No        |
 | Balance2                    | No        |
-| Blip                        | No        |
+| Blip                        | Yes       |
 | BrownNoise                  | No        |
 | COsc                        | No        |
 | ClipNoise                   | No        |
@@ -55,7 +55,7 @@ Unit Generators for sc.
 | LFNoiseClipNoise            | No        |
 | LFPar                       | No        |
 | LFPulse                     | No        |
-| LFSaw                       | No        |
+| LFSaw                       | Yes       |
 | LFTri                       | No        |
 | LPF                         | No        |
 | Lag                         | No        |

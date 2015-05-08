@@ -115,4 +115,14 @@ SynthDef(\BlipExample, {
     Out.ar(0, Blip.ar(freq, harms, mul));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LFSawExample, {
+    var freq = LFSaw.kr(4, 0, 200, 400);
+    Out.ar(0, LFSaw.ar(freq, 0, 0.1));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\LFPulseExample, {
+    var freq = LFPulse.kr(3, 0, 0.3, 200, 200);
+    Out.ar(0, LFPulse.ar(freq, 0, 0.2, 0.1));
+}).writeDefFile(File.getcwd);
+
 0.exit;

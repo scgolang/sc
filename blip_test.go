@@ -9,8 +9,7 @@ func TestBlip(t *testing.T) {
 	def := NewSynthdef("BlipExample", func(p *Params) UgenNode {
 		start, end, dur, done := C(20000), C(200), C(6), 0
 		freq := XLine{start, end, dur, done}.Rate(KR)
-		harms, gain := C(100), C(0.2)
-		bus := C(0)
+		bus, harms, gain := C(0), C(100), C(0.2)
 		sig := Blip{freq, harms}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})

@@ -2,7 +2,6 @@ package sc
 
 import . "github.com/briansorahan/sc/types"
 import . "github.com/briansorahan/sc/ugens"
-import "os"
 import "testing"
 
 func TestFSinOsc(t *testing.T) {
@@ -13,19 +12,5 @@ func TestFSinOsc(t *testing.T) {
 		bus := C(0)
 		return Out{bus, sin2}.Rate(AR)
 	})
-	f, err := os.Create("FSinOscExample.gosyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = def.Write(f)
-	if err != nil {
-		t.Fatal(err)
-	}
-	same, err := def.CompareToFile("FSinOscExample.scsyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !same {
-		t.Fatalf("synthdef different from sclang version")
-	}
+	compareAndWrite(t, "FSinOscExample", def)
 }

@@ -11,11 +11,5 @@ func TestIntegrator(t *testing.T) {
 		sig := Integrator{pulse, x}.Rate(AR)
 		return Out{C(0), sig}.Rate(AR)
 	})
-	same, err := def.CompareToFile("IntegratorExample.scsyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !same {
-		t.Fatalf("synthdef is different from sclang version")
-	}
+	compareAndWrite(t, "IntegratorExample", def)
 }

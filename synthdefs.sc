@@ -125,4 +125,22 @@ SynthDef(\LFPulseExample, {
     Out.ar(0, LFPulse.ar(freq, 0, 0.2, 0.1));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ImpulseExample, {
+    var freq = XLine.kr(800, 100, 5);
+    var gain = 0.5;
+    var phase = 0.0;
+    var sig = Impulse.ar(freq, phase, gain);
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\LFNoise1Example, {
+    var freq = XLine.kr(1000, 10000, 10);
+    Out.ar(0, LFNoise1.ar(freq, 0.25));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\LFTriExample, {
+    var freq = LFTri.kr(4, 0, 200, 400);
+    Out.ar(0, LFTri.ar(freq, 0, 0.1));
+}).writeDefFile(File.getcwd);
+
 0.exit;

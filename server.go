@@ -3,6 +3,7 @@ package sc
 import (
 	"fmt"
 	"github.com/briansorahan/osc"
+	. "github.com/briansorahan/sc/types"
 	"io"
 	"net"
 	"os"
@@ -128,6 +129,10 @@ func (self *Server) NewGroup(id, action, target int32) error {
 		return err
 	}
 	return nil
+}
+
+func (self *Server) ReadBuffer(path string) Buffer {
+	return newBuffer(path)
 }
 
 // NextSynthID

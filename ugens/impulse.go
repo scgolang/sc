@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // Impulse non-band-limited single-sample impulses
 type Impulse struct {

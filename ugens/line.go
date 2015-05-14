@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // Line generates a line from the start value to the end value
 type Line struct {

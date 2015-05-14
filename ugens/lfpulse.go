@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // LFPulse a non-band-limited pulse oscillator
 type LFPulse struct {

@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // LFTri is a non-band-limited triangle oscillator.
 // Output is [-1, 1].

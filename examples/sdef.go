@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	. "github.com/briansorahan/sc"
+	. "github.com/scgolang/sc"
 	"os"
 )
 

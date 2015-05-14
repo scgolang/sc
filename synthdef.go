@@ -7,8 +7,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/awalterschulze/gographviz"
-	. "github.com/briansorahan/sc/types"
-	. "github.com/briansorahan/sc/ugens"
+	. "github.com/scgolang/sc/types"
+	. "github.com/scgolang/sc/ugens"
 	"io"
 	"io/ioutil"
 	"os"
@@ -100,7 +100,7 @@ func (self *Synthdef) Write(w io.Writer) error {
 		return err
 	}
 	// write initial param values
-	// BUG(briansorahan) what happens in sclang when a ugen graph func
+	// BUG(scgolang) what happens in sclang when a ugen graph func
 	//                   does not provide initial param values? do they
 	//                   not appear in the synthdef? default to 0?
 	for _, val := range self.InitialParamValues {

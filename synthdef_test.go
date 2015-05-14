@@ -2,8 +2,8 @@ package sc
 
 import (
 	"fmt"
-	. "github.com/briansorahan/sc/types"
-	. "github.com/briansorahan/sc/ugens"
+	. "github.com/scgolang/sc/types"
+	. "github.com/scgolang/sc/ugens"
 	"os"
 	"testing"
 )

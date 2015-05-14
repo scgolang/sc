@@ -2,7 +2,7 @@ package sc
 
 import (
 	"encoding/binary"
-	. "github.com/briansorahan/sc/types"
+	. "github.com/scgolang/sc/types"
 	"io"
 )
 

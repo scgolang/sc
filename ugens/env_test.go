@@ -1,7 +1,7 @@
 package ugens
 
 import (
-	. "github.com/briansorahan/sc/types"
+	. "github.com/scgolang/sc/types"
 	"math"
 	"testing"
 )

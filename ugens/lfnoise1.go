@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // LFNoise1 generates linearly interpolated random values at a
 // rate which is the nearest integer division of the sample

@@ -2,7 +2,7 @@ package sc
 
 import (
 	"fmt"
-	"github.com/briansorahan/osc"
+	"github.com/scgolang/osc"
 )
 
 type ServerStatus struct {

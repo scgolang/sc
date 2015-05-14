@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // XLine generates an exponential curve from the start value to
 // the end value. Both the start and end values must be non-zero

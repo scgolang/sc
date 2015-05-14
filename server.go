@@ -2,8 +2,8 @@ package sc
 
 import (
 	"fmt"
-	"github.com/briansorahan/osc"
-	. "github.com/briansorahan/sc/types"
+	"github.com/scgolang/osc"
+	. "github.com/scgolang/sc/types"
 	"io"
 	"net"
 	"os"

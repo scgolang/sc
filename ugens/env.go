@@ -2,7 +2,7 @@ package ugens
 
 import (
 	"fmt"
-	. "github.com/briansorahan/sc/types"
+	. "github.com/scgolang/sc/types"
 	"sort"
 )
 

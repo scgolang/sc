@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // SinOsc is a table-lookup sinewave oscillator
 type SinOsc struct {

@@ -1,7 +1,7 @@
 package sc
 
-import . "github.com/briansorahan/sc/types"
-import . "github.com/briansorahan/sc/ugens"
+import . "github.com/scgolang/sc/types"
+import . "github.com/scgolang/sc/ugens"
 import "testing"
 
 func TestLFNoise1(t *testing.T) {

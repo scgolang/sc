@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // AllpassC allpass delay with cubic interpolation
 type AllpassC struct {

@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // LFSaw a non-band-limited sawtooth oscillator
 // output ranges from -1 to +1

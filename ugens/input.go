@@ -1,6 +1,6 @@
 package ugens
 
-import . "github.com/briansorahan/sc/types"
+import . "github.com/scgolang/sc/types"
 
 // UgenInput creates a ugen suitable for use as an input to other ugens.
 // It will return either a single-channel ugen or a multi-channel ugen.

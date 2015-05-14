@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/briansorahan/osc"
+	"github.com/scgolang/osc"
 	"log"
 	"net"
 )

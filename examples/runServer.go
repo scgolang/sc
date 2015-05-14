@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	. "github.com/briansorahan/sc"
+	. "github.com/scgolang/sc"
 	"log"
 )
 

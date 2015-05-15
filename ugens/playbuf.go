@@ -7,8 +7,8 @@ import . "github.com/scgolang/sc/types"
 type PlayBuf struct {
 	// NumChannels number of playback channels
 	NumChannels int
-	// Buf buffer to use
-	Buf Buffer
+	// BufNum buffer to use
+	BufNum Input
 	// Speed is the playback speed: 1.0 for original speed,
 	// 2.0 for Chipmunks, 0.5 for DJ Screw
 	Speed Input
@@ -47,11 +47,9 @@ func (self *PlayBuf) defaults() {
 // a runtime panic.
 func (self PlayBuf) Rate(rate int8) Input {
 	checkRate(rate)
-	if self.Buf == nil {
-		panic("PlayBuf expects Buf to not be nil")
-	}
 	(&self).defaults()
-	nchans := C(float32(self.NumChannels))
+	// TODO: what is the point of the numChannels argument?
+	// nchans := C(float32(self.NumChannels))
 	done := C(float32(self.Done))
-	return UgenInput("PlayBuf", rate, 0, nchans, self.Speed, self.Trigger, self.Start, self.Loop, done)
+	return UgenInput("PlayBuf", rate, 0, self.BufNum, self.Speed, self.Trigger, self.Start, self.Loop, done)
 }

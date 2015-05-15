@@ -2,10 +2,12 @@ package ugens
 
 import . "github.com/scgolang/sc/types"
 
+// Params provides a way to add parameters to a synthdef
 type Params struct {
 	l []*Param
 }
 
+// Add adds a named parameter to a synthdef, with an initial value
 func (self *Params) Add(name string, initialValue float32) Input {
 	idx := len(self.l)
 	p := newParam(name, int32(idx), initialValue)
@@ -13,23 +15,28 @@ func (self *Params) Add(name string, initialValue float32) Input {
 	return p
 }
 
+// List returns a list of the params that have been
+// added to a synthdef
 func (self *Params) List() []*Param {
 	return self.l
 }
 
+// Control returns a UgenNode that should be used as
+// the first ugen of any synthdef that has parameters
 func (self *Params) Control() UgenNode {
 	return newControl(len(self.l))
 }
 
+// NewParams creates a new Params instance
 func NewParams() *Params {
 	p := Params{make([]*Param, 0)}
 	return &p
 }
 
 type Param struct {
-	name string
+	name  string
 	index int32
-	val float32
+	val   float32
 }
 
 func (self *Param) Name() string {
@@ -62,7 +69,7 @@ func newParam(name string, index int32, initialValue float32) *Param {
 }
 
 type Control struct {
-	inputs []Input
+	inputs  []Input
 	outputs []Output
 }
 
@@ -98,7 +105,7 @@ func (self *Control) MulAdd(mul, add Input) Input {
 	return self
 }
 
-type ControlOutput struct {}
+type ControlOutput struct{}
 
 func (self *ControlOutput) Rate() int8 {
 	return 1

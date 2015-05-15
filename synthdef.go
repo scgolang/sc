@@ -506,7 +506,6 @@ func (self *Synthdef) topsortr(root UgenNode, stack *stack, depth int) {
 // (2) Add their names/indices to paramNames
 // (3) Add a Control ugen as the first ugen
 func (self *Synthdef) addParams(p *Params) {
-	// HACK convert Params to an interface type
 	paramList := p.List()
 	numParams := len(paramList)
 	self.InitialParamValues = make([]float32, numParams)

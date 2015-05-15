@@ -143,4 +143,9 @@ SynthDef(\LFTriExample, {
     Out.ar(0, LFTri.ar(freq, 0, 0.1));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\PlayBufExample, {
+    arg bufnum = 0;
+    Out.ar(0, PlayBuf.ar(1, bufnum, 1.0, 1.0, 0, 0, 2));
+}).writeDefFile(File.getcwd);
+
 0.exit;

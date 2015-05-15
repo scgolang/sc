@@ -12,7 +12,7 @@ replacing sclang with golang makes a lot of sense to me.
 
 Who
 ---
-See https://github.com/briansorahan/sc/blob/master/AUTHORS
+See https://github.com/scgolang/sc/blob/master/AUTHORS
 
 What this is not
 ----------------
@@ -30,7 +30,7 @@ installed (go to http://supercollider.github.io/download.html).
 Next, you must install go (from https://golang.org/dl).
 
 Then
-$ go get github.com/briansorahan/sc
+$ go get github.com/scgolang/sc
 
 Test
 ----
@@ -46,19 +46,19 @@ $ go test
 
 Usage
 -----
-Find godocs at http://godoc.org/github.com/briansorahan/sc.
+Find godocs at http://godoc.org/github.com/scgolang/sc.
 Also, take a look at some of the example programs in the
 examples/ directory.
 
-The list of supported ugens is here: https://github.com/briansorahan/sc/blob/master/ugens/README.md
+The list of supported ugens is here: https://github.com/scgolang/sc/blob/master/ugens/README.md
 
 Develop
 -------
-See https://github.com/briansorahan/sc/blob/master/CONTRIBUTING
+See https://github.com/scgolang/sc/blob/master/CONTRIBUTING
 
 Roadmap
 --------
-See https://github.com/briansorahan/sc/milestones
+See https://github.com/scgolang/sc/milestones
 
 Thanks
 ------

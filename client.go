@@ -5,6 +5,7 @@ import (
 	"github.com/scgolang/osc"
 	. "github.com/scgolang/sc/types"
 	"net"
+	"reflect"
 	"sync/atomic"
 )
 
@@ -30,17 +31,18 @@ const (
 	DefaultGroupID = 1
 )
 
+// Client manages all communication with scsynth
 type Client struct {
 	// OscErrChan is a channel that emits errors from
 	// the goroutine that runs the OSC server that is
 	// used to receive messages from scsynth
-	OscErrChan chan error
+	oscErrChan chan error
 	addr       net.Addr
+	// statusChan relays /status.reply messages
 	statusChan chan *osc.Message
-	oscServer  *osc.Server
-	// doneChan relays the /done message that comes
-	// from scsynth
-	doneChan chan *osc.Message
+	// doneChan relays /done messages
+	doneChan  chan *osc.Message
+	oscServer *osc.Server
 	// next synth node ID
 	nextSynthID int32
 }
@@ -56,8 +58,12 @@ func (self *Client) Status() (*ServerStatus, error) {
 	if err != nil {
 		return nil, err
 	}
-	msg := <-self.statusChan
-	return newStatus(msg)
+	select {
+	case msg := <-self.statusChan:
+		return newStatus(msg)
+	case err = <-self.oscErrChan:
+		return nil, err
+	}
 }
 
 // SendDef sends a synthdef to scsynth.
@@ -71,7 +77,15 @@ func (self *Client) SendDef(def *Synthdef) error {
 	}
 	msg.Append(db)
 	self.oscServer.SendTo(self.addr, msg)
-	done := <-self.doneChan
+	var done *osc.Message
+	select {
+	case done = <-self.doneChan:
+		goto ParseMessage
+	case err = <-self.oscErrChan:
+		return err
+	}
+
+ParseMessage:
 	// error if this message was not an ack of the synthdef
 	errmsg := "expected /done with /d_recv argument"
 	if done.CountArguments() != 1 {
@@ -95,6 +109,7 @@ func (self *Client) DumpOSC(level int32) error {
 	return nil
 }
 
+// NewSynth creates a synth
 func (self *Client) NewSynth(name string, id, action, target int32) error {
 	synthReq := osc.NewMessage("/s_new")
 	synthReq.Append(name)
@@ -109,7 +124,7 @@ func (self *Client) NewSynth(name string, id, action, target int32) error {
 	return nil
 }
 
-// NewGroup
+// NewGroup creates a group
 func (self *Client) NewGroup(id, action, target int32) error {
 	dumpReq := osc.NewMessage("/g_new")
 	dumpReq.Append(id)
@@ -122,15 +137,54 @@ func (self *Client) NewGroup(id, action, target int32) error {
 	return nil
 }
 
-func (self *Client) ReadBuffer(path string) Buffer {
-	return newBuffer(path)
+// ReadBuffer tells the server to read an audio file and
+// load it into a buffer
+func (self *Client) ReadBuffer(path string) (Buffer, error) {
+	buf := newBuffer(path)
+	pat := "/b_allocRead"
+	allocRead := osc.NewMessage(pat)
+	allocRead.Append(buf.Num())
+	allocRead.Append(path)
+	err := self.oscServer.SendTo(self.addr, allocRead)
+
+	var done *osc.Message
+	select {
+	case done = <-self.doneChan:
+		goto ParseMessage
+	case err = <-self.oscErrChan:
+		return nil, err
+	}
+
+ParseMessage:
+	// error if this message was not an ack of the synthdef
+	if done.CountArguments() != 2 {
+		return nil, fmt.Errorf("expected two arguments to /done message")
+	}
+	if addr, isString := done.Arguments[0].(string); !isString || addr != pat {
+		return nil, fmt.Errorf("expected first argument to be %s but got %s", pat, addr)
+	}
+	var bufnum int32
+	var isInt32 bool
+	if bufnum, isInt32 = done.Arguments[1].(int32); !isInt32 {
+		m := "expected int32 as second argument, but got %s (%v)"
+		return nil, fmt.Errorf(m, reflect.TypeOf(done.Arguments[1]), done.Arguments[1])
+	}
+	// TODO:
+	// Don't error if we get a done message for a different buffer.
+	// We should probably requeue this particular done message on doneChan.
+	if bufnum != buf.Num() {
+		m := "expected done message for buffer %d, but got one for buffer %d"
+		return nil, fmt.Errorf(m, buf.Num(), bufnum)
+	}
+	return buf, nil
 }
 
-// NextSynthID
+// NextSynthID gets the next available ID for creating a synth
 func (self *Client) NextSynthID() int32 {
 	return atomic.AddInt32(&self.nextSynthID, 1)
 }
 
+// ClearSched causes scsynth to clear all scheduled bundles
 func (self *Client) ClearSched() error {
 	clear := osc.NewMessage("/clearSched")
 	err := self.oscServer.SendTo(self.addr, clear)
@@ -140,6 +194,8 @@ func (self *Client) ClearSched() error {
 	return nil
 }
 
+// NewClient creates a new SuperCollider client. addr and port are the listening
+// address and port, respectively, of scsynth
 func NewClient(addr string, port int) (*Client, error) {
 	oscServer := osc.NewServer(listenAddr, listenPort)
 	statusChan := make(chan *osc.Message)
@@ -167,8 +223,8 @@ func NewClient(addr string, port int) (*Client, error) {
 		errChan,
 		netAddr,
 		statusChan,
-		oscServer,
 		doneChan,
+		oscServer,
 		1000,
 	}
 	return &s, nil

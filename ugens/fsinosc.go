@@ -30,5 +30,5 @@ func (self *FSinOsc) defaults() {
 func (self FSinOsc) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("FSinOsc", rate, 0, self.Freq, self.Phase)
+	return UgenInput("FSinOsc", rate, 0, 1, self.Freq, self.Phase)
 }

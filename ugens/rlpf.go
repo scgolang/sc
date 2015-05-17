@@ -30,5 +30,5 @@ func (self RLPF) Rate(rate int8) Input {
 	}
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("RLPF", rate, 0, self.In, self.Freq, self.RQ)
+	return UgenInput("RLPF", rate, 0, 1, self.In, self.Freq, self.RQ)
 }

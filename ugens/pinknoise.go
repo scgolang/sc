@@ -11,5 +11,5 @@ type PinkNoise struct {
 // a runtime panic.
 func (self PinkNoise) Rate(rate int8) Input {
 	checkRate(rate)
-	return UgenInput("PinkNoise", rate, 0)
+	return UgenInput("PinkNoise", rate, 0, 1)
 }

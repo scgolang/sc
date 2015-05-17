@@ -30,5 +30,5 @@ func (self *LFPulse) defaults() {
 func (self LFPulse) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("LFPulse", rate, 0, self.Freq, self.Iphase, self.Width)
+	return UgenInput("LFPulse", rate, 0, 1, self.Freq, self.Iphase, self.Width)
 }

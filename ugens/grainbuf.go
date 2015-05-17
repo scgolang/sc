@@ -66,6 +66,5 @@ func (self *GrainBuf) defaults() {
 func (self GrainBuf) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	nchan := C(float32(self.NumChannels))
-	return UgenInput("GrainBuf", rate, 0, nchan, self.Trigger)
+	return UgenInput("GrainBuf", rate, 0, self.NumChannels, self.Trigger)
 }

@@ -19,5 +19,5 @@ func (self *Saw) defaults() {
 func (self Saw) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("Saw", rate, 0, self.Freq)
+	return UgenInput("Saw", rate, 0, 1, self.Freq)
 }

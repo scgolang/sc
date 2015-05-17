@@ -29,6 +29,7 @@ type Node struct {
 	name         string
 	rate         int8
 	specialIndex int16
+	numOutputs   int
 	inputs       []Input
 	outputs      []Output
 }
@@ -54,8 +55,11 @@ func (self *Node) Outputs() []Output {
 }
 
 func (self *Node) IsOutput() {
-	if len(self.outputs) == 0 {
-		self.outputs = append(self.outputs, output(self.rate))
+	if self.outputs == nil {
+		self.outputs = make([]Output, self.numOutputs)
+		for i := range self.outputs {
+			self.outputs[i] = output(self.rate)
+		}
 	}
 }
 
@@ -71,14 +75,20 @@ func (self *Node) MulAdd(mul, add Input) Input {
 	return MulAdd(self.rate, self, mul, add)
 }
 
-// NewNode is a factory function for creating new Node instances
-func NewNode(name string, rate int8, specialIndex int16, inputs ...Input) *Node {
+// NewNode is a factory function for creating new Node instances.
+// Panics if rate is not AR, KR, or IR.
+// Panics if numOutputs <= 0.
+func NewNode(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) *Node {
+	checkRate(rate)
+	if numOutputs <= 0 {
+		panic("numOutputs must be a positive int")
+	}
 	n := new(Node)
 	n.name = name
 	n.rate = rate
 	n.specialIndex = specialIndex
+	n.numOutputs = numOutputs
 	n.inputs = make([]Input, len(inputs))
-	n.outputs = make([]Output, 0)
 
 	// If any inputs are multi inputs, then this node
 	// should get promoted to a multi node

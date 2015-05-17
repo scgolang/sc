@@ -4,23 +4,26 @@ import . "github.com/scgolang/sc/types"
 
 // UgenInput creates a ugen suitable for use as an input to other ugens.
 // It will return either a single-channel ugen or a multi-channel ugen.
-func UgenInput(name string, rate int8, specialIndex int16, inputs ...Input) Input {
-	expanded := expand(inputs...)
+func UgenInput(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) Input {
+	expanded := expandInputs(inputs...)
 	l := len(expanded)
 	if l == 1 {
-		return NewNode(name, rate, specialIndex, inputs...)
+		return NewNode(name, rate, specialIndex, numOutputs, inputs...)
 	}
 	// return MultiNode
 	a := make([]*Node, len(expanded))
 	for i := range a {
-		a[i] = NewNode(name, rate, specialIndex, expanded[i]...)
+		a[i] = NewNode(name, rate, specialIndex, numOutputs, expanded[i]...)
 	}
 	return NewMultiNode(a...)
 }
 
-func expand(inputs ...Input) [][]Input {
+// expandInputs turns an array of inputs into a 2-dimensional array
+// of inputs where the 1st dimension is the channel and
+// the second is the array of inputs for each channel.
+func expandInputs(inputs ...Input) [][]Input {
 	// first pass to determine how large each array needs to be
-	// this could probably be more efficient but it doesn't matter
+	// this could probably be more efficient
 	sz := 0
 	for _, in := range inputs {
 		if multi, isMulti := in.(MultiInput); isMulti {

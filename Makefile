@@ -9,6 +9,10 @@ ifeq ($(PLATFORM),Linux)
 SCLANG=/usr/bin/sclang
 endif
 
+ifeq ($(GUI),no)
+SCLANG := /usr/bin/xvfb-run --server-args="-screen 0, 1280x800x24" $(SCLANG)
+endif
+
 SYNTHDEF := Beats.scsyndef
 SUBPKG := ugens pattern
 EXAMPLES := $(wildcard examples/*.go)
@@ -22,7 +26,7 @@ all:
 	for pkg in $(SUBPKG); do cd $$pkg && go install && cd ..; done
 
 %.scsyndef: synthdefs.sc
-	sclang $<
+	$(SCLANG) $<
 
 clean:
 	rm -rf *~ $(EXAMPLES_BIN) *.scsyndef *.gosyndef *.svg *.dot

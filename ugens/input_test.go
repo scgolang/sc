@@ -8,7 +8,7 @@ import (
 
 func TestexpandInputs(t *testing.T) {
 	a := []Input{Multi(C(1), C(2), C(3)), Multi(C(4), C(5))}
-	b := expand(a...)
+	b := expandInputs(a...)
 	// should be [ [1,4], [2,5], [3,4] ]
 	expect := [][]Input{
 		{ C(1), C(4) },

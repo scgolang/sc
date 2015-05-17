@@ -25,5 +25,5 @@ func (self *Blip) defaults() {
 func (self Blip) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("Blip", rate, 0, self.Freq, self.Harm)
+	return UgenInput("Blip", rate, 0, 1, self.Freq, self.Harm)
 }

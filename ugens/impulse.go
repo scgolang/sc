@@ -25,5 +25,5 @@ func (self *Impulse) defaults() {
 func (self Impulse) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("Impulse", rate, 0, self.Freq, self.Phase)
+	return UgenInput("Impulse", rate, 0, 1, self.Freq, self.Phase)
 }

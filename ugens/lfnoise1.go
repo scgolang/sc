@@ -23,5 +23,5 @@ func (self *LFNoise1) defaults() {
 func (self LFNoise1) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("LFNoise1", rate, 0, self.Freq)
+	return UgenInput("LFNoise1", rate, 0, 1, self.Freq)
 }

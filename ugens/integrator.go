@@ -28,5 +28,5 @@ func (self Integrator) Rate(rate int8) Input {
 		panic("Integrator expects In to not be nil")
 	}
 	(&self).defaults()
-	return UgenInput("Integrator", rate, 0, self.In, self.Coef)
+	return UgenInput("Integrator", rate, 0, 1, self.In, self.Coef)
 }

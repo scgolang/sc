@@ -5,14 +5,14 @@ import (
 )
 
 func TestAddConstantInput(t *testing.T) {
-	n := NewNode("foo", 2, 0, C(3.14))
+	n := NewNode("foo", 2, 0, 1, C(3.14))
 	if inputs := n.Inputs(); len(inputs) != 1 {
 		t.Fatalf("len(inputs) was %d", len(inputs))
 	}
 }
 
 func TestIsOutput(t *testing.T) {
-	n := NewNode("foo", 2, 0)
+	n := NewNode("foo", 2, 0, 1)
 	n.IsOutput()
 	outputs := n.Outputs()
 	if numOutputs := len(outputs); numOutputs != 1 {

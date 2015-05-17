@@ -20,5 +20,5 @@ func (self *Dust) defaults() {
 func (self Dust) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("Dust", rate, 0, self.Density)
+	return UgenInput("Dust", rate, 0, 1, self.Density)
 }

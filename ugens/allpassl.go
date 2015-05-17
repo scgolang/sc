@@ -39,5 +39,5 @@ func (self AllpassL) Rate(rate int8) Input {
 	}
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("AllpassL", rate, 0, self.In, self.MaxDelay, self.Delay, self.Decay)
+	return UgenInput("AllpassL", rate, 0, 1, self.In, self.MaxDelay, self.Delay, self.Decay)
 }

@@ -4,14 +4,14 @@ import . "github.com/scgolang/sc/types"
 
 func BinOpMul(rate int8, x, y Input) *Node {
 	checkRate(rate)
-	return NewNode("BinaryOpUGen", rate, 2, x, y)
+	return NewNode("BinaryOpUGen", rate, 2, 1, x, y)
 }
 
 func BinOpAdd(rate int8, x, y Input) *Node {
 	checkRate(rate)
-	return NewNode("BinaryOpUGen", rate, 0, x, y)
+	return NewNode("BinaryOpUGen", rate, 0, 1, x, y)
 }
 
 func MulAdd(rate int8, in, mul, add Input) *Node {
-	return NewNode("MulAdd", rate, 0, in, mul, add)
+	return NewNode("MulAdd", rate, 0, 1, in, mul, add)
 }

@@ -51,5 +51,5 @@ func (self PlayBuf) Rate(rate int8) Input {
 	// TODO: what is the point of the numChannels argument?
 	// nchans := C(float32(self.NumChannels))
 	done := C(float32(self.Done))
-	return UgenInput("PlayBuf", rate, 0, self.BufNum, self.Speed, self.Trigger, self.Start, self.Loop, done)
+	return UgenInput("PlayBuf", rate, 0, self.NumChannels, self.BufNum, self.Speed, self.Trigger, self.Start, self.Loop, done)
 }

@@ -46,5 +46,5 @@ func (self EnvGen) Rate(rate int8) Input {
 	ins := []Input{self.Gate, self.LevelScale, self.LevelBias}
 	ins = append(ins, self.TimeScale, C(float32(self.Done)))
 	ins = append(ins, self.Env.Inputs()...)
-	return UgenInput("EnvGen", rate, 0, ins...)
+	return UgenInput("EnvGen", rate, 0, 1, ins...)
 }

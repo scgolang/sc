@@ -28,5 +28,5 @@ func (self *Line) defaults() {
 func (self Line) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("Line", rate, 0, self.Start, self.End, self.Dur, C(float32(self.Done)))
+	return UgenInput("Line", rate, 0, 1, self.Start, self.End, self.Dur, C(float32(self.Done)))
 }

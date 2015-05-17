@@ -25,5 +25,5 @@ func (self *SinOsc) defaults() {
 func (self SinOsc) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("SinOsc", rate, 0, self.Freq, self.Phase)
+	return UgenInput("SinOsc", rate, 0, 1, self.Freq, self.Phase)
 }

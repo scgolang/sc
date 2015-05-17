@@ -27,5 +27,5 @@ func (self *LFTri) defaults() {
 func (self LFTri) Rate(rate int8) Input {
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("LFTri", rate, 0, self.Freq, self.Iphase)
+	return UgenInput("LFTri", rate, 0, 1, self.Freq, self.Iphase)
 }

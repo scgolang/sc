@@ -14,5 +14,5 @@ type Out struct {
 // a runtime panic.
 func (self Out) Rate(rate int8) *Node {
 	checkRate(rate)
-	return NewNode("Out", rate, 0, self.Bus, self.Channels)
+	return NewNode("Out", rate, 0, 1, self.Bus, self.Channels)
 }

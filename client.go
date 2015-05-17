@@ -36,7 +36,7 @@ type Client struct {
 	// used to receive messages from scsynth
 	OscErrChan chan error
 	addr       net.Addr
-	StatusChan chan *osc.Message
+	statusChan chan *osc.Message
 	oscServer  *osc.Server
 	// doneChan relays the /done message that comes
 	// from scsynth
@@ -50,13 +50,14 @@ type defLoaded struct {
 }
 
 // Status gets the status of scsynth
-func (self *Client) Status() error {
+func (self *Client) Status() (*ServerStatus, error) {
 	statusReq := osc.NewMessage("/status")
 	err := self.oscServer.SendTo(self.addr, statusReq)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	msg := <-self.statusChan
+	return newStatus(msg)
 }
 
 // SendDef sends a synthdef to scsynth.

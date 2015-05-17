@@ -102,11 +102,7 @@ ParseMessage:
 func (self *Client) DumpOSC(level int32) error {
 	dumpReq := osc.NewMessage("/dumpOSC")
 	dumpReq.Append(level)
-	err := self.oscServer.SendTo(self.addr, dumpReq)
-	if err != nil {
-		return err
-	}
-	return nil
+	return self.oscServer.SendTo(self.addr, dumpReq)
 }
 
 // NewSynth creates a synth
@@ -117,11 +113,7 @@ func (self *Client) NewSynth(name string, id, action, target int32) error {
 	synthReq.Append(action)
 	synthReq.Append(target)
 	synthReq.Append(int32(0))
-	err := self.oscServer.SendTo(self.addr, synthReq)
-	if err != nil {
-		return err
-	}
-	return nil
+	return self.oscServer.SendTo(self.addr, synthReq)
 }
 
 // NewGroup creates a group
@@ -130,11 +122,7 @@ func (self *Client) NewGroup(id, action, target int32) error {
 	dumpReq.Append(id)
 	dumpReq.Append(action)
 	dumpReq.Append(target)
-	err := self.oscServer.SendTo(self.addr, dumpReq)
-	if err != nil {
-		return err
-	}
-	return nil
+	return self.oscServer.SendTo(self.addr, dumpReq)
 }
 
 // ReadBuffer tells the server to read an audio file and
@@ -184,14 +172,19 @@ func (self *Client) NextSynthID() int32 {
 	return atomic.AddInt32(&self.nextSynthID, 1)
 }
 
+// FreeAll frees all nodes in a group
+func (self *Client) FreeAll(gids ...int32) error {
+	freeReq := osc.NewMessage("/g_freeAll")
+	for _, gid := range gids {
+		freeReq.Append(gid)
+	}
+	return self.oscServer.SendTo(self.addr, freeReq)
+}
+
 // ClearSched causes scsynth to clear all scheduled bundles
 func (self *Client) ClearSched() error {
 	clear := osc.NewMessage("/clearSched")
-	err := self.oscServer.SendTo(self.addr, clear)
-	if err != nil {
-		return err
-	}
-	return nil
+	return self.oscServer.SendTo(self.addr, clear)
 }
 
 // NewClient creates a new SuperCollider client. addr and port are the listening

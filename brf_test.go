@@ -7,7 +7,7 @@ package sc
 
 // FIXME
 // func TestBRF(t *testing.T) {
-// 	def := NewSynthdef("BRFExample", func(p *Params) UgenNode {
+// 	def := NewSynthdef("BRFExample", func(p *Params) Ugen {
 // 		line := XLine{C(0.7), C(300), C(20), 0}.Rate(KR)
 // 		saw := Saw{C(200)}.Rate(AR).Mul(C(0.5))
 // 		sine := FSinOsc{line, C(0)}.Rate(KR).MulAdd(C(3800), C(4000))

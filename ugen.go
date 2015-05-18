@@ -140,7 +140,7 @@ func newUgen(name string, rate int8) *ugen {
 	return &u
 }
 
-func cloneUgen(n UgenNode) *ugen {
+func cloneUgen(n Ugen) *ugen {
 	u := ugen{
 		n.Name(),
 		n.Rate(),

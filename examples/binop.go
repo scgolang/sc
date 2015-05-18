@@ -16,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	def := NewSynthdef("Envgen1", func(params *Params) UgenNode {
+	def := NewSynthdef("Envgen1", func(params *Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
 		level, curveature := C(1), C(-4)

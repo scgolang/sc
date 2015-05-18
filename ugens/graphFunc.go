@@ -4,20 +4,19 @@ import (
 	. "github.com/scgolang/sc/types"
 )
 
-// HACK convert Params to an interface type
-type UgenGraphFunc func(params *Params) UgenNode
+type UgenFunc func(params *Params) Ugen
 
-type PlayFunc func() UgenNode
+type PlayFunc func() Ugen
 
 // Play corresponds to http://doc.sccode.org/Classes/Function.html#-play.
 // This is syntactic sugar for
 //     temp := DefaultServer.TempDefName()
-//     def := NewSynthdef(temp, func(params Params) UgenNode {
+//     def := NewSynthdef(temp, func(params Params) Ugen {
 //     })
 //     DefaultServer.SendDef(def)
 //     sid := DefaultServer.NextSynthID()
 //     DefaultServer.NewSynth(temp, sid, AddToHead, DefaultGroupID)
-func Play(node UgenNode) error {
+func Play(node Ugen) error {
 	// To implement this we need a DefaultServer and
 	// a way to generate the names of the temp synthdefs.
 	// If the ugen node returned by f is not Out,
@@ -28,4 +27,4 @@ func Play(node UgenNode) error {
 // Play(SinOsc.Ar(440))
 
 // Once we support multichannel expansion...
-// Play([]UgenNode{SinOsc.Ar(440), SinOsc.Ar(441)})
+// Play([]Ugen{SinOsc.Ar(440), SinOsc.Ar(441)})

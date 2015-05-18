@@ -11,7 +11,7 @@ func NoTestBalance2(t *testing.T) {
     // var pos = FSinOsc.kr(0.5);
     // var level = 0.1;
     // Out.ar(0, Balance2.ar(l, r, pos, level));
-	def := NewSynthdef("Balance2Example", func(p *Params) UgenNode {
+	def := NewSynthdef("Balance2Example", func(p *Params) Ugen {
 		// l, r := LFSaw{44}.Rate(AR), Pulse{33}.Rate(AR)
 		return nil
 	})

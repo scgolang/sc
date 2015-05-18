@@ -21,9 +21,9 @@ func (self *Params) List() []*Param {
 	return self.l
 }
 
-// Control returns a UgenNode that should be used as
+// Control returns a Ugen that should be used as
 // the first ugen of any synthdef that has parameters
-func (self *Params) Control() UgenNode {
+func (self *Params) Control() Ugen {
 	return newControl(len(self.l))
 }
 
@@ -111,7 +111,7 @@ func (self *ControlOutput) Rate() int8 {
 	return 1
 }
 
-func newControl(numOutputs int) UgenNode {
+func newControl(numOutputs int) Ugen {
 	outputs := make([]Output, numOutputs)
 	o := ControlOutput{}
 	for i := 0; i < numOutputs; i++ {

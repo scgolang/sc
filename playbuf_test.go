@@ -5,7 +5,7 @@ import . "github.com/scgolang/sc/ugens"
 import "testing"
 
 func TestPlayBuf(t *testing.T) {
-	def := NewSynthdef("PlayBufExample", func(p *Params) UgenNode {
+	def := NewSynthdef("PlayBufExample", func(p *Params) Ugen {
 		// sclang synthdef:
 		// arg bufnum = 0;
 		// Out.ar(0, PlayBuf.ar(1, bufnum, 1.0, 1.0, 0, 0, 2));

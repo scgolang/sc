@@ -193,11 +193,6 @@ func (self *Client) ClearSched() error {
 	return self.oscServer.SendTo(self.addr, clear)
 }
 
-// QueryAllNodes gets info about the node tree under a group
-func (self *Client) QueryAllNodes(gid int32) error {
-	return nil
-}
-
 // defaultGroupExists figures out whether or not the default group exists
 func (self *Client) defaultGroupExists() (bool, error) {
 	addr := "/g_queryTree"

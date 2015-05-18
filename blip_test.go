@@ -6,7 +6,7 @@ import "os"
 import "testing"
 
 func TestBlip(t *testing.T) {
-	def := NewSynthdef("BlipExample", func(p *Params) UgenNode {
+	def := NewSynthdef("BlipExample", func(p *Params) Ugen {
 		start, end, dur, done := C(20000), C(200), C(6), 0
 		freq := XLine{start, end, dur, done}.Rate(KR)
 		bus, harms, gain := C(0), C(100), C(0.2)

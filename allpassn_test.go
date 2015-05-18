@@ -7,7 +7,7 @@ package sc
 
 // FIXME or document why this is broken
 // func TestAllpassnExample(t *testing.T) {
-// 	def := NewSynthdef("AllpassnExample", func(p *Params) UgenNode {
+// 	def := NewSynthdef("AllpassnExample", func(p *Params) Ugen {
 // 		noise := WhiteNoise{}.Rate(AR)
 // 		dust := Dust{C(1)}.Rate(AR).Mul(C(0.5))
 // 		decay := Decay{dust, C(0.2)}.Rate(AR).Mul(noise)

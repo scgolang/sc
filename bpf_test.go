@@ -7,7 +7,7 @@ package sc
 
 // FIXME
 // func TestBPF(t *testing.T) {
-// 	def := NewSynthdef("BPFExample", func(p *Params) UgenNode {
+// 	def := NewSynthdef("BPFExample", func(p *Params) Ugen {
 // 		line := XLine{C(0.7), C(300), C(20), 0}.Rate(KR)
 // 		saw := Saw{C(200)}.Rate(AR).Mul(C(0.5))
 // 		sine := FSinOsc{line, C(0)}.Rate(KR).MulAdd(C(3600), C(4000))

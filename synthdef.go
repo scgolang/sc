@@ -45,12 +45,12 @@ type Synthdef struct {
 
 	// seen is an array of ugen nodes that have been added
 	// to the synthdef
-	seen []UgenNode
+	seen []Ugen
 
 	// root is the root of the ugen tree that defines this synthdef
 	// this is used, for example, when drawing an svg representation
 	// of the synthdef
-	root UgenNode
+	root Ugen
 	// width and height of the ugen tree
 	width, depth int
 }
@@ -326,7 +326,7 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 		paramNames,
 		ugens,
 		variants,
-		make([]UgenNode, 0),
+		make([]Ugen, 0),
 		nil,
 		0,
 		0,
@@ -408,7 +408,7 @@ func (self *Synthdef) flatten(params *Params) {
 
 		for _, input := range inputs {
 			switch v := input.(type) {
-			case UgenNode:
+			case Ugen:
 				_, idx := self.addUgen(v)
 				// will we ever need to use a different output index? [bps]
 				in = newInput(int32(idx), 0)
@@ -425,7 +425,7 @@ func (self *Synthdef) flatten(params *Params) {
 				mins := v.InputArray()
 				for _, min := range mins {
 					switch x := min.(type) {
-					case UgenNode:
+					case Ugen:
 						_, idx := self.addUgen(x)
 						// will we ever need to use a different output index? [bps]
 						in = newInput(int32(idx), 0)
@@ -451,21 +451,21 @@ func (self *Synthdef) flatten(params *Params) {
 }
 
 // topsort performs a depth-first-search of a ugen tree
-func (self *Synthdef) topsort(root UgenNode) []UgenNode {
+func (self *Synthdef) topsort(root Ugen) []Ugen {
 	stack := newStack()
 	self.topsortr(root, stack, 0)
 	n := stack.Size()
-	ugens := make([]UgenNode, n)
+	ugens := make([]Ugen, n)
 	i := 0
 	for v := stack.Pop(); v != nil; v = stack.Pop() {
-		ugens[i] = v.(UgenNode)
+		ugens[i] = v.(Ugen)
 		i = i + 1
 	}
 	return ugens
 }
 
 // topsortr performs a depth-first-search of a ugen tree
-func (self *Synthdef) topsortr(root UgenNode, stack *stack, depth int) {
+func (self *Synthdef) topsortr(root Ugen, stack *stack, depth int) {
 	if depth > self.depth {
 		self.depth = depth
 	}
@@ -476,7 +476,7 @@ func (self *Synthdef) topsortr(root UgenNode, stack *stack, depth int) {
 	for i := n - 1; i >= 0; i-- {
 		input := inputs[i]
 		switch v := input.(type) {
-		case UgenNode:
+		case Ugen:
 			width = width + 1
 			self.topsortr(v, stack, depth+1)
 			break
@@ -486,7 +486,7 @@ func (self *Synthdef) topsortr(root UgenNode, stack *stack, depth int) {
 			for j := len(mins) - 1; j >= 0; j-- {
 				min := mins[j]
 				switch w := min.(type) {
-				case UgenNode:
+				case Ugen:
 					width = width + 1
 					self.topsortr(w, stack, depth+1)
 					break
@@ -522,10 +522,10 @@ func (self *Synthdef) addParams(p *Params) {
 	}
 }
 
-// addUgen adds a UgenNode to a synthdef and returns
+// addUgen adds a Ugen to a synthdef and returns
 // the ugen that was added, and the position in the
 // ugens array
-func (self *Synthdef) addUgen(u UgenNode) (*ugen, int) {
+func (self *Synthdef) addUgen(u Ugen) (*ugen, int) {
 	for i, un := range self.seen {
 		if un == u {
 			return self.Ugens[i], i
@@ -555,7 +555,7 @@ func (self *Synthdef) addConstant(c C) int {
 	return l
 }
 
-func newsynthdef(name string, root UgenNode) *Synthdef {
+func newsynthdef(name string, root Ugen) *Synthdef {
 	def := Synthdef{
 		name,
 		make([]float32, 0),
@@ -563,7 +563,7 @@ func newsynthdef(name string, root UgenNode) *Synthdef {
 		make([]ParamName, 0),
 		make([]*ugen, 0),
 		make([]*Variant, 0),
-		make([]UgenNode, 0), // seen
+		make([]Ugen, 0), // seen
 		root,
 		0,
 		0,
@@ -572,17 +572,17 @@ func newsynthdef(name string, root UgenNode) *Synthdef {
 }
 
 // NewSynthdef creates a synthdef by traversing a ugen graph
-func NewSynthdef(name string, graphFunc UgenGraphFunc) *Synthdef {
+func NewSynthdef(name string, graphFunc UgenFunc) *Synthdef {
 	// It would be nice to parse synthdef params from function arguments
 	// with the reflect package, but see
 	// https://groups.google.com/forum/#!topic/golang-nuts/nM_ZhL7fuGc
 	// for discussion of the (im)possibility of getting function argument
 	// names at runtime.
 	// Since this is not possible, what we need to do is let users add
-	// synthdef params anywhere in their UgenGraphFunc using Params.
+	// synthdef params anywhere in their UgenFunc using Params.
 	// Then in order to correctly map the values passed when creating
 	// a synth node they have to be passed in the same order
-	// they were created in the UgenGraphFunc.
+	// they were created in the UgenFunc.
 	params := NewParams()
 	root := graphFunc(params)
 	def := newsynthdef(name, root)

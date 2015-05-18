@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 	// HACK convert Params to an interface type
-	def := NewSynthdef("SineTone", func(params *Params) UgenNode {
+	def := NewSynthdef("SineTone", func(params *Params) Ugen {
 		return Out{C(0), SinOsc{}.Rate(AR)}.Rate(AR)
 	})
 	done := server.Run()

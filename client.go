@@ -1,20 +1,24 @@
 package sc
 
 import (
+	// "encoding/json"
+	// "encoding/xml"
 	"fmt"
 	"github.com/scgolang/osc"
-	. "github.com/scgolang/sc/types"
+	"github.com/scgolang/sc/types"
+	"io"
 	"net"
 	"reflect"
 	"sync/atomic"
 )
 
 const (
-	scsynthPort      = 57100
-	listenPort       = 57200
-	listenAddr       = "127.0.0.1"
-	statusOscAddress = "/status.reply"
-	doneOscAddress   = "/done"
+	scsynthPort       = 57100
+	listenPort        = 57200
+	listenAddr        = "127.0.0.1"
+	statusOscAddress  = "/status.reply"
+	gqueryTreeAddress = "/g_queryTree.reply"
+	doneOscAddress    = "/done"
 	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
 	DumpOff      = 0
 	DumpParsed   = 1
@@ -41,8 +45,10 @@ type Client struct {
 	// statusChan relays /status.reply messages
 	statusChan chan *osc.Message
 	// doneChan relays /done messages
-	doneChan  chan *osc.Message
-	oscServer *osc.Server
+	doneChan chan *osc.Message
+	// gqueryTreeChan relays /done messages
+	gqueryTreeChan chan *osc.Message
+	oscServer      *osc.Server
 	// next synth node ID
 	nextSynthID int32
 }
@@ -127,7 +133,7 @@ func (self *Client) NewGroup(id, action, target int32) error {
 
 // ReadBuffer tells the server to read an audio file and
 // load it into a buffer
-func (self *Client) ReadBuffer(path string) (Buffer, error) {
+func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
 	buf := newBuffer(path)
 	pat := "/b_allocRead"
 	allocRead := osc.NewMessage(pat)
@@ -187,38 +193,127 @@ func (self *Client) ClearSched() error {
 	return self.oscServer.SendTo(self.addr, clear)
 }
 
+// QueryAllNodes gets info about the node tree under a group
+func (self *Client) QueryAllNodes(gid int32) error {
+	return nil
+}
+
+// defaultGroupExists figures out whether or not the default group exists
+func (self *Client) defaultGroupExists() (bool, error) {
+	addr := "/g_queryTree"
+	gq := osc.NewMessage(addr)
+	gq.Append(int32(RootNodeID))
+	err := self.oscServer.SendTo(self.addr, gq)
+	if err != nil {
+		return false, err
+	}
+	resp := <- self.gqueryTreeChan
+	nargs := resp.CountArguments()
+	if nargs < 3 {
+		// something is wrong here
+		return false, fmt.Errorf("expected at least 3 arguments, got %d", nargs)
+	}
+	numChildren, isInt32 := resp.Arguments[2].(int32)
+	if !isInt32 {
+		t := reflect.TypeOf(resp.Arguments[2])
+		v := resp.Arguments[2]
+		return false, fmt.Errorf("expected arg 3 to be int32, but got %s (%v)", t, v)
+	}
+	if numChildren <= int32(0) {
+		return false, nil
+	}
+	// loop through children and return true if any of them
+	// have the default group ID
+	var nodeID, numControls, childIndex int32 = 0, 0, 0
+	var isInt bool
+	for i := 3; childIndex < numChildren; childIndex++ {
+		nodeID, isInt = resp.Arguments[i].(int32)
+		if !isInt {
+			v := resp.Arguments[i]
+			t := reflect.TypeOf(v)
+			return false, fmt.Errorf("expected int for nodeID, got %s (%v)", t, v)
+		}
+		if nodeID == DefaultGroupID {
+			return true, nil
+		}
+		i += 3 // forward to the numControls index
+		numControls, isInt = resp.Arguments[i].(int32)
+		if !isInt {
+			v := resp.Arguments[i]
+			t := reflect.TypeOf(v)
+			return false, fmt.Errorf("expected int for numControls, got %s (%v)", t, v)
+		}
+		// forward that many controls
+		i += int(numControls)
+	}
+	return false, nil
+}
+
+// addDefaultGroup adds the default group if it doesn't exist already
+func (self *Client) addDefaultGroup() error {
+	exists, err := self.defaultGroupExists()
+	if err != nil {
+		return err
+	}
+	if exists {
+		return nil
+	}
+	return self.NewGroup(DefaultGroupID, AddToHead, RootNodeID)
+}
+
+// WriteGroupJson writes a json representation of a group to an io.Writer
+func (self *Client) WriteGroupJson(gid int32, w io.Writer) error {
+	return nil
+}
+
+// WriteGroupXml writes a xml representation of a group to an io.Writer
+func (self *Client) WriteGroupXml(gid int32, w io.Writer) error {
+	return nil
+}
+
+// addOscHandlers adds OSC handlers
+func (self *Client) addOscHandlers() {
+	self.oscServer.AddMsgHandler(statusOscAddress, func(msg *osc.Message) {
+		self.statusChan <- msg
+	})
+	self.oscServer.AddMsgHandler(doneOscAddress, func(msg *osc.Message) {
+		self.doneChan <- msg
+	})
+	self.oscServer.AddMsgHandler(gqueryTreeAddress, func(msg *osc.Message) {
+		self.gqueryTreeChan <- msg
+	})
+}
+
 // NewClient creates a new SuperCollider client. addr and port are the listening
 // address and port, respectively, of scsynth
 func NewClient(addr string, port int) (*Client, error) {
-	oscServer := osc.NewServer(listenAddr, listenPort)
-	statusChan := make(chan *osc.Message)
-	oscServer.AddMsgHandler(statusOscAddress, func(msg *osc.Message) {
-		statusChan <- msg
-	})
-	doneChan := make(chan *osc.Message)
-	oscServer.AddMsgHandler(doneOscAddress, func(msg *osc.Message) {
-		doneChan <- msg
-	})
-	errChan := make(chan error)
+	self := new(Client)
+	self.nextSynthID = 1000
+	var err error
+	self.addr, err = net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, port))
+	if err != nil {
+		return nil, err
+	}
+	self.oscServer = osc.NewServer(listenAddr, listenPort)
+	// OSC relays
+	self.statusChan = make(chan *osc.Message)
+	self.doneChan = make(chan *osc.Message)
+	self.gqueryTreeChan = make(chan *osc.Message)
+	// listen for OSC messages
+	self.addOscHandlers()
+	self.oscErrChan = make(chan error)
 	go func() {
-		errChan <- oscServer.ListenAndDispatch()
+		self.oscErrChan <- self.oscServer.ListenAndDispatch()
 	}()
 	// wait for the server to start running
-	err := <-oscServer.Listening
+	err = <-self.oscServer.Listening
 	if err != nil {
 		return nil, err
 	}
-	netAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, port))
+	// add default group
+	err = self.addDefaultGroup()
 	if err != nil {
 		return nil, err
 	}
-	s := Client{
-		errChan,
-		netAddr,
-		statusChan,
-		doneChan,
-		oscServer,
-		1000,
-	}
-	return &s, nil
+	return self, nil
 }

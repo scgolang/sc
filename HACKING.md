@@ -1,10 +1,10 @@
 How to add a Ugen
 -----------------
 All the supported ugens are created by files in the ugens/ directory.
-For a good example, look at ugens/sinosc.go.
+For a good example, look at [ugens/sinosc.go](ugens/sinosc.go).
 
 Please add a test if you implement a ugen.
-See sinosc_test.go (in the sc package) for an example of a
+See [sinosc_test.go](sinosc_test.go) (in the sc package) for an example of a
 test involving the SinOsc ugen.
 
 Writing a test for a new ugen should involve:

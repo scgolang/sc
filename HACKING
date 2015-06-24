@@ -1,7 +1,0 @@
-How to add a Ugen
------------------
-All the supported ugens are created by files in the
-ugens/ directory.
-It should be *very* simple to add new ugens.
-For a good example, look at ugens/sinosc.go.
-Every ugen must implement the Ugen interface (found in types/ugen.go).

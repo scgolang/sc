@@ -35,34 +35,6 @@ func TestNewSynthdef(t *testing.T) {
 	}
 }
 
-func TestCompareToFile(t *testing.T) {
-	def := NewSynthdef("SineTone", func(params *Params) Ugen {
-		bus, freq := C(0), C(440)
-		sine := SinOsc{Freq: freq}.Rate(AR)
-		return Out{bus, sine}.Rate(AR)
-	})
-	if def == nil {
-		t.Fatalf("nil synthdef")
-	}
-
-	f, err := os.Create("SineTone.gosyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = def.Write(f)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	same, err := def.CompareToFile("SineTone.scsyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !same {
-		t.Fatalf("synthdef different from sclang-generated version")
-	}
-}
-
 func TestSynthdefEnvgen(t *testing.T) {
 	def := NewSynthdef("Envgen1", func(params *Params) Ugen {
 		bus := C(0)

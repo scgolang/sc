@@ -64,10 +64,10 @@ you want.
 ### Ugen Inputs
 
 Every ugen that has inputs (which is most ugens) will accept either constants or
-other ugens as input. For instance, SinOsc has a `Freq` input which controls the
+other ugens as input. For instance, SinOsc has a `freq` input which controls the
 frequency of the sine wave it generates. You could pass `440` to generate
-a constant-frequency sine wave, or you could pass another
-SinOsc ugen to oscillate the frequency of the first.
+a constant-frequency sine wave, or you could pass another SinOsc ugen to
+oscillate the frequency of the first.
 
 This ability to pass in different kinds of values as inputs to ugens means that ugen
 inputs must be [polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)).
@@ -85,7 +85,7 @@ This is because a numeric literal does not implement the Input interface. In ord
 to pass a constant as a ugen input you must wrap it with the [C](ugens/c.go) type.
 
 To pass a ugen as an input to another ugen, all you have to do is create your ugen
-with the `Rate(int8)` function because this function returns an Input.
+with the `Rate(int8)` method because it returns an Input.
 
 There is also another way to control ugens in a synthdef: synthdef parameters.
 If you define a synthdef with parameters, then you can pass in values for these
@@ -129,7 +129,8 @@ def := NewSynthdef("sineTone", func(freq C) Ugen {
 Here there is no need for a `Params` interface, but this
 is not possible with golang because it is statically typed.
 `NewSynthdef` needs to know what kind of argument to expect
-_at compile time_.
+_at compile time_ and not all synthdefs will want to use the
+same function type with this approach.
 
 
 
@@ -142,8 +143,7 @@ translating synthdefs from sclang to golang.
 
 #### sclang
 
-There are subtle differences between the following two
-synthdefs:
+Consider the following two synthdefs:
 
 ```supercollider
 SynthDef(\foo, {
@@ -157,29 +157,27 @@ SynthDef(\bar, {
 });
 ```
 
-The difference is not in how they sound (they should sound identical),
-but in how sclang treats them when it sorts the ugen graph.
+Synth nodes created from these two synthdefs should sound identical,
+but there is a difference in how sclang serializes them to send them to scsynth.
 
 The ugens in `foo` will be sorted in this order: `SinOsc, Blip, BinaryOpUGen, Out`,
 whereas the ugens in `bar` will be sorted in this order: `Blip, SinOsc, BinaryOpUGen, Out`.
 
-##### Side note
-
-  BinaryOpUgen is a ugen that most supercollider users should not care about.
-  Any time you use an arithmetic operator such as `+` or `*` or use the `mul`
-  parameter a BinaryOpUGen will be created.
+*Note:* BinaryOpUgen is a ugen that most SuperCollider users should not care about.
+Any time you use an arithmetic operator such as `+` or `*` or use the `mul`
+parameter a BinaryOpUGen will be created.
 
 In both `foo` and `bar` the inputs to BinaryOpUGen are (in the order in which they appear
 in the synthdef file) SinOsc and Blip.
 
-But as you can see, when we multiply by passing Blip as an inpug to SinOsc (in `bar`),
+But as you can see, when we multiply by passing Blip as an input to SinOsc (in `bar`),
 Blip will appear first in the sorted ugen list. This is because ugens are sorted using
 a [depth first search](https://en.wikipedia.org/wiki/Depth-first_search) algorithm, which
-means that when flattening a ugen graph, inputs are sorted first. The reason this behavior
-is confusing is that (in our example) both SinOsc and Blip become inputs to BinaryOpUGen
-and thus have the same depth in the ugen tree.
+means that when flattening a ugen graph, inputs are sorted first. The confusing thing
+is that the order of the inputs to BinaryOpUGen is the same for `foo` and `bar`, yet
+the these inputs appear in a different order in the ugens list.
 
-It is tempting to say that the `foo` synthdef is equivalent to
+Note also that this synthdef
 
 ```supercollider
 SynthDef(\baz, {
@@ -187,16 +185,9 @@ SynthDef(\baz, {
 });
 ```
 
-and that sclang treats the second operand of the `*` operator as the
-receiver and the first operand as an input. The ugens for the `baz` synthdef
-are sorted into the same order as the `foo` synthdef: `SinOsc, Blip, BinaryOpUGen, Out`.
-
-There is a very subtle difference between the two though. You have to inspect the
-synthdef file and look at the order of the inputs to BinaryOpUGen. The BinaryOpUGen in the
-`foo` synthdef effectively looks like `BinaryOpUGen.ar(SinOsc.ar(), Blip.ar())`
-but the one from the `baz` synthdef looks like `BinaryOpUGen.ar(Blip.ar(), SinOsc.ar())`.
-
-The inputs are switched!
+will sort the ugens in the same order as the `foo` synthdef: `SinOsc, Blip, BinaryOpUGen, Out`,
+but the order of the inputs to BinaryOpUGen is switched! The inputs to BinaryOpUGen
+for `baz` are `Blip, SinOsc`.
 
 So the questions now are
 

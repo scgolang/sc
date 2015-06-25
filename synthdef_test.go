@@ -25,7 +25,7 @@ func TestReadSynthdef(t *testing.T) {
 }
 
 func TestNewSynthdef(t *testing.T) {
-	def := NewSynthdef("SineTone", func(params *Params) Ugen {
+	def := NewSynthdef("SineTone", func(p Params) Ugen {
 		bus, freq, phase := C(0), C(440), C(0)
 		sine := SinOsc{freq, phase}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
@@ -36,7 +36,7 @@ func TestNewSynthdef(t *testing.T) {
 }
 
 func TestSynthdefEnvgen(t *testing.T) {
-	def := NewSynthdef("Envgen1", func(params *Params) Ugen {
+	def := NewSynthdef("Envgen1", func(p Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
 		level, curveature := C(1), C(-4)
@@ -67,7 +67,7 @@ func TestSynthdefEnvgen(t *testing.T) {
 }
 
 func TestSimpleMulti(t *testing.T) {
-	def := NewSynthdef("SimpleMulti", func(p *Params) Ugen {
+	def := NewSynthdef("SimpleMulti", func(p Params) Ugen {
 		bus, freq := C(0), Multi(C(440), C(441))
 		sine := SinOsc{Freq: freq}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
@@ -96,7 +96,7 @@ func TestCascade(t *testing.T) {
 	// var mod1 = SinOsc.ar([440, 441]);
 	// var mod2 = SinOsc.ar(mod1);
 	// Out.ar(0, SinOsc.ar(mod2));
-	def := NewSynthdef("Cascade", func(p *Params) Ugen {
+	def := NewSynthdef("Cascade", func(p Params) Ugen {
 		bus := C(0)
 		freq := Multi(C(440), C(441))
 		mod1 := SinOsc{Freq: freq}.Rate(AR)
@@ -116,7 +116,7 @@ func TestCascade(t *testing.T) {
 }
 
 func TestAllpassExample(t *testing.T) {
-	def := NewSynthdef("AllpassExample", func(p *Params) Ugen {
+	def := NewSynthdef("AllpassExample", func(p Params) Ugen {
 		noise := WhiteNoise{}.Rate(AR).Mul(C(0.1))
 
 		line := XLine{
@@ -156,7 +156,7 @@ func TestAllpassExample(t *testing.T) {
 }
 
 func ExampleNewSynthdef() {
-	NewSynthdef("SineTone", func(params *Params) Ugen {
+	NewSynthdef("SineTone", func(p Params) Ugen {
 		bus := C(0)
 		sine := SinOsc{}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
@@ -166,7 +166,7 @@ func ExampleNewSynthdef() {
 }
 
 func ExampleNewSynthdefSineTone2() {
-	NewSynthdef("SineTone2", func(params *Params) Ugen {
+	NewSynthdef("SineTone2", func(p Params) Ugen {
 		bus := C(0)
 		freq := C(440)
 		phase := SinOsc{Freq: C(0.1)}.Rate(AR)
@@ -178,8 +178,8 @@ func ExampleNewSynthdefSineTone2() {
 }
 
 func ExampleNewSynthdefParams() {
-	NewSynthdef("SineTone4", func(params *Params) Ugen {
-		freq := params.Add("freq", 440)
+	NewSynthdef("SineTone4", func(p Params) Ugen {
+		freq := p.Add("freq", 440)
 		bus, sine := C(0), SinOsc{freq, C(0)}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
 	}).WriteJSON(os.Stdout)
@@ -188,9 +188,9 @@ func ExampleNewSynthdefParams() {
 }
 
 func ExampleSynthdefParams2() {
-	NewSynthdef("SawTone1", func(params *Params) Ugen {
-		freq := params.Add("freq", 440)
-		cutoff, q := params.Add("cutoff", 1200), params.Add("q", 0.5)
+	NewSynthdef("SawTone1", func(p Params) Ugen {
+		freq := p.Add("freq", 440)
+		cutoff, q := p.Add("cutoff", 1200), p.Add("q", 0.5)
 		bus := C(0)
 		saw := Saw{freq}.Rate(AR)
 		out := RLPF{saw, cutoff, q}.Rate(AR)

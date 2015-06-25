@@ -44,6 +44,12 @@ instead of
 
 $ go test
 
+Also, there are tests that attempt to connect to scsynth on port 57100 (see
+client_test.go).
+If you do not have scsynth running the test will hang, so run
+
+$ scsynth -u 57100
+
 Usage
 -----
 Find godocs at http://godoc.org/github.com/scgolang/sc.

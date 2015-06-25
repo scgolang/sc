@@ -1,70 +1,69 @@
-package ugens
+package sc
 
 import . "github.com/scgolang/sc/types"
+import . "github.com/scgolang/sc/ugens"
 
-// Params provides a way to add parameters to a synthdef
-type Params struct {
-	l []*Param
+// params provides a way to add parameters to a synthdef
+type params struct {
+	l []Param
 }
 
-// Add adds a named parameter to a synthdef, with an initial value
-func (self *Params) Add(name string, initialValue float32) Input {
+// Add param implementation
+func (self *params) Add(name string, initialValue float32) Input {
 	idx := len(self.l)
 	p := newParam(name, int32(idx), initialValue)
 	self.l = append(self.l, p)
 	return p
 }
 
-// List returns a list of the params that have been
-// added to a synthdef
-func (self *Params) List() []*Param {
+// List param implementation
+func (self *params) List() []Param {
 	return self.l
 }
 
-// Control returns a Ugen that should be used as
-// the first ugen of any synthdef that has parameters
-func (self *Params) Control() Ugen {
+// Control param implementation
+func (self *params) Control() Ugen {
 	return newControl(len(self.l))
 }
 
-// NewParams creates a new Params instance
-func NewParams() *Params {
-	p := Params{make([]*Param, 0)}
+// newParams creates a new params instance
+func newParams() *params {
+	p := params{make([]Param, 0)}
 	return &p
 }
 
-type Param struct {
+type param struct {
 	name  string
 	index int32
 	val   float32
 }
 
-func (self *Param) Name() string {
+func (self *param) Name() string {
 	return self.name
 }
 
-func (self *Param) Index() int32 {
+func (self *param) Index() int32 {
 	return self.index
 }
 
-func (self *Param) GetInitialValue() float32 {
+func (self *param) InitialValue() float32 {
 	return self.val
 }
 
-func (self *Param) Mul(in Input) Input {
+func (self *param) Mul(in Input) Input {
 	return BinOpMul(KR, self, in)
 }
 
-func (self *Param) Add(in Input) Input {
+func (self *param) Add(in Input) Input {
 	return BinOpAdd(KR, self, in)
 }
 
-func (self *Param) MulAdd(mul, add Input) Input {
+func (self *param) MulAdd(mul, add Input) Input {
 	return MulAdd(KR, self, mul, add)
 }
 
-func newParam(name string, index int32, initialValue float32) *Param {
-	p := Param{name, index, initialValue}
+func newParam(name string, index int32, initialValue float32) *param {
+	p := param{name, index, initialValue}
 	return &p
 }
 

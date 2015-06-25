@@ -5,19 +5,19 @@ is how to write synthdefs. After reading this guide you should be pretty
 comfortable with creating synthdefs.
 
 This guide assumes that you are comfortable with reading and writing
-synthdefs in sclang. If you aren't I suggest reading [this][2]
+synthdefs in sclang. If you aren't I suggest reading [this](http://doc.sccode.org/Tutorials/Getting-Started/10-SynthDefs-and-Synths.html)
 and play around with creating synthdefs with sclang a bit
 before deciding to write them in go.
 
 ### Ugen Inputs
 
-In [sc][1] all ugen inputs are implementations of the [Input][3]
+In sc all ugen inputs are implementations of the [Input](types/input.go)
 interface. This has some very important ramifications on how
 you write synthdefs.
 
 First of all, unlike sclang, you can not use numeric literals as inputs to ugens.
 
-Every constant input to a ugen must be wrapped with the [C][4] type.
+Every constant input to a ugen must be wrapped with the [C](ugens/c.go) type.
 
 This means that most synthdefs written in go will be a bit more
 verbose than their sclang counterparts. But I believe this is the
@@ -25,18 +25,19 @@ best way to have polymorphic ugen inputs.
 
 ### Synthdef Parameters
 
-Since go is statically typed language, the UgenGraphFunc type
+Since go is a statically typed language, the UgenFunc type
 
 ```go
-type UgenGraphFunc func(p *Params) UgenNode
+type UgenFunc func(p *Params) Ugen
 ```
 
 provides a way to add parameters to synthdefs by doing
 
 ```go
+bus := C(0)
 freq := p.Add("freq", 440)
 // use freq as a ugen input
-return Out{C(0), SinOsc{Freq:freq}.Rate(AR)}.Rate(AR)
+return Out{bus, SinOsc{Freq:freq}.Rate(AR)}.Rate(AR)
 ```
 
 There is no way to use go's `reflect` package to get function argument
@@ -131,7 +132,7 @@ Why would this be the case?
 
 #### golang
 
-In [sc][1] there is only one way to multiply two ugens: with the `Mul` method.
+In sc there is only one way to multiply two ugens: with the `Mul` method.
 
 This will sort SinOsc before Blip:
 
@@ -165,8 +166,3 @@ but the order of the inputs to BinaryOpUGen will be switched.
 
 Luckily the `+` and `*` operators are commutative, so the order of the inputs
 to the resulting BinaryOpUGen does not matter.
-
-[1]: http://godoc.org/github.com/briansorahan/sc
-[2]: http://doc.sccode.org/Tutorials/Getting-Started/10-SynthDefs-and-Synths.html
-[3]: http://godoc.org/github.com/briansorahan/sc/types#Input
-[4]: http://godoc.org/github.com/briansorahan/sc/ugens#C

@@ -39,8 +39,8 @@ func TestSynthdefEnvgen(t *testing.T) {
 	def := NewSynthdef("Envgen1", func(p Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
-		level, curveature := C(1), C(-4)
-		perc := EnvPerc{attack, release, level, curveature}
+		level, curvature := C(1), C(-4)
+		perc := EnvPerc{attack, release, level, curvature}
 		gate, levelScale, levelBias, timeScale := C(1), C(1), C(0), C(1)
 		ampEnv := EnvGen{perc, gate, levelScale, levelBias, timeScale, FreeEnclosing}.Rate(KR)
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)

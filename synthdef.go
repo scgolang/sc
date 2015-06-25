@@ -51,8 +51,6 @@ type Synthdef struct {
 	// this is used, for example, when drawing an svg representation
 	// of the synthdef
 	root Ugen
-	// width and height of the ugen tree
-	width, depth int
 }
 
 // Write writes a binary representation of a synthdef to an io.Writer.
@@ -328,8 +326,6 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 		variants,
 		make([]Ugen, 0),
 		nil,
-		0,
-		0,
 	}
 	return &synthDef, nil
 }
@@ -465,38 +461,34 @@ func (self *Synthdef) topsort(root Ugen) []Ugen {
 }
 
 // topsortr performs a depth-first-search of a ugen tree
+// starting at a given depth
 func (self *Synthdef) topsortr(root Ugen, stack *stack, depth int) {
-	if depth > self.depth {
-		self.depth = depth
-	}
-	width := 0
 	stack.Push(root)
 	inputs := root.Inputs()
-	n := len(inputs)
-	for i := n - 1; i >= 0; i-- {
-		input := inputs[i]
-		switch v := input.(type) {
-		case Ugen:
-			width = width + 1
-			self.topsortr(v, stack, depth+1)
-			break
-		case MultiInput:
-			// multi input
-			mins := v.InputArray()
-			for j := len(mins) - 1; j >= 0; j-- {
-				min := mins[j]
-				switch w := min.(type) {
-				case Ugen:
-					width = width + 1
-					self.topsortr(w, stack, depth+1)
-					break
-				}
-			}
-			break
-		}
+	numInputs := len(inputs)
+	for i := numInputs-1; i >= 0; i-- {
+		self.processUgenInput(inputs[i], stack, depth)
 	}
-	if width > self.width {
-		self.width = width
+}
+
+// processUgenInput processes a single ugen input
+func (self *Synthdef) processUgenInput(input Input, stack *stack, depth int) {
+	switch v := input.(type) {
+	case Ugen:
+		self.topsortr(v, stack, depth+1)
+		break
+	case MultiInput:
+		// multi input
+		mins := v.InputArray()
+		for j := len(mins) - 1; j >= 0; j-- {
+			min := mins[j]
+			switch w := min.(type) {
+			case Ugen:
+				self.topsortr(w, stack, depth+1)
+				break
+			}
+		}
+		break
 	}
 }
 
@@ -568,8 +560,6 @@ func newsynthdef(name string, root Ugen) *Synthdef {
 		make([]*Variant, 0),
 		make([]Ugen, 0), // seen
 		root,
-		0,
-		0,
 	}
 	return &def
 }

@@ -5,7 +5,7 @@ import . "github.com/scgolang/sc/ugens"
 import "testing"
 
 func TestLFSaw(t *testing.T) {
-	def := NewSynthdef("LFSawExample", func(p *Params) Ugen {
+	def := NewSynthdef("LFSawExample", func(p Params) Ugen {
 		lfoFreq, lfoPhase := C(4), C(0)
 		bus, gain := C(0), C(0.1)
 		freq := LFSaw{lfoFreq, lfoPhase}.Rate(KR).MulAdd(C(200), C(400))

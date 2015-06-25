@@ -393,7 +393,7 @@ func (self *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
 }
 
 // flatten
-func (self *Synthdef) flatten(params *Params) {
+func (self *Synthdef) flatten(params Params) {
 	self.addParams(params)
 	// get a topologically sorted ugens list
 	ugenNodes := self.topsort(self.root)
@@ -417,7 +417,7 @@ func (self *Synthdef) flatten(params *Params) {
 				idx := self.addConstant(v)
 				in = newInput(-1, int32(idx))
 				break
-			case *Param:
+			case *param:
 				idx := v.Index()
 				in = newInput(0, idx)
 				break
@@ -434,7 +434,7 @@ func (self *Synthdef) flatten(params *Params) {
 						idx := self.addConstant(x)
 						in = newInput(-1, int32(idx))
 						break
-					case *Param:
+					case *param:
 						idx := x.Index()
 						in = newInput(0, idx)
 						break
@@ -502,21 +502,24 @@ func (self *Synthdef) topsortr(root Ugen, stack *stack, depth int) {
 
 // addParams will do nothing if there are no synthdef params.
 // If there are synthdef params it will
-// (1) Add their default values to initialParamValues
-// (2) Add their names/indices to paramNames
+// (1) Add their default values to InitialParamValues
+// (2) Add their names/indices to ParamNames
 // (3) Add a Control ugen as the first ugen
-func (self *Synthdef) addParams(p *Params) {
+func (self *Synthdef) addParams(p Params) {
 	paramList := p.List()
 	numParams := len(paramList)
 	self.InitialParamValues = make([]float32, numParams)
 	self.ParamNames = make([]ParamName, numParams)
 	for i, param := range paramList {
-		self.InitialParamValues[i] = param.GetInitialValue()
+		self.InitialParamValues[i] = param.InitialValue()
 		self.ParamNames[i] = ParamName{param.Name(), param.Index()}
 	}
 	if numParams > 0 {
 		ctl := p.Control()
 		self.seen = append(self.seen, ctl)
+		// create a list with the single Control ugen,
+		// then append any existing ugens in the synthdef
+		// to that list
 		control := []*ugen{cloneUgen(ctl)}
 		self.Ugens = append(control, self.Ugens...)
 	}
@@ -583,7 +586,7 @@ func NewSynthdef(name string, graphFunc UgenFunc) *Synthdef {
 	// Then in order to correctly map the values passed when creating
 	// a synth node they have to be passed in the same order
 	// they were created in the UgenFunc.
-	params := NewParams()
+	params := newParams()
 	root := graphFunc(params)
 	def := newsynthdef(name, root)
 	def.flatten(params)

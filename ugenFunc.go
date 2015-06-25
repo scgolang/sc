@@ -1,10 +1,10 @@
-package ugens
+package sc
 
 import (
 	. "github.com/scgolang/sc/types"
 )
 
-type UgenFunc func(params *Params) Ugen
+type UgenFunc func(p Params) Ugen
 
 type PlayFunc func() Ugen
 

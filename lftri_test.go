@@ -5,7 +5,7 @@ import . "github.com/scgolang/sc/ugens"
 import "testing"
 
 func TestLFTri(t *testing.T) {
-	def := NewSynthdef("LFTriExample", func(p *Params) Ugen {
+	def := NewSynthdef("LFTriExample", func(p Params) Ugen {
 		// sclang:
 		// var freq = LFTri.kr(4, 0, 200, 400);
 		// Out.ar(0, LFTri.ar(freq, 0, 0.1));

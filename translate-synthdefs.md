@@ -2,12 +2,12 @@
 
 One of the first things you must learn in order to be able to use SuperCollider
 is how to write synthdefs. After reading this guide you should be pretty
-comfortable with creating synthdefs.
+comfortable with creating synthdefs with golang.
 
 This guide assumes that you are comfortable with reading and writing
 synthdefs in sclang. If you aren't I suggest reading [this](http://doc.sccode.org/Tutorials/Getting-Started/10-SynthDefs-and-Synths.html)
 and play around with creating synthdefs with sclang a bit
-before deciding to write them in go.
+before deciding to write them in golang.
 
 ### Ugen Inputs
 
@@ -19,16 +19,16 @@ First of all, unlike sclang, you can not use numeric literals as inputs to ugens
 
 Every constant input to a ugen must be wrapped with the [C](ugens/c.go) type.
 
-This means that most synthdefs written in go will be a bit more
+This means that most synthdefs written in golang will be a bit more
 verbose than their sclang counterparts. But I believe this is the
 best way to have polymorphic ugen inputs.
 
 ### Synthdef Parameters
 
-Since go is a statically typed language, the UgenFunc type
+Since golang is a statically typed language, the UgenFunc type
 
 ```go
-type UgenFunc func(p *Params) Ugen
+type UgenFunc func(p Params) Ugen
 ```
 
 provides a way to add parameters to synthdefs by doing
@@ -40,7 +40,7 @@ freq := p.Add("freq", 440)
 return Out{bus, SinOsc{Freq:freq}.Rate(AR)}.Rate(AR)
 ```
 
-There is no way to use go's `reflect` package to get function argument
+There is no way to use golang's `reflect` package to get function argument
 names at runtime (which I think would be the best way to specify synth
 arguments), so I think this is the next best option.
 
@@ -48,15 +48,15 @@ arguments), so I think this is the next best option.
 
 #### sine
 
-SuperCollider:
+sclang:
 
-```SuperCollider
-SynthDef(\sine, {
+```javascript
+SynthDef('sine', {
     Out.ar(0, SinOsc.ar());
 });
 ```
 
-Go:
+golang:
 
 ```go
 NewSynthdef("sine", func(p *Params) UgenNode {

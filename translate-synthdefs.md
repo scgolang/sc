@@ -31,7 +31,7 @@ So that the golang translation
 
 ```go
 NewSynthdef("foo", func(p Params) Ugen {
-    bus, blip, sine := C(0), Blip{}.Rate(AR), SinOsc.Rate(AR)
+    bus, blip, sine := C(0), Blip{}.Rate(AR), SinOsc{}.Rate(AR)
     return Out{bus, sine.Mul(blip)}.Rate(AR)
 })
 ```

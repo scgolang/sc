@@ -37,5 +37,3 @@ test: $(SYNTHDEF)
 
 examples:
 	for src in $(EXAMPLES); do go build $$src; done
-
-graphs:

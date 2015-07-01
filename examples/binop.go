@@ -9,14 +9,11 @@ import (
 )
 
 func main() {
-	options := ServerOptions{
-		EchoScsynthStdout: true,
-	}
-	server, err := NewServer("127.0.0.1", 51670, options)
+	client, err := NewClient("127.0.0.1", 51670)
 	if err != nil {
 		log.Fatal(err)
 	}
-	def := NewSynthdef("Envgen1", func(params *Params) Ugen {
+	def := NewSynthdef("Envgen1", func(p Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
 		level, curveature := C(1), C(-4)
@@ -26,20 +23,14 @@ func main() {
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)
 		return Out{bus, noise}.Rate(AR)
 	})
-	done := server.Run()
-	err = server.SendDef(def)
+	err = client.SendDef(def)
 	if err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(1000 * time.Millisecond)
-	err = server.NewSynth("Envgen1", server.NextSynthID(), AddToHead, DefaultGroupID)
+	err = client.NewSynth("Envgen1", client.NextSynthID(), AddToHead, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(5000 * time.Millisecond)
-	server.Quit()
-	err = <-done
-	if err != nil {
-		log.Fatal(err)
-	}
 }

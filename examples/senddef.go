@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	client, err := NewClient("127.0.0.1", 51670)
+	client, err := NewClient("127.0.0.1", ScsynthDefaultPort)
 	if err != nil {
 		log.Fatal(err)
 	}

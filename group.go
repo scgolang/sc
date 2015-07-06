@@ -2,6 +2,7 @@ package sc
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"github.com/scgolang/osc"
 	"io"
@@ -18,12 +19,17 @@ type node struct {
 }
 
 type group struct {
-	node `json:"node"`
-	Children []*node `json:"children" xml:children>child"`
+	node `json:"node" xml:"node"`
+	Children []*node `json:"children" xml:"children>child"`
 }
 
 func (self *group) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
+	return enc.Encode(self)
+}
+
+func (self *group) WriteXML(w io.Writer) error {
+	enc := xml.NewEncoder(w)
 	return enc.Encode(self)
 }
 

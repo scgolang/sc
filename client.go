@@ -131,6 +131,19 @@ func (self *Client) NewGroup(id, action, target int32) error {
 	return self.oscServer.SendTo(self.addr, dumpReq)
 }
 
+func (self *Client) QueryGroup(id int32) (*group, error) {
+	addr := "/g_queryTree"
+	gq := osc.NewMessage(addr)
+	gq.Append(int32(RootNodeID))
+	err := self.oscServer.SendTo(self.addr, gq)
+	if err != nil {
+		return nil, err
+	}
+	// wait for response
+	resp := <- self.gqueryTreeChan
+	return parseGroup(resp)
+}
+
 // ReadBuffer tells the server to read an audio file and
 // load it into a buffer
 func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
@@ -202,44 +215,11 @@ func (self *Client) defaultGroupExists() (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	// wait for response
 	resp := <- self.gqueryTreeChan
-	nargs := resp.CountArguments()
-	if nargs < 3 {
-		// something is wrong here
-		return false, fmt.Errorf("expected at least 3 arguments, got %d", nargs)
-	}
-	numChildren, isInt32 := resp.Arguments[2].(int32)
-	if !isInt32 {
-		t := reflect.TypeOf(resp.Arguments[2])
-		v := resp.Arguments[2]
-		return false, fmt.Errorf("expected arg 3 to be int32, but got %s (%v)", t, v)
-	}
-	if numChildren <= int32(0) {
-		return false, nil
-	}
-	// loop through children and return true if any of them
-	// have the default group ID
-	var nodeID, numControls, childIndex int32 = 0, 0, 0
-	var isInt bool
-	for i := 3; childIndex < numChildren; childIndex++ {
-		nodeID, isInt = resp.Arguments[i].(int32)
-		if !isInt {
-			v := resp.Arguments[i]
-			t := reflect.TypeOf(v)
-			return false, fmt.Errorf("expected int for nodeID, got %s (%v)", t, v)
-		}
-		if nodeID == DefaultGroupID {
-			return true, nil
-		}
-		i += 3 // forward to the numControls index
-		numControls, isInt = resp.Arguments[i].(int32)
-		if !isInt {
-			v := resp.Arguments[i]
-			t := reflect.TypeOf(v)
-			return false, fmt.Errorf("expected int for numControls, got %s (%v)", t, v)
-		}
-		// forward that many controls
-		i += int(numControls)
+	_, err = parseGroup(resp)
+	if err != nil {
+		return false, err
 	}
 	return false, nil
 }
@@ -257,12 +237,25 @@ func (self *Client) addDefaultGroup() error {
 }
 
 // WriteGroupJson writes a json representation of a group to an io.Writer
-func (self *Client) WriteGroupJson(gid int32, w io.Writer) error {
-	return nil
+func (self *Client) WriteGroupJSON(gid int32, w io.Writer) error {
+	addr := "/g_queryTree"
+	gq := osc.NewMessage(addr)
+	gq.Append(int32(RootNodeID))
+	err := self.oscServer.SendTo(self.addr, gq)
+	if err != nil {
+		return err
+	}
+	// wait for response
+	resp := <- self.gqueryTreeChan
+	grp, err := parseGroup(resp)
+	if err != nil {
+		return err
+	}
+	return grp.WriteJSON(w)
 }
 
 // WriteGroupXml writes a xml representation of a group to an io.Writer
-func (self *Client) WriteGroupXml(gid int32, w io.Writer) error {
+func (self *Client) WriteGroupXML(gid int32, w io.Writer) error {
 	return nil
 }
 

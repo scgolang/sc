@@ -8,6 +8,7 @@ core
 binop
 inspect
 status
+printgroup
 quit
 runServer
 sdef

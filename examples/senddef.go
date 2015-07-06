@@ -14,7 +14,9 @@ func main() {
 		log.Fatal(err)
 	}
 	def := NewSynthdef("SineTone", func(p Params) Ugen {
-		return Out{C(0), SinOsc{}.Rate(AR)}.Rate(AR)
+		bus, chaos := C(0), Line{C(1.0), C(2.0), C(10), DoNothing}.Rate(KR)
+		sig := Crackle{chaos}.Rate(AR).MulAdd(C(0.5), C(0.5))
+		return Out{bus, sig}.Rate(AR)
 	})
 	err = client.SendDef(def)
 	if err != nil {

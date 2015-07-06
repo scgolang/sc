@@ -13,12 +13,12 @@ import (
 )
 
 const (
-	scsynthPort       = 57100
-	listenPort        = 57200
-	listenAddr        = "127.0.0.1"
-	statusOscAddress  = "/status.reply"
-	gqueryTreeAddress = "/g_queryTree.reply"
-	doneOscAddress    = "/done"
+	ScsynthDefaultPort = 57120
+	listenPort         = 57200
+	listenAddr         = "127.0.0.1"
+	statusOscAddress   = "/status.reply"
+	gqueryTreeAddress  = "/g_queryTree.reply"
+	doneOscAddress     = "/done"
 	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
 	DumpOff      = 0
 	DumpParsed   = 1
@@ -131,6 +131,7 @@ func (self *Client) NewGroup(id, action, target int32) error {
 	return self.oscServer.SendTo(self.addr, dumpReq)
 }
 
+// QueryGroup g_queryTree for a particular group
 func (self *Client) QueryGroup(id int32) (*group, error) {
 	addr := "/g_queryTree"
 	gq := osc.NewMessage(addr)
@@ -140,7 +141,7 @@ func (self *Client) QueryGroup(id int32) (*group, error) {
 		return nil, err
 	}
 	// wait for response
-	resp := <- self.gqueryTreeChan
+	resp := <-self.gqueryTreeChan
 	return parseGroup(resp)
 }
 
@@ -216,7 +217,7 @@ func (self *Client) defaultGroupExists() (bool, error) {
 		return false, err
 	}
 	// wait for response
-	resp := <- self.gqueryTreeChan
+	resp := <-self.gqueryTreeChan
 	_, err = parseGroup(resp)
 	if err != nil {
 		return false, err
@@ -238,16 +239,7 @@ func (self *Client) addDefaultGroup() error {
 
 // WriteGroupJson writes a json representation of a group to an io.Writer
 func (self *Client) WriteGroupJSON(gid int32, w io.Writer) error {
-	addr := "/g_queryTree"
-	gq := osc.NewMessage(addr)
-	gq.Append(int32(RootNodeID))
-	err := self.oscServer.SendTo(self.addr, gq)
-	if err != nil {
-		return err
-	}
-	// wait for response
-	resp := <- self.gqueryTreeChan
-	grp, err := parseGroup(resp)
+	grp, err := self.QueryGroup(gid)
 	if err != nil {
 		return err
 	}
@@ -256,7 +248,11 @@ func (self *Client) WriteGroupJSON(gid int32, w io.Writer) error {
 
 // WriteGroupXml writes a xml representation of a group to an io.Writer
 func (self *Client) WriteGroupXML(gid int32, w io.Writer) error {
-	return nil
+	grp, err := self.QueryGroup(gid)
+	if err != nil {
+		return err
+	}
+	return grp.WriteXML(w)
 }
 
 // addOscHandlers adds OSC handlers

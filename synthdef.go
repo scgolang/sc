@@ -12,6 +12,8 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
+	"path"
 )
 
 const (
@@ -169,14 +171,42 @@ func (self *Synthdef) Bytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// CompareToFile compares this synthdef to a synthdef
-// stored on disk
 func (self *Synthdef) CompareToFile(path string) (bool, error) {
-	f, err := os.Open(path)
+	return true, nil
+}
+
+// Compare compares this synthdef byte-for-byte with
+// the synthdef sclang generates using the given string.
+// Note that using this method requires you to have sclang installed.
+// Returns true if the synthdefs are the same, false otherwise.
+func (self *Synthdef) Compare(def string) (bool, error) {
+	tmp := os.TempDir()
+	scSyndef := path.Join(tmp, fmt.Sprintf("%s.scsyndef", self.Name))
+	const wrap = `SynthDef(\%s, %s).writeDefFile("%s"); 0.exit;`
+	contents := fmt.Sprintf(wrap, self.Name, def, tmp)
+	f, err := ioutil.TempFile(tmp, "sclang_")
 	if err != nil {
 		return false, err
 	}
-	fromDisk, err := ioutil.ReadAll(f)
+	written, err := f.Write([]byte(contents))
+	if err != nil {
+		return false, err
+	}
+	if written != len(contents) {
+		return false, fmt.Errorf("only wrote %d bytes", written)
+	}
+	// generate the .scsyndef file
+	cmd := exec.Command("sclang", f.Name())
+	err = cmd.Run()
+	if err != nil {
+		return false, err
+	}
+	// read it and compare to this synthdef
+	g, err := os.Open(scSyndef)
+	if err != nil {
+		return false, err
+	}
+	fromDisk, err := ioutil.ReadAll(g)
 	if err != nil {
 		return false, err
 	}

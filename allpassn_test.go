@@ -5,7 +5,7 @@ package sc
 // import "os"
 // import "testing"
 
-// FIXME or document why this is broken
+// FIXME
 // func TestAllpassnExample(t *testing.T) {
 // 	def := NewSynthdef("AllpassnExample", func(p *Params) Ugen {
 // 		noise := WhiteNoise{}.Rate(AR)

@@ -12,8 +12,13 @@ func TestFoo(t *testing.T) {
 		sine := SinOsc{}.Rate(AR)
 		return Out{bus, sine.Mul(blip)}.Rate(AR)
 	})
-	if def == nil {
-		t.Fatalf("nil synthdef")
+	same, err := def.Compare(`{
+        Out.ar(0, SinOsc.ar() * Blip.ar());
+    }`)
+	if err != nil {
+		t.Fatal(err)
 	}
-	compareAndWrite(t, name, def)
+	if !same {
+		t.Fatalf("synthdefs were different")
+	}
 }

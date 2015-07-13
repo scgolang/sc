@@ -1,8 +1,6 @@
 package sc
 
 import (
-	// "encoding/json"
-	// "encoding/xml"
 	"fmt"
 	"github.com/scgolang/osc"
 	"github.com/scgolang/sc/types"
@@ -207,36 +205,6 @@ func (self *Client) ClearSched() error {
 	return self.oscServer.SendTo(self.addr, clear)
 }
 
-// defaultGroupExists figures out whether or not the default group exists
-func (self *Client) defaultGroupExists() (bool, error) {
-	addr := "/g_queryTree"
-	gq := osc.NewMessage(addr)
-	gq.Append(int32(RootNodeID))
-	err := self.oscServer.SendTo(self.addr, gq)
-	if err != nil {
-		return false, err
-	}
-	// wait for response
-	resp := <-self.gqueryTreeChan
-	_, err = parseGroup(resp)
-	if err != nil {
-		return false, err
-	}
-	return false, nil
-}
-
-// addDefaultGroup adds the default group if it doesn't exist already
-func (self *Client) addDefaultGroup() error {
-	exists, err := self.defaultGroupExists()
-	if err != nil {
-		return err
-	}
-	if exists {
-		return nil
-	}
-	return self.NewGroup(DefaultGroupID, AddToHead, RootNodeID)
-}
-
 // WriteGroupJson writes a json representation of a group to an io.Writer
 func (self *Client) WriteGroupJSON(gid int32, w io.Writer) error {
 	grp, err := self.QueryGroup(gid)
@@ -283,19 +251,14 @@ func NewClient(addr string, port int) (*Client, error) {
 	self.statusChan = make(chan *osc.Message)
 	self.doneChan = make(chan *osc.Message)
 	self.gqueryTreeChan = make(chan *osc.Message)
+	self.oscErrChan = make(chan error)
 	// listen for OSC messages
 	self.addOscHandlers()
-	self.oscErrChan = make(chan error)
 	go func() {
 		self.oscErrChan <- self.oscServer.ListenAndDispatch()
 	}()
-	// wait for the server to start running
+	// wait for the OSC server to start
 	err = <-self.oscServer.Listening
-	if err != nil {
-		return nil, err
-	}
-	// add default group
-	err = self.addDefaultGroup()
 	if err != nil {
 		return nil, err
 	}

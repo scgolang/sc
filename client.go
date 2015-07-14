@@ -137,7 +137,7 @@ func (self *Client) DumpOSC(level int32) error {
 }
 
 // NewSynth creates a synth
-func (self *Client) Synth(defName string, id, action, target int32) (Synth, error) {
+func (self *Client) Synth(defName string, id, action, target int32) (*Synth, error) {
 	synthReq := osc.NewMessage(synthNewAddress)
 	synthReq.Append(defName)
 	synthReq.Append(id)
@@ -152,7 +152,7 @@ func (self *Client) Synth(defName string, id, action, target int32) (Synth, erro
 }
 
 // NewGroup creates a group
-func (self *Client) Group(id, action, target int32) (Group, error) {
+func (self *Client) Group(id, action, target int32) (*Group, error) {
 	dumpReq := osc.NewMessage(groupNewAddress)
 	dumpReq.Append(id)
 	dumpReq.Append(action)
@@ -165,12 +165,12 @@ func (self *Client) Group(id, action, target int32) (Group, error) {
 }
 
 // AddDefaltGroup adds the default group
-func (self *Client) AddDefaultGroup() (Group, error) {
+func (self *Client) AddDefaultGroup() (*Group, error) {
 	return self.Group(DefaultGroupID, AddToTail, RootNodeID)
 }
 
 // QueryGroup g_queryTree for a particular group
-func (self *Client) QueryGroup(id int32) (Group, error) {
+func (self *Client) QueryGroup(id int32) (*Group, error) {
 	addr := gqueryTreeAddress
 	gq := osc.NewMessage(addr)
 	gq.Append(int32(RootNodeID))

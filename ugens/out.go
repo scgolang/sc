@@ -12,7 +12,7 @@ type Out struct {
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Out) Rate(rate int8) *Node {
+func (self Out) Rate(rate int8) *UgenNode {
 	checkRate(rate)
-	return NewNode("Out", rate, 0, 1, self.Bus, self.Channels)
+	return NewUgenNode("Out", rate, 0, 1, self.Bus, self.Channels)
 }

@@ -6,17 +6,11 @@ import (
 
 type UgenFunc func(p Params) Ugen
 
-type PlayFunc func() Ugen
-
 // Play corresponds to http://doc.sccode.org/Classes/Function.html#-play.
-// This is syntactic sugar for
-//     temp := DefaultClient.TempDefName()
-//     def := NewSynthdef(temp, func(p Params) Ugen {
-//     })
-//     DefaultServer.SendDef(def)
-//     sid := DefaultServer.NextSynthID()
-//     DefaultServer.NewSynth(temp, sid, AddToHead, DefaultGroupID)
-func Play(f PlayFunc) error {
+// It wraps the provided UgenFunc in a synthdef,
+// sends this synthdef to a server instance with DefaultClient,
+// then creates a new synth from the synthdef.
+func Play(c *Client, f UgenFunc) error {
 	// To implement this we need a DefaultServer and
 	// a way to generate the names of the temp synthdefs.
 	// If the ugen node returned by f is not Out,

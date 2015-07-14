@@ -7,16 +7,20 @@ import (
 	"testing"
 )
 
+// This test requires a SuperCollider server to be running.
+//
+//     scsynth -u 57120
+//
 func TestClient(t *testing.T) {
-	client := NewClient("127.0.0.1", ScsynthDefaultPort)
-	err := client.Connect("127.0.0.1", 57200)
+	client := NewClient("127.0.0.1", 57200)
+	err := client.Connect("127.0.0.1", 57120)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if client == nil {
 		t.Fatal(fmt.Errorf("NewClient returned nil"))
 	}
-	
+
 	// get status
 	status, err := client.Status()
 	if err != nil {
@@ -25,7 +29,7 @@ func TestClient(t *testing.T) {
 	if status == nil {
 		t.Fatalf("got nil status")
 	}
-	
+
 	// read a buffer
 	cwd, err := os.Getwd()
 	if err != nil {

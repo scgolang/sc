@@ -10,12 +10,16 @@ import (
 )
 
 const (
-	ScsynthDefaultPort = 57120
-	listenAddr         = "127.0.0.1"
-	listenPort         = 57121
-	statusOscAddress   = "/status.reply"
-	gqueryTreeAddress  = "/g_queryTree.reply"
-	doneOscAddress     = "/done"
+	statusAddress          = "/status"
+	statusReplyAddress     = "/status.reply"
+	gqueryTreeAddress      = "/g_queryTree"
+	gqueryTreeReplyAddress = "/g_queryTree.reply"
+	synthdefReceiveAddress = "/d_recv"
+	dumpOscAddress         = "/dumpOSC"
+	doneOscAddress         = "/done"
+	synthNewAddress        = "/s_new"
+	groupNewAddress        = "/g_new"
+	bufferReadAddress      = "/b_allocRead"
 	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
 	DumpOff      = 0
 	DumpParsed   = 1
@@ -31,21 +35,6 @@ const (
 	RootNodeID     = 0
 	DefaultGroupID = 1
 )
-
-var DefaultClient *Client
-
-func init() {
-	c := NewClient("127.0.0.1", ScsynthDefaultPort)
-	err := c.Connect(listenAddr, listenPort)
-	if err != nil {
-		panic(err)
-	}
-	err = c.AddDefaultGroup()
-	if err != nil {
-		panic(err)
-	}
-	DefaultClient = c
-}
 
 // Client manages all communication with scsynth
 type Client struct {
@@ -67,13 +56,35 @@ type Client struct {
 	nextSynthID int32
 }
 
-type defLoaded struct {
-	Name string
+// Connect connects to an scsynth instance via UDP.
+func (self *Client) Connect(addr string, port int) error {
+	var err error
+	self.conn, err = net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, port))
+	if err != nil {
+		return err
+	}
+	self.oscServer = osc.NewServer(self.addr, self.port)
+	// OSC relays
+	self.statusChan = make(chan *osc.Message)
+	self.doneChan = make(chan *osc.Message)
+	self.gqueryTreeChan = make(chan *osc.Message)
+	self.oscErrChan = make(chan error)
+	// listen for OSC messages
+	self.addOscHandlers()
+	go func() {
+		self.oscErrChan <- self.oscServer.ListenAndDispatch()
+	}()
+	// wait for the OSC server to start
+	err = <-self.oscServer.Listening
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-// Status gets the status of scsynth
+// Status gets the status of scsynth.
 func (self *Client) Status() (*ServerStatus, error) {
-	statusReq := osc.NewMessage("/status")
+	statusReq := osc.NewMessage(statusAddress)
 	err := self.oscServer.SendTo(self.conn, statusReq)
 	if err != nil {
 		return nil, err
@@ -90,7 +101,7 @@ func (self *Client) Status() (*ServerStatus, error) {
 // This method blocks until a /done message is received
 // indicating that the synthdef was loaded
 func (self *Client) SendDef(def *Synthdef) error {
-	msg := osc.NewMessage("/d_recv")
+	msg := osc.NewMessage(synthdefReceiveAddress)
 	db, err := def.Bytes()
 	if err != nil {
 		return err
@@ -111,7 +122,7 @@ ParseMessage:
 	if done.CountArguments() != 1 {
 		return fmt.Errorf(errmsg)
 	}
-	if addr, isString := done.Arguments[0].(string); !isString || addr != "/d_recv" {
+	if addr, isString := done.Arguments[0].(string); !isString || addr != synthdefReceiveAddress {
 		return fmt.Errorf(errmsg)
 	}
 	return nil
@@ -120,39 +131,47 @@ ParseMessage:
 // DumpOSC sends a /dumpOSC message to scsynth
 // level should be DumpOff, DumpParsed, DumpContents, DumpAll
 func (self *Client) DumpOSC(level int32) error {
-	dumpReq := osc.NewMessage("/dumpOSC")
+	dumpReq := osc.NewMessage(dumpOscAddress)
 	dumpReq.Append(level)
 	return self.oscServer.SendTo(self.conn, dumpReq)
 }
 
 // NewSynth creates a synth
-func (self *Client) NewSynth(name string, id, action, target int32) error {
-	synthReq := osc.NewMessage("/s_new")
-	synthReq.Append(name)
+func (self *Client) Synth(defName string, id, action, target int32) (Synth, error) {
+	synthReq := osc.NewMessage(synthNewAddress)
+	synthReq.Append(defName)
 	synthReq.Append(id)
 	synthReq.Append(action)
 	synthReq.Append(target)
 	synthReq.Append(int32(0))
-	return self.oscServer.SendTo(self.conn, synthReq)
+	err := self.oscServer.SendTo(self.conn, synthReq)
+	if err != nil {
+		return nil, err
+	}
+	return newSynth(self, defName, id), nil
 }
 
 // NewGroup creates a group
-func (self *Client) NewGroup(id, action, target int32) error {
-	dumpReq := osc.NewMessage("/g_new")
+func (self *Client) Group(id, action, target int32) (Group, error) {
+	dumpReq := osc.NewMessage(groupNewAddress)
 	dumpReq.Append(id)
 	dumpReq.Append(action)
 	dumpReq.Append(target)
-	return self.oscServer.SendTo(self.conn, dumpReq)
+	err := self.oscServer.SendTo(self.conn, dumpReq)
+	if err != nil {
+		return nil, err
+	}
+	return newGroup(self, id), nil
 }
 
-// AddDefaltGroup adds the default group 
-func (self *Client) AddDefaultGroup() error {
-	return self.NewGroup(DefaultGroupID, AddToTail, RootNodeID)
+// AddDefaltGroup adds the default group
+func (self *Client) AddDefaultGroup() (Group, error) {
+	return self.Group(DefaultGroupID, AddToTail, RootNodeID)
 }
 
 // QueryGroup g_queryTree for a particular group
-func (self *Client) QueryGroup(id int32) (*Group, error) {
-	addr := "/g_queryTree"
+func (self *Client) QueryGroup(id int32) (Group, error) {
+	addr := gqueryTreeAddress
 	gq := osc.NewMessage(addr)
 	gq.Append(int32(RootNodeID))
 	err := self.oscServer.SendTo(self.conn, gq)
@@ -168,7 +187,7 @@ func (self *Client) QueryGroup(id int32) (*Group, error) {
 // load it into a buffer
 func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
 	buf := newBuffer(path)
-	pat := "/b_allocRead"
+	pat := bufferReadAddress
 	allocRead := osc.NewMessage(pat)
 	allocRead.Append(buf.Num())
 	allocRead.Append(path)
@@ -222,44 +241,20 @@ func (self *Client) FreeAll(gids ...int32) error {
 
 // addOscHandlers adds OSC handlers
 func (self *Client) addOscHandlers() {
-	self.oscServer.AddMsgHandler(statusOscAddress, func(msg *osc.Message) {
+	self.oscServer.AddMsgHandler(statusReplyAddress, func(msg *osc.Message) {
 		self.statusChan <- msg
 	})
 	self.oscServer.AddMsgHandler(doneOscAddress, func(msg *osc.Message) {
 		self.doneChan <- msg
 	})
-	self.oscServer.AddMsgHandler(gqueryTreeAddress, func(msg *osc.Message) {
+	self.oscServer.AddMsgHandler(gqueryTreeReplyAddress, func(msg *osc.Message) {
 		self.gqueryTreeChan <- msg
 	})
 }
 
-func (self *Client) Connect(listenAddr string, listenPort int) error {
-	var err error
-	self.conn, err = net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", self.addr, self.port))
-	if err != nil {
-		return err
-	}
-	self.oscServer = osc.NewServer(listenAddr, listenPort)
-	// OSC relays
-	self.statusChan = make(chan *osc.Message)
-	self.doneChan = make(chan *osc.Message)
-	self.gqueryTreeChan = make(chan *osc.Message)
-	self.oscErrChan = make(chan error)
-	// listen for OSC messages
-	self.addOscHandlers()
-	go func() {
-		self.oscErrChan <- self.oscServer.ListenAndDispatch()
-	}()
-	// wait for the OSC server to start
-	err = <-self.oscServer.Listening
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewClient creates a new SuperCollider client. addr and port are the listening
-// address and port, respectively, of scsynth
+// NewClient creates a new SuperCollider client.
+// The client will bind to the provided address and port
+// to receive messages from scsynth.
 func NewClient(addr string, port int) *Client {
 	self := new(Client)
 	self.addr = addr

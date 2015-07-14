@@ -17,7 +17,7 @@ type ServerStatus struct {
 }
 
 func newStatus(msg *osc.Message) (*ServerStatus, error) {
-	if msg.Address != statusOscAddress {
+	if msg.Address != statusReplyAddress {
 		errmsg := "Can not get status from message with address %s"
 		return nil, fmt.Errorf(errmsg, msg.Address)
 	}

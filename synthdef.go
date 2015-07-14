@@ -171,8 +171,38 @@ func (self *Synthdef) Bytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// compareBytes returns true if two byte arrays
+// are identical, false if they are not
+func compareBytes(a, b []byte) bool {
+	la, lb := len(a), len(b)
+	if la != lb {
+		fmt.Printf("different lengths a=%d b=%d\n", la, lb)
+		return false
+	}
+	for i, octet := range a {
+		if octet != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// CompareToFile compares this synthdef to another one stored on disk
 func (self *Synthdef) CompareToFile(path string) (bool, error) {
-	return true, nil
+	f, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	fromDisk, err := ioutil.ReadAll(f)
+	if err != nil {
+		return false, err
+	}
+	buf := bytes.NewBuffer(make([]byte, 0))
+	err = self.Write(buf)
+	if err != nil {
+		return false, err
+	}
+	return compareBytes(buf.Bytes(), fromDisk), nil
 }
 
 // Compare compares this synthdef byte-for-byte with
@@ -216,22 +246,6 @@ func (self *Synthdef) Compare(def string) (bool, error) {
 		return false, err
 	}
 	return compareBytes(buf.Bytes(), fromDisk), nil
-}
-
-// compareBytes returns true if two byte arrays
-// are identical, false if they are not
-func compareBytes(a, b []byte) bool {
-	la, lb := len(a), len(b)
-	if la != lb {
-		fmt.Printf("different lengths a=%d b=%d\n", la, lb)
-		return false
-	}
-	for i, octet := range a {
-		if octet != b[i] {
-			return false
-		}
-	}
-	return true
 }
 
 // ReadSynthdef reads a synthdef from an io.Reader

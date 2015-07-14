@@ -8,7 +8,8 @@ import (
 )
 
 func TestClient(t *testing.T) {
-	client, err := NewClient("127.0.0.1", ScsynthDefaultPort)
+	client := NewClient("127.0.0.1", ScsynthDefaultPort)
+	err := client.Connect("127.0.0.1", 57200)
 	if err != nil {
 		t.Fatal(err)
 	}

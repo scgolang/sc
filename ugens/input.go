@@ -8,12 +8,12 @@ func UgenInput(name string, rate int8, specialIndex int16, numOutputs int, input
 	expanded := expandInputs(inputs...)
 	l := len(expanded)
 	if l == 1 {
-		return NewNode(name, rate, specialIndex, numOutputs, inputs...)
+		return NewUgenNode(name, rate, specialIndex, numOutputs, inputs...)
 	}
 	// return MultiNode
-	a := make([]*Node, len(expanded))
+	a := make([]*UgenNode, len(expanded))
 	for i := range a {
-		a[i] = NewNode(name, rate, specialIndex, numOutputs, expanded[i]...)
+		a[i] = NewUgenNode(name, rate, specialIndex, numOutputs, expanded[i]...)
 	}
 	return NewMultiNode(a...)
 }
@@ -50,7 +50,7 @@ func expandInputs(inputs ...Input) [][]Input {
 
 			if multi, isMulti := in.(MultiInput); isMulti {
 				ins := multi.InputArray()
-				arr[i][j] = ins[i % len(ins)]
+				arr[i][j] = ins[i%len(ins)]
 			} else {
 				arr[i][j] = in
 			}

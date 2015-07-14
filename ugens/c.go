@@ -12,7 +12,7 @@ func (self C) Val() float32 {
 
 func (self C) Mul(val Input) Input {
 	switch v := val.(type) {
-	case *Node:
+	case *UgenNode:
 		return v.Mul(self)
 	case C:
 		return C(v * self)
@@ -23,7 +23,7 @@ func (self C) Mul(val Input) Input {
 
 func (self C) Add(val Input) Input {
 	switch v := val.(type) {
-	case *Node:
+	case *UgenNode:
 		return v.Add(self)
 	case C:
 		return C(v + self)
@@ -34,11 +34,11 @@ func (self C) Add(val Input) Input {
 
 func (self C) MulAdd(mul, add Input) Input {
 	switch v := mul.(type) {
-	case *Node:
+	case *UgenNode:
 		return v.MulAdd(self, add)
 	case C:
 		switch w := add.(type) {
-		case *Node:
+		case *UgenNode:
 			// FIXME
 			return w.MulAdd(self, mul)
 		case C:

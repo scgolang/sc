@@ -25,7 +25,7 @@ const (
 )
 
 // ugen node base type
-type Node struct {
+type UgenNode struct {
 	name         string
 	rate         int8
 	specialIndex int16
@@ -34,27 +34,27 @@ type Node struct {
 	outputs      []Output
 }
 
-func (self *Node) Name() string {
+func (self *UgenNode) Name() string {
 	return self.name
 }
 
-func (self *Node) Rate() int8 {
+func (self *UgenNode) Rate() int8 {
 	return self.rate
 }
 
-func (self *Node) SpecialIndex() int16 {
+func (self *UgenNode) SpecialIndex() int16 {
 	return self.specialIndex
 }
 
-func (self *Node) Inputs() []Input {
+func (self *UgenNode) Inputs() []Input {
 	return self.inputs
 }
 
-func (self *Node) Outputs() []Output {
+func (self *UgenNode) Outputs() []Output {
 	return self.outputs
 }
 
-func (self *Node) IsOutput() {
+func (self *UgenNode) IsOutput() {
 	if self.outputs == nil {
 		self.outputs = make([]Output, self.numOutputs)
 		for i := range self.outputs {
@@ -63,27 +63,27 @@ func (self *Node) IsOutput() {
 	}
 }
 
-func (self *Node) Mul(val Input) Input {
+func (self *UgenNode) Mul(val Input) Input {
 	return BinOpMul(self.rate, self, val)
 }
 
-func (self *Node) Add(val Input) Input {
+func (self *UgenNode) Add(val Input) Input {
 	return BinOpAdd(self.rate, self, val)
 }
 
-func (self *Node) MulAdd(mul, add Input) Input {
+func (self *UgenNode) MulAdd(mul, add Input) Input {
 	return MulAdd(self.rate, self, mul, add)
 }
 
-// NewNode is a factory function for creating new Node instances.
+// NewUgenNode is a factory function for creating new UgenNode instances.
 // Panics if rate is not AR, KR, or IR.
 // Panics if numOutputs <= 0.
-func NewNode(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) *Node {
+func NewUgenNode(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) *UgenNode {
 	checkRate(rate)
 	if numOutputs <= 0 {
 		panic("numOutputs must be a positive int")
 	}
-	n := new(Node)
+	n := new(UgenNode)
 	n.name = name
 	n.rate = rate
 	n.specialIndex = specialIndex
@@ -93,13 +93,13 @@ func NewNode(name string, rate int8, specialIndex int16, numOutputs int, inputs 
 	// If any inputs are multi inputs, then this node
 	// should get promoted to a multi node
 	for i, input := range inputs {
-		if node, isNode := input.(*Node); isNode {
+		if node, isNode := input.(*UgenNode); isNode {
 			node.IsOutput()
 		}
 		// add outputs to any nodes in a MultiInput
 		if multi, isMulti := input.(MultiInput); isMulti {
 			for _, in := range multi.InputArray() {
-				if n, isn := in.(*Node); isn {
+				if n, isn := in.(*UgenNode); isn {
 					n.IsOutput()
 				}
 			}

@@ -3,7 +3,7 @@ package ugens
 import . "github.com/scgolang/sc/types"
 
 type MultiNode struct {
-	nodes []*Node
+	nodes []*UgenNode
 }
 
 func (self *MultiNode) InputArray() []Input {
@@ -15,14 +15,14 @@ func (self *MultiNode) InputArray() []Input {
 	return inputs
 }
 
-func (self *MultiNode) Nodes() []*Node {
+func (self *MultiNode) Nodes() []*UgenNode {
 	return self.nodes
 }
 
 // Input implementation
 func (self *MultiNode) Mul(val Input) Input {
 	l := len(self.nodes)
-	a := make([]*Node, l)
+	a := make([]*UgenNode, l)
 	for i, n := range self.nodes {
 		a[i] = BinOpMul(n.Rate(), n, val)
 	}
@@ -32,7 +32,7 @@ func (self *MultiNode) Mul(val Input) Input {
 // Input implementation
 func (self *MultiNode) Add(val Input) Input {
 	l := len(self.nodes)
-	a := make([]*Node, l)
+	a := make([]*UgenNode, l)
 	for i, n := range self.nodes {
 		a[i] = BinOpAdd(n.Rate(), n, val)
 	}
@@ -41,13 +41,13 @@ func (self *MultiNode) Add(val Input) Input {
 
 func (self *MultiNode) MulAdd(mul, add Input) Input {
 	l := len(self.nodes)
-	a := make([]*Node, l)
+	a := make([]*UgenNode, l)
 	for i, n := range self.nodes {
 		a[i] = MulAdd(n.Rate(), n, mul, add)
 	}
 	return &MultiNode{a}
 }
 
-func NewMultiNode(nodes ...*Node) *MultiNode {
+func NewMultiNode(nodes ...*UgenNode) *MultiNode {
 	return &MultiNode{nodes}
 }

@@ -4,6 +4,7 @@
 *.svg
 *.dot
 *.log
+*.xml
 core
 binop
 inspect
@@ -14,3 +15,4 @@ runServer
 sdef
 senddef
 status
+play

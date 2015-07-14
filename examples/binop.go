@@ -9,10 +9,6 @@ import (
 )
 
 func main() {
-	client, err := NewClient("127.0.0.1", 51670)
-	if err != nil {
-		log.Fatal(err)
-	}
 	def := NewSynthdef("Envgen1", func(p Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
@@ -23,12 +19,12 @@ func main() {
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)
 		return Out{bus, noise}.Rate(AR)
 	})
-	err = client.SendDef(def)
+	err := DefaultClient.SendDef(def)
 	if err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(1000 * time.Millisecond)
-	err = client.NewSynth("Envgen1", client.NextSynthID(), AddToHead, DefaultGroupID)
+	err = DefaultClient.NewSynth("Envgen1", DefaultClient.NextSynthID(), AddToHead, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)
 	}

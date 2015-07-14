@@ -9,21 +9,17 @@ import (
 )
 
 func main() {
-	client, err := NewClient("127.0.0.1", ScsynthDefaultPort)
-	if err != nil {
-		log.Fatal(err)
-	}
 	def := NewSynthdef("SineTone", func(p Params) Ugen {
 		bus, chaos := C(0), Line{C(1.0), C(2.0), C(10), DoNothing}.Rate(KR)
 		sig := Crackle{chaos}.Rate(AR).MulAdd(C(0.5), C(0.5))
 		return Out{bus, sig}.Rate(AR)
 	})
-	err = client.SendDef(def)
+	err := DefaultClient.SendDef(def)
 	if err != nil {
 		log.Fatal(err)
 	}
-	sid := client.NextSynthID()
-	err = client.NewSynth("SineTone", sid, AddToHead, DefaultGroupID)
+	sid := DefaultClient.NextSynthID()
+	err = DefaultClient.NewSynth("SineTone", sid, AddToHead, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)
 	}

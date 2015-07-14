@@ -18,17 +18,17 @@ type node struct {
 	Id int32 `json:"id" xml:"id,attr"`
 }
 
-type group struct {
+type Group struct {
 	node `json:"node" xml:"node"`
 	Children []*node `json:"children" xml:"children>child"`
 }
 
-func (self *group) WriteJSON(w io.Writer) error {
+func (self *Group) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
 	return enc.Encode(self)
 }
 
-func (self *group) WriteXML(w io.Writer) error {
+func (self *Group) WriteXML(w io.Writer) error {
 	enc := xml.NewEncoder(w)
 	return enc.Encode(self)
 }
@@ -36,13 +36,13 @@ func (self *group) WriteXML(w io.Writer) error {
 // parseGroup parses information about a group from a message
 // received at /g_queryTree
 // it *does not* recursively query for child groups
-func parseGroup(msg *osc.Message) (*group, error) {
+func parseGroup(msg *osc.Message) (*Group, error) {
 	// return an error if msg.Address is not right
 	if msg.Address != gQueryTreeReply {
 		return nil, fmt.Errorf("msg.Address should be %s, got %s", gQueryTreeReply, msg.Address)
 	}
 	// g_queryTree replies should have at least 3 arguments
-	g, numArgs := new(group), msg.CountArguments()
+	g, numArgs := new(Group), msg.CountArguments()
 	if numArgs < 3 {
 		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
 	}

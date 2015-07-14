@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/scgolang/osc"
 	"github.com/scgolang/sc/types"
-	"io"
 	"net"
 	"reflect"
 	"sync/atomic"
@@ -12,8 +11,8 @@ import (
 
 const (
 	ScsynthDefaultPort = 57120
-	listenPort         = 57200
 	listenAddr         = "127.0.0.1"
+	listenPort         = 57121
 	statusOscAddress   = "/status.reply"
 	gqueryTreeAddress  = "/g_queryTree.reply"
 	doneOscAddress     = "/done"
@@ -33,13 +32,30 @@ const (
 	DefaultGroupID = 1
 )
 
+var DefaultClient *Client
+
+func init() {
+	c := NewClient("127.0.0.1", ScsynthDefaultPort)
+	err := c.Connect(listenAddr, listenPort)
+	if err != nil {
+		panic(err)
+	}
+	err = c.AddDefaultGroup()
+	if err != nil {
+		panic(err)
+	}
+	DefaultClient = c
+}
+
 // Client manages all communication with scsynth
 type Client struct {
 	// OscErrChan is a channel that emits errors from
 	// the goroutine that runs the OSC server that is
 	// used to receive messages from scsynth
 	oscErrChan chan error
-	addr       net.Addr
+	addr       string
+	port       int
+	conn       net.Addr
 	// statusChan relays /status.reply messages
 	statusChan chan *osc.Message
 	// doneChan relays /done messages
@@ -58,7 +74,7 @@ type defLoaded struct {
 // Status gets the status of scsynth
 func (self *Client) Status() (*ServerStatus, error) {
 	statusReq := osc.NewMessage("/status")
-	err := self.oscServer.SendTo(self.addr, statusReq)
+	err := self.oscServer.SendTo(self.conn, statusReq)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +96,7 @@ func (self *Client) SendDef(def *Synthdef) error {
 		return err
 	}
 	msg.Append(db)
-	self.oscServer.SendTo(self.addr, msg)
+	self.oscServer.SendTo(self.conn, msg)
 	var done *osc.Message
 	select {
 	case done = <-self.doneChan:
@@ -106,7 +122,7 @@ ParseMessage:
 func (self *Client) DumpOSC(level int32) error {
 	dumpReq := osc.NewMessage("/dumpOSC")
 	dumpReq.Append(level)
-	return self.oscServer.SendTo(self.addr, dumpReq)
+	return self.oscServer.SendTo(self.conn, dumpReq)
 }
 
 // NewSynth creates a synth
@@ -117,7 +133,7 @@ func (self *Client) NewSynth(name string, id, action, target int32) error {
 	synthReq.Append(action)
 	synthReq.Append(target)
 	synthReq.Append(int32(0))
-	return self.oscServer.SendTo(self.addr, synthReq)
+	return self.oscServer.SendTo(self.conn, synthReq)
 }
 
 // NewGroup creates a group
@@ -126,15 +142,20 @@ func (self *Client) NewGroup(id, action, target int32) error {
 	dumpReq.Append(id)
 	dumpReq.Append(action)
 	dumpReq.Append(target)
-	return self.oscServer.SendTo(self.addr, dumpReq)
+	return self.oscServer.SendTo(self.conn, dumpReq)
+}
+
+// AddDefaltGroup adds the default group 
+func (self *Client) AddDefaultGroup() error {
+	return self.NewGroup(DefaultGroupID, AddToTail, RootNodeID)
 }
 
 // QueryGroup g_queryTree for a particular group
-func (self *Client) QueryGroup(id int32) (*group, error) {
+func (self *Client) QueryGroup(id int32) (*Group, error) {
 	addr := "/g_queryTree"
 	gq := osc.NewMessage(addr)
 	gq.Append(int32(RootNodeID))
-	err := self.oscServer.SendTo(self.addr, gq)
+	err := self.oscServer.SendTo(self.conn, gq)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +172,7 @@ func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
 	allocRead := osc.NewMessage(pat)
 	allocRead.Append(buf.Num())
 	allocRead.Append(path)
-	err := self.oscServer.SendTo(self.addr, allocRead)
+	err := self.oscServer.SendTo(self.conn, allocRead)
 
 	var done *osc.Message
 	select {
@@ -196,31 +217,7 @@ func (self *Client) FreeAll(gids ...int32) error {
 	for _, gid := range gids {
 		freeReq.Append(gid)
 	}
-	return self.oscServer.SendTo(self.addr, freeReq)
-}
-
-// ClearSched causes scsynth to clear all scheduled bundles
-func (self *Client) ClearSched() error {
-	clear := osc.NewMessage("/clearSched")
-	return self.oscServer.SendTo(self.addr, clear)
-}
-
-// WriteGroupJson writes a json representation of a group to an io.Writer
-func (self *Client) WriteGroupJSON(gid int32, w io.Writer) error {
-	grp, err := self.QueryGroup(gid)
-	if err != nil {
-		return err
-	}
-	return grp.WriteJSON(w)
-}
-
-// WriteGroupXml writes a xml representation of a group to an io.Writer
-func (self *Client) WriteGroupXML(gid int32, w io.Writer) error {
-	grp, err := self.QueryGroup(gid)
-	if err != nil {
-		return err
-	}
-	return grp.WriteXML(w)
+	return self.oscServer.SendTo(self.conn, freeReq)
 }
 
 // addOscHandlers adds OSC handlers
@@ -236,15 +233,11 @@ func (self *Client) addOscHandlers() {
 	})
 }
 
-// NewClient creates a new SuperCollider client. addr and port are the listening
-// address and port, respectively, of scsynth
-func NewClient(addr string, port int) (*Client, error) {
-	self := new(Client)
-	self.nextSynthID = 1000
+func (self *Client) Connect(listenAddr string, listenPort int) error {
 	var err error
-	self.addr, err = net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, port))
+	self.conn, err = net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", self.addr, self.port))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	self.oscServer = osc.NewServer(listenAddr, listenPort)
 	// OSC relays
@@ -260,7 +253,17 @@ func NewClient(addr string, port int) (*Client, error) {
 	// wait for the OSC server to start
 	err = <-self.oscServer.Listening
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return self, nil
+	return nil
+}
+
+// NewClient creates a new SuperCollider client. addr and port are the listening
+// address and port, respectively, of scsynth
+func NewClient(addr string, port int) *Client {
+	self := new(Client)
+	self.addr = addr
+	self.port = port
+	self.nextSynthID = 1000
+	return self
 }

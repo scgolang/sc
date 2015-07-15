@@ -9,6 +9,13 @@ import (
 )
 
 func main() {
+	// create a client and connect to the server
+	client := NewClient("127.0.0.1", 57121)
+	err := client.Connect("127.0.0.1", 57120)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// create a synthdef
 	def := NewSynthdef("Envgen1", func(p Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
@@ -19,12 +26,13 @@ func main() {
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)
 		return Out{bus, noise}.Rate(AR)
 	})
-	err := DefaultClient.SendDef(def)
+	err = client.SendDef(def)
 	if err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(1000 * time.Millisecond)
-	err = DefaultClient.NewSynth("Envgen1", DefaultClient.NextSynthID(), AddToHead, DefaultGroupID)
+	id := client.NextSynthID()
+	_, err = client.Synth("Envgen1", id, AddToTail, DefaultGroupID)
 	if err != nil {
 		log.Fatal(err)
 	}

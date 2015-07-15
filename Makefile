@@ -29,7 +29,7 @@ all:
 	$(SCLANG) $<
 
 clean:
-	rm -rf *~ $(EXAMPLES_BIN) *.scsyndef *.gosyndef *.svg *.dot
+	rm -rf *~ $(EXAMPLES_BIN) *.scsyndef *.gosyndef *.svg *.dot *.json *.xml
 
 test: $(SYNTHDEF)
 	go test

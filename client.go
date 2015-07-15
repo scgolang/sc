@@ -83,7 +83,7 @@ func (self *Client) Connect(addr string, port int) error {
 }
 
 // Status gets the status of scsynth.
-func (self *Client) Status() (*ServerStatus, error) {
+func (self *Client) GetStatus() (*ServerStatus, error) {
 	statusReq := osc.NewMessage(statusAddress)
 	err := self.oscServer.SendTo(self.conn, statusReq)
 	if err != nil {

@@ -6,14 +6,14 @@ import (
 )
 
 type ServerStatus struct {
-	NumUgens          int32
-	NumSynths         int32
-	NumGroups         int32
-	NumSynthdefs      int32
-	AvgCpu            float32
-	PeakCpu           float32
-	NominalSampleRate float64
-	ActualSampleRate  float64
+	NumUgens          int32   `json:"numUgens"`
+	NumSynths         int32   `json:"numSynths"`
+	NumGroups         int32   `json:"numGroups"`
+	NumSynthdefs      int32   `json:"numSynthdefs"`
+	AvgCpu            float32 `json:"avgCpu"`
+	PeakCpu           float32 `json:"peakCpu"`
+	NominalSampleRate float64 `json:"nominalSampleRate"`
+	ActualSampleRate  float64 `json:"actualSampleRate"`
 }
 
 func newStatus(msg *osc.Message) (*ServerStatus, error) {

@@ -22,7 +22,7 @@ func TestClient(t *testing.T) {
 	}
 
 	// get status
-	status, err := client.Status()
+	status, err := client.GetStatus()
 	if err != nil {
 		t.Fatal(err)
 	}

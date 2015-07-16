@@ -12,5 +12,14 @@ func TestLFSaw(t *testing.T) {
 		sig := LFSaw{freq, C(0)}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	compareAndWrite(t, "LFSawExample", def);
+	same, err := def.Compare(`{
+        var freq = LFSaw.kr(4, 0, 200, 400);
+        Out.ar(0, LFSaw.ar(freq, 0, 0.1));
+    }`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang version")
+	}
 }

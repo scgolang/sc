@@ -6,15 +6,15 @@ import (
 	"testing"
 )
 
-func TestSinOsc(t *testing.T) {
-	name := "SineTone"
-	def := NewSynthdef(name, func(params Params) Ugen {
-		bus, freq := C(0), C(440)
+func TestMulti(t *testing.T) {
+	def := NewSynthdef("SimpleMulti", func(p Params) Ugen {
+		bus, freq := C(0), Multi(C(440), C(441))
 		sine := SinOsc{Freq: freq}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
 	})
 	same, err := def.Compare(`{
-		Out.ar(0, SinOsc.ar(440));
+        var sine = SinOsc.ar([440, 441]);
+        Out.ar(0, sine);
     }`)
 	if err != nil {
 		t.Fatal(err)

@@ -57,7 +57,6 @@ SynthDef(\UseParam, {
 }).writeDefFile(File.getcwd);
 
 SynthDef(\SimpleMulti, {
-	Out.ar(0, SinOsc.ar([440, 441]));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\Cascade, {

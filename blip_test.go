@@ -1,9 +1,10 @@
 package sc
 
-import . "github.com/scgolang/sc/types"
-import . "github.com/scgolang/sc/ugens"
-import "os"
-import "testing"
+import (
+	. "github.com/scgolang/sc/types"
+	. "github.com/scgolang/sc/ugens"
+	"testing"
+)
 
 func TestBlip(t *testing.T) {
 	def := NewSynthdef("BlipExample", func(p Params) Ugen {
@@ -13,19 +14,16 @@ func TestBlip(t *testing.T) {
 		sig := Blip{freq, harms}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	f, err := os.Create("BlipExample.gosyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = def.Write(f)	
-	if err != nil {
-		t.Fatal(err)
-	}
-	same, err := def.CompareToFile("BlipExample.scsyndef")
+	same, err := def.Compare(`{
+        var freq = XLine.kr(20000, 200, 6);
+        var harms = 100;
+        var mul = 0.2;
+        Out.ar(0, Blip.ar(freq, harms, mul));
+    }`)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !same {
-		t.Fatalf("synthdef is not the same as sclang version")
+		t.Fatalf("synthdef is different from sclang version")
 	}
 }

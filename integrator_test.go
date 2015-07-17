@@ -11,5 +11,15 @@ func TestIntegrator(t *testing.T) {
 		sig := Integrator{pulse, x}.Rate(AR)
 		return Out{C(0), sig}.Rate(AR)
 	})
-	compareAndWrite(t, "IntegratorExample", def)
+	same, err := def.Compare(`{
+        var pulse = LFPulse.ar(1500 / 4, 0.2, 0.1);
+        var mouse = MouseX.kr(0.01, 0.999, 1);
+        Out.ar(0, Integrator.ar(pulse, mouse));
+    }`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang version")
+	}
 }

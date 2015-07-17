@@ -12,5 +12,17 @@ func TestImpulse(t *testing.T) {
 		sig := Impulse{freq, phase}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	compareAndWrite(t, "ImpulseExample", def)
+	same, err := def.Compare(`{
+		var freq = XLine.kr(800, 100, 5);
+		var gain = 0.5;
+		var phase = 0.0;
+		var sig = Impulse.ar(freq, phase, gain);
+		Out.ar(0, sig);
+    }`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang version")
+	}
 }

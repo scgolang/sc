@@ -13,7 +13,7 @@ Unit Generators for sc.
 | BRF                         | No        |
 | Balance2                    | No        |
 | Blip                        | Yes       |
-| BrownNoise                  | No        |
+| BrownNoise                  | Yes       |
 | COsc                        | No        |
 | ClipNoise                   | No        |
 | CombC                       | No        |

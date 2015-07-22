@@ -35,8 +35,8 @@ func main() {
 		gain := p.Add("gain", 0.5)
 		bus := C(0)
 		sig := PlayBuf{
-			NumChannels: C(1),
-			BufNum:      buf.Num(),
+			NumChannels: 1,
+			BufNum:      C(float32(buf.Num())),
 			Speed:       speed,
 			Done:        FreeEnclosing,
 		}.Rate(AR).Mul(gain)

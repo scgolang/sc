@@ -1,17 +1,17 @@
 package main
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"github.com/rakyll/portmidi"
 	"github.com/scgolang/sc"
 	. "github.com/scgolang/sc/types"
 	. "github.com/scgolang/sc/ugens"
-	"os"
+	// "os"
 )
 
 func main() {
-	var synthId int32
+	var synthID int32
 	const synthName = "sineTone"
 	// setup supercollider client
 	client := sc.NewClient("127.0.0.1", 57121)
@@ -19,9 +19,24 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	_, err = client.AddDefaultGroup()
+	if err != nil {
+		panic(err)
+	}
+	err = client.DumpOSC(int32(1))
+	if err != nil {
+		panic(err)
+	}
 	def := sc.NewSynthdef(synthName, func(p Params) Ugen {
-		bus, env := C(0), EnvGen{Env: EnvPerc{}, Done: FreeEnclosing}.Rate(KR)
-		sig := SinOsc{}.Rate(AR).Mul(env)
+		freq := p.Add("freq", 440)
+		gain := p.Add("gain", 0.5)
+		bus := C(0)
+		env := EnvGen{
+			Env:        EnvPerc{},
+			Done:       FreeEnclosing,
+			LevelScale: gain,
+		}.Rate(KR)
+		sig := SinOsc{Freq: freq}.Rate(AR).Mul(env)
 		return Out{bus, sig}.Rate(AR)
 	})
 	err = client.SendDef(def)
@@ -53,11 +68,15 @@ func main() {
 	for event := range ch {
 		if event.Status == 144 {
 			// MIDI note
-			// fmt.Printf("Note %-3d Velocity %-3d\n", event.Data1, event.Data2)
+			fmt.Printf("Note %-3d Velocity %-3d\n", event.Data1, event.Data2)
 			if event.Data2 > 0 {
 				// Note On
-				synthId = client.NextSynthId()
-				err = client.Synth(synthName)
+				synthID = client.NextSynthID()
+				ctls := map[string]float32{
+					"freq": sc.Midicps(int(event.Data1)),
+					"gain": float32(event.Data2 / 127.0),
+				}
+				_, err = client.Synth(synthName, synthID, sc.AddToTail, sc.DefaultGroupID, ctls)
 			}
 		}
 	}

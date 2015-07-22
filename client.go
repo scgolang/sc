@@ -137,13 +137,18 @@ func (self *Client) DumpOSC(level int32) error {
 }
 
 // NewSynth creates a synth
-func (self *Client) Synth(defName string, id, action, target int32) (*Synth, error) {
+func (self *Client) Synth(defName string, id, action, target int32, ctls map[string]float32) (*Synth, error) {
 	synthReq := osc.NewMessage(synthNewAddress)
 	synthReq.Append(defName)
 	synthReq.Append(id)
 	synthReq.Append(action)
 	synthReq.Append(target)
-	synthReq.Append(int32(0))
+	if ctls != nil {
+		for k, v := range ctls {
+			synthReq.Append(k)
+			synthReq.Append(v)
+		}
+	}
 	err := self.oscServer.SendTo(self.conn, synthReq)
 	if err != nil {
 		return nil, err

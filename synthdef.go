@@ -383,7 +383,7 @@ func newGraph(name string) *gographviz.Graph {
 	return g
 }
 
-var constAttrs = map[string]string{"shape":"plaintext"}
+var constAttrs = map[string]string{"shape": "record"}
 
 // WriteGraph writes a dot-formatted representation of
 // a synthdef's ugen graph to an io.Writer. See
@@ -393,7 +393,7 @@ func (self *Synthdef) WriteGraph(w io.Writer) error {
 	for i, ugen := range self.Ugens {
 		ustr := fmt.Sprintf("%s_%d", ugen.Name, i)
 		graph.AddNode(self.Name, ustr, nil)
-		for j := len(ugen.Inputs)-1; j >= 0; j-- {
+		for j := len(ugen.Inputs) - 1; j >= 0; j-- {
 			input := ugen.Inputs[j]
 			if input.UgenIndex == -1 {
 				c := self.Constants[input.OutputIndex]
@@ -416,7 +416,7 @@ func (self *Synthdef) WriteGraph(w io.Writer) error {
 func (self *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
 	ustr := fmt.Sprintf("%s_%d", ugen.Name, idx)
 	graph := newGraph(ustr)
-	for j := len(ugen.Inputs)-1; j >= 0; j-- {
+	for j := len(ugen.Inputs) - 1; j >= 0; j-- {
 		input := ugen.Inputs[j]
 		if input.UgenIndex == -1 {
 			c := self.Constants[input.OutputIndex]
@@ -510,7 +510,7 @@ func (self *Synthdef) topsortr(root Ugen, stack *stack, depth int) {
 	stack.Push(root)
 	inputs := root.Inputs()
 	numInputs := len(inputs)
-	for i := numInputs-1; i >= 0; i-- {
+	for i := numInputs - 1; i >= 0; i-- {
 		self.processUgenInput(inputs[i], stack, depth)
 	}
 }

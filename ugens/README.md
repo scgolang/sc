@@ -73,7 +73,7 @@ Unit Generators for sc.
 | PanAz                       | No        |
 | PanB2                       | No        |
 | PinkNoise                   | Yes       |
-| PlayBuf                     | No        |
+| PlayBuf                     | Yes       |
 | Pulse                       | No        |
 | PulseCount                  | No        |
 | PulseDivider                | No        |

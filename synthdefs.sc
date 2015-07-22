@@ -15,13 +15,19 @@ SynthDef(\baz, {
     Out.ar(0, Blip.ar(mul: SinOsc.ar()));
 }).writeDefFile(File.getcwd);
 
-
 SynthDef(\sub, {
     Out.ar(0, SinOsc.ar() - Blip.ar());
 }).writeDefFile(File.getcwd);
 
 SynthDef(\Envgen1, {
     Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\defWith2Params, {
+    arg freq=440, gain=0.5;
+    var env = EnvGen.kr(Env.perc, doneAction: 2, levelScale: gain);
+    var sine = SinOsc.ar(freq);
+    Out.ar(0, sine * env);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\SameSame, {

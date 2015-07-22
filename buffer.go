@@ -1,6 +1,7 @@
 package sc
 
 import (
+	. "github.com/scgolang/sc/types"
 	"sync"
 	"sync/atomic"
 )
@@ -28,7 +29,7 @@ var buffers = struct {
 }{m: make(map[string]*buffer)}
 
 // newBuffer creates a new buffer
-func newBuffer(path string) *buffer {
+func newBuffer(path string) Buffer {
 	// return the existing buffer if there is one
 	buffers.RLock()
 	if eb, exists := buffers.m[path]; exists {

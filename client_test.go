@@ -43,5 +43,4 @@ func TestClient(t *testing.T) {
 	if buf == nil {
 		t.Fatalf("got nil buffer")
 	}
-
 }

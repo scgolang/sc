@@ -201,12 +201,11 @@ func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
 	var done *osc.Message
 	select {
 	case done = <-self.doneChan:
-		goto ParseMessage
+		break
 	case err = <-self.oscErrChan:
 		return nil, err
 	}
 
-ParseMessage:
 	// error if this message was not an ack of the synthdef
 	if done.CountArguments() != 2 {
 		return nil, fmt.Errorf("expected two arguments to /done message")

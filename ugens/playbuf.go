@@ -1,6 +1,9 @@
 package ugens
 
-import . "github.com/scgolang/sc/types"
+import (
+	"fmt"
+	. "github.com/scgolang/sc/types"
+)
 
 // PlayBuf plays back a sample from memory.
 // If Buf is nil a runtime panic will occur.
@@ -45,11 +48,13 @@ func (self *PlayBuf) defaults() {
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
+// There will also be a runtime panic if BufNum is nil.
 func (self PlayBuf) Rate(rate int8) Input {
 	checkRate(rate)
+	if self.BufNum == nil {
+		panic(fmt.Errorf("BufNum can not be nil"))
+	}
 	(&self).defaults()
-	// TODO: what is the point of the numChannels argument?
-	// nchans := C(float32(self.NumChannels))
 	done := C(float32(self.Done))
 	return UgenInput("PlayBuf", rate, 0, self.NumChannels, self.BufNum, self.Speed, self.Trigger, self.Start, self.Loop, done)
 }

@@ -13,7 +13,7 @@ import (
 //
 func TestClient(t *testing.T) {
 	client := NewClient("127.0.0.1", 57200)
-	err := client.Connect("127.0.0.1", 57120)
+	err := client.Connect("127.0.0.1", 57110)
 	if err != nil {
 		t.Fatal(err)
 	}

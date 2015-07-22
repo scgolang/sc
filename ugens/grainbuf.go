@@ -1,12 +1,15 @@
 package ugens
 
-import . "github.com/scgolang/sc/types"
+import (
+	"fmt"
+	. "github.com/scgolang/sc/types"
+)
 
 const (
 	GrainBufHanningEnv       = -1
 	GrainBufNoInterp         = 1
-	GrainBufLinearInterp     = 1
-	GrainBufCubicInterp      = 1
+	GrainBufLinearInterp     = 2
+	GrainBufCubicInterp      = 4
 	GrainBufDefaultMaxGrains = 512
 )
 
@@ -22,7 +25,7 @@ type GrainBuf struct {
 	// Dur is the size of the grain (in seconds)
 	Dur Input
 	// Buf is the buffer holding a mono audio signal
-	Buf int
+	BufNum Input
 	// Speed is the playback speed of the grain
 	Speed Input
 	// Pos is the position in the audio buffer where
@@ -33,7 +36,7 @@ type GrainBuf struct {
 	// GrainBufNoInterp is no interpolation,
 	// GrainBufLinearInterp is linear,
 	// and GrainBufCubicInterp is cubic.
-	Interp int
+	Interp Input
 	// Pan determines where to position the output in a stereo
 	// field. If NumChannels = 1, no panning is done. If
 	// NumChannels = 2, behavior is similar to Pan2. If
@@ -42,13 +45,13 @@ type GrainBuf struct {
 	// EnvBuf is the buffer number containing a signal to use
 	// for each grain's amplitude envelope. If set to
 	// GrainBufHanningEnv, a built-in Hanning envelope is used.
-	EnvBuf int
+	EnvBuf Input
 	// MaxGrains is the maximum number of overlapping grains
 	// that can be used at a given time. This value is set
 	// when you initialize GrainBuf and can't be modified.
 	// Default is 512, but lower values may result in more
 	// efficient use of memory.
-	MaxGrains int
+	MaxGrains Input
 }
 
 func (self *GrainBuf) defaults() {
@@ -58,13 +61,38 @@ func (self *GrainBuf) defaults() {
 	if self.Trigger == nil {
 		self.Trigger = C(0)
 	}
+	if self.Dur == nil {
+		self.Dur = C(1)
+	}
+	if self.Speed == nil {
+		self.Speed = C(1)
+	}
+	if self.Pos == nil {
+		self.Pos = C(0)
+	}
+	if self.Interp == nil {
+		self.Interp = C(GrainBufLinearInterp)
+	}
+	if self.Pan == nil {
+		self.Pan = C(0)
+	}
+	if self.EnvBuf == nil {
+		self.EnvBuf = C(GrainBufHanningEnv)
+	}
+	if self.MaxGrains == nil {
+		self.MaxGrains = C(GrainBufDefaultMaxGrains)
+	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
+// There will also be a runtime panic if BufNum is nil.
 func (self GrainBuf) Rate(rate int8) Input {
 	checkRate(rate)
+	if self.BufNum == nil {
+		panic(fmt.Errorf("BufNum can not be nil"))
+	}
 	(&self).defaults()
-	return UgenInput("GrainBuf", rate, 0, self.NumChannels, self.Trigger)
+	return UgenInput("GrainBuf", rate, 0, self.NumChannels, self.Trigger, self.Dur, self.BufNum, self.Speed, self.Pos, self.Interp, self.Pan, self.EnvBuf, self.MaxGrains)
 }

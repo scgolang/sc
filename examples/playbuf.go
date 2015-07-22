@@ -12,7 +12,6 @@ func main() {
 	const synthName = "playbufExample"
 	const wavFile = "kalimba_mono.wav"
 	var synthID int32
-	// var note int
 	var speed, gain float32
 
 	// setup supercollider client
@@ -36,8 +35,8 @@ func main() {
 		gain := p.Add("gain", 0.5)
 		bus := C(0)
 		sig := PlayBuf{
-			NumChannels: 1,
-			BufNum:      C(buf.Num()),
+			NumChannels: C(1),
+			BufNum:      buf.Num(),
 			Speed:       speed,
 			Done:        FreeEnclosing,
 		}.Rate(AR).Mul(gain)

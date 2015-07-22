@@ -158,4 +158,8 @@ SynthDef(\CrackleTest, {
     Out.ar(0, crack);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\GrainBufTest, {
+    Out.ar(0, GrainBuf.ar(numChannels: 1, sndbuf: 0));
+}).writeDefFile(File.getcwd);
+
 0.exit;

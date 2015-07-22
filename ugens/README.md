@@ -37,7 +37,7 @@ Unit Generators for sc.
 | GVerb                       | No        |
 | Gate                        | No        |
 | GrayNoise                   | No        |
-| GrainBuf                    | No        |
+| GrainBuf                    | Yes       |
 | GrainFM                     | No        |
 | GrainIn                     | No        |
 | GrainSin                    | No        |

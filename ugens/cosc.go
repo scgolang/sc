@@ -37,5 +37,5 @@ func (self COsc) Rate(rate int8) Input {
 		panic(fmt.Errorf("BufNum can not be nil"))
 	}
 	(&self).defaults()
-	return UgenInput("COsc", rate, 0, 1)
+	return UgenInput("COsc", rate, 0, 1, self.BufNum, self.Freq, self.Beats)
 }

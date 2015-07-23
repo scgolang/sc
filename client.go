@@ -19,7 +19,9 @@ const (
 	doneOscAddress         = "/done"
 	synthNewAddress        = "/s_new"
 	groupNewAddress        = "/g_new"
+	bufferAllocAddress     = "/b_alloc"
 	bufferReadAddress      = "/b_allocRead"
+	bufferGenAddress       = "/b_gen"
 	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
 	DumpOff      = 0
 	DumpParsed   = 1
@@ -191,12 +193,56 @@ func (self *Client) QueryGroup(id int32) (*Group, error) {
 // ReadBuffer tells the server to read an audio file and
 // load it into a buffer
 func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
-	buf := newBuffer(path)
+	buf := newReadBuffer(path, self)
 	pat := bufferReadAddress
 	allocRead := osc.NewMessage(pat)
 	allocRead.Append(buf.Num())
 	allocRead.Append(path)
 	err := self.oscServer.SendTo(self.conn, allocRead)
+
+	var done *osc.Message
+	select {
+	case done = <-self.doneChan:
+		break
+	case err = <-self.oscErrChan:
+		return nil, err
+	}
+
+	// error if this message was not an ack of the synthdef
+	if done.CountArguments() != 2 {
+		return nil, fmt.Errorf("expected two arguments to /done message")
+	}
+	if addr, isString := done.Arguments[0].(string); !isString || addr != pat {
+		return nil, fmt.Errorf("expected first argument to be %s but got %s", pat, addr)
+	}
+	var bufnum int32
+	var isInt32 bool
+	if bufnum, isInt32 = done.Arguments[1].(int32); !isInt32 {
+		m := "expected int32 as second argument, but got %s (%v)"
+		return nil, fmt.Errorf(m, reflect.TypeOf(done.Arguments[1]), done.Arguments[1])
+	}
+	// TODO:
+	// Don't error if we get a done message for a different buffer.
+	// We should probably requeue this particular done message on doneChan.
+	if bufnum != buf.Num() {
+		m := "expected done message for buffer %d, but got one for buffer %d"
+		return nil, fmt.Errorf(m, buf.Num(), bufnum)
+	}
+	return buf, nil
+}
+
+// AllocBuffer allocates a buffer on the server
+func (self *Client) AllocBuffer(frames, channels int) (types.Buffer, error) {
+	buf := newBuffer(self)
+	pat := bufferAllocAddress
+	alloc := osc.NewMessage(pat)
+	alloc.Append(buf.Num())
+	alloc.Append(int32(frames))
+	alloc.Append(int32(channels))
+	err := self.oscServer.SendTo(self.conn, alloc)
+	if err != nil {
+		return nil, err
+	}
 
 	var done *osc.Message
 	select {

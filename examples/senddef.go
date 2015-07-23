@@ -24,7 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 	id := client.NextSynthID()
-	_, err = client.Synth("SineTone", id, AddToTail, DefaultGroupID)
+	_, err = client.Synth("SineTone", id, AddToTail, DefaultGroupID, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

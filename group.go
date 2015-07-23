@@ -24,6 +24,11 @@ type Group struct {
 	client   *Client
 }
 
+// Synth adds a synth to a group
+func (self *Group) Synth(defName string, id, action int32, ctls map[string]float32) (*Synth, error) {
+	return self.client.Synth(defName, id, action, self.Node.id, ctls)
+}
+
 // Free frees all the nodes in a group
 func (self *Group) Free() error {
 	return nil

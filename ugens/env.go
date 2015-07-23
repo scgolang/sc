@@ -8,31 +8,31 @@ import (
 
 const (
 	// A flat envelope segment
-	CurveStep    = C(0)
+	CurveStep = C(0)
 	// A linear envelope segment
-	CurveLinear  = C(1)
+	CurveLinear = C(1)
 	// An exponential envelope segment
-	CurveExp     = C(2)
+	CurveExp = C(2)
 	// A sinusoidal shaped envelope segment
-	CurveSine    = C(3)
+	CurveSine = C(3)
 	// A sinusoidal segment shaped like the sides of a welch window
-	CurveWelch   = C(4)
+	CurveWelch = C(4)
 	// An undocumented (on doc.sccode.org) envelope segment shape
-	CurveCustom  = C(5)
+	CurveCustom = C(5)
 	// A squared envelope segment
 	CurveSquared = C(6)
 	// A cubed envelope segment
-	CurveCubed   = C(7)
+	CurveCubed = C(7)
 )
 
 // Env is a specification for a breakpoint envelope
 type Env struct {
 	// Levels is the array of levels
-	Levels      []Input
+	Levels []Input
 	// Times is the array of durations (in seconds).
 	// The length of this array should be one less than the
 	// Levels array.
-	Times       []Input
+	Times []Input
 	// CurveTypes determines the shape of each envelope segment.
 	CurveTypes  []Input
 	Curvature   Input
@@ -232,7 +232,7 @@ func (self EnvPairs) Inputs() []Input {
 // TLC (time, level, curve) triplet
 type TLC struct {
 	Time, Level float32
-	Curve C
+	Curve       C
 }
 
 // EnvTLC creates a new envelope from an array of (time, level, curve) triplets

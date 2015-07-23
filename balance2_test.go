@@ -5,11 +5,11 @@ import "os"
 import "testing"
 
 func NoTestBalance2(t *testing.T) {
-    // var l = LFSaw.ar(44);
-    // var r = Pulse.ar(33);
-    // var pos = FSinOsc.kr(0.5);
-    // var level = 0.1;
-    // Out.ar(0, Balance2.ar(l, r, pos, level));
+	// var l = LFSaw.ar(44);
+	// var r = Pulse.ar(33);
+	// var pos = FSinOsc.kr(0.5);
+	// var level = 0.1;
+	// Out.ar(0, Balance2.ar(l, r, pos, level));
 	def := NewSynthdef("Balance2Example", func(p Params) Ugen {
 		// l, r := LFSaw{44}.Rate(AR), Pulse{33}.Rate(AR)
 		return nil
@@ -18,7 +18,7 @@ func NoTestBalance2(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = def.Write(f)	
+	err = def.Write(f)
 	if err != nil {
 		t.Fatal(err)
 	}

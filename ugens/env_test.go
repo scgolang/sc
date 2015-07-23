@@ -23,7 +23,7 @@ func TestLinen(t *testing.T) {
 	e := EnvLinen{}
 	expect := []float32{0, 3, -99, -99, 1, 0.01, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0}
 	verifyInputs(t, expect, e.Inputs())
-	f := EnvLinen{CurveType:CurveWelch}
+	f := EnvLinen{CurveType: CurveWelch}
 	expectWelch := []float32{0, 3, -99, -99, 1, 0.01, 4, 0, 1, 1, 4, 0, 0, 1, 4, 0}
 	verifyInputs(t, expectWelch, f.Inputs())
 }

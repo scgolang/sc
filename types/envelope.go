@@ -5,4 +5,3 @@ type Envelope interface {
 	// to get a list of inputs
 	Inputs() []Input
 }
-

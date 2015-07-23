@@ -32,7 +32,7 @@ func main() {
 	}
 	time.Sleep(1000 * time.Millisecond)
 	id := client.NextSynthID()
-	_, err = client.Synth("Envgen1", id, AddToTail, DefaultGroupID)
+	_, err = client.Synth("Envgen1", id, AddToTail, DefaultGroupID, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = client.AddDefaultGroup()
+	defaultGroup, err := client.AddDefaultGroup()
 	if err != nil {
 		panic(err)
 	}
@@ -54,6 +54,6 @@ func main() {
 		speed = (float32(8.0) * rand.Float32()) + float32(0.5)
 		gain = rand.Float32()
 		ctls := map[string]float32{"speed": speed, "gain": gain}
-		_, err = client.Synth(synthName, synthID, sc.AddToTail, sc.DefaultGroupID, ctls)
+		_, err = defaultGroup.Synth(synthName, synthID, sc.AddToTail, ctls)
 	}
 }

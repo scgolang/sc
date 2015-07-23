@@ -18,7 +18,7 @@ SUBPKG := ugens pattern
 EXAMPLES := $(wildcard examples/*.go)
 EXAMPLES_BIN := $(patsubst examples/%.go,%,$(EXAMPLES))
 
-.PHONY: synthdefs clean test tools examples clean_bin
+.PHONY: synthdefs clean test tools examples
 
 all:
 	cd types && go install

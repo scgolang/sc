@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = client.AddDefaultGroup()
+	defaultGroup, err := client.AddDefaultGroup()
 	if err != nil {
 		panic(err)
 	}
@@ -58,6 +58,6 @@ func main() {
 			"gain": gain,
 			"dur":  dur,
 		}
-		_, err = client.Synth(synthName, synthID, sc.AddToTail, sc.DefaultGroupID, ctls)
+		_, err = defaultGroup.Synth(synthName, synthID, sc.AddToTail, ctls)
 	}
 }

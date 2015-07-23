@@ -162,4 +162,8 @@ SynthDef(\GrainBufTest, {
     Out.ar(0, GrainBuf.ar(numChannels: 1, sndbuf: 0));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\COscTest, {
+    Out.ar(0, COsc.ar(0, 200, 0.7, 0.25));
+}).writeDefFile(File.getcwd);
+
 0.exit;

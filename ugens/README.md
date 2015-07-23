@@ -19,7 +19,7 @@ Unit Generators for sc.
 | CombC                       | No        |
 | CombL                       | No        |
 | CombN                       | No        |
-| Crackle                     | No        |
+| Crackle                     | Yes       |
 | Decay                       | Yes       |
 | Decay2                      | No        |
 | DecodeB2                    | No        |

@@ -9,7 +9,7 @@ func compareAndWrite(t *testing.T, name string, def *Synthdef) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = def.Write(f)	
+	err = def.Write(f)
 	if err != nil {
 		t.Fatal(err)
 	}

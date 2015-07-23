@@ -14,10 +14,12 @@ const (
 	gQueryTreeReply = "/g_queryTree.reply"
 )
 
+// Node is a node in a graph
 type Node struct {
 	id int32 `json:"id" xml:"id,attr"`
 }
 
+// Group is a group of synth nodes
 type Group struct {
 	Node     `json:"node" xml:"node"`
 	children []*Node `json:"children" xml:"children>child"`

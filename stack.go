@@ -14,7 +14,7 @@ func (self *stack) Pop() interface{} {
 		return nil
 	}
 	el := self.l[l-1]
-	self.l = self.l[0:l-1]
+	self.l = self.l[0 : l-1]
 	return el
 }
 

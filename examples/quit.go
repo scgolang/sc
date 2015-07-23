@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	listenPort  = 57150
-	listenAddr  = "127.0.0.1"
+	listenPort = 57150
+	listenAddr = "127.0.0.1"
 )
 
 // Send a /quit message to scsynth

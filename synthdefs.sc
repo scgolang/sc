@@ -166,4 +166,8 @@ SynthDef(\COscTest, {
     Out.ar(0, COsc.ar(0, 200, 0.7, 0.25));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ClipNoiseTest, {
+    Out.ar(0, ClipNoise.ar(0.2));
+}).writeDefFile(File.getcwd);
+
 0.exit;

@@ -170,4 +170,10 @@ SynthDef(\ClipNoiseTest, {
     Out.ar(0, ClipNoise.ar(0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\CombCTest, {
+    var line = XLine.kr(0.0001, 0.01, 20);
+    var sig = CombC.ar(WhiteNoise.ar(0.01), 0.01, line, 0.2);
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
 0.exit;

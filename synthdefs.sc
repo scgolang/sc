@@ -188,4 +188,10 @@ SynthDef(\CombNTest, {
     Out.ar(0, sig);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Decay2Test, {
+    var line = XLine.kr(1, 50, 20);
+    var pulse = Impulse.ar(line, 0.25);
+    Out.ar(0, Decay2.ar(pulse, 0.01, 0.2, FSinOsc.ar(600)));
+}).writeDefFile(File.getcwd);
+
 0.exit;

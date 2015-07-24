@@ -21,7 +21,7 @@ Unit Generators for sc.
 | CombN                       | Yes       |
 | Crackle                     | Yes       |
 | Decay                       | Yes       |
-| Decay2                      | No        |
+| Decay2                      | Yes       |
 | DecodeB2                    | No        |
 | DelayC                      | No        |
 | DelayL                      | No        |

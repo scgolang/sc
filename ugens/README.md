@@ -17,8 +17,8 @@ Unit Generators for sc.
 | COsc                        | Yes       |
 | ClipNoise                   | Yes       |
 | CombC                       | Yes       |
-| CombL                       | No        |
-| CombN                       | No        |
+| CombL                       | Yes       |
+| CombN                       | Yes       |
 | Crackle                     | Yes       |
 | Decay                       | Yes       |
 | Decay2                      | No        |

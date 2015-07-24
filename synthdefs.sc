@@ -176,4 +176,16 @@ SynthDef(\CombCTest, {
     Out.ar(0, sig);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\CombLTest, {
+    var line = XLine.kr(0.0001, 0.01, 20);
+    var sig = CombL.ar(WhiteNoise.ar(0.01), 0.01, line, 0.2);
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\CombNTest, {
+    var line = XLine.kr(0.0001, 0.01, 20);
+    var sig = CombN.ar(WhiteNoise.ar(0.01), 0.01, line, 0.2);
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
 0.exit;

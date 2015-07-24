@@ -2,6 +2,7 @@ package sc
 
 import (
 	"encoding/binary"
+	// "fmt"
 	. "github.com/scgolang/sc/types"
 	"io"
 )

@@ -100,9 +100,6 @@ func (self *Synthdef) Write(w io.Writer) error {
 		return err
 	}
 	// write initial param values
-	// BUG(scgolang) what happens in sclang when a ugen graph func
-	//                   does not provide initial param values? do they
-	//                   not appear in the synthdef? default to 0?
 	for _, val := range self.InitialParamValues {
 		err = binary.Write(w, byteOrder, val)
 		if err != nil {
@@ -440,7 +437,10 @@ func (self *Synthdef) flatten(params Params) {
 
 	for _, ugenNode := range ugenNodes {
 		// add ugen to synthdef
-		ugen, _ := self.addUgen(ugenNode)
+		ugen, _, seen := self.addUgen(ugenNode)
+		if seen {
+			continue
+		}
 		// add inputs to synthdef and to ugen
 		inputs := ugenNode.Inputs()
 
@@ -449,7 +449,7 @@ func (self *Synthdef) flatten(params Params) {
 		for _, input := range inputs {
 			switch v := input.(type) {
 			case Ugen:
-				_, idx := self.addUgen(v)
+				_, idx, _ := self.addUgen(v)
 				// will we ever need to use a different output index? [bps]
 				in = newInput(int32(idx), 0)
 				break
@@ -466,7 +466,7 @@ func (self *Synthdef) flatten(params Params) {
 				for _, min := range mins {
 					switch x := min.(type) {
 					case Ugen:
-						_, idx := self.addUgen(x)
+						_, idx, _ := self.addUgen(x)
 						// will we ever need to use a different output index? [bps]
 						in = newInput(int32(idx), 0)
 						break
@@ -482,8 +482,6 @@ func (self *Synthdef) flatten(params Params) {
 					ugen.AppendInput(in)
 				}
 				continue
-				// default:
-				// 	fmt.Printf("unrecognized input type: %v\n", v)
 			}
 			ugen.AppendInput(in)
 		}
@@ -562,19 +560,20 @@ func (self *Synthdef) addParams(p Params) {
 }
 
 // addUgen adds a Ugen to a synthdef and returns
-// the ugen that was added, and the position in the
-// ugens array
-func (self *Synthdef) addUgen(u Ugen) (*ugen, int) {
+// the ugen that was added, the position in the ugens array, and
+// a flag indicating whether this is a new ugen or one that
+// has already been visited
+func (self *Synthdef) addUgen(u Ugen) (*ugen, int, bool) {
 	for i, un := range self.seen {
 		if un == u {
-			return self.Ugens[i], i
+			return self.Ugens[i], i, true
 		}
 	}
 	self.seen = append(self.seen, u)
 	idx := len(self.Ugens)
 	ugen := cloneUgen(u)
 	self.Ugens = append(self.Ugens, ugen)
-	return ugen, idx
+	return ugen, idx, false
 }
 
 // addConstant adds a constant to a synthdef and returns

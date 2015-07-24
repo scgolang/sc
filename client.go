@@ -19,6 +19,7 @@ const (
 	doneOscAddress         = "/done"
 	synthNewAddress        = "/s_new"
 	groupNewAddress        = "/g_new"
+	groupFreeAllAddress    = "/g_freeAll"
 	bufferAllocAddress     = "/b_alloc"
 	bufferReadAddress      = "/b_allocRead"
 	bufferGenAddress       = "/b_gen"
@@ -34,8 +35,9 @@ const (
 	AddAfter   = 3
 	AddReplace = 4
 	// see http://doc.sccode.org/Reference/default_group.html
-	RootNodeID     = 0
-	DefaultGroupID = 1
+	RootNodeID      = 0
+	DefaultGroupID  = 1
+	GenerateSynthID = -1
 )
 
 // Client manages all communication with scsynth
@@ -282,7 +284,7 @@ func (self *Client) NextSynthID() int32 {
 
 // FreeAll frees all nodes in a group
 func (self *Client) FreeAll(gids ...int32) error {
-	freeReq := osc.NewMessage("/g_freeAll")
+	freeReq := osc.NewMessage(groupFreeAllAddress)
 	for _, gid := range gids {
 		freeReq.Append(gid)
 	}

@@ -22,9 +22,9 @@ Unit Generators for sc.
 | Crackle                     | Yes       |
 | Decay                       | Yes       |
 | Decay2                      | Yes       |
-| DelayC                      | No        |
-| DelayL                      | No        |
-| DelayN                      | No        |
+| DelayC                      | Yes       |
+| DelayL                      | Yes       |
+| DelayN                      | Yes       |
 | Dust                        | No        |
 | Dust2                       | No        |
 | Env                         | Yes       |

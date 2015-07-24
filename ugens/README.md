@@ -9,8 +9,8 @@ Unit Generators for sc.
 | AllpassC                    | Yes       |
 | AllpassL                    | Yes       |
 | AllpassN                    | Yes       |
-| BPF                         | No        |
-| BRF                         | No        |
+| BPF                         | Yes       |
+| BRF                         | Yes       |
 | Balance2                    | No        |
 | Blip                        | Yes       |
 | BrownNoise                  | Yes       |
@@ -25,8 +25,8 @@ Unit Generators for sc.
 | DelayC                      | Yes       |
 | DelayL                      | Yes       |
 | DelayN                      | Yes       |
-| Dust                        | No        |
-| Dust2                       | No        |
+| Dust                        | Yes       |
+| Dust2                       | Yes       |
 | Env                         | Yes       |
 | EnvGen                      | Yes       |
 | FFT                         | No        |
@@ -73,7 +73,7 @@ Unit Generators for sc.
 | PanB2                       | No        |
 | PinkNoise                   | Yes       |
 | PlayBuf                     | Yes       |
-| Pulse                       | No        |
+| Pulse                       | Yes       |
 | PulseCount                  | No        |
 | PulseDivider                | No        |
 | RLPF                        | Yes       |

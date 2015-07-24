@@ -105,7 +105,7 @@ SynthDef(\BRFExample, {
     Out.ar(0, BRF.ar(saw, sine, 0.3));
 }).writeDefFile(File.getcwd);
 
-SynthDef(\Balance2Example, {
+SynthDef(\Balance2Test, {
     var l = LFSaw.ar(44);
     var r = Pulse.ar(33);
     var pos = FSinOsc.kr(0.5);
@@ -207,6 +207,18 @@ SynthDef(\DelayLTest, {
 SynthDef(\DelayNTest, {
     var z = Decay.ar(Dust.ar(1, 0.5), 0.3, WhiteNoise.ar());
     Out.ar(0, DelayN.ar(z, 0.2, 0.2, 1, z));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\DustTest, {
+    Out.ar(0, Dust.ar(XLine.kr(20000, 2, 10), 0.5));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\Dust2Test, {
+    Out.ar(0, Dust2.ar(XLine.kr(20000, 2, 10), 0.5));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\PulseTest, {
+    Out.ar(0, Pulse.ar(XLine.kr(40,4000,6),0.1, 0.2));
 }).writeDefFile(File.getcwd);
 
 0.exit;

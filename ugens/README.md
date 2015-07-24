@@ -14,7 +14,7 @@ Unit Generators for sc.
 | Balance2                    | No        |
 | Blip                        | Yes       |
 | BrownNoise                  | Yes       |
-| COsc                        | No        |
+| COsc                        | Yes       |
 | ClipNoise                   | No        |
 | CombC                       | No        |
 | CombL                       | No        |

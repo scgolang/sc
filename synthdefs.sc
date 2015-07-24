@@ -194,4 +194,9 @@ SynthDef(\Decay2Test, {
     Out.ar(0, Decay2.ar(pulse, 0.01, 0.2, FSinOsc.ar(600)));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\DelayCTest, {
+    var z = Decay.ar(Dust.ar(1, 0.5), 0.3, WhiteNoise.ar());
+    Out.ar(0, DelayC.ar(z, 0.2, 0.2, 1, z));
+}).writeDefFile(File.getcwd);
+
 0.exit;

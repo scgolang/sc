@@ -1,9 +1,11 @@
 package ugens
 
+// import "fmt"
 import . "github.com/scgolang/sc/types"
 
 func BinOpMul(rate int8, x, y Input) *UgenNode {
 	checkRate(rate)
+	// fmt.Printf("BinOpMul x=%v y=%v\n", x, y)
 	return NewUgenNode("BinaryOpUGen", rate, 2, 1, x, y)
 }
 

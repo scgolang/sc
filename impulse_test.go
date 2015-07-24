@@ -1,8 +1,10 @@
 package sc
 
-import . "github.com/scgolang/sc/types"
-import . "github.com/scgolang/sc/ugens"
-import "testing"
+import (
+	. "github.com/scgolang/sc/types"
+	. "github.com/scgolang/sc/ugens"
+	"testing"
+)
 
 func TestImpulse(t *testing.T) {
 	def := NewSynthdef("ImpulseExample", func(p Params) Ugen {

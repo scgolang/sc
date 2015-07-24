@@ -16,7 +16,7 @@ Unit Generators for sc.
 | BrownNoise                  | Yes       |
 | COsc                        | Yes       |
 | ClipNoise                   | Yes       |
-| CombC                       | No        |
+| CombC                       | Yes       |
 | CombL                       | No        |
 | CombN                       | No        |
 | Crackle                     | Yes       |

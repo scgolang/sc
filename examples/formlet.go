@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	const synthName = "Balance2Example"
+	const synthName = "FormletExample"
 	client := NewClient("127.0.0.1", 57112)
 	err := client.Connect("127.0.0.1", 57110)
 	if err != nil {
@@ -19,10 +19,15 @@ func main() {
 		panic(err)
 	}
 	def := NewSynthdef(synthName, func(p Params) Ugen {
-		bus, gain := C(0), C(0.1)
-		l, r := LFSaw{Freq: C(44)}.Rate(AR), Pulse{Freq: C(33)}.Rate(AR)
-		pos := FSinOsc{Freq: C(0.5)}.Rate(KR)
-		sig := Balance2{L: l, R: r, Pos: pos, Level: gain}.Rate(AR)
+		bus, sine := C(0), SinOsc{Freq: C(5)}.Rate(KR).MulAdd(C(20), C(300))
+		blip := Blip{Freq: sine, Harm: C(1000)}.Rate(AR).Mul(C(0.1))
+		line := XLine{Start: C(1500), End: C(700), Dur: C(8)}.Rate(KR)
+		sig := Formlet{
+			In:         blip,
+			Freq:       line,
+			AttackTime: C(0.005),
+			DecayTime:  C(0.4),
+		}.Rate(AR)
 		return Out{bus, sig}.Rate(AR)
 	})
 	err = client.SendDef(def)

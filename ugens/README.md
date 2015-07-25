@@ -30,8 +30,8 @@ Unit Generators for sc.
 | Env                         | Yes       |
 | EnvGen                      | Yes       |
 | FFT                         | No        |
-| FSinOsc                     | No        |
-| Formlet                     | No        |
+| FSinOsc                     | Yes       |
+| Formlet                     | Yes       |
 | FreeVerb                    | No        |
 | GVerb                       | No        |
 | Gate                        | No        |

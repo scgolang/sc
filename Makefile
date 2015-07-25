@@ -36,4 +36,4 @@ test: $(SYNTHDEF)
 	for pkg in $(SUBPKG); do cd $$pkg && go test && cd ..; done
 
 examples:
-	for src in $(EXAMPLES); do go build $$src; done
+	for src in $(EXAMPLES); do (go build $$src;) done

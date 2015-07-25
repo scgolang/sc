@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	const synthName = "Balance2Example"
+	const synthName = "FSinOscExample"
 	client := NewClient("127.0.0.1", 57112)
 	err := client.Connect("127.0.0.1", 57110)
 	if err != nil {
@@ -19,11 +19,11 @@ func main() {
 		panic(err)
 	}
 	def := NewSynthdef(synthName, func(p Params) Ugen {
-		bus, gain := C(0), C(0.1)
-		l, r := LFSaw{Freq: C(44)}.Rate(AR), Pulse{Freq: C(33)}.Rate(AR)
-		pos := FSinOsc{Freq: C(0.5)}.Rate(KR)
-		sig := Balance2{L: l, R: r, Pos: pos, Level: gain}.Rate(AR)
-		return Out{bus, sig}.Rate(AR)
+		bus := C(0)
+		line := XLine{C(4), C(401), C(8), 0}.Rate(KR)
+		sin1 := FSinOsc{line, C(0)}.Rate(AR).MulAdd(C(200), C(800))
+		sin2 := FSinOsc{Freq: sin1}.Rate(AR).Mul(C(0.2))
+		return Out{bus, sin2}.Rate(AR)
 	})
 	err = client.SendDef(def)
 	if err != nil {

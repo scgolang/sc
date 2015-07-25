@@ -444,23 +444,19 @@ func (self *Synthdef) flatten(params Params) {
 		// add inputs to synthdef and to ugen
 		inputs := ugenNode.Inputs()
 
-		var in *input
-
 		for _, input := range inputs {
 			switch v := input.(type) {
 			case Ugen:
 				_, idx, _ := self.addUgen(v)
-				// will we ever need to use a different output index? [bps]
-				in = newInput(int32(idx), 0)
-				break
+				for outputIndex, _ := range v.Outputs() {
+					ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
+				}
 			case C:
 				idx := self.addConstant(v)
-				in = newInput(-1, int32(idx))
-				break
+				ugen.AppendInput(newInput(-1, int32(idx)))
 			case *param:
 				idx := v.Index()
-				in = newInput(0, idx)
-				break
+				ugen.AppendInput(newInput(0, idx))
 			case MultiInput:
 				mins := v.InputArray()
 				for _, min := range mins {
@@ -468,22 +464,18 @@ func (self *Synthdef) flatten(params Params) {
 					case Ugen:
 						_, idx, _ := self.addUgen(x)
 						// will we ever need to use a different output index? [bps]
-						in = newInput(int32(idx), 0)
-						break
+						for outputIndex, _ := range x.Outputs() {
+							ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
+						}
 					case C:
 						idx := self.addConstant(x)
-						in = newInput(-1, int32(idx))
-						break
+						ugen.AppendInput(newInput(-1, int32(idx)))
 					case *param:
 						idx := x.Index()
-						in = newInput(0, idx)
-						break
+						ugen.AppendInput(newInput(0, idx))
 					}
-					ugen.AppendInput(in)
 				}
-				continue
 			}
-			ugen.AppendInput(in)
 		}
 	}
 }

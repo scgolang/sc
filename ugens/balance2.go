@@ -32,5 +32,5 @@ func (self Balance2) Rate(rate int8) Input {
 	}
 	checkRate(rate)
 	(&self).defaults()
-	return UgenInput("Balance2", rate, 0, 1, self.L, self.R, self.Pos, self.Level)
+	return UgenInput("Balance2", rate, 0, 2, self.L, self.R, self.Pos, self.Level)
 }

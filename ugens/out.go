@@ -1,6 +1,5 @@
 package ugens
 
-// import "fmt"
 import . "github.com/scgolang/sc/types"
 
 // Out

@@ -11,7 +11,7 @@ Unit Generators for sc.
 | AllpassN                    | Yes       |
 | BPF                         | Yes       |
 | BRF                         | Yes       |
-| Balance2                    | No        |
+| Balance2                    | Yes       |
 | Blip                        | Yes       |
 | BrownNoise                  | Yes       |
 | COsc                        | Yes       |

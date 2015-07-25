@@ -226,4 +226,17 @@ SynthDef(\FormletTest, {
     Out.ar(0, Formlet.ar(in, XLine.kr(1500, 700, 8), 0.005, 0.4));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\FreeVerbTest, {
+    arg mix=0.25, room=0.15, damp=0.5;
+    var decay = Decay.ar(Impulse.ar(1), 0.25, LFCub.ar(1200, 0, 0.1));
+    var sig = FreeVerb.ar(decay, mix, room, damp);
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\LFCubTest, {
+    var freq = LFCub.kr(LFCub.kr(0.2, 0, 8, 10), 0, 400, 800);
+    var sig = LFCub.ar(freq, 0, 0.1);
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
 0.exit;

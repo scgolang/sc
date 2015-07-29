@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	const synthName = "LFCubExample"
+	const synthName = "LFPulseExample"
 	client := NewClient("127.0.0.1", 57112)
 	err := client.Connect("127.0.0.1", 57110)
 	if err != nil {
@@ -19,10 +19,11 @@ func main() {
 		panic(err)
 	}
 	def := NewSynthdef(synthName, func(p Params) Ugen {
+		lfoFreq, lfoPhase, lfoWidth := C(3), C(0), C(0.3)
 		bus, gain := C(0), C(0.1)
-		lfo1 := LFCub{Freq: C(0.2)}.Rate(KR).MulAdd(C(8), C(10))
-		lfo2 := LFCub{Freq: lfo1}.Rate(KR).MulAdd(C(400), C(800))
-		sig := LFCub{Freq: lfo2}.Rate(AR).Mul(gain)
+		freq := LFPulse{lfoFreq, lfoPhase, lfoWidth}.Rate(KR).MulAdd(C(200), C(200))
+		iphase, width := C(0), C(0.2)
+		sig := LFPulse{freq, iphase, width}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
 	err = client.SendDef(def)

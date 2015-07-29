@@ -24,7 +24,7 @@ func (self *MultiNode) Mul(val Input) Input {
 	l := len(self.nodes)
 	a := make([]*UgenNode, l)
 	for i, n := range self.nodes {
-		a[i] = BinOpMul(n.Rate(), n, val)
+		a[i] = BinOpMul(n.Rate(), n, val, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -34,7 +34,7 @@ func (self *MultiNode) Add(val Input) Input {
 	l := len(self.nodes)
 	a := make([]*UgenNode, l)
 	for i, n := range self.nodes {
-		a[i] = BinOpAdd(n.Rate(), n, val)
+		a[i] = BinOpAdd(n.Rate(), n, val, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -43,7 +43,7 @@ func (self *MultiNode) MulAdd(mul, add Input) Input {
 	l := len(self.nodes)
 	a := make([]*UgenNode, l)
 	for i, n := range self.nodes {
-		a[i] = MulAdd(n.Rate(), n, mul, add)
+		a[i] = MulAdd(n.Rate(), n, mul, add, n.numOutputs)
 	}
 	return &MultiNode{a}
 }

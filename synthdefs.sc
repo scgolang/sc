@@ -125,7 +125,7 @@ SynthDef(\LFSawExample, {
     Out.ar(0, LFSaw.ar(freq, 0, 0.1));
 }).writeDefFile(File.getcwd);
 
-SynthDef(\LFPulseExample, {
+SynthDef(\LFPulseTest, {
     var freq = LFPulse.kr(3, 0, 0.3, 200, 200);
     Out.ar(0, LFPulse.ar(freq, 0, 0.2, 0.1));
 }).writeDefFile(File.getcwd);
@@ -237,6 +237,32 @@ SynthDef(\LFCubTest, {
     var freq = LFCub.kr(LFCub.kr(0.2, 0, 8, 10), 0, 400, 800);
     var sig = LFCub.ar(freq, 0, 0.1);
     Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\GateTest, {
+    var noise = WhiteNoise.kr(1, 0);
+    var pulse = LFPulse.kr(1.333, 0.5);
+    Out.ar(0, Gate.ar(noise, pulse));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\GrainFMTest, {
+    arg gate=1, amp=1;
+    var pan = MouseX.kr(-1, 1);
+    var freqdev = WhiteNoise.kr(MouseY.kr(0, 400));
+    var env = Env([0, 1, 0], [1, 1], \sin, 1);
+    var ampenv = EnvGen.kr(env, gate, levelScale: amp, doneAction: 2);
+    var trig = Impulse.kr(10);
+    var modIndex = LFNoise1.kr.range(1, 10);
+    var sig = GrainFM.ar(
+        numChannels: 2,
+        trigger: trig,
+        dur: 0.1,
+        carfreq: 440+freqdev,
+        modfreq: 200,
+        index: modIndex,
+        pan: pan
+    );
+    Out.ar(0, sig * ampenv);
 }).writeDefFile(File.getcwd);
 
 0.exit;

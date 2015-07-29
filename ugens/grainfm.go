@@ -1,20 +1,9 @@
 package ugens
 
-import (
-	"fmt"
-	. "github.com/scgolang/sc/types"
-)
+import . "github.com/scgolang/sc/types"
 
-const (
-	GrainBufHanningEnv       = -1
-	GrainBufNoInterp         = 1
-	GrainBufLinearInterp     = 2
-	GrainBufCubicInterp      = 4
-	GrainBufDefaultMaxGrains = 512
-)
-
-// GrainBuf is a table-lookup sinewave oscillator
-type GrainBuf struct {
+// GrainFM is a table-lookup sinewave oscillator
+type GrainFM struct {
 	// NumChannels is the number of channels to output.
 	// If 1, mono is returned and pan is ignored.
 	NumChannels int
@@ -24,19 +13,12 @@ type GrainBuf struct {
 	Trigger Input
 	// Dur is the size of the grain (in seconds)
 	Dur Input
-	// BufNum is the buffer holding a mono audio signal
-	BufNum Input
-	// Speed is the playback speed of the grain
-	Speed Input
-	// Pos is the position in the audio buffer where
-	// the grain will start. This is in the range [0, 1].
-	Pos Input
-	// Interp is the interpolation method used for
-	// pitch-shifting grains.
-	// GrainBufNoInterp is no interpolation,
-	// GrainBufLinearInterp is linear,
-	// and GrainBufCubicInterp is cubic.
-	Interp Input
+	// CarFreq the carrier frequency of the grain generator's internal oscillator
+	CarFreq Input
+	// ModFreq the modulator frequency of the grain generator's internal oscillator
+	ModFreq Input
+	// ModIndex the index of modulation
+	ModIndex Input
 	// Pan determines where to position the output in a stereo
 	// field. If NumChannels = 1, no panning is done. If
 	// NumChannels = 2, behavior is similar to Pan2. If
@@ -48,13 +30,13 @@ type GrainBuf struct {
 	EnvBuf Input
 	// MaxGrains is the maximum number of overlapping grains
 	// that can be used at a given time. This value is set
-	// when you initialize GrainBuf and can't be modified.
+	// when you initialize GrainFM and can't be modified.
 	// Default is 512, but lower values may result in more
 	// efficient use of memory.
 	MaxGrains Input
 }
 
-func (self *GrainBuf) defaults() {
+func (self *GrainFM) defaults() {
 	if self.NumChannels == 0 {
 		self.NumChannels = 1
 	}
@@ -64,14 +46,14 @@ func (self *GrainBuf) defaults() {
 	if self.Dur == nil {
 		self.Dur = C(1)
 	}
-	if self.Speed == nil {
-		self.Speed = C(1)
+	if self.CarFreq == nil {
+		self.CarFreq = C(440)
 	}
-	if self.Pos == nil {
-		self.Pos = C(0)
+	if self.ModFreq == nil {
+		self.ModFreq = C(200)
 	}
-	if self.Interp == nil {
-		self.Interp = C(GrainBufLinearInterp)
+	if self.ModIndex == nil {
+		self.ModIndex = C(1)
 	}
 	if self.Pan == nil {
 		self.Pan = C(0)
@@ -88,11 +70,8 @@ func (self *GrainBuf) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
-func (self GrainBuf) Rate(rate int8) Input {
+func (self GrainFM) Rate(rate int8) Input {
 	checkRate(rate)
-	if self.BufNum == nil {
-		panic(fmt.Errorf("BufNum can not be nil"))
-	}
 	(&self).defaults()
-	return UgenInput("GrainBuf", rate, 0, self.NumChannels, self.Trigger, self.Dur, self.BufNum, self.Speed, self.Pos, self.Interp, self.Pan, self.EnvBuf, self.MaxGrains)
+	return UgenInput("GrainFM", rate, 0, self.NumChannels, self.Trigger, self.Dur, self.CarFreq, self.ModFreq, self.ModIndex, self.Pan, self.EnvBuf, self.MaxGrains)
 }

@@ -1,19 +1,17 @@
 package ugens
 
-// import "fmt"
 import . "github.com/scgolang/sc/types"
 
-func BinOpMul(rate int8, x, y Input) *UgenNode {
+func BinOpMul(rate int8, x, y Input, numOutputs int) *UgenNode {
 	checkRate(rate)
-	// fmt.Printf("BinOpMul x=%v y=%v\n", x, y)
-	return NewUgenNode("BinaryOpUGen", rate, 2, 1, x, y)
+	return NewUgenNode("BinaryOpUGen", rate, 2, numOutputs, x, y)
 }
 
-func BinOpAdd(rate int8, x, y Input) *UgenNode {
+func BinOpAdd(rate int8, x, y Input, numOutputs int) *UgenNode {
 	checkRate(rate)
-	return NewUgenNode("BinaryOpUGen", rate, 0, 1, x, y)
+	return NewUgenNode("BinaryOpUGen", rate, 0, numOutputs, x, y)
 }
 
-func MulAdd(rate int8, in, mul, add Input) *UgenNode {
-	return NewUgenNode("MulAdd", rate, 0, 1, in, mul, add)
+func MulAdd(rate int8, in, mul, add Input, numOutputs int) *UgenNode {
+	return NewUgenNode("MulAdd", rate, 0, numOutputs, in, mul, add)
 }

@@ -13,11 +13,15 @@ func compareAndWrite(t *testing.T, name string, def *Synthdef) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	same, err := def.CompareToFile(fmt.Sprintf("%s.scsyndef", name))
+	same, msg, err := def.CompareToFile(fmt.Sprintf("%s.scsyndef", name), false)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !same {
-		t.Fatalf("%s is not the same as sclang version", name)
+		if msg == "" {
+			t.Fatalf("%s is not the same as sclang version", name)
+		} else {
+			t.Fatalf("%s", msg)
+		}
 	}
 }

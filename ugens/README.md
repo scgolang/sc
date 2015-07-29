@@ -34,8 +34,8 @@ Unit Generators for sc.
 | Formlet                     | Yes       |
 | FreeVerb                    | No        |
 | GVerb                       | No        |
-| Gate                        | No        |
-| GrayNoise                   | No        |
+| Gate                        | Yes       |
+| GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
 | GrainFM                     | No        |
 | GrainIn                     | No        |
@@ -53,7 +53,7 @@ Unit Generators for sc.
 | LFNoise2                    | No        |
 | LFNoiseClipNoise            | No        |
 | LFPar                       | No        |
-| LFPulse                     | No        |
+| LFPulse                     | Yes       |
 | LFSaw                       | Yes       |
 | LFTri                       | Yes       |
 | LPF                         | No        |

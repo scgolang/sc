@@ -39,7 +39,8 @@ type Synthdef struct {
 	// ParamNames contains the names of the synth parameters
 	ParamNames []ParamName `json:"paramNames" xml:"ParamNames>ParamName"`
 
-	// Ugens is the list of ugens that appear in the synth def
+	// Ugens is the list of ugens that appear in the synth def.
+	// The root of the ugen graph will always be last.
 	Ugens []*ugen `json:"ugens" xml:"Ugens>Ugen"`
 
 	// Variants is the list of variants contained in the synth def
@@ -173,7 +174,6 @@ func (self *Synthdef) Bytes() ([]byte, error) {
 func compareBytes(a, b []byte) bool {
 	la, lb := len(a), len(b)
 	if la != lb {
-		fmt.Printf("different lengths a=%d b=%d\n", la, lb)
 		return false
 	}
 	for i, octet := range a {
@@ -184,22 +184,124 @@ func compareBytes(a, b []byte) bool {
 	return true
 }
 
-// CompareToFile compares this synthdef to another one stored on disk
-func (self *Synthdef) CompareToFile(path string) (bool, error) {
+// CompareToFile compares this synthdef to another one stored on disk.
+// path is the path to a synthdef file stored on disk.
+// if strict is true then the synthdefs are only compared byte-for-byte.
+// if strict is false then the structure of the synthdefs (the ugen graphs)
+// is compared if they are not byte-for-byte identical.
+func (self *Synthdef) CompareToFile(path string, strict bool) (bool, string, error) {
 	f, err := os.Open(path)
+	defer f.Close()
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
 	fromDisk, err := ioutil.ReadAll(f)
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
 	buf := bytes.NewBuffer(make([]byte, 0))
 	err = self.Write(buf)
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
-	return compareBytes(buf.Bytes(), fromDisk), nil
+	bufBytes := buf.Bytes()
+	bytewise, err := compareBytes(bufBytes, fromDisk), nil
+	if err != nil {
+		return false, "", err
+	}
+	if bytewise {
+		return true, "", nil
+	}
+	if strict {
+		return false, "synthdefs were not bytewise identical", nil
+	}
+
+	newOffset, err := f.Seek(0, 0)
+	if err != nil {
+		return false, "", err
+	}
+	if newOffset != 0 {
+		return false, "", fmt.Errorf("could not seek to beginning of %s", f.Name())
+	}
+	// if they are not bytewise identical, look at the structure of the ugen graph
+	def, err := ReadSynthdef(f)
+	if err != nil {
+		return false, "", err
+	}
+
+	// compare number of ugens
+	numUgens := len(def.Ugens)
+	if numUgens != len(self.Ugens) {
+		return false, fmt.Sprintf("synthdefs have different numbers of ugens (%d and %d)", numUgens, len(self.Ugens)), nil
+	}
+
+	// compare number of constants
+	if len(def.Constants) != len(self.Constants) {
+		return false, fmt.Sprintf("synthdefs have different numbers of constants (%d and %d)", len(def.Constants), len(self.Constants)), nil
+	}
+
+	// compare number of InitialParamValues and ParamNames
+	if len(def.InitialParamValues) != len(self.InitialParamValues) {
+		return false, fmt.Sprintf("synthdefs have different numbers of InitialParamValues (%d and %d)", len(def.InitialParamValues), len(self.InitialParamValues)), nil
+	}
+	if len(def.ParamNames) != len(self.ParamNames) {
+		return false, fmt.Sprintf("synthdefs have different numbers of ParamNames (%d and %d)", len(def.ParamNames), len(self.ParamNames)), nil
+	}
+
+	return self.compareUgens(def, def.Ugens[numUgens-1], self.Ugens[numUgens-1])
+}
+
+// compareUgens compares the ugen graph of 2 synthdefs (self and def).
+func (self *Synthdef) compareUgens(def *Synthdef, uself, udef *ugen) (bool, string, error) {
+	if udef.Name != uself.Name {
+		return false, fmt.Sprintf("ugen names are different (%s and %s)", udef.Name, uself.Name), nil
+	}
+	if udef.Rate != uself.Rate {
+		return false, fmt.Sprintf("ugen rates are different (%d and %d)", udef.Rate, uself.Rate), nil
+	}
+	if udef.SpecialIndex != uself.SpecialIndex {
+		return false, fmt.Sprintf("ugen special indices are different (%d and %d)", udef.SpecialIndex, uself.SpecialIndex), nil
+	}
+	if len(udef.Inputs) != len(uself.Inputs) {
+		return false, fmt.Sprintf("ugens have different numbers of inputs (%d and %d)", len(udef.Inputs), len(uself.Inputs)), nil
+	}
+	if len(udef.Outputs) != len(uself.Outputs) {
+		return false, fmt.Sprintf("ugens have different numbers of outputs (%d and %d)", len(udef.Outputs), len(uself.Outputs)), nil
+	}
+	var iself *input
+	for i, idef := range udef.Inputs {
+		iself = uself.Inputs[i]
+		// UgenIndex and OutputIndex do not need to be identical for the synthdefs
+		// to have the same structure!!
+		// if idef.UgenIndex != iself.UgenIndex {
+		// 	return false, nil
+		// }
+		// if idef.OutputIndex != iself.OutputIndex {
+		// 	return false, nil
+		// }
+		if idef.UgenIndex == -1 {
+			// constant
+			if iself.UgenIndex != -1 {
+				return false, fmt.Sprintf("ugens have different input types"), nil
+			}
+			if int32(len(def.Constants)-1) < idef.OutputIndex {
+				return false, "", fmt.Errorf("OutputIndex is too big (%d)", idef.OutputIndex)
+			}
+			if int32(len(self.Constants)-1) < iself.OutputIndex {
+				return false, "", fmt.Errorf("OutputIndex is too big (%d)", iself.OutputIndex)
+			}
+			c1 := def.Constants[idef.OutputIndex]
+			c2 := self.Constants[iself.OutputIndex]
+			if c1 != c2 {
+				return false, fmt.Sprintf("constants have different values (%f and %f)", c1, c2), nil
+			}
+		} else {
+			defNext := def.Ugens[idef.UgenIndex]
+			selfNext := self.Ugens[iself.UgenIndex]
+			return self.compareUgens(def, defNext, selfNext)
+		}
+	}
+	return true, "", nil
 }
 
 // Compare compares this synthdef byte-for-byte with

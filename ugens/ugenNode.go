@@ -64,15 +64,15 @@ func (self *UgenNode) IsOutput() {
 }
 
 func (self *UgenNode) Mul(val Input) Input {
-	return BinOpMul(self.rate, self, val)
+	return BinOpMul(self.rate, self, val, self.numOutputs)
 }
 
 func (self *UgenNode) Add(val Input) Input {
-	return BinOpAdd(self.rate, self, val)
+	return BinOpAdd(self.rate, self, val, self.numOutputs)
 }
 
 func (self *UgenNode) MulAdd(mul, add Input) Input {
-	return MulAdd(self.rate, self, mul, add)
+	return MulAdd(self.rate, self, mul, add, self.numOutputs)
 }
 
 // NewUgenNode is a factory function for creating new UgenNode instances.

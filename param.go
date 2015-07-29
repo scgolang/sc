@@ -51,15 +51,15 @@ func (self *param) InitialValue() float32 {
 }
 
 func (self *param) Mul(in Input) Input {
-	return BinOpMul(KR, self, in)
+	return BinOpMul(KR, self, in, 1)
 }
 
 func (self *param) Add(in Input) Input {
-	return BinOpAdd(KR, self, in)
+	return BinOpAdd(KR, self, in, 1)
 }
 
 func (self *param) MulAdd(mul, add Input) Input {
-	return MulAdd(KR, self, mul, add)
+	return MulAdd(KR, self, mul, add, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

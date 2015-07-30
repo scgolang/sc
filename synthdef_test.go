@@ -55,16 +55,12 @@ func TestAllpassExample(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	same, msg, err := def.CompareToFile("AllpassExample.scsyndef", false)
+	same, err := def.CompareToFile("AllpassExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !same {
-		if msg == "" {
-			t.Fatalf("synthdef different from sclang-generated version")
-		} else {
-			t.Fatalf("%s", msg)
-		}
+		t.Fatalf("synthdef different from sclang-generated version")
 	}
 }
 

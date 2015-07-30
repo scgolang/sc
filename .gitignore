@@ -5,6 +5,7 @@
 *.dot
 *.log
 *.xml
+*.json
 core
 binop
 inspect
@@ -31,3 +32,7 @@ fsinosc
 formlet
 lfcub
 freeverb
+gate
+grainfm
+lfpulse
+synthctl

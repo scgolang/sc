@@ -29,13 +29,13 @@ func TestGrainFM(t *testing.T) {
 		gate := p.Add("gate", 1)
 		amp := p.Add("amp", 1)
 		bus := C(0)
-		mousey := MouseY{Min: C(0), Max: C(400)}.Rate(KR)
-		freqdev := WhiteNoise{}.Rate(KR).Mul(mousey)
+		mouseY := MouseY{Min: C(0), Max: C(400)}.Rate(KR)
+		freqdev := WhiteNoise{}.Rate(KR).Mul(mouseY)
 		env := Env{
-			Levels:     []Input{C(0), C(1), C(0)},
-			Times:      []Input{C(1), C(1)},
-			CurveTypes: []Input{CurveSine, CurveSine},
-			// Curvature:   CurveSine,
+			// Levels:     []Input{C(0), C(1), C(0)},
+			// Times:      []Input{C(1), C(1)},
+			// CurveTypes: []Input{CurveSine, CurveSine},
+			Curvature:   CurveSine,
 			ReleaseNode: C(1),
 		}
 		ampenv := EnvGen{

@@ -48,7 +48,19 @@ func (self *Env) defaults() {
 		self.Times = []Input{C(1), C(1)}
 	}
 	if self.CurveTypes == nil {
-		self.CurveTypes = []Input{CurveLinear, CurveLinear}
+		numSegments := len(self.Times)
+		self.CurveTypes = make([]Input, numSegments)
+
+		if self.Curvature == nil {
+			for i := 0; i < numSegments; i++ {
+				self.CurveTypes[i] = CurveLinear
+			}
+		} else {
+			for i := 0; i < numSegments; i++ {
+				self.CurveTypes[i] = self.Curvature
+			}
+		}
+		self.Curvature = C(0)
 	}
 }
 

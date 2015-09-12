@@ -3,7 +3,7 @@ package sc
 import "testing"
 
 func TestBuffer(t *testing.T) {
-	c := NewClient("127.0.0.1", 57112)
+	c := NewClient("127.0.0.1:57112")
 	buf := newReadBuffer("foo", c)
 	n := buf.Num()
 	if n != 0 {

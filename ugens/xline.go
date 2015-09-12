@@ -28,7 +28,7 @@ func (self *XLine) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self XLine) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("XLine", rate, 0, 1, self.Start, self.End, self.Dur, C(float32(self.Done)))
 }

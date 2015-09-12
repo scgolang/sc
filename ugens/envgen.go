@@ -41,7 +41,7 @@ func (self *EnvGen) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self EnvGen) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	ins := []Input{self.Gate, self.LevelScale, self.LevelBias}
 	ins = append(ins, self.TimeScale, C(float32(self.Done)))

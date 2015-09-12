@@ -9,8 +9,8 @@ import (
 
 // Request status from scsynth
 func main() {
-	client := sc.NewClient("127.0.0.1", 57121)
-	err := client.Connect("127.0.0.1", 57120)
+	client := sc.NewClient("127.0.0.1:57121")
+	err := client.Connect("127.0.0.1:57120")
 	if err != nil {
 		log.Fatal(err)
 	}

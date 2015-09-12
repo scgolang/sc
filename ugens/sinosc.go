@@ -23,7 +23,7 @@ func (self *SinOsc) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self SinOsc) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("SinOsc", rate, 0, 1, self.Freq, self.Phase)
 }

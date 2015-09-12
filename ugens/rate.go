@@ -8,7 +8,7 @@ const (
 	AR = 2
 )
 
-func checkRate(rate int8) {
+func CheckRate(rate int8) {
 	if rate != IR && rate != KR && rate != AR {
 		panic(fmt.Errorf("Unsupported rate %d", rate))
 	}

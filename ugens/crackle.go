@@ -18,7 +18,7 @@ func (self *Crackle) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self Crackle) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("Crackle", rate, 0, 1, self.Chaos)
 }

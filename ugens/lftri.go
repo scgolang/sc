@@ -25,7 +25,7 @@ func (self *LFTri) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self LFTri) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("LFTri", rate, 0, 1, self.Freq, self.Iphase)
 }

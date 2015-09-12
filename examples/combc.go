@@ -8,8 +8,8 @@ import (
 
 func main() {
 	const synthName = "CombCExample"
-	client := NewClient("127.0.0.1", 57112)
-	err := client.Connect("127.0.0.1", 57110)
+	client := NewClient("127.0.0.1:57112")
+	err := client.Connect("127.0.0.1:57110")
 	if err != nil {
 		panic(err)
 	}

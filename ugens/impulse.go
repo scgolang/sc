@@ -23,7 +23,7 @@ func (self *Impulse) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self Impulse) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("Impulse", rate, 0, 1, self.Freq, self.Phase)
 }

@@ -21,7 +21,7 @@ func (self *LFNoise1) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self LFNoise1) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("LFNoise1", rate, 0, 1, self.Freq)
 }

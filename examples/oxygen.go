@@ -14,8 +14,8 @@ func main() {
 	var synthID int32
 	const synthName = "sineTone"
 	// setup supercollider client
-	client := sc.NewClient("127.0.0.1", 57121)
-	err := client.Connect("127.0.0.1", 57120)
+	client := sc.NewClient("127.0.0.1:57121")
+	err := client.Connect("127.0.0.1:57120")
 	if err != nil {
 		panic(err)
 	}

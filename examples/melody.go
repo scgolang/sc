@@ -15,8 +15,8 @@ func main() {
 	var gain, dur float32
 
 	// setup supercollider client
-	client := sc.NewClient("127.0.0.1", 57111)
-	err := client.Connect("127.0.0.1", 57110)
+	client := sc.NewClient("127.0.0.1:57111")
+	err := client.Connect("127.0.0.1:57110")
 	if err != nil {
 		panic(err)
 	}

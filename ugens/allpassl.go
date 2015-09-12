@@ -37,7 +37,7 @@ func (self AllpassL) Rate(rate int8) Input {
 	if self.In == nil {
 		panic("AllpassL expects In to not be nil")
 	}
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("AllpassL", rate, 0, 1, self.In, self.MaxDelay, self.Delay, self.Decay)
 }

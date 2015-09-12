@@ -3,12 +3,12 @@ package ugens
 import . "github.com/scgolang/sc/types"
 
 func BinOpMul(rate int8, x, y Input, numOutputs int) *UgenNode {
-	checkRate(rate)
+	CheckRate(rate)
 	return NewUgenNode("BinaryOpUGen", rate, 2, numOutputs, x, y)
 }
 
 func BinOpAdd(rate int8, x, y Input, numOutputs int) *UgenNode {
-	checkRate(rate)
+	CheckRate(rate)
 	return NewUgenNode("BinaryOpUGen", rate, 0, numOutputs, x, y)
 }
 

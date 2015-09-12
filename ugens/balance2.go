@@ -30,7 +30,7 @@ func (self Balance2) Rate(rate int8) Input {
 	if self.L == nil || self.R == nil {
 		panic("Balance2 expects L and R to not be nil")
 	}
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("Balance2", rate, 0, 2, self.L, self.R, self.Pos, self.Level)
 }

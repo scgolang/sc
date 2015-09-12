@@ -28,7 +28,7 @@ func (self RLPF) Rate(rate int8) Input {
 	if self.In == nil {
 		panic("RLPF expects In to not be nil")
 	}
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("RLPF", rate, 0, 1, self.In, self.Freq, self.RQ)
 }

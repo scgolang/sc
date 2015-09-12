@@ -10,8 +10,8 @@ import (
 func main() {
 	var err error
 	// create a client and connect to the server
-	client := NewClient("127.0.0.1", 57121)
-	err = client.Connect("127.0.0.1", 57120)
+	client := NewClient("127.0.0.1:57121")
+	err = client.Connect("127.0.0.1:57120")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -12,6 +12,6 @@ type Out struct {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self Out) Rate(rate int8) *UgenNode {
-	checkRate(rate)
+	CheckRate(rate)
 	return NewUgenNode("Out", rate, 0, 1, self.Bus, self.Channels)
 }

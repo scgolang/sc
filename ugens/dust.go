@@ -18,7 +18,7 @@ func (self *Dust) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self Dust) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("Dust", rate, 0, 1, self.Density)
 }

@@ -17,7 +17,7 @@ func (self *Saw) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self Saw) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("Saw", rate, 0, 1, self.Freq)
 }

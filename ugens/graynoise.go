@@ -10,6 +10,6 @@ type GrayNoise struct {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self GrayNoise) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	return UgenInput("GrayNoise", rate, 0, 1)
 }

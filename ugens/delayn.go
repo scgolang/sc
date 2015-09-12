@@ -27,7 +27,7 @@ func (self *DelayN) defaults() {
 // If an In signal is not provided this method will
 // trigger a runtime panic.
 func (self DelayN) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	if self.In == nil {
 		panic("DelayN expects In to not be nil")
 	}

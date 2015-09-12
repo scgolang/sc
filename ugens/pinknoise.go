@@ -10,6 +10,6 @@ type PinkNoise struct {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self PinkNoise) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	return UgenInput("PinkNoise", rate, 0, 1)
 }

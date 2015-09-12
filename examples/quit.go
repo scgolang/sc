@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	listenPort = 57150
-	listenAddr = "127.0.0.1"
+	listenAddr = "127.0.0.1:57110"
 )
 
 // Send a /quit message to scsynth
@@ -17,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	oscServer := osc.NewServer(listenAddr, listenPort)
+	oscServer := osc.NewServer(listenAddr)
 	errChan := make(chan error)
 	doneChan := make(chan *osc.Message)
 	err = oscServer.AddMsgHandler("/done", func(msg *osc.Message) {

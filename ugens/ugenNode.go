@@ -79,7 +79,7 @@ func (self *UgenNode) MulAdd(mul, add Input) Input {
 // Panics if rate is not AR, KR, or IR.
 // Panics if numOutputs <= 0.
 func NewUgenNode(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) *UgenNode {
-	checkRate(rate)
+	CheckRate(rate)
 	if numOutputs <= 0 {
 		panic("numOutputs must be a positive int")
 	}

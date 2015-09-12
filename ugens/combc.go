@@ -33,7 +33,7 @@ func (self *CombC) defaults() {
 // If an In signal is not provided this method will
 // trigger a runtime panic.
 func (self CombC) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	if self.In == nil {
 		panic("CombC expects In to not be nil")
 	}

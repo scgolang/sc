@@ -24,7 +24,7 @@ func (self *LFCub) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self LFCub) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("LFCub", rate, 0, 1, self.Freq, self.Iphase)
 }

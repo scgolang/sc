@@ -26,7 +26,7 @@ func (self *Line) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (self Line) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	(&self).defaults()
 	return UgenInput("Line", rate, 0, 1, self.Start, self.End, self.Dur, C(float32(self.Done)))
 }

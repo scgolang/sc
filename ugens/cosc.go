@@ -32,7 +32,7 @@ func (self *COsc) defaults() {
 // a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
 func (self COsc) Rate(rate int8) Input {
-	checkRate(rate)
+	CheckRate(rate)
 	if self.BufNum == nil {
 		panic(fmt.Errorf("BufNum can not be nil"))
 	}

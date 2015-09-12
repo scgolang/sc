@@ -61,13 +61,13 @@ type Client struct {
 }
 
 // Connect connects to an scsynth instance via UDP.
-func (self *Client) Connect(addr string, port int) error {
+func (self *Client) Connect(addr string) error {
 	var err error
-	self.conn, err = net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, port))
+	self.conn, err = net.ResolveUDPAddr("udp", addr)
 	if err != nil {
 		return err
 	}
-	self.oscServer = osc.NewServer(self.addr, self.port)
+	self.oscServer = osc.NewServer(self.addr)
 	// OSC relays
 	self.statusChan = make(chan *osc.Message)
 	self.doneChan = make(chan *osc.Message)
@@ -307,10 +307,9 @@ func (self *Client) addOscHandlers() {
 // NewClient creates a new SuperCollider client.
 // The client will bind to the provided address and port
 // to receive messages from scsynth.
-func NewClient(addr string, port int) *Client {
+func NewClient(addr string) *Client {
 	self := new(Client)
 	self.addr = addr
-	self.port = port
 	self.nextSynthID = 1000
 	return self
 }

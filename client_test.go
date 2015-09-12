@@ -12,8 +12,8 @@ import (
 //     scsynth -u 57120
 //
 func TestClient(t *testing.T) {
-	client := NewClient("127.0.0.1", 57200)
-	err := client.Connect("127.0.0.1", 57110)
+	client := NewClient("127.0.0.1:57200")
+	err := client.Connect("127.0.0.1:57120")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -24,6 +24,7 @@ func (self *Synth) Get(controlName string) (float32, error) {
 // Set the value of a synth control.
 func (self *Synth) Set(ctls map[string]float32) error {
 	set := osc.NewMessage(setSynthNodeAddress)
+	free.Append(self.id)
 	for name, value := range ctls {
 		set.Append(name, value)
 	}

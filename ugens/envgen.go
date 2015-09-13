@@ -10,7 +10,7 @@ import . "github.com/scgolang/sc/types"
 type EnvGen struct {
 	// Env determines the shape of the envelope
 	Env Envelope
-	// Gate triggers then envelope and holds it open while > 0
+	// Gate triggers the envelope and holds it open while > 0
 	Gate Input
 	// LevelScale scales the levels of the breakpoints
 	LevelScale Input

@@ -4,53 +4,32 @@ import (
 	. "github.com/scgolang/sc/types"
 )
 
+// C wraps a float32 and implements the Input interface.
 type C float32
 
-func (c C) Val() float32 {
-	return float32(c)
-}
-
+// Mul multiplies the constant by another input.
 func (c C) Mul(val Input) Input {
-	switch v := val.(type) {
-	case *UgenNode:
-		return v.Mul(c)
-	case C:
-		return C(v * c)
-	default:
-		panic("input was neither ugen nor constant")
+	if v, ok := val.(C); ok {
+		return C(float32(v) * float32(c))
 	}
+	return val.Mul(c)
 }
 
+// Add adds another input to the constant.
 func (c C) Add(val Input) Input {
-	switch v := val.(type) {
-	case *UgenNode:
-		return v.Add(c)
-	case C:
-		return C(v + c)
-	default:
-		panic("input was neither ugen nor constant")
+	if v, ok := val.(C); ok {
+		return C(float32(v) + float32(c))
 	}
+	return val.Add(c)
 }
 
+// MulAdd multiplies and adds at the same time.
 func (c C) MulAdd(mul, add Input) Input {
-	switch v := mul.(type) {
-	case *UgenNode:
-		return v.MulAdd(c, add)
-	case C:
-		switch w := add.(type) {
-		case *UgenNode:
-			// FIXME
-			return w.MulAdd(c, mul)
-		case C:
-			return C(v*c + w)
-		default:
-			panic("input was neither ugen nor constant")
+	if m, mok := mul.(C); mok {
+		if a, aok := add.(C); aok {
+			return C((float32(m) * float32(c)) + float32(a))
 		}
-	default:
-		panic("input was neither ugen nor constant")
+		return add.MulAdd(c, mul)
 	}
-}
-
-func (c C) Equals(val C) bool {
-	return float32(c) == float32(val)
+	return mul.MulAdd(c, add)
 }

@@ -5,22 +5,26 @@ import (
 	"io"
 )
 
-// output structure of ugen output
-type output struct {
-	Rate int8 `json:"rate" xml:"rate,attr"`
+// Output is a ugen output.
+type Output int8
+
+// Rate returns the rate of the output.
+func (o Output) Rate() int8 {
+	return int8(o)
 }
 
-// Write writes this output to an io.Writer
-func (self *output) Write(w io.Writer) error {
-	return binary.Write(w, byteOrder, self.Rate)
+// Write writes the output to an io.Writer.
+func (o Output) Write(w io.Writer) error {
+	return binary.Write(w, byteOrder, int8(o))
 }
 
-func readoutput(r io.Reader) (*output, error) {
-	var rate int8
-	err := binary.Read(r, byteOrder, &rate)
-	if err != nil {
-		return nil, err
+// readOutput
+func readOutput(r io.Reader) (Output, error) {
+	var (
+		rate int8
+	)
+	if err := binary.Read(r, byteOrder, &rate); err != nil {
+		return Output(-1), err
 	}
-	out := output{rate}
-	return &out, nil
+	return Output(rate), nil
 }

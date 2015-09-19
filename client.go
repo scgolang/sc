@@ -3,7 +3,6 @@ package sc
 import (
 	"fmt"
 	"github.com/scgolang/osc"
-	"github.com/scgolang/sc/types"
 	"net"
 	"reflect"
 	"sync/atomic"
@@ -194,7 +193,7 @@ func (self *Client) QueryGroup(id int32) (*Group, error) {
 
 // ReadBuffer tells the server to read an audio file and
 // load it into a buffer
-func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
+func (self *Client) ReadBuffer(path string) (Buffer, error) {
 	buf := newReadBuffer(path, self)
 	pat := bufferReadAddress
 	allocRead := osc.NewMessage(pat)
@@ -234,7 +233,7 @@ func (self *Client) ReadBuffer(path string) (types.Buffer, error) {
 }
 
 // AllocBuffer allocates a buffer on the server
-func (self *Client) AllocBuffer(frames, channels int) (types.Buffer, error) {
+func (self *Client) AllocBuffer(frames, channels int) (Buffer, error) {
 	buf := newBuffer(self)
 	pat := bufferAllocAddress
 	alloc := osc.NewMessage(pat)

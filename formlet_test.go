@@ -1,8 +1,6 @@
 package sc
 
 import (
-	. "github.com/scgolang/sc/types"
-	. "github.com/scgolang/sc/ugens"
 	"testing"
 )
 

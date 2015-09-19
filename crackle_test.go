@@ -3,8 +3,6 @@ package sc
 import (
 	"testing"
 
-	. "github.com/scgolang/sc/types"
-	. "github.com/scgolang/sc/ugens"
 )
 
 func TestCrackle(t *testing.T) {

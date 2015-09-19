@@ -2,8 +2,6 @@ package sc
 
 // FIXME
 // import (
-// 	. "github.com/scgolang/sc/types"
-// 	. "github.com/scgolang/sc/ugens"
 // 	"testing"
 // )
 

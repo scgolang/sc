@@ -7,8 +7,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/awalterschulze/gographviz"
-	. "github.com/scgolang/sc/types"
-	. "github.com/scgolang/sc/ugens"
 	"io"
 	"io/ioutil"
 	"os"
@@ -332,7 +330,7 @@ func (self *Synthdef) writeUgensDiff(w io.Writer, def *Synthdef, uself, udef *ug
 		same = false
 	}
 	// ugen inputs
-	var iself *input
+	var iself input
 	for i, idef := range udef.Inputs {
 		iself = uself.Inputs[i]
 		if idef.UgenIndex == -1 {

@@ -1,8 +1,6 @@
 package sc
 
 // FIXME
-// import . "github.com/scgolang/sc/types"
-// import . "github.com/scgolang/sc/ugens"
 // import "testing"
 
 // func TestBar(t *testing.T) {

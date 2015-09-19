@@ -1,7 +1,5 @@
 package sc
 
-import . "github.com/scgolang/sc/ugens"
-import . "github.com/scgolang/sc/types"
 import "testing"
 
 func TestIntegrator(t *testing.T) {

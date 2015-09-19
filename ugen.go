@@ -2,27 +2,43 @@ package sc
 
 import (
 	"encoding/binary"
-	// "fmt"
-	. "github.com/scgolang/sc/types"
 	"io"
 )
 
-// ugen
-type ugen struct {
-	Name         string    `json:"name" xml:"name,attr"`
-	Rate         int8      `json:"rate" xml:"rate,attr"`
-	SpecialIndex int16     `json:"specialIndex" xml:"specialIndex,attr"`
-	Inputs       []*input  `json:"inputs" xml:"Inputs>Input"`
-	Outputs      []*output `json:"outputs" xml:"Outputs>Output"`
+// Ugen defines the interface between synthdefs and ugens.
+type Ugen interface {
+	// Name returns the name of the ugen node
+	Name() string
+	// Rate returns the rate of the ugen node
+	Rate() int8
+	// SpecialIndex returns the special index of the ugen node
+	SpecialIndex() int16
+	// Inputs returns the inputs of the ugen node.
+	// Inputs can be
+	// (1) Constant (float32)
+	// (2) Control (synthdef param)
+	// (3) Ugen
+	Inputs() []Input
+	// Outputs returns the outputs of the ugen node
+	Outputs() []Output
 }
 
-func (self *ugen) AppendInput(i *input) {
+// ugen
+type ugen struct {
+	Name         string   `json:"name" xml:"name,attr"`
+	Rate         int8     `json:"rate" xml:"rate,attr"`
+	SpecialIndex int16    `json:"specialIndex" xml:"specialIndex,attr"`
+	Inputs       []input  `json:"inputs" xml:"Inputs>Input"`
+	Outputs      []Output `json:"outputs" xml:"Outputs>Output"`
+}
+
+func (self *ugen) AppendInput(i input) {
 	self.Inputs = append(self.Inputs, i)
 }
 
 // AddOutput ensures that a ugen has an output at self.Rate
 // How do you create a ugen with multiple outputs? -bps
-func (self *ugen) AddOutput(o *output) {
+func (self *ugen) AddOutput(o Output) {
 	self.Outputs = append(self.Outputs, o)
 }
 
@@ -34,25 +50,21 @@ func (self *ugen) Write(w io.Writer) error {
 		return err
 	}
 	// write rate
-	err = binary.Write(w, byteOrder, self.Rate)
-	if err != nil {
+	if err = binary.Write(w, byteOrder, self.Rate); err != nil {
 		return err
 	}
 	// write inputs
 	numInputs := int32(len(self.Inputs))
-	err = binary.Write(w, byteOrder, numInputs)
-	if err != nil {
+	if err = binary.Write(w, byteOrder, numInputs); err != nil {
 		return err
 	}
 	// write outputs
 	numOutputs := int32(len(self.Outputs))
-	err = binary.Write(w, byteOrder, numOutputs)
-	if err != nil {
+	if err = binary.Write(w, byteOrder, numOutputs); err != nil {
 		return err
 	}
 	// special index
-	err = binary.Write(w, byteOrder, self.SpecialIndex)
-	if err != nil {
+	if err = binary.Write(w, byteOrder, self.SpecialIndex); err != nil {
 		return err
 	}
 	// inputs
@@ -72,37 +84,45 @@ func (self *ugen) Write(w io.Writer) error {
 
 // readugen reads a ugen from an io.Reader
 func readugen(r io.Reader) (*ugen, error) {
+	var (
+		rate         int8
+		numInputs    int32
+		numOutputs   int32
+		specialIndex int16
+	)
+
 	// read name
 	name, err := readPstring(r)
 	if err != nil {
 		return nil, err
 	}
+
 	// read calculation rate
-	var rate int8
-	err = binary.Read(r, byteOrder, &rate)
-	if err != nil {
+	if err = binary.Read(r, byteOrder, &rate); err != nil {
 		return nil, err
 	}
+
 	// read number of inputs
-	var numInputs int32
-	err = binary.Read(r, byteOrder, &numInputs)
-	if err != nil {
+	if err = binary.Read(r, byteOrder, &numInputs); err != nil {
 		return nil, err
 	}
+
 	// read number of outputs
-	var numOutputs int32
-	err = binary.Read(r, byteOrder, &numOutputs)
-	if err != nil {
+	if err = binary.Read(r, byteOrder, &numOutputs); err != nil {
 		return nil, err
 	}
+
 	// read special index
-	var specialIndex int16
-	err = binary.Read(r, byteOrder, &specialIndex)
-	if err != nil {
+	if err = binary.Read(r, byteOrder, &specialIndex); err != nil {
 		return nil, err
 	}
+
+	var (
+		inputs  = make([]input, numInputs)
+		outputs = make([]Output, numOutputs)
+	)
+
 	// read inputs
-	inputs := make([]*input, numInputs)
 	for i := 0; int32(i) < numInputs; i++ {
 		in, err := readinput(r)
 		if err != nil {
@@ -111,9 +131,8 @@ func readugen(r io.Reader) (*ugen, error) {
 		inputs[i] = in
 	}
 	// read outputs
-	outputs := make([]*output, numOutputs)
 	for i := 0; int32(i) < numOutputs; i++ {
-		out, err := readoutput(r)
+		out, err := readOutput(r)
 		if err != nil {
 			return nil, err
 		}
@@ -135,8 +154,8 @@ func newUgen(name string, rate int8) *ugen {
 		name,
 		rate,
 		0, // special index
-		make([]*input, 0),
-		make([]*output, 0),
+		make([]input, 0),
+		make([]Output, 0),
 	}
 	return &u
 }
@@ -147,12 +166,12 @@ func cloneUgen(n Ugen) *ugen {
 		n.Rate(),
 		n.SpecialIndex(),
 		// inputs get added at synthdef-creation time
-		make([]*input, 0),
-		make([]*output, 0),
+		make([]input, 0),
+		make([]Output, 0),
 	}
 	// add outputs
 	for _, out := range n.Outputs() {
-		u.AddOutput(&output{out.Rate()})
+		u.AddOutput(out)
 	}
 	return &u
 }

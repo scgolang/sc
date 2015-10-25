@@ -265,4 +265,8 @@ SynthDef(\GrainFMTest, {
     Out.ar(0, sig * ampenv);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\PMOscTest, {
+    Out.ar(0, PMOsc.ar(Line.kr(600, 900, 5), 600, 3, 0, 0.1));
+}).writeDefFile(File.getcwd);
+
 0.exit;

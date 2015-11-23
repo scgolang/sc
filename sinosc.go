@@ -1,6 +1,5 @@
 package sc
 
-
 // SinOsc is a table-lookup sinewave oscillator
 type SinOsc struct {
 	// Freq is frequency in Hz

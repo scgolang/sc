@@ -3,21 +3,23 @@ package sc
 import "testing"
 
 func TestBuffer(t *testing.T) {
-	c := NewClient("127.0.0.1:57112")
-	buf := newReadBuffer("foo", c)
-	n := buf.Num()
-	if n != 0 {
-		t.Fatalf("expected 0, but got %d", n)
+	c, err := NewClient("udp", "127.0.0.1:57112", "127.0.0.1:57120")
+	if err != nil {
+		t.Fatal(err)
 	}
-	buf = newReadBuffer("bar", c)
-	n = buf.Num()
-	if n != 1 {
-		t.Fatalf("expected 1, but got %d", n)
+	defer func() { _ = c.Close() }() // Best effort.
+
+	buf := newReadBuffer("foo", 0, c)
+	if buf.Num != 0 {
+		t.Fatalf("expected 0, but got %d", buf.Num)
+	}
+	buf = newReadBuffer("bar", 1, c)
+	if buf.Num != 1 {
+		t.Fatalf("expected 1, but got %d", buf.Num)
 	}
 	// should return the first buffer
-	newBuf := newReadBuffer("foo", c)
-	n = newBuf.Num()
-	if n != 0 {
-		t.Fatalf("expected 0, but got %d", n)
+	newBuf := newReadBuffer("foo", 0, c)
+	if newBuf.Num != 0 {
+		t.Fatalf("expected 0, but got %d", newBuf.Num)
 	}
 }

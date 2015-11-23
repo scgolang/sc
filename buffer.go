@@ -1,11 +1,11 @@
 package sc
 
 import (
+	"errors"
 	"fmt"
-	"github.com/scgolang/osc"
-	"reflect"
 	"sync"
-	"sync/atomic"
+
+	"github.com/scgolang/osc"
 )
 
 const (
@@ -43,71 +43,70 @@ const (
 )
 
 // Buffer is a client-side representation of an scsynth audio buffer
-type Buffer interface {
-	// Num returns the index of this buffer in
-	// scsynth's global buffers array
-	Num() int32
-	// Gen generates data for a buffer using a routine
-	// (see BufferRoutine constants)
-	Gen(routine string, flags int, args ...float32) error
-}
-
-// buffer is an implementation of the Buffer interface
-type buffer struct {
-	num int32
-	c   *Client
-}
-
-// Num returns the buffer number
-func (self *buffer) Num() int32 {
-	return self.num
+type Buffer struct {
+	Num    int32
+	client *Client
 }
 
 // Gen generates a buffer using a routine.
 // A runtime panic will occur if routine is not one of the
 // BufferRoutine constants.
-func (self *buffer) Gen(routine string, flags int, args ...float32) error {
-	checkBufferRoutine(routine)
-	checkBufferGenFlags(flags)
-	pat := bufferGenAddress
-	gen := osc.NewMessage(pat)
-	gen.Append(self.Num())
-	gen.Append(routine)
-	gen.Append(int32(flags))
-	for _, arg := range args {
-		gen.Append(arg)
+func (self *Buffer) Gen(routine string, flags int, args ...float32) error {
+	if err := checkBufferRoutine(routine); err != nil {
+		return err
 	}
-	err := self.c.oscServer.SendTo(self.c.conn, gen)
+	if err := checkBufferGenFlags(flags); err != nil {
+		return err
+	}
+
+	pat := bufferGenAddress
+	gen, err := osc.NewMessage(pat)
 	if err != nil {
+		return err
+	}
+	if err := gen.WriteInt32(self.Num); err != nil {
+		return err
+	}
+	if err := gen.WriteString(routine); err != nil {
+		return err
+	}
+	if err := gen.WriteInt32(int32(flags)); err != nil {
+		return err
+	}
+	for _, arg := range args {
+		if err := gen.WriteFloat32(arg); err != nil {
+			return err
+		}
+	}
+	if err := self.client.oscConn.Send(gen); err != nil {
 		return err
 	}
 
 	var done *osc.Message
 	select {
-	case done = <-self.c.doneChan:
-		break
-	case err = <-self.c.oscErrChan:
+	case done = <-self.client.doneChan:
+	case err = <-self.client.oscErrChan:
 		return err
 	}
 
 	if done.CountArguments() != 2 {
-		return fmt.Errorf("expected two arguments to /done message")
+		return errors.New("expected two arguments to /done message")
 	}
-	if addr, isString := done.Arguments[0].(string); !isString || addr != pat {
-		return fmt.Errorf("expected first argument to be %s but got %s", pat, addr)
+	_, err = done.ReadString()
+	if err != nil {
+		return err
 	}
-	var bufnum int32
-	var isInt32 bool
-	if bufnum, isInt32 = done.Arguments[1].(int32); !isInt32 {
-		m := "expected int32 as second argument, but got %s (%v)"
-		return fmt.Errorf(m, reflect.TypeOf(done.Arguments[1]), done.Arguments[1])
+	bufnum, err := done.ReadInt32()
+	if err != nil {
+		return err
 	}
+
 	// TODO:
 	// Don't error if we get a done message for a different buffer.
 	// We should probably requeue this particular done message on doneChan.
-	if bufnum != self.Num() {
+	if bufnum != self.Num {
 		m := "expected done message for buffer %d, but got one for buffer %d"
-		return fmt.Errorf(m, self.Num(), bufnum)
+		return fmt.Errorf(m, self.Num, bufnum)
 	}
 
 	return nil
@@ -115,50 +114,50 @@ func (self *buffer) Gen(routine string, flags int, args ...float32) error {
 
 // checkBufferRoutine panics if routine is not one of the
 // supported BufferRoutine constants
-func checkBufferRoutine(routine string) {
+func checkBufferRoutine(routine string) error {
 	if routine != BufferRoutineSine1 &&
 		routine != BufferRoutineSine2 &&
 		routine != BufferRoutineSine3 &&
 		routine != BufferRoutineCheby {
-		panic(fmt.Errorf("unsupported buffer routine %s", routine))
+		return fmt.Errorf("unsupported buffer routine %s", routine)
 	}
+	return nil
 }
 
 // checkBufferGenFlags panics if not 0 <= flags <= 4
-func checkBufferGenFlags(flags int) {
+func checkBufferGenFlags(flags int) error {
 	if flags < 0 && flags > 4 {
-		panic(fmt.Errorf("unsupported buffer flags %s", flags))
+		return fmt.Errorf("unsupported buffer flags %s", flags)
 	}
+	return nil
 }
-
-// global buffer index
-var bufIndex int32 = -1
 
 // global buffer map (keys are paths to audio files on disk)
 var buffers = struct {
 	sync.RWMutex
-	m map[string]*buffer
-}{m: make(map[string]*buffer)}
+	m map[string]*Buffer
+}{m: make(map[string]*Buffer)}
 
 // newReadBuffer creates a new buffer for /b_allocRead
-func newReadBuffer(path string, c *Client) Buffer {
+func newReadBuffer(path string, num int32, c *Client) *Buffer {
+	buffers.Lock()
 	// return the existing buffer if there is one
-	buffers.RLock()
 	if eb, exists := buffers.m[path]; exists {
-		buffers.RUnlock()
+		buffers.Unlock()
 		return eb
 	}
-	buffers.RUnlock()
+
 	// make a new one
-	b := buffer{atomic.AddInt32(&bufIndex, bufIndexIncr), c}
+	b := &Buffer{Num: num, client: c}
+
 	// add it to the global map
-	buffers.Lock()
-	buffers.m[path] = &b
+	buffers.m[path] = b
 	buffers.Unlock()
-	return &b
+
+	return b
 }
 
 // newBuffer creates a new buffer for /b_alloc
-func newBuffer(c *Client) Buffer {
-	return &buffer{atomic.AddInt32(&bufIndex, bufIndexIncr), c}
+func newBuffer(c *Client) *Buffer {
+	return &Buffer{client: c}
 }

@@ -199,7 +199,7 @@ func (self *Client) DumpOSC(level int32) error {
 	return self.oscConn.Send(dumpReq)
 }
 
-// NewSynth creates a synth
+// Synth creates a synth node.
 func (self *Client) Synth(defName string, id, action, target int32, ctls map[string]float32) (*Synth, error) {
 	synthReq, err := osc.NewMessage(synthNewAddress)
 	if err != nil {

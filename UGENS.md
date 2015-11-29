@@ -82,6 +82,7 @@ Unit Generators for sc.
 | Ringz                       | No        |
 | Rotate2                     | No        |
 | Saw                         | Yes       |
+| Select                      | Yes       |
 | Shaper                      | No        |
 | SinOsc                      | Yes       |
 | Slew                        | No        |

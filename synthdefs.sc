@@ -269,4 +269,30 @@ SynthDef(\PMOscTest, {
     Out.ar(0, PMOsc.ar(Line.kr(600, 900, 5), 600, 3, 0, 0.1));
 }).writeDefFile(File.getcwd);
 
+//
+//                     Out
+//                      |
+//                   +-----+
+//                   |     |
+//                   0   BinaryOpUgen
+//                         |
+//                    +---------+
+//                    |         |
+//                 Select      0.2
+//                    |
+//        +---------------------+--------+-------+
+//        |                     |        |       |
+//      MulAdd                SinOsc    Saw    Pulse
+//        |                     |        |       |
+//   +-------+-------+       +-----+    440   +-----+
+//   |       |       |       |     |          |     |
+// LFSaw    1.5     1.5     440    0         440   0.5
+//
+SynthDef(\SelectTest, {
+    var a, cycle;
+    a = [ SinOsc.ar, Saw.ar, Pulse.ar ];
+    cycle = a.size  * 0.5;
+    Out.ar(0, Select.ar(LFSaw.kr(1.0, 0.0, cycle, cycle), a) * 0.2);
+}).writeDefFile(File.getcwd);
+
 0.exit;

@@ -29,15 +29,15 @@ const (
 	DumpContents = 2
 	DumpAll      = 3
 	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/s_new
-	AddToHead  = 0
-	AddToTail  = 1
-	AddBefore  = 2
-	AddAfter   = 3
-	AddReplace = 4
+	AddToHead  = int32(0)
+	AddToTail  = int32(1)
+	AddBefore  = int32(2)
+	AddAfter   = int32(3)
+	AddReplace = int32(4)
 	// see http://doc.sccode.org/Reference/default_group.html
-	RootNodeID         = 0
-	DefaultGroupID     = 1
-	GenerateSynthID    = -1
+	RootNodeID         = int32(0)
+	DefaultGroupID     = int32(1)
+	GenerateSynthID    = int32(-1)
 	DefaultLocalAddr   = "0.0.0.0:57110"
 	DefaultScsynthAddr = "0.0.0.0:57120"
 )

@@ -295,4 +295,18 @@ SynthDef(\SelectTest, {
     Out.ar(0, Select.ar(LFSaw.kr(1.0, 0.0, cycle, cycle), a) * 0.2);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Sum3Test, {
+    Out.ar(0, Sum3.new(PinkNoise.ar(0.1), FSinOsc.ar(801, 0.1), LFSaw.ar(40, 0.1)));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\MixTest, {
+    Out.ar(0, Mix.new([
+        PinkNoise.ar(0.1),
+	FSinOsc.ar(801, 0.1),
+	LFSaw.ar(40, 0.1),
+	Pulse.ar(436.0),
+	Dust.ar(4.0)
+    ]));
+}).writeDefFile(File.getcwd);
+
 0.exit;

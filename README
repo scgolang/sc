@@ -25,9 +25,9 @@ that use supercollider as the audio engine.
 Install
 -------
 First, and most importantly, you must have supercollider
-installed (go to http://supercollider.github.io/download.html).
+installed (see http://supercollider.github.io/download.html).
 
-Next, you must install go (from https://golang.org/dl).
+Next, you must install go (see https://golang.org/dl).
 
 Then
 $ go get github.com/scgolang/sc
@@ -53,7 +53,7 @@ $ scsynth -u 57120
 Usage
 -----
 Find godocs at http://godoc.org/github.com/scgolang/sc.
-Also, take a look at some of the [example programs](https://github.com/scgolang/examples).
+Also, take a look at some of the example programs here: https://github.com/scgolang/examples.
 
 The list of supported ugens is here: https://github.com/scgolang/sc/blob/master/UGENS.md
 

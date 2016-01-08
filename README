@@ -44,23 +44,23 @@ instead of
 
 $ go test
 
-Also, there are tests that attempt to connect to scsynth on port 57100 (see
+Also, there are tests that attempt to connect to scsynth on port 57120 (see
 client_test.go).
 If you do not have scsynth running the test will hang, so run
 
-$ scsynth -u 57100
+$ scsynth -u 57120
 
 Usage
 -----
 Find godocs at http://godoc.org/github.com/scgolang/sc.
-Also, take a look at some of the example programs in the
-examples/ directory.
+Also, take a look at some of the [example programs](https://github.com/scgolang/examples).
 
-The list of supported ugens is here: https://github.com/scgolang/sc/blob/master/ugens/README.md
+The list of supported ugens is here: https://github.com/scgolang/sc/blob/master/UGENS.md
 
 Develop
 -------
-See https://github.com/scgolang/sc/blob/master/CONTRIBUTING
+See https://github.com/scgolang/sc/blob/master/CONTRIBUTING and
+https://github.com/scgolang/sc/blob/master/HACKING.md.
 
 Roadmap
 --------

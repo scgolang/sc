@@ -1,6 +1,5 @@
 package sc
 
-
 // MouseX allpass delay with cubic interpolation
 type MouseX struct {
 	// Min is the value of this ugen's output when the

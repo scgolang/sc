@@ -1,6 +1,5 @@
 package sc
 
-
 // PinkNoise
 type PinkNoise struct {
 }

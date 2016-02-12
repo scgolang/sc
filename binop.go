@@ -1,6 +1,5 @@
 package sc
 
-
 func BinOpMul(rate int8, x, y Input, numOutputs int) *UgenNode {
 	CheckRate(rate)
 	return NewUgenNode("BinaryOpUGen", rate, 2, numOutputs, x, y)

@@ -1,6 +1,5 @@
 package sc
 
-
 // Formlet
 // A resonant filter whose impulse response is like that of a sine wave
 // with a Decay2 envelope over it.

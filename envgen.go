@@ -1,6 +1,5 @@
 package sc
 
-
 // EnvGen plays back breakpoint envelopes.
 // The envelopes must implement the Envelope interface.
 // The envelope and the arguments for LevelScale, LevelBias,

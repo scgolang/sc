@@ -1,7 +1,5 @@
 package sc
 
-import ()
-
 const (
 	// UGen done actions, see http://doc.sccode.org/Reference/UGen-doneActions.html
 	DoNothing             = 0

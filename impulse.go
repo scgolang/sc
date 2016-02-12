@@ -1,6 +1,5 @@
 package sc
 
-
 // Impulse non-band-limited single-sample impulses
 type Impulse struct {
 	// Freq frequency in Hz

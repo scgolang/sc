@@ -1,6 +1,5 @@
 package sc
 
-
 type MultiNode struct {
 	nodes []*UgenNode
 }

@@ -1,6 +1,5 @@
 package sc
 
-
 // Decay2
 type Decay2 struct {
 	// In is the input signal

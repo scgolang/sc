@@ -1,6 +1,5 @@
 package sc
 
-
 // Blip band-limited impulse generator
 type Blip struct {
 	// Freq frequency in Hz

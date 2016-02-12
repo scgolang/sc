@@ -1,6 +1,5 @@
 package sc
 
-
 // Line generates a line from the start value to the end value
 type Line struct {
 	Start Input

@@ -1,6 +1,5 @@
 package sc
 
-
 // DelayC
 // Simple delay line with cubic interpolation.
 // DelayC is more computationally intensive than DelayL, but more accurate.

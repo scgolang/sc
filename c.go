@@ -1,8 +1,5 @@
 package sc
 
-import (
-)
-
 // C wraps a float32 and implements the Input interface.
 type C float32
 

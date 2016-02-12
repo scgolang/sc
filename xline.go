@@ -1,6 +1,5 @@
 package sc
 
-
 // XLine generates an exponential curve from the start value to
 // the end value. Both the start and end values must be non-zero
 // and have the same sign.

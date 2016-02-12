@@ -1,6 +1,5 @@
 package sc
 
-
 // BPF a resonant low pass filter
 type BPF struct {
 	// In is the input signal

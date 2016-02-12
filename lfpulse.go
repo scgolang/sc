@@ -1,6 +1,5 @@
 package sc
 
-
 // LFPulse a non-band-limited pulse oscillator
 type LFPulse struct {
 	// Freq in Hz

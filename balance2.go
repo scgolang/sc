@@ -1,6 +1,5 @@
 package sc
 
-
 // Balance2 equal power panner
 type Balance2 struct {
 	// L is the left input signal

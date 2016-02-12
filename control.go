@@ -1,7 +1,5 @@
 package sc
 
-import ()
-
 // Control represents a synth control.
 // See http://doc.sccode.org/Classes/Control.html.
 type Control struct {

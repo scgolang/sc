@@ -1,6 +1,5 @@
 package sc
 
-
 // GrayNoise
 type GrayNoise struct {
 }

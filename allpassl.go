@@ -1,6 +1,5 @@
 package sc
 
-
 // AllpassL allpass delay with linear interpolation
 type AllpassL struct {
 	// In is the input signal

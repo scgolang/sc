@@ -1,6 +1,5 @@
 package sc
 
-
 // DelayL
 // Simple delay line with linear interpolation.
 // DelayL is more computationally intensive than DelayN, but more accurate.

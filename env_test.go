@@ -42,9 +42,9 @@ func TestSine(t *testing.T) {
 func TestPairs(t *testing.T) {
 	e := EnvPairs{
 		Pairs([][2]float32{
-			[2]float32{0, 1},
-			[2]float32{2.1, 0.5},
-			[2]float32{3, 1.4},
+			{0, 1},
+			{2.1, 0.5},
+			{3, 1.4},
 		}),
 		CurveExp,
 	}
@@ -54,9 +54,9 @@ func TestPairs(t *testing.T) {
 
 func TestTLC(t *testing.T) {
 	e := EnvTLC([]TLC{
-		TLC{0, 1, CurveSine},
-		TLC{2.1, 0.5, CurveLinear},
-		TLC{3, 1.4, CurveLinear},
+		{0, 1, CurveSine},
+		{2.1, 0.5, CurveLinear},
+		{3, 1.4, CurveLinear},
 	})
 	// 1 2 -99 -99 0.5 2.1 1 0 1.4 0.9000001 1 0
 	expect := []float32{1, 2, -99, -99, 0.5, 2.1, 3, 0, 1.4, 0.9, 1, 0}

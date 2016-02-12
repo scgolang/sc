@@ -1,8 +1,5 @@
 package sc
 
-import (
-)
-
 type UgenFunc func(p Params) Ugen
 
 // Play corresponds to http://doc.sccode.org/Classes/Function.html#-play.

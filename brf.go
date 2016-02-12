@@ -1,6 +1,5 @@
 package sc
 
-
 // BRF a second order band reject filter
 type BRF struct {
 	// In is the input signal

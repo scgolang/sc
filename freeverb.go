@@ -1,6 +1,5 @@
 package sc
 
-
 // FreeVerb reverb implemented with faust
 type FreeVerb struct {
 	// In the input signal

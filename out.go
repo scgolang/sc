@@ -1,6 +1,5 @@
 package sc
 
-
 // Out
 type Out struct {
 	Bus      C

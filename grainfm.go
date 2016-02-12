@@ -1,6 +1,5 @@
 package sc
 
-
 // GrainFM is a table-lookup sinewave oscillator
 type GrainFM struct {
 	// NumChannels is the number of channels to output.

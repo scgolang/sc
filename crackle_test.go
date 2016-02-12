@@ -2,7 +2,6 @@ package sc
 
 import (
 	"testing"
-
 )
 
 func TestCrackle(t *testing.T) {

@@ -1,6 +1,5 @@
 package sc
 
-
 // Dust generates random impulses from 0 to +1
 type Dust struct {
 	// Density is the average number of impulses per second

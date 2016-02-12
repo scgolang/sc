@@ -1,6 +1,5 @@
 package sc
 
-
 // Integrator integrates an input signal with a leak.
 // The formula used is
 //

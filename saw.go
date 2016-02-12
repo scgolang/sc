@@ -1,6 +1,5 @@
 package sc
 
-
 // Saw
 type Saw struct {
 	Freq Input

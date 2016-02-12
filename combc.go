@@ -1,6 +1,5 @@
 package sc
 
-
 // CombC
 type CombC struct {
 	// In the input signal

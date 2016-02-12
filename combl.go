@@ -1,6 +1,5 @@
 package sc
 
-
 // CombL
 type CombL struct {
 	// In the input signal

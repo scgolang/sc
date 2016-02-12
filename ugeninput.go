@@ -1,6 +1,5 @@
 package sc
 
-
 // UgenInput creates a ugen suitable for use as an input to other ugens.
 // It will return either a single-channel ugen or a multi-channel ugen.
 func UgenInput(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) Input {

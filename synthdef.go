@@ -622,7 +622,7 @@ func (self *Synthdef) flatten(params Params) {
 			switch v := input.(type) {
 			case Ugen:
 				_, idx, _ := self.addUgen(v)
-				for outputIndex, _ := range v.Outputs() {
+				for outputIndex := range v.Outputs() {
 					ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
 				}
 			case C:
@@ -638,7 +638,7 @@ func (self *Synthdef) flatten(params Params) {
 					case Ugen:
 						_, idx, _ := self.addUgen(x)
 						// will we ever need to use a different output index? [bps]
-						for outputIndex, _ := range x.Outputs() {
+						for outputIndex := range x.Outputs() {
 							ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
 						}
 					case C:

@@ -1,6 +1,5 @@
 package sc
 
-
 // CombN
 type CombN struct {
 	// In the input signal

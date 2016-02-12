@@ -1,6 +1,5 @@
 package sc
 
-
 // WhiteNoise
 type WhiteNoise struct {
 }

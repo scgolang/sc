@@ -1,6 +1,5 @@
 package sc
 
-
 // DelayN
 // Simple delay line with no interpolation.
 type DelayN struct {

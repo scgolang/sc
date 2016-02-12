@@ -1,6 +1,5 @@
 package sc
 
-
 // BrownNoise generates noise whose spectrum falls off in power by 6 dB per octave
 type BrownNoise struct{}
 

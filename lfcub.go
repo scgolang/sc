@@ -1,6 +1,5 @@
 package sc
 
-
 // LFCub is a sine-like shape made of two cubic pieces.
 // It is smoother than LFPar.
 type LFCub struct {

@@ -1,6 +1,5 @@
 package sc
 
-
 // AllpassC allpass delay with cubic interpolation
 type AllpassC struct {
 	// In is the input signal

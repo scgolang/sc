@@ -1,6 +1,5 @@
 package sc
 
-
 // Crackle
 // A noise generator based on a chaotic function.
 type Crackle struct {

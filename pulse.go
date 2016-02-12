@@ -1,6 +1,5 @@
 package sc
 
-
 // Pulse band-limited pulse wave generator with pulse width modulation.
 type Pulse struct {
 	// Freq in Hz

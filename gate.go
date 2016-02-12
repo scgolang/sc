@@ -1,6 +1,5 @@
 package sc
 
-
 // Gate
 type Gate struct {
 	// In is the input signal.

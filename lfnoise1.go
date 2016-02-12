@@ -1,6 +1,5 @@
 package sc
 
-
 // LFNoise1 generates linearly interpolated random values at a
 // rate which is the nearest integer division of the sample
 // rate by the Freq parameter.

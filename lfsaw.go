@@ -1,6 +1,5 @@
 package sc
 
-
 // LFSaw a non-band-limited sawtooth oscillator
 // output ranges from -1 to +1
 type LFSaw struct {

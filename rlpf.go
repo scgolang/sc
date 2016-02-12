@@ -1,6 +1,5 @@
 package sc
 
-
 // RLPF a resonant low pass filter
 type RLPF struct {
 	// In is the input signal

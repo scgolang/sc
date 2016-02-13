@@ -57,7 +57,7 @@ instead of
 go test
 ```
 
-Also, there are tests that attempt to connect to scsynth on port 57120 (see client_test.go).
+Also, there are tests that attempt to connect to scsynth on port 57120 (see [client_test.go](client_test.go)).
 
 If you do not have scsynth running the test will hang, so run
 

@@ -12,23 +12,23 @@ type DelayN struct {
 	DelayTime Input
 }
 
-func (self *DelayN) defaults() {
-	if self.MaxDelayTime == nil {
-		self.MaxDelayTime = C(0.2)
+func (delayn *DelayN) defaults() {
+	if delayn.MaxDelayTime == nil {
+		delayn.MaxDelayTime = C(0.2)
 	}
-	if self.DelayTime == nil {
-		self.DelayTime = C(0.2)
+	if delayn.DelayTime == nil {
+		delayn.DelayTime = C(0.2)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If an In signal is not provided this method will
 // trigger a runtime panic.
-func (self DelayN) Rate(rate int8) Input {
+func (delayn DelayN) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.In == nil {
+	if delayn.In == nil {
 		panic("DelayN expects In to not be nil")
 	}
-	(&self).defaults()
-	return UgenInput("DelayN", rate, 0, 1, self.In, self.MaxDelayTime, self.DelayTime)
+	(&delayn).defaults()
+	return UgenInput("DelayN", rate, 0, 1, delayn.In, delayn.MaxDelayTime, delayn.DelayTime)
 }

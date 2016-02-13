@@ -26,21 +26,21 @@ type PlayBuf struct {
 	Done int
 }
 
-func (self *PlayBuf) defaults() {
-	if self.NumChannels == 0 {
-		self.NumChannels = 1
+func (playbuf *PlayBuf) defaults() {
+	if playbuf.NumChannels == 0 {
+		playbuf.NumChannels = 1
 	}
-	if self.Speed == nil {
-		self.Speed = C(1.0)
+	if playbuf.Speed == nil {
+		playbuf.Speed = C(1.0)
 	}
-	if self.Trigger == nil {
-		self.Trigger = C(1)
+	if playbuf.Trigger == nil {
+		playbuf.Trigger = C(1)
 	}
-	if self.Start == nil {
-		self.Start = C(0)
+	if playbuf.Start == nil {
+		playbuf.Start = C(0)
 	}
-	if self.Loop == nil {
-		self.Loop = C(0)
+	if playbuf.Loop == nil {
+		playbuf.Loop = C(0)
 	}
 }
 
@@ -48,12 +48,12 @@ func (self *PlayBuf) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
-func (self PlayBuf) Rate(rate int8) Input {
+func (playbuf PlayBuf) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.BufNum == nil {
+	if playbuf.BufNum == nil {
 		panic(fmt.Errorf("BufNum can not be nil"))
 	}
-	(&self).defaults()
-	done := C(float32(self.Done))
-	return UgenInput("PlayBuf", rate, 0, self.NumChannels, self.BufNum, self.Speed, self.Trigger, self.Start, self.Loop, done)
+	(&playbuf).defaults()
+	done := C(float32(playbuf.Done))
+	return UgenInput("PlayBuf", rate, 0, playbuf.NumChannels, playbuf.BufNum, playbuf.Speed, playbuf.Trigger, playbuf.Start, playbuf.Loop, done)
 }

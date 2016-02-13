@@ -4,22 +4,22 @@ type stack struct {
 	l []interface{}
 }
 
-func (self *stack) Push(val interface{}) {
-	self.l = append(self.l, val)
+func (s *stack) Push(val interface{}) {
+	s.l = append(s.l, val)
 }
 
-func (self *stack) Pop() interface{} {
-	l := len(self.l)
+func (s *stack) Pop() interface{} {
+	l := len(s.l)
 	if l == 0 {
 		return nil
 	}
-	el := self.l[l-1]
-	self.l = self.l[0 : l-1]
+	el := s.l[l-1]
+	s.l = s.l[0 : l-1]
 	return el
 }
 
-func (self *stack) Size() int {
-	return len(self.l)
+func (s *stack) Size() int {
+	return len(s.l)
 }
 
 func newStack() *stack {

@@ -14,22 +14,22 @@ type pstring struct {
 	string string
 }
 
-func (self *pstring) String() string {
-	return self.string
+func (pstr *pstring) String() string {
+	return pstr.string
 }
 
 // Equal determines if one pstring equals another
-func (self *pstring) Equals(pstr pstring) bool {
-	return self.string == pstr.string
+func (pstr *pstring) Equals(other pstring) bool {
+	return pstr.string == other.string
 }
 
 // Write writes a pstring to an io.Writer
-func (self *pstring) Write(w io.Writer) error {
-	e := binary.Write(w, byteOrder, self.length)
+func (pstr *pstring) Write(w io.Writer) error {
+	e := binary.Write(w, byteOrder, pstr.length)
 	if e != nil {
 		return e
 	}
-	_, e = w.Write(bytes.NewBufferString(self.string).Bytes())
+	_, e = w.Write(bytes.NewBufferString(pstr.string).Bytes())
 	return e
 }
 

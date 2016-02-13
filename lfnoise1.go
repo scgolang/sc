@@ -9,17 +9,17 @@ type LFNoise1 struct {
 	Freq Input
 }
 
-func (self *LFNoise1) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(500)
+func (lfn *LFNoise1) defaults() {
+	if lfn.Freq == nil {
+		lfn.Freq = C(500)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self LFNoise1) Rate(rate int8) Input {
+func (lfn LFNoise1) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("LFNoise1", rate, 0, 1, self.Freq)
+	(&lfn).defaults()
+	return UgenInput("LFNoise1", rate, 0, 1, lfn.Freq)
 }

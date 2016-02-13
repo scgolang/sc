@@ -98,26 +98,26 @@ func DefaultClient() (*Client, error) {
 }
 
 // Connect connects to an scsynth instance via UDP.
-func (self *Client) Connect(addr string) error {
+func (c *Client) Connect(addr string) error {
 	raddr, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
 		return err
 	}
 
-	oscConn, err := osc.DialUDP("udp", self.addr, raddr)
+	oscConn, err := osc.DialUDP("udp", c.addr, raddr)
 	if err != nil {
 		return err
 	}
-	self.oscConn = oscConn
+	c.oscConn = oscConn
 
 	// OSC relays
-	self.statusChan = make(chan *osc.Message)
-	self.doneChan = make(chan *osc.Message)
-	self.gqueryTreeChan = make(chan *osc.Message)
-	self.oscErrChan = make(chan error)
+	c.statusChan = make(chan *osc.Message)
+	c.doneChan = make(chan *osc.Message)
+	c.gqueryTreeChan = make(chan *osc.Message)
+	c.oscErrChan = make(chan error)
 	// listen for OSC messages
 	go func() {
-		self.oscErrChan <- self.oscConn.Serve(self.oscHandlers())
+		c.oscErrChan <- c.oscConn.Serve(c.oscHandlers())
 	}()
 	return nil
 }
@@ -128,18 +128,18 @@ func (c *Client) Close() error {
 }
 
 // Status gets the status of scsynth.
-// func (self *Client) GetStatus() (*ServerStatus, error) {
+// func (c *Client) GetStatus() (*ServerStatus, error) {
 // 	statusReq, err := osc.NewMessage(statusAddress)
 // 	if err != nil {
 // 		return nil, err
 // 	}
-// 	if err := self.oscConn.Send(statusReq); err != nil {
+// 	if err := c.oscConn.Send(statusReq); err != nil {
 // 		return nil, err
 // 	}
 // 	select {
-// 	case msg := <-self.statusChan:
+// 	case msg := <-c.statusChan:
 // 		return newStatus(msg)
-// 	case err = <-self.oscErrChan:
+// 	case err = <-c.oscErrChan:
 // 		return nil, err
 // 	}
 // }
@@ -147,7 +147,7 @@ func (c *Client) Close() error {
 // SendDef sends a synthdef to scsynth.
 // This method blocks until a /done message is received
 // indicating that the synthdef was loaded
-func (self *Client) SendDef(def *Synthdef) error {
+func (c *Client) SendDef(def *Synthdef) error {
 	msg, err := osc.NewMessage(synthdefReceiveAddress)
 	if err != nil {
 		return err
@@ -159,14 +159,14 @@ func (self *Client) SendDef(def *Synthdef) error {
 	if err := msg.WriteBlob(db); err != nil {
 		return err
 	}
-	if err := self.oscConn.Send(msg); err != nil {
+	if err := c.oscConn.Send(msg); err != nil {
 		return err
 	}
 	var done *osc.Message
 	select {
-	case done = <-self.doneChan:
+	case done = <-c.doneChan:
 		goto ParseMessage
-	case err = <-self.oscErrChan:
+	case err = <-c.oscErrChan:
 		return err
 	}
 
@@ -188,7 +188,7 @@ ParseMessage:
 
 // DumpOSC sends a /dumpOSC message to scsynth
 // level should be DumpOff, DumpParsed, DumpContents, DumpAll
-func (self *Client) DumpOSC(level int32) error {
+func (c *Client) DumpOSC(level int32) error {
 	dumpReq, err := osc.NewMessage(dumpOscAddress)
 	if err != nil {
 		return err
@@ -196,11 +196,11 @@ func (self *Client) DumpOSC(level int32) error {
 	if err := dumpReq.WriteInt32(level); err != nil {
 		return err
 	}
-	return self.oscConn.Send(dumpReq)
+	return c.oscConn.Send(dumpReq)
 }
 
 // Synth creates a synth node.
-func (self *Client) Synth(defName string, id, action, target int32, ctls map[string]float32) (*Synth, error) {
+func (c *Client) Synth(defName string, id, action, target int32, ctls map[string]float32) (*Synth, error) {
 	synthReq, err := osc.NewMessage(synthNewAddress)
 	if err != nil {
 		return nil, err
@@ -227,14 +227,14 @@ func (self *Client) Synth(defName string, id, action, target int32, ctls map[str
 			}
 		}
 	}
-	if err := self.oscConn.Send(synthReq); err != nil {
+	if err := c.oscConn.Send(synthReq); err != nil {
 		return nil, err
 	}
-	return newSynth(self, defName, id), nil
+	return newSynth(c, defName, id), nil
 }
 
 // NewGroup creates a group
-func (self *Client) Group(id, action, target int32) (*Group, error) {
+func (c *Client) Group(id, action, target int32) (*Group, error) {
 	dumpReq, err := osc.NewMessage(groupNewAddress)
 	if err != nil {
 		return nil, err
@@ -248,19 +248,19 @@ func (self *Client) Group(id, action, target int32) (*Group, error) {
 	if err := dumpReq.WriteInt32(target); err != nil {
 		return nil, err
 	}
-	if err := self.oscConn.Send(dumpReq); err != nil {
+	if err := c.oscConn.Send(dumpReq); err != nil {
 		return nil, err
 	}
-	return newGroup(self, id), nil
+	return newGroup(c, id), nil
 }
 
 // AddDefaltGroup adds the default group
-func (self *Client) AddDefaultGroup() (*Group, error) {
-	return self.Group(DefaultGroupID, AddToTail, RootNodeID)
+func (c *Client) AddDefaultGroup() (*Group, error) {
+	return c.Group(DefaultGroupID, AddToTail, RootNodeID)
 }
 
 // QueryGroup g_queryTree for a particular group
-func (self *Client) QueryGroup(id int32) (*Group, error) {
+func (c *Client) QueryGroup(id int32) (*Group, error) {
 	addr := gqueryTreeAddress
 	gq, err := osc.NewMessage(addr)
 	if err != nil {
@@ -269,37 +269,37 @@ func (self *Client) QueryGroup(id int32) (*Group, error) {
 	if err := gq.WriteInt32(int32(RootNodeID)); err != nil {
 		return nil, err
 	}
-	if err := self.oscConn.Send(gq); err != nil {
+	if err := c.oscConn.Send(gq); err != nil {
 		return nil, err
 	}
 	// wait for response
-	resp := <-self.gqueryTreeChan
+	resp := <-c.gqueryTreeChan
 	return parseGroup(resp)
 }
 
 // ReadBuffer tells the server to read an audio file and
 // load it into a buffer
-func (self *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
+func (c *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
 	allocRead, err := osc.NewMessage(bufferReadAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	buf := newReadBuffer(path, num, self)
+	buf := newReadBuffer(path, num, c)
 	if err := allocRead.WriteInt32(buf.Num); err != nil {
 		return nil, err
 	}
 	if err := allocRead.WriteString(path); err != nil {
 		return nil, err
 	}
-	if err := self.oscConn.Send(allocRead); err != nil {
+	if err := c.oscConn.Send(allocRead); err != nil {
 		return nil, err
 	}
 
 	var done *osc.Message
 	select {
-	case done = <-self.doneChan:
-	case err = <-self.oscErrChan:
+	case done = <-c.doneChan:
+	case err = <-c.oscErrChan:
 		return nil, err
 	}
 
@@ -329,8 +329,8 @@ func (self *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
 }
 
 // AllocBuffer allocates a buffer on the server
-func (self *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
-	buf := newBuffer(self)
+func (c *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
+	buf := newBuffer(c)
 	pat := bufferAllocAddress
 	alloc, err := osc.NewMessage(pat)
 	if err != nil {
@@ -345,15 +345,15 @@ func (self *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
 	if err := alloc.WriteInt32(int32(channels)); err != nil {
 		return nil, err
 	}
-	if err := self.oscConn.Send(alloc); err != nil {
+	if err := c.oscConn.Send(alloc); err != nil {
 		return nil, err
 	}
 
 	var done *osc.Message
 	select {
-	case done = <-self.doneChan:
+	case done = <-c.doneChan:
 		break
-	case err = <-self.oscErrChan:
+	case err = <-c.oscErrChan:
 		return nil, err
 	}
 
@@ -383,12 +383,12 @@ func (self *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
 }
 
 // NextSynthID gets the next available ID for creating a synth
-func (self *Client) NextSynthID() int32 {
-	return atomic.AddInt32(&self.nextSynthID, 1)
+func (c *Client) NextSynthID() int32 {
+	return atomic.AddInt32(&c.nextSynthID, 1)
 }
 
 // FreeAll frees all nodes in a group
-func (self *Client) FreeAll(gids ...int32) error {
+func (c *Client) FreeAll(gids ...int32) error {
 	freeReq, err := osc.NewMessage(groupFreeAllAddress)
 	if err != nil {
 		return err
@@ -398,22 +398,22 @@ func (self *Client) FreeAll(gids ...int32) error {
 			return err
 		}
 	}
-	return self.oscConn.Send(freeReq)
+	return c.oscConn.Send(freeReq)
 }
 
 // addOscHandlers adds OSC handlers
-func (self *Client) oscHandlers() osc.Dispatcher {
+func (c *Client) oscHandlers() osc.Dispatcher {
 	return map[string]osc.Method{
 		statusReplyAddress: func(msg *osc.Message) error {
-			self.statusChan <- msg
+			c.statusChan <- msg
 			return nil
 		},
 		doneOscAddress: func(msg *osc.Message) error {
-			self.doneChan <- msg
+			c.doneChan <- msg
 			return nil
 		},
 		gqueryTreeReplyAddress: func(msg *osc.Message) error {
-			self.gqueryTreeChan <- msg
+			c.gqueryTreeChan <- msg
 			return nil
 		},
 	}

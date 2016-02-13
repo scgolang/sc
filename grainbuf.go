@@ -53,33 +53,33 @@ type GrainBuf struct {
 	MaxGrains Input
 }
 
-func (self *GrainBuf) defaults() {
-	if self.NumChannels == 0 {
-		self.NumChannels = 1
+func (gb *GrainBuf) defaults() {
+	if gb.NumChannels == 0 {
+		gb.NumChannels = 1
 	}
-	if self.Trigger == nil {
-		self.Trigger = C(0)
+	if gb.Trigger == nil {
+		gb.Trigger = C(0)
 	}
-	if self.Dur == nil {
-		self.Dur = C(1)
+	if gb.Dur == nil {
+		gb.Dur = C(1)
 	}
-	if self.Speed == nil {
-		self.Speed = C(1)
+	if gb.Speed == nil {
+		gb.Speed = C(1)
 	}
-	if self.Pos == nil {
-		self.Pos = C(0)
+	if gb.Pos == nil {
+		gb.Pos = C(0)
 	}
-	if self.Interp == nil {
-		self.Interp = C(GrainBufLinearInterp)
+	if gb.Interp == nil {
+		gb.Interp = C(GrainBufLinearInterp)
 	}
-	if self.Pan == nil {
-		self.Pan = C(0)
+	if gb.Pan == nil {
+		gb.Pan = C(0)
 	}
-	if self.EnvBuf == nil {
-		self.EnvBuf = C(GrainBufHanningEnv)
+	if gb.EnvBuf == nil {
+		gb.EnvBuf = C(GrainBufHanningEnv)
 	}
-	if self.MaxGrains == nil {
-		self.MaxGrains = C(GrainBufDefaultMaxGrains)
+	if gb.MaxGrains == nil {
+		gb.MaxGrains = C(GrainBufDefaultMaxGrains)
 	}
 }
 
@@ -87,11 +87,11 @@ func (self *GrainBuf) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
-func (self GrainBuf) Rate(rate int8) Input {
+func (gb GrainBuf) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.BufNum == nil {
+	if gb.BufNum == nil {
 		panic(fmt.Errorf("BufNum can not be nil"))
 	}
-	(&self).defaults()
-	return UgenInput("GrainBuf", rate, 0, self.NumChannels, self.Trigger, self.Dur, self.BufNum, self.Speed, self.Pos, self.Interp, self.Pan, self.EnvBuf, self.MaxGrains)
+	(&gb).defaults()
+	return UgenInput("GrainBuf", rate, 0, gb.NumChannels, gb.Trigger, gb.Dur, gb.BufNum, gb.Speed, gb.Pos, gb.Interp, gb.Pan, gb.EnvBuf, gb.MaxGrains)
 }

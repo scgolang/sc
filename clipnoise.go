@@ -8,6 +8,6 @@ type ClipNoise struct{}
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self ClipNoise) Rate(rate int8) Input {
+func (cn ClipNoise) Rate(rate int8) Input {
 	return UgenInput("ClipNoise", rate, 0, 1)
 }

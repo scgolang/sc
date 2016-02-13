@@ -8,20 +8,20 @@ type Gate struct {
 	Trig Input
 }
 
-func (self *Gate) defaults() {
-	if self.Trig == nil {
-		self.Trig = C(0)
+func (gate *Gate) defaults() {
+	if gate.Trig == nil {
+		gate.Trig = C(0)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If an In signal is not provided this method will
 // trigger a runtime panic.
-func (self Gate) Rate(rate int8) Input {
+func (gate Gate) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.In == nil {
+	if gate.In == nil {
 		panic("Gate expects In to not be nil")
 	}
-	(&self).defaults()
-	return UgenInput("Gate", rate, 0, 1, self.In, self.Trig)
+	(&gate).defaults()
+	return UgenInput("Gate", rate, 0, 1, gate.In, gate.Trig)
 }

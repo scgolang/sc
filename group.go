@@ -27,30 +27,30 @@ type Group struct {
 }
 
 // Synth adds a synth to a group
-func (self *Group) Synth(defName string, id, action int32, ctls map[string]float32) (*Synth, error) {
-	return self.client.Synth(defName, id, action, self.Node.id, ctls)
+func (g *Group) Synth(defName string, id, action int32, ctls map[string]float32) (*Synth, error) {
+	return g.client.Synth(defName, id, action, g.Node.id, ctls)
 }
 
 // Free frees all the nodes in a group
-func (self *Group) Free() error {
+func (g *Group) Free() error {
 	return nil
 }
 
 // FreeAll frees all the nodes in a group recursively
-func (self *Group) FreeAll() error {
+func (g *Group) FreeAll() error {
 	return nil
 }
 
 // WriteJSON writes a JSON representation of a group to an io.Writer
-func (self *Group) WriteJSON(w io.Writer) error {
+func (g *Group) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
-	return enc.Encode(self)
+	return enc.Encode(g)
 }
 
 // WriteXML writes an XML representation of a group to an io.Writer
-func (self *Group) WriteXML(w io.Writer) error {
+func (g *Group) WriteXML(w io.Writer) error {
 	enc := xml.NewEncoder(w)
-	return enc.Encode(self)
+	return enc.Encode(g)
 }
 
 // newGroup creates a new Group structure

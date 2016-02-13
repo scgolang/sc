@@ -8,20 +8,20 @@ type Decay struct {
 	Decay Input
 }
 
-func (self *Decay) defaults() {
-	if self.Decay == nil {
-		self.Decay = C(1)
+func (decay *Decay) defaults() {
+	if decay.Decay == nil {
+		decay.Decay = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If an In signal is not provided this method will
 // trigger a runtime panic.
-func (self Decay) Rate(rate int8) Input {
+func (decay Decay) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.In == nil {
+	if decay.In == nil {
 		panic("Decay expects In to not be nil")
 	}
-	(&self).defaults()
-	return UgenInput("Decay", rate, 0, 1, self.In, self.Decay)
+	(&decay).defaults()
+	return UgenInput("Decay", rate, 0, 1, decay.In, decay.Decay)
 }

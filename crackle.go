@@ -6,17 +6,17 @@ type Crackle struct {
 	Chaos Input
 }
 
-func (self *Crackle) defaults() {
-	if self.Chaos == nil {
-		self.Chaos = C(1.5)
+func (crackle *Crackle) defaults() {
+	if crackle.Chaos == nil {
+		crackle.Chaos = C(1.5)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Crackle) Rate(rate int8) Input {
+func (crackle Crackle) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("Crackle", rate, 0, 1, self.Chaos)
+	(&crackle).defaults()
+	return UgenInput("Crackle", rate, 0, 1, crackle.Chaos)
 }

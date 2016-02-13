@@ -16,26 +16,26 @@ type AllpassN struct {
 	Decay Input
 }
 
-func (self *AllpassN) defaults() {
-	if self.MaxDelay == nil {
-		self.MaxDelay = C(0.2)
+func (apn *AllpassN) defaults() {
+	if apn.MaxDelay == nil {
+		apn.MaxDelay = C(0.2)
 	}
-	if self.Delay == nil {
-		self.Delay = C(0.2)
+	if apn.Delay == nil {
+		apn.Delay = C(0.2)
 	}
-	if self.Decay == nil {
-		self.Decay = C(1)
+	if apn.Decay == nil {
+		apn.Decay = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self AllpassN) Rate(rate int8) Input {
-	if self.In == nil {
+func (apn AllpassN) Rate(rate int8) Input {
+	if apn.In == nil {
 		panic("AllpassN expects In to not be nil")
 	}
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("AllpassN", rate, 0, 1, self.In, self.MaxDelay, self.Delay, self.Decay)
+	(&apn).defaults()
+	return UgenInput("AllpassN", rate, 0, 1, apn.In, apn.MaxDelay, apn.Delay, apn.Decay)
 }

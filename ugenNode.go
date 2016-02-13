@@ -30,45 +30,45 @@ type UgenNode struct {
 	outputs      []Output
 }
 
-func (self *UgenNode) Name() string {
-	return self.name
+func (un *UgenNode) Name() string {
+	return un.name
 }
 
-func (self *UgenNode) Rate() int8 {
-	return self.rate
+func (un *UgenNode) Rate() int8 {
+	return un.rate
 }
 
-func (self *UgenNode) SpecialIndex() int16 {
-	return self.specialIndex
+func (un *UgenNode) SpecialIndex() int16 {
+	return un.specialIndex
 }
 
-func (self *UgenNode) Inputs() []Input {
-	return self.inputs
+func (un *UgenNode) Inputs() []Input {
+	return un.inputs
 }
 
-func (self *UgenNode) Outputs() []Output {
-	return self.outputs
+func (un *UgenNode) Outputs() []Output {
+	return un.outputs
 }
 
-func (self *UgenNode) IsOutput() {
-	if self.outputs == nil {
-		self.outputs = make([]Output, self.numOutputs)
-		for i := range self.outputs {
-			self.outputs[i] = Output(self.rate)
+func (un *UgenNode) IsOutput() {
+	if un.outputs == nil {
+		un.outputs = make([]Output, un.numOutputs)
+		for i := range un.outputs {
+			un.outputs[i] = Output(un.rate)
 		}
 	}
 }
 
-func (self *UgenNode) Mul(val Input) Input {
-	return BinOpMul(self.rate, self, val, self.numOutputs)
+func (un *UgenNode) Mul(val Input) Input {
+	return BinOpMul(un.rate, un, val, un.numOutputs)
 }
 
-func (self *UgenNode) Add(val Input) Input {
-	return BinOpAdd(self.rate, self, val, self.numOutputs)
+func (un *UgenNode) Add(val Input) Input {
+	return BinOpAdd(un.rate, un, val, un.numOutputs)
 }
 
-func (self *UgenNode) MulAdd(mul, add Input) Input {
-	return MulAdd(self.rate, self, mul, add, self.numOutputs)
+func (un *UgenNode) MulAdd(mul, add Input) Input {
+	return MulAdd(un.rate, un, mul, add, un.numOutputs)
 }
 
 // NewUgenNode is a factory function for creating new UgenNode instances.

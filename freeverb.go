@@ -12,26 +12,26 @@ type FreeVerb struct {
 	Damp Input
 }
 
-func (self *FreeVerb) defaults() {
-	if self.Mix == nil {
-		self.Mix = C(0.33)
+func (fv *FreeVerb) defaults() {
+	if fv.Mix == nil {
+		fv.Mix = C(0.33)
 	}
-	if self.Room == nil {
-		self.Room = C(0.5)
+	if fv.Room == nil {
+		fv.Room = C(0.5)
 	}
-	if self.Damp == nil {
-		self.Damp = C(0.5)
+	if fv.Damp == nil {
+		fv.Damp = C(0.5)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If an In signal is not provided this method will
 // trigger a runtime panic.
-func (self FreeVerb) Rate(rate int8) Input {
+func (fv FreeVerb) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.In == nil {
+	if fv.In == nil {
 		panic("FreeVerb expects In to not be nil")
 	}
-	(&self).defaults()
-	return UgenInput("FreeVerb", rate, 0, 1, self.In, self.Mix, self.Room, self.Damp)
+	(&fv).defaults()
+	return UgenInput("FreeVerb", rate, 0, 1, fv.In, fv.Mix, fv.Room, fv.Damp)
 }

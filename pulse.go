@@ -8,20 +8,20 @@ type Pulse struct {
 	Width Input
 }
 
-func (self *Pulse) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (pulse *Pulse) defaults() {
+	if pulse.Freq == nil {
+		pulse.Freq = C(440)
 	}
-	if self.Width == nil {
-		self.Width = C(0.5)
+	if pulse.Width == nil {
+		pulse.Width = C(0.5)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Pulse) Rate(rate int8) Input {
+func (pulse Pulse) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("Pulse", rate, 0, 1, self.Freq, self.Width)
+	(&pulse).defaults()
+	return UgenInput("Pulse", rate, 0, 1, pulse.Freq, pulse.Width)
 }

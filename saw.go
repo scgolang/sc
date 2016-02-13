@@ -1,6 +1,6 @@
 package sc
 
-// Saw
+// Saw is a band-limited sawtooth wave generator.
 type Saw struct {
 	Freq Input
 }

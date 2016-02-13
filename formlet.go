@@ -1,7 +1,6 @@
 package sc
 
-// Formlet
-// A resonant filter whose impulse response is like that of a sine wave
+// Formlet is a resonant filter whose impulse response is like that of a sine wave
 // with a Decay2 envelope over it.
 // The great advantage to this filter over FOF is that there is no limit
 // to the number of overlapping grains since the grain is just the

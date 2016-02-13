@@ -4,13 +4,16 @@ import (
 	"fmt"
 )
 
+// Envelope shapes for grain amp envelope.
 const (
-	GrainBufHanningEnv       = -1
-	GrainBufNoInterp         = 1
-	GrainBufLinearInterp     = 2
-	GrainBufCubicInterp      = 4
-	GrainBufDefaultMaxGrains = 512
+	GrainBufHanningEnv   = -1
+	GrainBufNoInterp     = 1
+	GrainBufLinearInterp = 2
+	GrainBufCubicInterp  = 4
 )
+
+// GrainBufDefaultMaxGrains is the default value of MaxGrains.
+const GrainBufDefaultMaxGrains = 512
 
 // GrainBuf is a table-lookup sinewave oscillator
 type GrainBuf struct {

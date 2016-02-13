@@ -1,6 +1,6 @@
 package sc
 
-// CombL
+// CombL is a delay line with linear interpolation.
 type CombL struct {
 	// In the input signal
 	In Input

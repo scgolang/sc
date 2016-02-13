@@ -5,12 +5,13 @@ import (
 	"io"
 )
 
-// variant
+// Variant provides a way to create synthdef presets.
 type Variant struct {
 	Name               string    `json:'name,omitempty'`
 	InitialParamValues []float32 `json:'initialParamValues'`
 }
 
+// Write writes a variant to an io.Writer.
 func (variant *Variant) Write(w io.Writer) error {
 	err := newPstring(variant.Name).Write(w)
 	if err != nil {

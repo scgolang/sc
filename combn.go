@@ -1,6 +1,6 @@
 package sc
 
-// CombN
+// CombN is a delay line with no interpolation.
 type CombN struct {
 	// In the input signal
 	In Input

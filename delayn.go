@@ -1,7 +1,6 @@
 package sc
 
-// DelayN
-// Simple delay line with no interpolation.
+// DelayN is a simple delay line with no interpolation.
 type DelayN struct {
 	// In the input signal
 	In Input

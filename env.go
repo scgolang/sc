@@ -6,21 +6,21 @@ import (
 )
 
 const (
-	// A flat envelope segment
+	// CurveStep is a flat envelope segment.
 	CurveStep = C(0)
-	// A linear envelope segment
+	// CurveLinear is a linear envelope segment.
 	CurveLinear = C(1)
-	// An exponential envelope segment
+	// CurveExp is an exponential envelope segment.
 	CurveExp = C(2)
-	// A sinusoidal shaped envelope segment
+	// CurveSine is a sinusoidal shaped envelope segment.
 	CurveSine = C(3)
-	// A sinusoidal segment shaped like the sides of a welch window
+	// CurveWelch is a sinusoidal segment shaped like the sides of a welch window.
 	CurveWelch = C(4)
-	// An undocumented (on doc.sccode.org) envelope segment shape
+	// CurveCustom is an undocumented (on doc.sccode.org) envelope segment shape.
 	CurveCustom = C(5)
-	// A squared envelope segment
+	// CurveSquared is a squared envelope segment.
 	CurveSquared = C(6)
-	// A cubed envelope segment
+	// CurveCubed is a cubed envelope segment.
 	CurveCubed = C(7)
 )
 
@@ -63,6 +63,7 @@ func (e *Env) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (e Env) Inputs() []Input {
 	// This is how the inputs array is constructed:
 	// 0, 3, -99, -99, -- starting level, num segments, releaseNode, loopNode
@@ -118,6 +119,7 @@ func (linen *EnvLinen) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (linen EnvLinen) Inputs() []Input {
 	(&linen).defaults()
 
@@ -144,6 +146,7 @@ func (tri *EnvTriangle) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (tri EnvTriangle) Inputs() []Input {
 	(&tri).defaults()
 
@@ -170,6 +173,7 @@ func (sine *EnvSine) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (sine EnvSine) Inputs() []Input {
 	(&sine).defaults()
 
@@ -202,6 +206,7 @@ func (perc *EnvPerc) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (perc EnvPerc) Inputs() []Input {
 	(&perc).defaults()
 
@@ -237,6 +242,7 @@ type EnvPairs struct {
 	CurveType C
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (pairs EnvPairs) Inputs() []Input {
 	sort.Sort(&(pairs.Pairs))
 
@@ -279,6 +285,7 @@ func (tlc EnvTLC) Swap(i, j int) {
 	tlc[i], tlc[j] = tlc[j], tlc[i]
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (tlc EnvTLC) Inputs() []Input {
 	sort.Sort(tlc)
 
@@ -327,6 +334,7 @@ func (adsr *EnvADSR) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (adsr EnvADSR) Inputs() []Input {
 	(&adsr).defaults()
 
@@ -375,6 +383,7 @@ func (dadsr *EnvDADSR) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (dadsr EnvDADSR) Inputs() []Input {
 	(&dadsr).defaults()
 
@@ -412,6 +421,7 @@ func (asr *EnvASR) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (asr EnvASR) Inputs() []Input {
 	(&asr).defaults()
 
@@ -441,6 +451,7 @@ func (cutoff *EnvCutoff) defaults() {
 	}
 }
 
+// Inputs returns the array of inputs that defines the Env.
 func (cutoff EnvCutoff) Inputs() []Input {
 	(&cutoff).defaults()
 

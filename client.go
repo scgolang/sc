@@ -23,22 +23,35 @@ const (
 	bufferAllocAddress     = "/b_alloc"
 	bufferReadAddress      = "/b_allocRead"
 	bufferGenAddress       = "/b_gen"
-	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
+)
+
+// Arguments to dumpOSC command.
+// See http://doc.sccode.org/Reference/Server-Command-Reference.html#/dumpOSC
+const (
 	DumpOff      = 0
 	DumpParsed   = 1
 	DumpContents = 2
 	DumpAll      = 3
-	// see http://doc.sccode.org/Reference/Server-Command-Reference.html#/s_new
+)
+
+// Arguments to s_new command.
+// See http://doc.sccode.org/Reference/Server-Command-Reference.html#/s_new
+const (
 	AddToHead  = int32(0)
 	AddToTail  = int32(1)
 	AddBefore  = int32(2)
 	AddAfter   = int32(3)
 	AddReplace = int32(4)
-	// see http://doc.sccode.org/Reference/default_group.html
-	RootNodeID         = int32(0)
-	DefaultGroupID     = int32(1)
-	GenerateSynthID    = int32(-1)
-	DefaultLocalAddr   = "0.0.0.0:57110"
+)
+
+const (
+	// RootNodeID is what sclang uses as the root node ID. See http://doc.sccode.org/Classes/RootNode.html.
+	RootNodeID = int32(0)
+	// DefaultGroupID is what sclang uses for the default group ID. See http://doc.sccode.org/Reference/default_group.html.
+	DefaultGroupID = int32(1)
+	// DefaultLocalAddr is the listening address for DefaultClient.
+	DefaultLocalAddr = "0.0.0.0:57110"
+	// DefaultScsynthAddr is the remote address for DefaultClient.
 	DefaultScsynthAddr = "0.0.0.0:57120"
 )
 
@@ -128,21 +141,21 @@ func (c *Client) Close() error {
 }
 
 // Status gets the status of scsynth.
-// func (c *Client) GetStatus() (*ServerStatus, error) {
-// 	statusReq, err := osc.NewMessage(statusAddress)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if err := c.oscConn.Send(statusReq); err != nil {
-// 		return nil, err
-// 	}
-// 	select {
-// 	case msg := <-c.statusChan:
-// 		return newStatus(msg)
-// 	case err = <-c.oscErrChan:
-// 		return nil, err
-// 	}
-// }
+func (c *Client) Status() (*ServerStatus, error) {
+	statusReq, err := osc.NewMessage(statusAddress)
+	if err != nil {
+		return nil, err
+	}
+	if err := c.oscConn.Send(statusReq); err != nil {
+		return nil, err
+	}
+	select {
+	case msg := <-c.statusChan:
+		return newStatus(msg)
+	case err = <-c.oscErrChan:
+		return nil, err
+	}
+}
 
 // SendDef sends a synthdef to scsynth.
 // This method blocks until a /done message is received
@@ -233,7 +246,7 @@ func (c *Client) Synth(defName string, id, action, target int32, ctls map[string
 	return newSynth(c, defName, id), nil
 }
 
-// NewGroup creates a group
+// Group creates a group.
 func (c *Client) Group(id, action, target int32) (*Group, error) {
 	dumpReq, err := osc.NewMessage(groupNewAddress)
 	if err != nil {
@@ -254,12 +267,12 @@ func (c *Client) Group(id, action, target int32) (*Group, error) {
 	return newGroup(c, id), nil
 }
 
-// AddDefaltGroup adds the default group
+// AddDefaultGroup adds the default group.
 func (c *Client) AddDefaultGroup() (*Group, error) {
 	return c.Group(DefaultGroupID, AddToTail, RootNodeID)
 }
 
-// QueryGroup g_queryTree for a particular group
+// QueryGroup g_queryTree for a particular group.
 func (c *Client) QueryGroup(id int32) (*Group, error) {
 	addr := gqueryTreeAddress
 	gq, err := osc.NewMessage(addr)

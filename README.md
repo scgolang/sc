@@ -36,13 +36,16 @@ installed (see http://supercollider.github.io/download.html).
 Next, you must install go (see https://golang.org/dl).
 
 Then
-$ go get github.com/scgolang/sc
+
+```
+go get github.com/scgolang/sc
+```
 
 ## Test
 
-There are a handful of synthdef files that are necessary for
-the tests. These synthdef files are created by sclang,
-so you have to
+There are a handful of synthdef files that are necessary for the tests.
+
+These synthdef files are created by sclang, so you have to
 
 ```
 make test
@@ -54,8 +57,8 @@ instead of
 go test
 ```
 
-Also, there are tests that attempt to connect to scsynth on port 57120 (see
-client_test.go).
+Also, there are tests that attempt to connect to scsynth on port 57120 (see client_test.go).
+
 If you do not have scsynth running the test will hang, so run
 
 ```

@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-// COsc
-// Chorusing wavetable lookup oscillator. Produces sum of 2 signals at
+// COsc is a chorusing wavetable lookup oscillator.
+// Produces sum of 2 signals at
 //     freq +- (beats / 2)
 // Due to summing, the peak amplitude is twice that of the wavetable.
 type COsc struct {

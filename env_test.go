@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ACCEPTABLE_FLOAT_ERROR = 0.0001
+	FloatErrTolerance = 0.0001
 )
 
 // All of the expected values in these tests were generated
@@ -74,7 +74,7 @@ func verifyInputs(t *testing.T, expect []float32, inputs []Input) {
 		default:
 			t.Fatalf("input %d was not a float or int (%v)", i, in)
 		}
-		if err := math.Abs(float64(val - expect[i])); err > ACCEPTABLE_FLOAT_ERROR {
+		if err := math.Abs(float64(val - expect[i])); err > FloatErrTolerance {
 			t.Fatalf(errmsg, expect[i], i, val)
 		}
 	}

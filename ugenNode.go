@@ -1,7 +1,7 @@
 package sc
 
+// UGen done actions, see http://doc.sccode.org/Reference/UGen-doneActions.html
 const (
-	// UGen done actions, see http://doc.sccode.org/Reference/UGen-doneActions.html
 	DoNothing             = 0
 	Pause                 = 1
 	FreeEnclosing         = 2
@@ -20,7 +20,7 @@ const (
 	// next-to-last options [bps]
 )
 
-// ugen node base type
+// UgenNode represents a node in a ugen graph.
 type UgenNode struct {
 	name         string
 	rate         int8
@@ -30,26 +30,32 @@ type UgenNode struct {
 	outputs      []Output
 }
 
+// Name returns the name of the ugen node.
 func (un *UgenNode) Name() string {
 	return un.name
 }
 
+// Rate returns the rate of the ugen node.
 func (un *UgenNode) Rate() int8 {
 	return un.rate
 }
 
+// SpecialIndex returns the special index of the ugen node.
 func (un *UgenNode) SpecialIndex() int16 {
 	return un.specialIndex
 }
 
+// Inputs returns the inputs of the ugen node.
 func (un *UgenNode) Inputs() []Input {
 	return un.inputs
 }
 
+// Outputs returns the outputs of the ugen node.
 func (un *UgenNode) Outputs() []Output {
 	return un.outputs
 }
 
+// IsOutput initializes the outputs array of the ugen node.
 func (un *UgenNode) IsOutput() {
 	if un.outputs == nil {
 		un.outputs = make([]Output, un.numOutputs)
@@ -59,14 +65,17 @@ func (un *UgenNode) IsOutput() {
 	}
 }
 
+// Mul multiplies the ugen node by an input.
 func (un *UgenNode) Mul(val Input) Input {
 	return BinOpMul(un.rate, un, val, un.numOutputs)
 }
 
+// Add adds an input to a ugen node.
 func (un *UgenNode) Add(val Input) Input {
 	return BinOpAdd(un.rate, un, val, un.numOutputs)
 }
 
+// MulAdd multiplies and adds inputs to a ugen node.
 func (un *UgenNode) MulAdd(mul, add Input) Input {
 	return MulAdd(un.rate, un, mul, add, un.numOutputs)
 }

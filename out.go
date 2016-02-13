@@ -1,6 +1,6 @@
 package sc
 
-// Out
+// Out writes a signal to a bus.
 type Out struct {
 	Bus      C
 	Channels Input

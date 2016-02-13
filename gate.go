@@ -1,6 +1,7 @@
 package sc
 
-// Gate
+// Gate allows an input signal value to pass when gate is
+// positive, otherwise holds last value.
 type Gate struct {
 	// In is the input signal.
 	In Input

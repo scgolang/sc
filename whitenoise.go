@@ -1,6 +1,6 @@
 package sc
 
-// WhiteNoise
+// WhiteNoise generates noise whose spectrum has equal power at all frequencies.
 type WhiteNoise struct {
 }
 

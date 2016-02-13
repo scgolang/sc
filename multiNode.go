@@ -1,9 +1,11 @@
 package sc
 
+// MultiNode is a MultiInput that consists of ugens.
 type MultiNode struct {
 	nodes []*UgenNode
 }
 
+// InputArray returns the ugens as a slice of Inputs.
 func (mn *MultiNode) InputArray() []Input {
 	l := len(mn.nodes)
 	inputs := make([]Input, l)
@@ -13,11 +15,12 @@ func (mn *MultiNode) InputArray() []Input {
 	return inputs
 }
 
+// Nodes returns the slice of Ugen nodes.
 func (mn *MultiNode) Nodes() []*UgenNode {
 	return mn.nodes
 }
 
-// Input implementation
+// Mul multiplies all the ugens by an input.
 func (mn *MultiNode) Mul(val Input) Input {
 	l := len(mn.nodes)
 	a := make([]*UgenNode, l)
@@ -27,7 +30,7 @@ func (mn *MultiNode) Mul(val Input) Input {
 	return &MultiNode{a}
 }
 
-// Input implementation
+// Add adds an input to all the ugens.
 func (mn *MultiNode) Add(val Input) Input {
 	l := len(mn.nodes)
 	a := make([]*UgenNode, l)
@@ -37,6 +40,8 @@ func (mn *MultiNode) Add(val Input) Input {
 	return &MultiNode{a}
 }
 
+// MulAdd does both multiplication and addition on all the
+// ugen nodes.
 func (mn *MultiNode) MulAdd(mul, add Input) Input {
 	l := len(mn.nodes)
 	a := make([]*UgenNode, l)
@@ -46,6 +51,7 @@ func (mn *MultiNode) MulAdd(mul, add Input) Input {
 	return &MultiNode{a}
 }
 
+// NewMultiNode creates a new MultiNode.
 func NewMultiNode(nodes ...*UgenNode) *MultiNode {
 	return &MultiNode{nodes}
 }

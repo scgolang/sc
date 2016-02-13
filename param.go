@@ -1,5 +1,7 @@
 package sc
 
+// Params is an interface that allows you to add parameters to
+// a synthdef.
 type Params interface {
 	// Add adds a named parameter to a synthdef, with an initial value
 	Add(name string, initialValue float32) Input
@@ -10,6 +12,7 @@ type Params interface {
 	Control() Ugen
 }
 
+// Param is the interface of a single synthdef parameter.
 type Param interface {
 	// Name returns the name of the synthdef param
 	Name() string

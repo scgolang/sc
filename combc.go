@@ -1,6 +1,6 @@
 package sc
 
-// CombC
+// CombC is a delay line with cubic interpolation.
 type CombC struct {
 	// In the input signal
 	In Input

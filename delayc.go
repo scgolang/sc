@@ -1,7 +1,6 @@
 package sc
 
-// DelayC
-// Simple delay line with cubic interpolation.
+// DelayC is a simple delay line with cubic interpolation.
 // DelayC is more computationally intensive than DelayL, but more accurate.
 // Note that DelayC needs at least 4 samples of delay buffer.
 type DelayC struct {

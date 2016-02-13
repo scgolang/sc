@@ -1,5 +1,6 @@
 package sc
 
+// UgenFunc is a func that is used to define a ugen graph.
 type UgenFunc func(p Params) Ugen
 
 // Play corresponds to http://doc.sccode.org/Classes/Function.html#-play.

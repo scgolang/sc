@@ -1,7 +1,6 @@
 package sc
 
-// DelayL
-// Simple delay line with linear interpolation.
+// DelayL is a simple delay line with linear interpolation.
 // DelayL is more computationally intensive than DelayN, but more accurate.
 type DelayL struct {
 	// In the input signal

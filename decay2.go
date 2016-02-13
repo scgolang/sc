@@ -1,6 +1,8 @@
 package sc
 
-// Decay2
+// Decay2 is just like Decay, except it rounds off the attack
+// by subtracting one Decay from another. This fixes the sharp
+// attacks and clicks that can sometimes occur with Decay.
 type Decay2 struct {
 	// In is the input signal
 	In Input

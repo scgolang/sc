@@ -1,6 +1,6 @@
 package sc
 
-// Decay
+// Decay is an exponential decay.
 type Decay struct {
 	// In is the input signal
 	In Input

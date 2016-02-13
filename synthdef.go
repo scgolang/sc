@@ -23,7 +23,7 @@ const (
 
 var byteOrder = binary.BigEndian
 
-// synthdef defines the structure of synth def data as defined
+// Synthdef defines the structure of synthdef data as defined
 // in http://doc.sccode.org/Reference/Synth-Definition-File-Format.html
 type Synthdef struct {
 	// Name is the name of the synthdef
@@ -146,12 +146,14 @@ func (def *Synthdef) Write(w io.Writer) error {
 }
 
 // WriteJSON writes a json-formatted representation of a
-// synthdef to an io.Writer
+// synthdef to an io.Writer.
 func (def *Synthdef) WriteJSON(w io.Writer) error {
 	enc := json.NewEncoder(w)
 	return enc.Encode(def)
 }
 
+// WriteXML writes an xml-formatted representation of a synthdef
+// to an io.Writer.
 func (def *Synthdef) WriteXML(w io.Writer) error {
 	enc := xml.NewEncoder(w)
 	return enc.Encode(def)
@@ -159,7 +161,7 @@ func (def *Synthdef) WriteXML(w io.Writer) error {
 
 // Bytes writes a synthdef to a byte array
 func (def *Synthdef) Bytes() ([]byte, error) {
-	arr := make([]byte, 0)
+	arr := []byte{}
 	buf := bytes.NewBuffer(arr)
 	err := def.Write(buf)
 	if err != nil {

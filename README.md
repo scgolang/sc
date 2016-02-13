@@ -85,5 +85,5 @@ See https://github.com/scgolang/sc/milestones
 
 This project is hugely indebted to
 
-(1) The supercollider developer community
-(2) Overtone (https://github.com/overtone/overtone)
+* The supercollider developer community
+* Overtone (https://github.com/overtone/overtone)

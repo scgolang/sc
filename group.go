@@ -16,19 +16,19 @@ const (
 
 // Node is a node in a graph
 type Node struct {
-	id int32 `json:"id" xml:"id,attr"`
+	ID int32 `json:"id" xml:"id,attr"`
 }
 
 // Group is a group of synth nodes
 type Group struct {
 	Node     `json:"node" xml:"node"`
-	children []*Node `json:"children" xml:"children>child"`
+	Children []*Node `json:"children" xml:"children>child"`
 	client   *Client
 }
 
 // Synth adds a synth to a group
 func (g *Group) Synth(defName string, id, action int32, ctls map[string]float32) (*Synth, error) {
-	return g.client.Synth(defName, id, action, g.Node.id, ctls)
+	return g.client.Synth(defName, id, action, g.Node.ID, ctls)
 }
 
 // Free frees all the nodes in a group
@@ -56,8 +56,8 @@ func (g *Group) WriteXML(w io.Writer) error {
 // newGroup creates a new Group structure
 func newGroup(client *Client, id int32) *Group {
 	return &Group{
-		Node:     Node{id: id},
-		children: make([]*Node, 0),
+		Node:     Node{ID: id},
+		Children: make([]*Node, 0),
 		client:   client,
 	}
 }
@@ -80,7 +80,7 @@ func parseGroup(msg *osc.Message) (*Group, error) {
 	if err != nil {
 		return nil, err
 	}
-	g.Node.id = nodeID
+	g.Node.ID = nodeID
 
 	// initialize the children array
 	numChildren, err := msg.ReadInt32()
@@ -90,7 +90,7 @@ func parseGroup(msg *osc.Message) (*Group, error) {
 	if numChildren < 0 {
 		return nil, fmt.Errorf("expected numChildren >= 0, got %d", numChildren)
 	}
-	g.children = make([]*Node, numChildren)
+	g.Children = make([]*Node, numChildren)
 	// get the childrens' ids
 	var numControls, numSubChildren int32
 	for i := 3; i < numArgs; {
@@ -98,7 +98,7 @@ func parseGroup(msg *osc.Message) (*Group, error) {
 		if err != nil {
 			return nil, err
 		}
-		g.children[i-3] = &Node{nodeID}
+		g.Children[i-3] = &Node{ID: nodeID}
 		// get the number of children of this node
 		// if -1 this is a synth, if >= 0 this is a group
 		numSubChildren, err = msg.ReadInt32()

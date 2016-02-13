@@ -127,7 +127,7 @@ func checkBufferRoutine(routine string) error {
 // checkBufferGenFlags panics if not 0 <= flags <= 4
 func checkBufferGenFlags(flags int) error {
 	if flags < 0 && flags > 4 {
-		return fmt.Errorf("unsupported buffer flags %s", flags)
+		return fmt.Errorf("unsupported buffer flags %d", flags)
 	}
 	return nil
 }

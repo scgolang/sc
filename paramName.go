@@ -7,8 +7,8 @@ import (
 
 // ParamName represents a parameter name of a synthdef
 type ParamName struct {
-	Name  string `json:'name,omitempty'`
-	Index int32  `json:'index,omitempty'`
+	Name  string `json:"name,omitempty"`
+	Index int32  `json:"index,omitempty"`
 }
 
 func (pn *ParamName) Write(w io.Writer) error {

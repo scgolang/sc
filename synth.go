@@ -11,8 +11,8 @@ const (
 
 // Synth encapsulates a synth node.
 type Synth struct {
-	defName string `json:"defName"`
-	id      int32  `json:"id"`
+	DefName string `json:"defName"`
+	ID      int32  `json:"id"`
 	client  *Client
 }
 

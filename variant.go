@@ -7,8 +7,8 @@ import (
 
 // Variant provides a way to create synthdef presets.
 type Variant struct {
-	Name               string    `json:'name,omitempty'`
-	InitialParamValues []float32 `json:'initialParamValues'`
+	Name               string    `json:"name,omitempty"`
+	InitialParamValues []float32 `json:"initialParamValues"`
 }
 
 // Write writes a variant to an io.Writer.

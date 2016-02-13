@@ -28,11 +28,11 @@ type input struct {
 }
 
 // Write writes an input to an io.Writer
-func (self *input) Write(w io.Writer) error {
-	if we := binary.Write(w, byteOrder, self.UgenIndex); we != nil {
+func (input *input) Write(w io.Writer) error {
+	if we := binary.Write(w, byteOrder, input.UgenIndex); we != nil {
 		return we
 	}
-	return binary.Write(w, byteOrder, self.OutputIndex)
+	return binary.Write(w, byteOrder, input.OutputIndex)
 }
 
 func readinput(r io.Reader) (input, error) {

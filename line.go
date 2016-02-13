@@ -8,23 +8,23 @@ type Line struct {
 	Done  int
 }
 
-func (self *Line) defaults() {
-	if self.Start == nil {
-		self.Start = C(0)
+func (line *Line) defaults() {
+	if line.Start == nil {
+		line.Start = C(0)
 	}
-	if self.End == nil {
-		self.End = C(1)
+	if line.End == nil {
+		line.End = C(1)
 	}
-	if self.Dur == nil {
-		self.Dur = C(1)
+	if line.Dur == nil {
+		line.Dur = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Line) Rate(rate int8) Input {
+func (line Line) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("Line", rate, 0, 1, self.Start, self.End, self.Dur, C(float32(self.Done)))
+	(&line).defaults()
+	return UgenInput("Line", rate, 0, 1, line.Start, line.End, line.Dur, C(float32(line.Done)))
 }

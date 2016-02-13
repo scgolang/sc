@@ -11,12 +11,12 @@ type Variant struct {
 	InitialParamValues []float32 `json:'initialParamValues'`
 }
 
-func (self *Variant) Write(w io.Writer) error {
-	err := newPstring(self.Name).Write(w)
+func (variant *Variant) Write(w io.Writer) error {
+	err := newPstring(variant.Name).Write(w)
 	if err != nil {
 		return err
 	}
-	for _, v := range self.InitialParamValues {
+	for _, v := range variant.InitialParamValues {
 		err = binary.Write(w, byteOrder, v)
 		if err != nil {
 			return err

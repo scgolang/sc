@@ -14,26 +14,26 @@ type MouseX struct {
 	Lag Input
 }
 
-func (self *MouseX) defaults() {
-	if self.Min == nil {
-		self.Min = C(0)
+func (m *MouseX) defaults() {
+	if m.Min == nil {
+		m.Min = C(0)
 	}
-	if self.Max == nil {
-		self.Max = C(1)
+	if m.Max == nil {
+		m.Max = C(1)
 	}
-	if self.Warp == nil {
-		self.Warp = C(0)
+	if m.Warp == nil {
+		m.Warp = C(0)
 	}
-	if self.Lag == nil {
-		self.Lag = C(0.2)
+	if m.Lag == nil {
+		m.Lag = C(0.2)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self MouseX) Rate(rate int8) Input {
+func (m MouseX) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("MouseX", rate, 0, 1, self.Min, self.Max, self.Warp, self.Lag)
+	(&m).defaults()
+	return UgenInput("MouseX", rate, 0, 1, m.Min, m.Max, m.Warp, m.Lag)
 }

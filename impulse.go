@@ -8,20 +8,20 @@ type Impulse struct {
 	Phase Input
 }
 
-func (self *Impulse) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (impulse *Impulse) defaults() {
+	if impulse.Freq == nil {
+		impulse.Freq = C(440)
 	}
-	if self.Phase == nil {
-		self.Phase = C(0)
+	if impulse.Phase == nil {
+		impulse.Phase = C(0)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Impulse) Rate(rate int8) Input {
+func (impulse Impulse) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("Impulse", rate, 0, 1, self.Freq, self.Phase)
+	(&impulse).defaults()
+	return UgenInput("Impulse", rate, 0, 1, impulse.Freq, impulse.Phase)
 }

@@ -10,23 +10,23 @@ type BRF struct {
 	RQ Input
 }
 
-func (self *BRF) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (brf *BRF) defaults() {
+	if brf.Freq == nil {
+		brf.Freq = C(440)
 	}
-	if self.RQ == nil {
-		self.RQ = C(1)
+	if brf.RQ == nil {
+		brf.RQ = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self BRF) Rate(rate int8) Input {
-	if self.In == nil {
+func (brf BRF) Rate(rate int8) Input {
+	if brf.In == nil {
 		panic("BRF expects In to not be nil")
 	}
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("BRF", rate, 0, 1, self.In, self.Freq, self.RQ)
+	(&brf).defaults()
+	return UgenInput("BRF", rate, 0, 1, brf.In, brf.Freq, brf.RQ)
 }

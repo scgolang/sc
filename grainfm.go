@@ -34,33 +34,33 @@ type GrainFM struct {
 	MaxGrains Input
 }
 
-func (self *GrainFM) defaults() {
-	if self.NumChannels == 0 {
-		self.NumChannels = 1
+func (gfm *GrainFM) defaults() {
+	if gfm.NumChannels == 0 {
+		gfm.NumChannels = 1
 	}
-	if self.Trigger == nil {
-		self.Trigger = C(0)
+	if gfm.Trigger == nil {
+		gfm.Trigger = C(0)
 	}
-	if self.Dur == nil {
-		self.Dur = C(1)
+	if gfm.Dur == nil {
+		gfm.Dur = C(1)
 	}
-	if self.CarFreq == nil {
-		self.CarFreq = C(440)
+	if gfm.CarFreq == nil {
+		gfm.CarFreq = C(440)
 	}
-	if self.ModFreq == nil {
-		self.ModFreq = C(200)
+	if gfm.ModFreq == nil {
+		gfm.ModFreq = C(200)
 	}
-	if self.ModIndex == nil {
-		self.ModIndex = C(1)
+	if gfm.ModIndex == nil {
+		gfm.ModIndex = C(1)
 	}
-	if self.Pan == nil {
-		self.Pan = C(0)
+	if gfm.Pan == nil {
+		gfm.Pan = C(0)
 	}
-	if self.EnvBuf == nil {
-		self.EnvBuf = C(GrainBufHanningEnv)
+	if gfm.EnvBuf == nil {
+		gfm.EnvBuf = C(GrainBufHanningEnv)
 	}
-	if self.MaxGrains == nil {
-		self.MaxGrains = C(GrainBufDefaultMaxGrains)
+	if gfm.MaxGrains == nil {
+		gfm.MaxGrains = C(GrainBufDefaultMaxGrains)
 	}
 }
 
@@ -68,8 +68,8 @@ func (self *GrainFM) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
-func (self GrainFM) Rate(rate int8) Input {
+func (gfm GrainFM) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("GrainFM", rate, 0, self.NumChannels, self.Trigger, self.Dur, self.CarFreq, self.ModFreq, self.ModIndex, self.Pan, self.EnvBuf, self.MaxGrains)
+	(&gfm).defaults()
+	return UgenInput("GrainFM", rate, 0, gfm.NumChannels, gfm.Trigger, gfm.Dur, gfm.CarFreq, gfm.ModFreq, gfm.ModIndex, gfm.Pan, gfm.EnvBuf, gfm.MaxGrains)
 }

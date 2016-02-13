@@ -8,20 +8,20 @@ type SinOsc struct {
 	Phase Input
 }
 
-func (self *SinOsc) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (sin *SinOsc) defaults() {
+	if sin.Freq == nil {
+		sin.Freq = C(440)
 	}
-	if self.Phase == nil {
-		self.Phase = C(0)
+	if sin.Phase == nil {
+		sin.Phase = C(0)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self SinOsc) Rate(rate int8) Input {
+func (sin SinOsc) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("SinOsc", rate, 0, 1, self.Freq, self.Phase)
+	(&sin).defaults()
+	return UgenInput("SinOsc", rate, 0, 1, sin.Freq, sin.Phase)
 }

@@ -32,49 +32,49 @@ type ugen struct {
 	Outputs      []Output `json:"outputs" xml:"Outputs>Output"`
 }
 
-func (self *ugen) AppendInput(i input) {
-	self.Inputs = append(self.Inputs, i)
+func (u *ugen) AppendInput(i input) {
+	u.Inputs = append(u.Inputs, i)
 }
 
-// AddOutput ensures that a ugen has an output at self.Rate
+// AddOutput ensures that a ugen has an output at u.Rate
 // How do you create a ugen with multiple outputs? -bps
-func (self *ugen) AddOutput(o Output) {
-	self.Outputs = append(self.Outputs, o)
+func (u *ugen) AddOutput(o Output) {
+	u.Outputs = append(u.Outputs, o)
 }
 
 // Write writes a Ugen
-func (self *ugen) Write(w io.Writer) error {
+func (u *ugen) Write(w io.Writer) error {
 	// write the synthdef name
-	err := newPstring(self.Name).Write(w)
+	err := newPstring(u.Name).Write(w)
 	if err != nil {
 		return err
 	}
 	// write rate
-	if err = binary.Write(w, byteOrder, self.Rate); err != nil {
+	if err = binary.Write(w, byteOrder, u.Rate); err != nil {
 		return err
 	}
 	// write inputs
-	numInputs := int32(len(self.Inputs))
+	numInputs := int32(len(u.Inputs))
 	if err = binary.Write(w, byteOrder, numInputs); err != nil {
 		return err
 	}
 	// write outputs
-	numOutputs := int32(len(self.Outputs))
+	numOutputs := int32(len(u.Outputs))
 	if err = binary.Write(w, byteOrder, numOutputs); err != nil {
 		return err
 	}
 	// special index
-	if err = binary.Write(w, byteOrder, self.SpecialIndex); err != nil {
+	if err = binary.Write(w, byteOrder, u.SpecialIndex); err != nil {
 		return err
 	}
 	// inputs
-	for _, i := range self.Inputs {
+	for _, i := range u.Inputs {
 		if err = i.Write(w); err != nil {
 			return err
 		}
 	}
 	// outputs
-	for _, o := range self.Outputs {
+	for _, o := range u.Outputs {
 		if err = o.Write(w); err != nil {
 			return err
 		}

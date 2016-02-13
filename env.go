@@ -39,52 +39,58 @@ type Env struct {
 	LoopNode    Input
 }
 
-func (self *Env) defaults() {
-	if self.Levels == nil {
-		self.Levels = []Input{C(0), C(1), C(0)}
+func (e *Env) defaults() {
+	if e.Levels == nil {
+		e.Levels = []Input{C(0), C(1), C(0)}
 	}
-	if self.Times == nil {
-		self.Times = []Input{C(1), C(1)}
+	if e.Times == nil {
+		e.Times = []Input{C(1), C(1)}
 	}
-	if self.CurveTypes == nil {
-		numSegments := len(self.Times)
-		self.CurveTypes = make([]Input, numSegments)
+	if e.CurveTypes == nil {
+		numSegments := len(e.Times)
+		e.CurveTypes = make([]Input, numSegments)
 
-		if self.Curvature == nil {
+		if e.Curvature == nil {
 			for i := 0; i < numSegments; i++ {
-				self.CurveTypes[i] = CurveLinear
+				e.CurveTypes[i] = CurveLinear
 			}
 		} else {
 			for i := 0; i < numSegments; i++ {
-				self.CurveTypes[i] = self.Curvature
+				e.CurveTypes[i] = e.Curvature
 			}
 		}
-		self.Curvature = C(0)
+		e.Curvature = C(0)
 	}
 }
 
-func (self Env) Inputs() []Input {
+func (e Env) Inputs() []Input {
 	// This is how the inputs array is constructed:
 	// 0, 3, -99, -99, -- starting level, num segments, releaseNode, loopNode
 	// 1, 0.1, 5, 4, -- first segment: level, time, curve type, curvature
 	// 0.5, 1, 5, -4, -- second segment: level, time, curve type, curvature
 	// 0, 0.2, 5, 4 -- and so on
-	lc, lt := len(self.CurveTypes), len(self.Times)
+	var (
+		lc = len(e.CurveTypes)
+		lt = len(e.Times)
+	)
 	if lc != lt {
 		panic(fmt.Errorf("%d curve types != %d times", lc, lt))
 	}
-	(&self).defaults()
-	numSegments := len(self.Levels) - 1
-	arr := make([]Input, 4*(numSegments+1))
-	arr[0] = self.Levels[0]
+	(&e).defaults()
+
+	var (
+		numSegments = len(e.Levels) - 1
+		arr         = make([]Input, 4*(numSegments+1))
+	)
+	arr[0] = e.Levels[0]
 	arr[1] = C(numSegments)
-	arr[2] = self.ReleaseNode
-	arr[3] = self.LoopNode
-	for i, t := range self.Times {
-		arr[(4*i)+4] = self.Levels[i+1]
+	arr[2] = e.ReleaseNode
+	arr[3] = e.LoopNode
+	for i, t := range e.Times {
+		arr[(4*i)+4] = e.Levels[i+1]
 		arr[(4*i)+5] = t
-		arr[(4*i)+6] = self.CurveTypes[i]
-		arr[(4*i)+7] = self.Curvature
+		arr[(4*i)+6] = e.CurveTypes[i]
+		arr[(4*i)+7] = e.Curvature
 	}
 	return arr
 }
@@ -94,32 +100,34 @@ type EnvLinen struct {
 	Attack, Sustain, Release, Level, CurveType Input
 }
 
-func (self *EnvLinen) defaults() {
-	if self.Attack == nil {
-		self.Attack = C(0.01)
+func (linen *EnvLinen) defaults() {
+	if linen.Attack == nil {
+		linen.Attack = C(0.01)
 	}
-	if self.Sustain == nil {
-		self.Sustain = C(1)
+	if linen.Sustain == nil {
+		linen.Sustain = C(1)
 	}
-	if self.Release == nil {
-		self.Release = C(1)
+	if linen.Release == nil {
+		linen.Release = C(1)
 	}
-	if self.Level == nil {
-		self.Level = C(1)
+	if linen.Level == nil {
+		linen.Level = C(1)
 	}
-	if self.CurveType == nil {
-		self.CurveType = C(1)
+	if linen.CurveType == nil {
+		linen.CurveType = C(1)
 	}
 }
 
-func (self EnvLinen) Inputs() []Input {
-	(&self).defaults()
-	levels := []Input{C(0), self.Level, self.Level, C(0)}
-	times := []Input{self.Attack, self.Sustain, self.Release}
-	ct := self.CurveType
-	cts := []Input{ct, ct, ct}
-	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.Inputs()
+func (linen EnvLinen) Inputs() []Input {
+	(&linen).defaults()
+
+	var (
+		levels = []Input{C(0), linen.Level, linen.Level, C(0)}
+		times  = []Input{linen.Attack, linen.Sustain, linen.Release}
+		ct     = linen.CurveType
+		cts    = []Input{ct, ct, ct}
+	)
+	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
 }
 
 // EnvTriangle creates a new envelope that has a triangle shape
@@ -127,23 +135,25 @@ type EnvTriangle struct {
 	Dur, Level Input
 }
 
-func (self *EnvTriangle) defaults() {
-	if self.Dur == nil {
-		self.Dur = C(1)
+func (tri *EnvTriangle) defaults() {
+	if tri.Dur == nil {
+		tri.Dur = C(1)
 	}
-	if self.Level == nil {
-		self.Level = C(1)
+	if tri.Level == nil {
+		tri.Level = C(1)
 	}
 }
 
-func (self EnvTriangle) Inputs() []Input {
-	(&self).defaults()
-	levels := []Input{C(0), self.Level, C(0)}
-	d := self.Dur.Mul(C(0.5))
-	times := []Input{d, d}
-	cts := []Input{CurveLinear, CurveLinear}
-	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.Inputs()
+func (tri EnvTriangle) Inputs() []Input {
+	(&tri).defaults()
+
+	var (
+		levels = []Input{C(0), tri.Level, C(0)}
+		d      = tri.Dur.Mul(C(0.5))
+		times  = []Input{d, d}
+		cts    = []Input{CurveLinear, CurveLinear}
+	)
+	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
 }
 
 // EnvSine creates a new envelope which has a hanning window shape
@@ -151,23 +161,25 @@ type EnvSine struct {
 	Dur, Level Input
 }
 
-func (self *EnvSine) defaults() {
-	if self.Dur == nil {
-		self.Dur = C(1)
+func (sine *EnvSine) defaults() {
+	if sine.Dur == nil {
+		sine.Dur = C(1)
 	}
-	if self.Level == nil {
-		self.Level = C(1)
+	if sine.Level == nil {
+		sine.Level = C(1)
 	}
 }
 
-func (self EnvSine) Inputs() []Input {
-	(&self).defaults()
-	levels := []Input{C(0), self.Level, C(0)}
-	d := self.Dur.Mul(C(0.5))
-	times := []Input{d, d}
-	cts := []Input{CurveSine, CurveSine}
-	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.Inputs()
+func (sine EnvSine) Inputs() []Input {
+	(&sine).defaults()
+
+	var (
+		levels = []Input{C(0), sine.Level, C(0)}
+		d      = sine.Dur.Mul(C(0.5))
+		times  = []Input{d, d}
+		cts    = []Input{CurveSine, CurveSine}
+	)
+	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
 }
 
 // EnvPerc creates a new envelope that has a percussive shape
@@ -175,29 +187,31 @@ type EnvPerc struct {
 	Attack, Release, Level, Curvature Input
 }
 
-func (self *EnvPerc) defaults() {
-	if self.Attack == nil {
-		self.Attack = C(0.01)
+func (perc *EnvPerc) defaults() {
+	if perc.Attack == nil {
+		perc.Attack = C(0.01)
 	}
-	if self.Release == nil {
-		self.Release = C(1)
+	if perc.Release == nil {
+		perc.Release = C(1)
 	}
-	if self.Level == nil {
-		self.Level = C(1)
+	if perc.Level == nil {
+		perc.Level = C(1)
 	}
-	if self.Curvature == nil {
-		self.Curvature = C(-4)
+	if perc.Curvature == nil {
+		perc.Curvature = C(-4)
 	}
 }
 
-func (self EnvPerc) Inputs() []Input {
-	(&self).defaults()
-	levels := []Input{C(0), self.Level, C(0)}
-	times := []Input{self.Attack, self.Release}
-	cts := []Input{CurveCustom, CurveCustom}
-	crv := self.Curvature
-	e := Env{levels, times, cts, crv, C(-99), C(-99)}
-	return e.Inputs()
+func (perc EnvPerc) Inputs() []Input {
+	(&perc).defaults()
+
+	var (
+		levels = []Input{C(0), perc.Level, C(0)}
+		times  = []Input{perc.Attack, perc.Release}
+		cts    = []Input{CurveCustom, CurveCustom}
+		crv    = perc.Curvature
+	)
+	return Env{levels, times, cts, crv, C(-99), C(-99)}.Inputs()
 }
 
 // Pairs are pairs of floats: the first float is time,
@@ -205,16 +219,16 @@ func (self EnvPerc) Inputs() []Input {
 // They get sorted by time.
 type Pairs [][2]float32
 
-func (self Pairs) Len() int {
-	return len(self)
+func (p Pairs) Len() int {
+	return len(p)
 }
 
-func (self Pairs) Less(i, j int) bool {
-	return self[i][0] < self[j][0]
+func (p Pairs) Less(i, j int) bool {
+	return p[i][0] < p[j][0]
 }
 
-func (self Pairs) Swap(i, j int) {
-	self[i], self[j] = self[j], self[i]
+func (p Pairs) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
 }
 
 // EnvPairs creates a new envelope from coordinates/pairs
@@ -223,21 +237,23 @@ type EnvPairs struct {
 	CurveType C
 }
 
-func (self EnvPairs) Inputs() []Input {
-	sort.Sort(&(self.Pairs))
-	lp := len(self.Pairs)
-	levels := make([]Input, lp)
-	times := make([]Input, lp-1)
-	cts := make([]Input, lp-1)
-	for i, p := range self.Pairs {
+func (pairs EnvPairs) Inputs() []Input {
+	sort.Sort(&(pairs.Pairs))
+
+	var (
+		lp     = len(pairs.Pairs)
+		levels = make([]Input, lp)
+		times  = make([]Input, lp-1)
+		cts    = make([]Input, lp-1)
+	)
+	for i, p := range pairs.Pairs {
 		levels[i] = C(p[1])
 		if i > 0 {
-			times[i-1] = C(p[0] - self.Pairs[i-1][0])
-			cts[i-1] = self.CurveType
+			times[i-1] = C(p[0] - pairs.Pairs[i-1][0])
+			cts[i-1] = pairs.CurveType
 		}
 	}
-	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.Inputs()
+	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
 }
 
 // TLC (time, level, curve) triplet
@@ -251,33 +267,35 @@ type TLC struct {
 // The Curve value of the last triplet is ignored.
 type EnvTLC []TLC
 
-func (self EnvTLC) Len() int {
-	return len(self)
+func (tlc EnvTLC) Len() int {
+	return len(tlc)
 }
 
-func (self EnvTLC) Less(i, j int) bool {
-	return self[i].Time < self[j].Time
+func (tlc EnvTLC) Less(i, j int) bool {
+	return tlc[i].Time < tlc[j].Time
 }
 
-func (self EnvTLC) Swap(i, j int) {
-	self[i], self[j] = self[j], self[i]
+func (tlc EnvTLC) Swap(i, j int) {
+	tlc[i], tlc[j] = tlc[j], tlc[i]
 }
 
-func (self EnvTLC) Inputs() []Input {
-	sort.Sort(self)
-	lp := len(self)
-	levels := make([]Input, lp)
-	times := make([]Input, lp-1)
-	cts := make([]Input, lp-1)
-	for i, tlc := range self {
-		levels[i] = C(tlc.Level)
+func (tlc EnvTLC) Inputs() []Input {
+	sort.Sort(tlc)
+
+	var (
+		lp     = len(tlc)
+		levels = make([]Input, lp)
+		times  = make([]Input, lp-1)
+		cts    = make([]Input, lp-1)
+	)
+	for i, t := range tlc {
+		levels[i] = C(t.Level)
 		if i > 0 {
-			times[i-1] = C(tlc.Time - self[i-1].Time)
-			cts[i-1] = self[i-1].Curve
+			times[i-1] = C(t.Time - tlc[i-1].Time)
+			cts[i-1] = tlc[i-1].Curve
 		}
 	}
-	e := Env{levels, times, cts, C(0), C(-99), C(-99)}
-	return e.Inputs()
+	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
 }
 
 // EnvADSR represents the ever-popular ADSR envelope
@@ -285,42 +303,44 @@ type EnvADSR struct {
 	A, D, S, R, Peak, Curve, Bias Input
 }
 
-func (self *EnvADSR) defaults() {
-	if self.A == nil {
-		self.A = C(0.01)
+func (adsr *EnvADSR) defaults() {
+	if adsr.A == nil {
+		adsr.A = C(0.01)
 	}
-	if self.D == nil {
-		self.D = C(0.3)
+	if adsr.D == nil {
+		adsr.D = C(0.3)
 	}
-	if self.S == nil {
-		self.S = C(0.5)
+	if adsr.S == nil {
+		adsr.S = C(0.5)
 	}
-	if self.R == nil {
-		self.R = C(1)
+	if adsr.R == nil {
+		adsr.R = C(1)
 	}
-	if self.Peak == nil {
-		self.Peak = C(1)
+	if adsr.Peak == nil {
+		adsr.Peak = C(1)
 	}
-	if self.Curve == nil {
-		self.Curve = C(-4)
+	if adsr.Curve == nil {
+		adsr.Curve = C(-4)
 	}
-	if self.Bias == nil {
-		self.Bias = C(0)
+	if adsr.Bias == nil {
+		adsr.Bias = C(0)
 	}
 }
 
-func (self EnvADSR) Inputs() []Input {
-	(&self).defaults()
+func (adsr EnvADSR) Inputs() []Input {
+	(&adsr).defaults()
+
 	levels := []Input{
-		C(0).Add(self.Bias),
-		self.Peak.Add(self.Bias),
-		self.S.Add(self.Bias),
-		C(0).Add(self.Bias),
+		C(0).Add(adsr.Bias),
+		adsr.Peak.Add(adsr.Bias),
+		adsr.S.Add(adsr.Bias),
+		C(0).Add(adsr.Bias),
 	}
-	times := []Input{self.A, self.D, self.R}
-	cts := []Input{CurveCustom, CurveCustom, CurveCustom}
-	e := Env{levels, times, cts, self.Curve, C(2), C(-99)}
-	return e.Inputs()
+	var (
+		times = []Input{adsr.A, adsr.D, adsr.R}
+		cts   = []Input{CurveCustom, CurveCustom, CurveCustom}
+	)
+	return Env{levels, times, cts, adsr.Curve, C(2), C(-99)}.Inputs()
 }
 
 // EnvDADSR is EnvADSR with its onset delayed by D seconds
@@ -328,46 +348,48 @@ type EnvDADSR struct {
 	Delay, A, D, S, R, Peak, Curve, Bias Input
 }
 
-func (self *EnvDADSR) defaults() {
-	if self.Delay == nil {
-		self.Delay = C(0.1)
+func (dadsr *EnvDADSR) defaults() {
+	if dadsr.Delay == nil {
+		dadsr.Delay = C(0.1)
 	}
-	if self.A == nil {
-		self.A = C(0.01)
+	if dadsr.A == nil {
+		dadsr.A = C(0.01)
 	}
-	if self.D == nil {
-		self.D = C(0.3)
+	if dadsr.D == nil {
+		dadsr.D = C(0.3)
 	}
-	if self.S == nil {
-		self.S = C(0.5)
+	if dadsr.S == nil {
+		dadsr.S = C(0.5)
 	}
-	if self.R == nil {
-		self.R = C(1)
+	if dadsr.R == nil {
+		dadsr.R = C(1)
 	}
-	if self.Peak == nil {
-		self.Peak = C(1)
+	if dadsr.Peak == nil {
+		dadsr.Peak = C(1)
 	}
-	if self.Curve == nil {
-		self.Curve = C(-4)
+	if dadsr.Curve == nil {
+		dadsr.Curve = C(-4)
 	}
-	if self.Bias == nil {
-		self.Bias = C(0)
+	if dadsr.Bias == nil {
+		dadsr.Bias = C(0)
 	}
 }
 
-func (self EnvDADSR) Inputs() []Input {
-	(&self).defaults()
+func (dadsr EnvDADSR) Inputs() []Input {
+	(&dadsr).defaults()
+
 	levels := []Input{
 		C(0),
-		C(0).Add(self.Bias),
-		self.Peak.Add(self.Bias),
-		self.S.Add(self.Bias),
-		C(0).Add(self.Bias),
+		C(0).Add(dadsr.Bias),
+		dadsr.Peak.Add(dadsr.Bias),
+		dadsr.S.Add(dadsr.Bias),
+		C(0).Add(dadsr.Bias),
 	}
-	times := []Input{self.Delay, self.A, self.D, self.R}
-	cts := []Input{CurveCustom, CurveCustom, CurveCustom, CurveCustom}
-	e := Env{levels, times, cts, self.Curve, C(3), C(-99)}
-	return e.Inputs()
+	var (
+		times = []Input{dadsr.Delay, dadsr.A, dadsr.D, dadsr.R}
+		cts   = []Input{CurveCustom, CurveCustom, CurveCustom, CurveCustom}
+	)
+	return Env{levels, times, cts, dadsr.Curve, C(3), C(-99)}.Inputs()
 }
 
 // EnvASR is an attack-sustain-release envelope
@@ -375,28 +397,30 @@ type EnvASR struct {
 	A, S, R, Curve Input
 }
 
-func (self *EnvASR) defaults() {
-	if self.A == nil {
-		self.A = C(0.01)
+func (asr *EnvASR) defaults() {
+	if asr.A == nil {
+		asr.A = C(0.01)
 	}
-	if self.S == nil {
-		self.S = C(1)
+	if asr.S == nil {
+		asr.S = C(1)
 	}
-	if self.R == nil {
-		self.R = C(1)
+	if asr.R == nil {
+		asr.R = C(1)
 	}
-	if self.Curve == nil {
-		self.Curve = C(-4)
+	if asr.Curve == nil {
+		asr.Curve = C(-4)
 	}
 }
 
-func (self EnvASR) Inputs() []Input {
-	(&self).defaults()
-	levels := []Input{C(0), self.S, C(0)}
-	times := []Input{self.A, self.R}
-	cts := []Input{CurveCustom, CurveCustom}
-	e := Env{levels, times, cts, self.Curve, C(1), C(-99)}
-	return e.Inputs()
+func (asr EnvASR) Inputs() []Input {
+	(&asr).defaults()
+
+	var (
+		levels = []Input{C(0), asr.S, C(0)}
+		times  = []Input{asr.A, asr.R}
+		cts    = []Input{CurveCustom, CurveCustom}
+	)
+	return Env{levels, times, cts, asr.Curve, C(1), C(-99)}.Inputs()
 }
 
 // EnvCutoff creates an envelope with no attack segment.
@@ -405,28 +429,30 @@ type EnvCutoff struct {
 	R, Level, CurveType Input
 }
 
-func (self *EnvCutoff) defaults() {
-	if self.R == nil {
-		self.R = C(0.1)
+func (cutoff *EnvCutoff) defaults() {
+	if cutoff.R == nil {
+		cutoff.R = C(0.1)
 	}
-	if self.Level == nil {
-		self.Level = C(1)
+	if cutoff.Level == nil {
+		cutoff.Level = C(1)
 	}
-	if self.CurveType == nil {
-		self.CurveType = CurveLinear
+	if cutoff.CurveType == nil {
+		cutoff.CurveType = CurveLinear
 	}
 }
 
-func (self EnvCutoff) Inputs() []Input {
-	(&self).defaults()
-	levels := []Input{self.Level, C(0)}
-	times := []Input{self.R}
-	cts := []Input{self.CurveType}
-	e := Env{levels, times, cts, C(0), C(0), C(-99)}
-	return e.Inputs()
+func (cutoff EnvCutoff) Inputs() []Input {
+	(&cutoff).defaults()
+
+	var (
+		levels = []Input{cutoff.Level, C(0)}
+		times  = []Input{cutoff.R}
+		cts    = []Input{cutoff.CurveType}
+	)
+	return Env{levels, times, cts, C(0), C(0), C(-99)}.Inputs()
 }
 
-// I don't understand Env.circle [bps]
+// I don't understand Env.circle [briansorahan]
 //
 // Env.circle([0, 1, 0], [0.01, 0.5, 0.2]).asArray;
 // => [ 0, 2, -99, -99, 1, 0.01, 1, 0, 0, 0.5, 1, 0 ]

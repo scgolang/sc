@@ -6,17 +6,17 @@ type Dust struct {
 	Density Input
 }
 
-func (self *Dust) defaults() {
-	if self.Density == nil {
-		self.Density = C(0)
+func (dust *Dust) defaults() {
+	if dust.Density == nil {
+		dust.Density = C(0)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Dust) Rate(rate int8) Input {
+func (dust Dust) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("Dust", rate, 0, 1, self.Density)
+	(&dust).defaults()
+	return UgenInput("Dust", rate, 0, 1, dust.Density)
 }

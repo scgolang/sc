@@ -20,29 +20,34 @@ type EnvGen struct {
 	Done int
 }
 
-func (self *EnvGen) defaults() {
-	if self.Gate == nil {
-		self.Gate = C(1)
+func (envgen *EnvGen) defaults() {
+	if envgen.Gate == nil {
+		envgen.Gate = C(1)
 	}
-	if self.LevelScale == nil {
-		self.LevelScale = C(1)
+	if envgen.LevelScale == nil {
+		envgen.LevelScale = C(1)
 	}
-	if self.LevelBias == nil {
-		self.LevelBias = C(0)
+	if envgen.LevelBias == nil {
+		envgen.LevelBias = C(0)
 	}
-	if self.TimeScale == nil {
-		self.TimeScale = C(1)
+	if envgen.TimeScale == nil {
+		envgen.TimeScale = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self EnvGen) Rate(rate int8) Input {
+func (envgen EnvGen) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	ins := []Input{self.Gate, self.LevelScale, self.LevelBias}
-	ins = append(ins, self.TimeScale, C(float32(self.Done)))
-	ins = append(ins, self.Env.Inputs()...)
+	(&envgen).defaults()
+	ins := []Input{
+		envgen.Gate,
+		envgen.LevelScale,
+		envgen.LevelBias,
+		envgen.TimeScale,
+		C(float32(envgen.Done)),
+	}
+	ins = append(ins, envgen.Env.Inputs()...)
 	return UgenInput("EnvGen", rate, 0, 1, ins...)
 }

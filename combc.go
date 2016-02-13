@@ -15,26 +15,26 @@ type CombC struct {
 	DecayTime Input
 }
 
-func (self *CombC) defaults() {
-	if self.MaxDelayTime == nil {
-		self.MaxDelayTime = C(0.2)
+func (combc *CombC) defaults() {
+	if combc.MaxDelayTime == nil {
+		combc.MaxDelayTime = C(0.2)
 	}
-	if self.DelayTime == nil {
-		self.DelayTime = C(0.2)
+	if combc.DelayTime == nil {
+		combc.DelayTime = C(0.2)
 	}
-	if self.DecayTime == nil {
-		self.DecayTime = C(1)
+	if combc.DecayTime == nil {
+		combc.DecayTime = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If an In signal is not provided this method will
 // trigger a runtime panic.
-func (self CombC) Rate(rate int8) Input {
+func (combc CombC) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.In == nil {
+	if combc.In == nil {
 		panic("CombC expects In to not be nil")
 	}
-	(&self).defaults()
-	return UgenInput("CombC", rate, 0, 1, self.In, self.MaxDelayTime, self.DelayTime, self.DecayTime)
+	(&combc).defaults()
+	return UgenInput("CombC", rate, 0, 1, combc.In, combc.MaxDelayTime, combc.DelayTime, combc.DecayTime)
 }

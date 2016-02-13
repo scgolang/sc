@@ -17,12 +17,12 @@ type COsc struct {
 	Beats Input
 }
 
-func (self *COsc) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (cosc *COsc) defaults() {
+	if cosc.Freq == nil {
+		cosc.Freq = C(440)
 	}
-	if self.Beats == nil {
-		self.Beats = C(0.5)
+	if cosc.Beats == nil {
+		cosc.Beats = C(0.5)
 	}
 }
 
@@ -30,11 +30,11 @@ func (self *COsc) defaults() {
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
-func (self COsc) Rate(rate int8) Input {
+func (cosc COsc) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.BufNum == nil {
+	if cosc.BufNum == nil {
 		panic(fmt.Errorf("BufNum can not be nil"))
 	}
-	(&self).defaults()
-	return UgenInput("COsc", rate, 0, 1, self.BufNum, self.Freq, self.Beats)
+	(&cosc).defaults()
+	return UgenInput("COsc", rate, 0, 1, cosc.BufNum, cosc.Freq, cosc.Beats)
 }

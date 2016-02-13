@@ -51,7 +51,7 @@ type Buffer struct {
 // Gen generates a buffer using a routine.
 // A runtime panic will occur if routine is not one of the
 // BufferRoutine constants.
-func (self *Buffer) Gen(routine string, flags int, args ...float32) error {
+func (buffer *Buffer) Gen(routine string, flags int, args ...float32) error {
 	if err := checkBufferRoutine(routine); err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func (self *Buffer) Gen(routine string, flags int, args ...float32) error {
 	if err != nil {
 		return err
 	}
-	if err := gen.WriteInt32(self.Num); err != nil {
+	if err := gen.WriteInt32(buffer.Num); err != nil {
 		return err
 	}
 	if err := gen.WriteString(routine); err != nil {
@@ -78,14 +78,14 @@ func (self *Buffer) Gen(routine string, flags int, args ...float32) error {
 			return err
 		}
 	}
-	if err := self.client.oscConn.Send(gen); err != nil {
+	if err := buffer.client.oscConn.Send(gen); err != nil {
 		return err
 	}
 
 	var done *osc.Message
 	select {
-	case done = <-self.client.doneChan:
-	case err = <-self.client.oscErrChan:
+	case done = <-buffer.client.doneChan:
+	case err = <-buffer.client.oscErrChan:
 		return err
 	}
 
@@ -104,9 +104,9 @@ func (self *Buffer) Gen(routine string, flags int, args ...float32) error {
 	// TODO:
 	// Don't error if we get a done message for a different buffer.
 	// We should probably requeue this particular done message on doneChan.
-	if bufnum != self.Num {
+	if bufnum != buffer.Num {
 		m := "expected done message for buffer %d, but got one for buffer %d"
-		return fmt.Errorf(m, self.Num, bufnum)
+		return fmt.Errorf(m, buffer.Num, bufnum)
 	}
 
 	return nil

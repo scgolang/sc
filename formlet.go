@@ -17,26 +17,26 @@ type Formlet struct {
 	DecayTime Input
 }
 
-func (self *Formlet) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (formlet *Formlet) defaults() {
+	if formlet.Freq == nil {
+		formlet.Freq = C(440)
 	}
-	if self.AttackTime == nil {
-		self.AttackTime = C(1)
+	if formlet.AttackTime == nil {
+		formlet.AttackTime = C(1)
 	}
-	if self.DecayTime == nil {
-		self.DecayTime = C(1)
+	if formlet.DecayTime == nil {
+		formlet.DecayTime = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If an In signal is not provided this method will
 // trigger a runtime panic.
-func (self Formlet) Rate(rate int8) Input {
+func (formlet Formlet) Rate(rate int8) Input {
 	CheckRate(rate)
-	if self.In == nil {
+	if formlet.In == nil {
 		panic("Formlet expects In to not be nil")
 	}
-	(&self).defaults()
-	return UgenInput("Formlet", rate, 0, 1, self.In, self.Freq, self.AttackTime, self.DecayTime)
+	(&formlet).defaults()
+	return UgenInput("Formlet", rate, 0, 1, formlet.In, formlet.Freq, formlet.AttackTime, formlet.DecayTime)
 }

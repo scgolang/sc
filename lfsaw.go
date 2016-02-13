@@ -10,20 +10,20 @@ type LFSaw struct {
 	Iphase Input
 }
 
-func (self *LFSaw) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (lfsaw *LFSaw) defaults() {
+	if lfsaw.Freq == nil {
+		lfsaw.Freq = C(440)
 	}
-	if self.Iphase == nil {
-		self.Iphase = C(0)
+	if lfsaw.Iphase == nil {
+		lfsaw.Iphase = C(0)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self LFSaw) Rate(rate int8) Input {
+func (lfsaw LFSaw) Rate(rate int8) Input {
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("LFSaw", rate, 0, 1, self.Freq, self.Iphase)
+	(&lfsaw).defaults()
+	return UgenInput("LFSaw", rate, 0, 1, lfsaw.Freq, lfsaw.Iphase)
 }

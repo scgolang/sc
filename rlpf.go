@@ -10,23 +10,23 @@ type RLPF struct {
 	RQ Input
 }
 
-func (self *RLPF) defaults() {
-	if self.Freq == nil {
-		self.Freq = C(440)
+func (rlpf *RLPF) defaults() {
+	if rlpf.Freq == nil {
+		rlpf.Freq = C(440)
 	}
-	if self.RQ == nil {
-		self.RQ = C(1)
+	if rlpf.RQ == nil {
+		rlpf.RQ = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self RLPF) Rate(rate int8) Input {
-	if self.In == nil {
+func (rlpf RLPF) Rate(rate int8) Input {
+	if rlpf.In == nil {
 		panic("RLPF expects In to not be nil")
 	}
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("RLPF", rate, 0, 1, self.In, self.Freq, self.RQ)
+	(&rlpf).defaults()
+	return UgenInput("RLPF", rate, 0, 1, rlpf.In, rlpf.Freq, rlpf.RQ)
 }

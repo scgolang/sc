@@ -12,23 +12,23 @@ type Balance2 struct {
 	Level Input
 }
 
-func (self *Balance2) defaults() {
-	if self.Pos == nil {
-		self.Pos = C(0)
+func (bal *Balance2) defaults() {
+	if bal.Pos == nil {
+		bal.Pos = C(0)
 	}
-	if self.Level == nil {
-		self.Level = C(1)
+	if bal.Level == nil {
+		bal.Level = C(1)
 	}
 }
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (self Balance2) Rate(rate int8) Input {
-	if self.L == nil || self.R == nil {
+func (bal Balance2) Rate(rate int8) Input {
+	if bal.L == nil || bal.R == nil {
 		panic("Balance2 expects L and R to not be nil")
 	}
 	CheckRate(rate)
-	(&self).defaults()
-	return UgenInput("Balance2", rate, 0, 2, self.L, self.R, self.Pos, self.Level)
+	(&bal).defaults()
+	return UgenInput("Balance2", rate, 0, 2, bal.L, bal.R, bal.Pos, bal.Level)
 }

@@ -1,13 +1,9 @@
 # sc
 
-Control SuperCollider with Go programs.
+Package sc provides a way to interface directly with the
+supercollider server from go programs.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/scgolang/sc)](https://goreportcard.com/report/github.com/scgolang/sc)
-
-## What
-
-This package provides a way to interface directly with the
-supercollider server from go programs.
 
 ## Why
 

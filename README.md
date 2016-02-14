@@ -1,7 +1,7 @@
 # sc
 
 Package sc provides a way to interface directly with the
-supercollider server from go programs.
+supercollider server from Go programs.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/scgolang/sc)](https://goreportcard.com/report/github.com/scgolang/sc)
 
@@ -9,8 +9,8 @@ supercollider server from go programs.
 
 Supercollider has a well-deserved reputation for being difficult
 to learn. I believe that sclang is a big reason for this.
-I also believe that golang is quite easy to learn, hence
-replacing sclang with golang makes a lot of sense to me.
+I also believe that Go is quite easy to learn, hence
+replacing sclang with Go makes a lot of sense to me.
 
 ## Who
 

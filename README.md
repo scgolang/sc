@@ -21,7 +21,7 @@ See https://github.com/scgolang/sc/blob/master/AUTHORS
 sc is not intended for livecoding (for more about livecoding see
 http://en.wikipedia.org/wiki/Live_coding). I may decide someday
 to support some livecoding-esque features, but for now the
-goal is to be able to build desktop music applications
+goal is to be able to build music applications
 that use supercollider as the audio engine.
 
 ## Install

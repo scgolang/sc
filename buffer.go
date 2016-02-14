@@ -58,9 +58,18 @@ func (buffer *Buffer) Gen(routine string, flags int, args ...float32) error {
 	if err := checkBufferGenFlags(flags); err != nil {
 		return err
 	}
+	if err := buffer.sendGenMsg(routine, flags, args...); err != nil {
+		return err
+	}
+	if err := buffer.awaitGenReply(); err != nil {
+		return err
+	}
+	return nil
+}
 
-	pat := bufferGenAddress
-	gen, err := osc.NewMessage(pat)
+// sendGenMsg sends a /b_gen command.
+func (buffer *Buffer) sendGenMsg(routine string, flags int, args ...float32) error {
+	gen, err := osc.NewMessage(bufferGenAddress)
 	if err != nil {
 		return err
 	}
@@ -81,34 +90,39 @@ func (buffer *Buffer) Gen(routine string, flags int, args ...float32) error {
 	if err := buffer.client.oscConn.Send(gen); err != nil {
 		return err
 	}
+	return nil
+}
 
+// awaitGenReply waits for a reply to the /b_gen command
+func (buffer *Buffer) awaitGenReply() error {
 	var done *osc.Message
 	select {
 	case done = <-buffer.client.doneChan:
-	case err = <-buffer.client.oscErrChan:
+	case err := <-buffer.client.oscErrChan:
 		return err
 	}
-
 	if done.CountArguments() != 2 {
 		return errors.New("expected two arguments to /done message")
 	}
-	_, err = done.ReadString()
+	addr, err := done.ReadString()
 	if err != nil {
 		return err
+	}
+	// If reply address is not /b_gen, requeue the done event.
+	if addr != bufferGenAddress {
+		buffer.client.doneChan <- done
+		return nil
 	}
 	bufnum, err := done.ReadInt32()
 	if err != nil {
 		return err
 	}
 
-	// TODO:
-	// Don't error if we get a done message for a different buffer.
+	// TODO: Don't error if we get a done message for a different buffer.
 	// We should probably requeue this particular done message on doneChan.
 	if bufnum != buffer.Num {
-		m := "expected done message for buffer %d, but got one for buffer %d"
-		return fmt.Errorf(m, buffer.Num, bufnum)
+		buffer.client.doneChan <- done
 	}
-
 	return nil
 }
 
@@ -140,24 +154,21 @@ var buffers = struct {
 
 // newReadBuffer creates a new buffer for /b_allocRead
 func newReadBuffer(path string, num int32, c *Client) *Buffer {
-	buffers.Lock()
+	buffers.RLock()
 	// return the existing buffer if there is one
-	if eb, exists := buffers.m[path]; exists {
-		buffers.Unlock()
-		return eb
+	if existing, exists := buffers.m[path]; exists {
+		buffers.RUnlock()
+		return existing
 	}
+	buffers.RUnlock()
 
 	// make a new one
 	b := &Buffer{Num: num, client: c}
 
 	// add it to the global map
+	buffers.Lock()
 	buffers.m[path] = b
 	buffers.Unlock()
 
 	return b
-}
-
-// newBuffer creates a new buffer for /b_alloc
-func newBuffer(c *Client) *Buffer {
-	return &Buffer{client: c}
 }

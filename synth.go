@@ -27,7 +27,7 @@ func (s *Synth) Set(ctls map[string]float32) error {
 	if err != nil {
 		return err
 	}
-	if err := set.WriteInt32(s.id); err != nil {
+	if err := set.WriteInt32(s.ID); err != nil {
 		return err
 	}
 	for name, value := range ctls {
@@ -47,7 +47,7 @@ func (s *Synth) Free() error {
 	if err != nil {
 		return err
 	}
-	if err := free.WriteInt32(s.id); err != nil {
+	if err := free.WriteInt32(s.ID); err != nil {
 		return err
 	}
 	return s.client.oscConn.Send(free)
@@ -56,8 +56,8 @@ func (s *Synth) Free() error {
 // newSynth creates a new synth structure.
 func newSynth(client *Client, defName string, id int32) *Synth {
 	return &Synth{
-		defName: defName,
-		id:      id,
+		DefName: defName,
+		ID:      id,
 		client:  client,
 	}
 }

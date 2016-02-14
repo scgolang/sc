@@ -98,7 +98,7 @@ func (buffer *Buffer) awaitGenReply() error {
 	var done *osc.Message
 	select {
 	case done = <-buffer.client.doneChan:
-	case err := <-buffer.client.oscErrChan:
+	case err := <-buffer.client.errChan:
 		return err
 	}
 	if done.CountArguments() != 2 {

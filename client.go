@@ -4,11 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"sync"
 	"sync/atomic"
 
 	"github.com/scgolang/osc"
 )
 
+// OSC addresses.
+// See http://doc.sccode.org/Reference/Server-Command-Reference.html.
 const (
 	statusAddress          = "/status"
 	statusReplyAddress     = "/status.reply"
@@ -57,21 +60,25 @@ const (
 
 // Client manages all communication with scsynth
 type Client struct {
-	// oscErrChan is a channel that emits errors from
+	// errChan is a channel that emits errors from
 	// the goroutine that runs the OSC server that is
 	// used to receive messages from scsynth
-	oscErrChan chan error
-	addr       *net.UDPAddr
+	errChan    chan error
+	closeMutex sync.Mutex
+	closed     int32
 
-	statusChan     chan *osc.Message // statusChan relays /status.reply messages
-	doneChan       chan *osc.Message // doneChan relays /done messages
-	gqueryTreeChan chan *osc.Message // gqueryTreeChan relays /done messages
-
+	addr    *net.UDPAddr
 	oscConn osc.Conn
 
-	// next synth node ID
-	nextSynthID int32
+	doneChan       chan *osc.Message // doneChan relays /done messages
+	statusChan     chan *osc.Message // statusChan relays /status.reply messages
+	gqueryTreeChan chan *osc.Message // gqueryTreeChan relays /done messages
+
+	nextSynthID int32 // next synth node ID
 }
+
+// number of concurrent handlers for /done messages.
+const numDoneHandlers = 8
 
 // NewClient creates a new SuperCollider client.
 // The client will bind to the provided address and port
@@ -82,9 +89,12 @@ func NewClient(network, local, scsynth string) (*Client, error) {
 		return nil, err
 	}
 	c := &Client{
-		oscErrChan:  make(chan error, 1),
-		addr:        addr,
-		nextSynthID: 1000,
+		errChan:        make(chan error),
+		statusChan:     make(chan *osc.Message),
+		gqueryTreeChan: make(chan *osc.Message),
+		doneChan:       make(chan *osc.Message, numDoneHandlers),
+		addr:           addr,
+		nextSynthID:    1000,
 	}
 	if err := c.Connect(scsynth); err != nil {
 		return nil, err
@@ -127,14 +137,11 @@ func (c *Client) Connect(addr string) error {
 	}
 	c.oscConn = oscConn
 
-	// OSC relays
-	c.statusChan = make(chan *osc.Message)
-	c.doneChan = make(chan *osc.Message)
-	c.gqueryTreeChan = make(chan *osc.Message)
-	c.oscErrChan = make(chan error)
 	// listen for OSC messages
 	go func() {
-		c.oscErrChan <- c.oscConn.Serve(c.oscHandlers())
+		if err := c.oscConn.Serve(c.oscHandlers()); !c.isClosed() {
+			c.errChan <- err
+		}
 	}()
 	return nil
 }
@@ -151,7 +158,7 @@ func (c *Client) Status() (*ServerStatus, error) {
 	select {
 	case msg := <-c.statusChan:
 		return newStatus(msg)
-	case err = <-c.oscErrChan:
+	case err = <-c.errChan:
 		return nil, err
 	}
 }
@@ -178,7 +185,7 @@ func (c *Client) SendDef(def *Synthdef) error {
 	select {
 	case done = <-c.doneChan:
 		goto ParseMessage
-	case err = <-c.oscErrChan:
+	case err = <-c.errChan:
 		return err
 	}
 
@@ -327,7 +334,7 @@ func (c *Client) awaitBufReadReply(buf *Buffer) error {
 	var done *osc.Message
 	select {
 	case done = <-c.doneChan:
-	case err := <-c.oscErrChan:
+	case err := <-c.errChan:
 		return err
 	}
 
@@ -391,7 +398,7 @@ func (c *Client) awaitBufAllocReply(buf *Buffer) error {
 	var done *osc.Message
 	select {
 	case done = <-c.doneChan:
-	case err := <-c.oscErrChan:
+	case err := <-c.errChan:
 		return err
 	}
 	// error if this message was not an ack of /b_alloc
@@ -471,12 +478,21 @@ func PlayDef(def *Synthdef) (*Synth, error) {
 
 // Close closes the client.
 func (c *Client) Close() error {
-	close(c.oscErrChan)
-	close(c.doneChan)
-	close(c.statusChan)
-	close(c.gqueryTreeChan)
+	if c.isClosed() {
+		return nil
+	}
+	atomic.StoreInt32(&c.closed, 1)
 	if err := c.oscConn.Close(); err != nil {
 		return err
 	}
+	close(c.errChan)
+	close(c.doneChan)
+	close(c.statusChan)
+	close(c.gqueryTreeChan)
 	return nil
+}
+
+// isClosed says whether or not the client is closed.
+func (c *Client) isClosed() bool {
+	return atomic.LoadInt32(&c.closed) == int32(1)
 }

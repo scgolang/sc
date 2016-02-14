@@ -81,7 +81,11 @@ func NewClient(network, local, scsynth string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	c := &Client{addr: addr, nextSynthID: 1000}
+	c := &Client{
+		oscErrChan:  make(chan error, 1),
+		addr:        addr,
+		nextSynthID: 1000,
+	}
 	if err := c.Connect(scsynth); err != nil {
 		return nil, err
 	}
@@ -133,11 +137,6 @@ func (c *Client) Connect(addr string) error {
 		c.oscErrChan <- c.oscConn.Serve(c.oscHandlers())
 	}()
 	return nil
-}
-
-// Close closes the client's connection.
-func (c *Client) Close() error {
-	return c.oscConn.Close()
 }
 
 // Status gets the status of scsynth.
@@ -293,6 +292,18 @@ func (c *Client) QueryGroup(id int32) (*Group, error) {
 // ReadBuffer tells the server to read an audio file and
 // load it into a buffer
 func (c *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
+	buf, err := c.sendBufReadMsg(path, num)
+	if err != nil {
+		return nil, err
+	}
+	if err := c.awaitBufReadReply(buf); err != nil {
+
+	}
+	return buf, nil
+}
+
+// sendBufReadMsg sends a /b_allocRead command.
+func (c *Client) sendBufReadMsg(path string, num int32) (*Buffer, error) {
 	allocRead, err := osc.NewMessage(bufferReadAddress)
 	if err != nil {
 		return nil, err
@@ -308,44 +319,55 @@ func (c *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
 	if err := c.oscConn.Send(allocRead); err != nil {
 		return nil, err
 	}
+	return buf, nil
+}
 
+// awaitBufReadReply waits for a reply to /b_allocRead
+func (c *Client) awaitBufReadReply(buf *Buffer) error {
 	var done *osc.Message
 	select {
 	case done = <-c.doneChan:
-	case err = <-c.oscErrChan:
-		return nil, err
+	case err := <-c.oscErrChan:
+		return err
 	}
 
 	// error if this message was not an ack of the buffer read
 	if done.CountArguments() != 2 {
-		return nil, fmt.Errorf("expected two arguments to /done message")
+		return fmt.Errorf("expected two arguments to /done message")
 	}
 	addr, err := done.ReadString()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if addr != bufferReadAddress {
-		return nil, fmt.Errorf("expected first argument to be %s but got %s", bufferReadAddress, addr)
+		c.doneChan <- done
 	}
 	bufnum, err := done.ReadInt32()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	// TODO:
-	// Don't error if we get a done message for a different buffer.
-	// We should probably requeue this particular done message on doneChan.
 	if bufnum != buf.Num {
-		m := "expected done message for buffer %d, but got one for buffer %d"
-		return nil, fmt.Errorf(m, buf.Num, bufnum)
+		c.doneChan <- done
 	}
-	return buf, nil
+	return nil
 }
 
 // AllocBuffer allocates a buffer on the server
 func (c *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
-	buf := newBuffer(c)
-	pat := bufferAllocAddress
-	alloc, err := osc.NewMessage(pat)
+	buf, err := c.sendBufAllocMsg(frames, channels)
+	if err != nil {
+		return nil, err
+	}
+	if err := c.awaitBufAllocReply(buf); err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
+// sendBufAllocMsg sends a /b_alloc message
+func (c *Client) sendBufAllocMsg(frames, channels int) (*Buffer, error) {
+	buf := &Buffer{client: c}
+	alloc, err := osc.NewMessage(bufferAllocAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -361,38 +383,37 @@ func (c *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
 	if err := c.oscConn.Send(alloc); err != nil {
 		return nil, err
 	}
+	return buf, nil
+}
 
+// awaitBufAllocReply waits for a reply to /b_alloc
+func (c *Client) awaitBufAllocReply(buf *Buffer) error {
 	var done *osc.Message
 	select {
 	case done = <-c.doneChan:
-		break
-	case err = <-c.oscErrChan:
-		return nil, err
+	case err := <-c.oscErrChan:
+		return err
 	}
-
-	// error if this message was not an ack of the synthdef
+	// error if this message was not an ack of /b_alloc
 	if done.CountArguments() != 2 {
-		return nil, fmt.Errorf("expected two arguments to /done message")
+		return fmt.Errorf("expected two arguments to /done message")
 	}
 	addr, err := done.ReadString()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	if addr != pat {
-		return nil, fmt.Errorf("expected first argument to be %s but got %s", pat, addr)
+	if addr != bufferAllocAddress {
+		c.doneChan <- done
+
 	}
 	bufnum, err := done.ReadInt32()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	// TODO:
-	// Don't error if we get a done message for a different buffer.
-	// We should probably requeue this particular done message on doneChan.
 	if bufnum != buf.Num {
-		m := "expected done message for buffer %d, but got one for buffer %d"
-		return nil, fmt.Errorf(m, buf.Num, bufnum)
+		c.doneChan <- done
 	}
-	return buf, nil
+	return nil
 }
 
 // NextSynthID gets the next available ID for creating a synth
@@ -446,4 +467,16 @@ func PlayDef(def *Synthdef) (*Synth, error) {
 
 	synthID := c.NextSynthID()
 	return defaultGroup.Synth(def.Name, synthID, AddToTail, nil)
+}
+
+// Close closes the client.
+func (c *Client) Close() error {
+	close(c.oscErrChan)
+	close(c.doneChan)
+	close(c.statusChan)
+	close(c.gqueryTreeChan)
+	if err := c.oscConn.Close(); err != nil {
+		return err
+	}
+	return nil
 }

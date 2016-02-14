@@ -3,8 +3,6 @@ package sc
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -53,110 +51,6 @@ type Synthdef struct {
 	// this is used, for example, when drawing an svg representation
 	// of the synthdef
 	root Ugen
-}
-
-// Write writes a binary representation of a synthdef to an io.Writer.
-// The binary representation written by this method is
-// the data that scsynth expects at its /d_recv endpoint.
-func (def *Synthdef) Write(w io.Writer) error {
-	written, err := w.Write(bytes.NewBufferString(synthdefStart).Bytes())
-	if written != len(synthdefStart) {
-		return fmt.Errorf("Could not write synthdef")
-	}
-	if err != nil {
-		return err
-	}
-	// write synthdef version
-	err = binary.Write(w, byteOrder, int32(synthdefVersion))
-	if err != nil {
-		return err
-	}
-	// write number of synthdefs
-	err = binary.Write(w, byteOrder, int16(1))
-	if err != nil {
-		return err
-	}
-	// write synthdef name
-	name := newPstring(def.Name)
-	err = name.Write(w)
-	if err != nil {
-		return err
-	}
-	// write number of constants
-	err = binary.Write(w, byteOrder, int32(len(def.Constants)))
-	if err != nil {
-		return err
-	}
-	// write constant values
-	for _, constant := range def.Constants {
-		err = binary.Write(w, byteOrder, constant)
-		if err != nil {
-			return err
-		}
-	}
-	// write number of params
-	err = binary.Write(w, byteOrder, int32(len(def.ParamNames)))
-	if err != nil {
-		return err
-	}
-	// write initial param values
-	for _, val := range def.InitialParamValues {
-		err = binary.Write(w, byteOrder, val)
-		if err != nil {
-			return err
-		}
-	}
-	// write number of param names
-	err = binary.Write(w, byteOrder, int32(len(def.ParamNames)))
-	if err != nil {
-		return err
-	}
-	// write param names
-	for _, p := range def.ParamNames {
-		err = p.Write(w)
-		if err != nil {
-			return err
-		}
-	}
-	// write number of ugens
-	err = binary.Write(w, byteOrder, int32(len(def.Ugens)))
-	if err != nil {
-		return err
-	}
-	// write ugens
-	for _, u := range def.Ugens {
-		err = u.Write(w)
-		if err != nil {
-			return err
-		}
-	}
-	// write number of variants
-	err = binary.Write(w, byteOrder, int16(len(def.Variants)))
-	if err != nil {
-		return err
-	}
-	// write variants
-	for _, v := range def.Variants {
-		err = v.Write(w)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// WriteJSON writes a json-formatted representation of a
-// synthdef to an io.Writer.
-func (def *Synthdef) WriteJSON(w io.Writer) error {
-	enc := json.NewEncoder(w)
-	return enc.Encode(def)
-}
-
-// WriteXML writes an xml-formatted representation of a synthdef
-// to an io.Writer.
-func (def *Synthdef) WriteXML(w io.Writer) error {
-	enc := xml.NewEncoder(w)
-	return enc.Encode(def)
 }
 
 // Bytes writes a synthdef to a byte array
@@ -265,132 +159,6 @@ func (def *Synthdef) Compare(other string) (bool, error) {
 	return compareBytes(buf.Bytes(), fromDisk), nil
 }
 
-// ReadSynthdef reads a synthdef from an io.Reader
-func ReadSynthdef(r io.Reader) (*Synthdef, error) {
-	// read the type
-	startLen := len(synthdefStart)
-	start := make([]byte, startLen)
-	read, er := r.Read(start)
-	if er != nil {
-		return nil, er
-	}
-	if read != startLen {
-		return nil, fmt.Errorf("Only read %d bytes of synthdef file", read)
-	}
-	actual := bytes.NewBuffer(start).String()
-	if actual != synthdefStart {
-		return nil, fmt.Errorf("synthdef started with %s instead of %s", actual, synthdefStart)
-	}
-	// read version
-	var version int32
-	er = binary.Read(r, byteOrder, &version)
-	if er != nil {
-		return nil, er
-	}
-	if version != synthdefVersion {
-		return nil, fmt.Errorf("bad synthdef version %d", version)
-	}
-	// read number of synth defs
-	var numDefs int16
-	er = binary.Read(r, byteOrder, &numDefs)
-	if er != nil {
-		return nil, er
-	}
-	if numDefs != 1 {
-		return nil, fmt.Errorf("multiple synthdefs not supported")
-	}
-	// read synthdef name
-	defName, er := readPstring(r)
-	if er != nil {
-		return nil, er
-	}
-	// read number of constants
-	var numConstants int32
-	er = binary.Read(r, byteOrder, &numConstants)
-	if er != nil {
-		return nil, er
-	}
-	// read constants
-	constants := make([]float32, numConstants)
-	for i := 0; i < int(numConstants); i++ {
-		er = binary.Read(r, byteOrder, &constants[i])
-		if er != nil {
-			return nil, er
-		}
-	}
-	// read number of parameters
-	var numParams int32
-	er = binary.Read(r, byteOrder, &numParams)
-	if er != nil {
-		return nil, er
-	}
-	// read initial parameter values
-	initialValues := make([]float32, numParams)
-	for i := 0; i < int(numParams); i++ {
-		er = binary.Read(r, byteOrder, &initialValues[i])
-		if er != nil {
-			return nil, er
-		}
-	}
-	// read number of parameter names
-	var numParamNames int32
-	er = binary.Read(r, byteOrder, &numParamNames)
-	if er != nil {
-		return nil, er
-	}
-	// read param names
-	paramNames := make([]ParamName, numParamNames)
-	for i := 0; int32(i) < numParamNames; i++ {
-		pn, er := readParamName(r)
-		if er != nil {
-			return nil, er
-		}
-		paramNames[i] = *pn
-	}
-	// read number of ugens
-	var numUgens int32
-	er = binary.Read(r, byteOrder, &numUgens)
-	if er != nil {
-		return nil, er
-	}
-	// read ugens
-	ugens := make([]*ugen, numUgens)
-	for i := 0; int32(i) < numUgens; i++ {
-		ugen, er := readugen(r)
-		if er != nil {
-			return nil, er
-		}
-		ugens[i] = ugen
-	}
-	// read number of variants
-	var numVariants int16
-	er = binary.Read(r, byteOrder, &numVariants)
-	if er != nil {
-		return nil, er
-	}
-	// read variants
-	variants := make([]*Variant, numVariants)
-	for i := 0; int16(i) < numVariants; i++ {
-		v, er := readVariant(r, numParams)
-		if er != nil {
-			return nil, er
-		}
-		variants[i] = v
-	}
-	// TODO: use newsynthdef here
-	synthDef := Synthdef{
-		defName.String(),
-		constants,
-		initialValues,
-		paramNames,
-		ugens,
-		variants,
-		make([]Ugen, 0),
-		nil,
-	}
-	return &synthDef, nil
-}
-
 func newGraph(name string) *gographviz.Graph {
 	g := gographviz.NewGraph()
 	g.SetName(name)
@@ -449,7 +217,8 @@ func (def *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
 	return graph
 }
 
-// flatten
+// flatten converts a ugen graph into a format more
+// suitable for sending /d_recv
 func (def *Synthdef) flatten(params Params) {
 	def.addParams(params)
 	// get a topologically sorted ugens list
@@ -462,39 +231,43 @@ func (def *Synthdef) flatten(params Params) {
 			continue
 		}
 		// add inputs to synthdef and to ugen
-		inputs := ugenNode.Inputs()
+		for _, input := range ugenNode.Inputs() {
+			def.flattenInput(params, ugen, input)
+		}
+	}
+}
 
-		for _, input := range inputs {
-			switch v := input.(type) {
+// flattenInput flattens a ugen graph starting from
+// a particular ugen's input
+func (def *Synthdef) flattenInput(params Params, ugen *ugen, input Input) {
+	switch v := input.(type) {
+	case Ugen:
+		_, idx, _ := def.addUgen(v)
+		for outputIndex := range v.Outputs() {
+			ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
+		}
+	case C:
+		idx := def.addConstant(v)
+		ugen.AppendInput(newInput(-1, int32(idx)))
+	case *param:
+		idx := v.Index()
+		ugen.AppendInput(newInput(0, idx))
+	case MultiInput:
+		mins := v.InputArray()
+		for _, min := range mins {
+			switch x := min.(type) {
 			case Ugen:
-				_, idx, _ := def.addUgen(v)
-				for outputIndex := range v.Outputs() {
+				_, idx, _ := def.addUgen(x)
+				// will we ever need to use a different output index? [bps]
+				for outputIndex := range x.Outputs() {
 					ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
 				}
 			case C:
-				idx := def.addConstant(v)
+				idx := def.addConstant(x)
 				ugen.AppendInput(newInput(-1, int32(idx)))
 			case *param:
-				idx := v.Index()
+				idx := x.Index()
 				ugen.AppendInput(newInput(0, idx))
-			case MultiInput:
-				mins := v.InputArray()
-				for _, min := range mins {
-					switch x := min.(type) {
-					case Ugen:
-						_, idx, _ := def.addUgen(x)
-						// will we ever need to use a different output index? [bps]
-						for outputIndex := range x.Outputs() {
-							ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
-						}
-					case C:
-						idx := def.addConstant(x)
-						ugen.AppendInput(newInput(-1, int32(idx)))
-					case *param:
-						idx := x.Index()
-						ugen.AppendInput(newInput(0, idx))
-					}
-				}
 			}
 		}
 	}

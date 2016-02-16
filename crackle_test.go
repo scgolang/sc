@@ -12,10 +12,7 @@ func TestCrackle(t *testing.T) {
 		return Out{bus, sig}.Rate(AR)
 
 	})
-	same, err := def.Compare(`{
-		var crack = Crackle.ar(Line.kr(1.0, 2.0, 3), 0.5, 0.5);
-		Out.ar(0, crack);
-    }`)
+	same, err := def.CompareToFile("fixtures/CrackleTest.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

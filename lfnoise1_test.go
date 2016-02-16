@@ -10,10 +10,7 @@ func TestLFNoise1(t *testing.T) {
 		sig := LFNoise1{freq}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	same, err := def.Compare(`{
-        var freq = XLine.kr(1000, 10000, 10);
-        Out.ar(0, LFNoise1.ar(freq, 0.25));
-    }`)
+	same, err := def.CompareToFile("fixtures/LFNoise1Example.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

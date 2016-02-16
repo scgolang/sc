@@ -8,7 +8,7 @@ import (
 
 func TestReadSynthdef(t *testing.T) {
 	// read a synthdef file created by sclang
-	f, err := os.Open("SineTone.scsyndef")
+	f, err := os.Open("fixtures/SineTone.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func TestAllpassExample(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	same, err := def.CompareToFile("AllpassExample.scsyndef")
+	same, err := def.CompareToFile("fixtures/AllpassExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

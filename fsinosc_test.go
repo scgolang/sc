@@ -12,11 +12,7 @@ func TestFSinOsc(t *testing.T) {
 		bus := C(0)
 		return Out{bus, sin2}.Rate(AR)
 	})
-	same, err := def.Compare(`{
-        var line = XLine.kr(4, 401, 8);
-        var freq = FSinOsc.ar(line, 0.0, 200, 800);
-        Out.ar(0, FSinOsc.ar(freq) * 0.2);
-    }`)
+	same, err := def.CompareToFile("fixtures/FSinOscExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -7,8 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
-	"path"
 
 	"github.com/awalterschulze/gographviz"
 )
@@ -113,50 +111,6 @@ func (def *Synthdef) CompareToDef(other *Synthdef) (bool, error) {
 		return false, err
 	}
 	return compareBytes(buf1.Bytes(), buf2.Bytes()), nil
-}
-
-// Compare compares this synthdef byte-for-byte with
-// the synthdef sclang generates using the given string.
-// Note that using this method requires you to have sclang installed.
-// Also note that this method is _very_ slow.
-// Returns true if the synthdefs are the same, false otherwise.
-func (def *Synthdef) Compare(other string) (bool, error) {
-	tmp := os.TempDir()
-	scSyndef := path.Join(tmp, fmt.Sprintf("%s.scsyndef", def.Name))
-	const wrap = `SynthDef(\%s, %s).writeDefFile("%s"); 0.exit;`
-	contents := fmt.Sprintf(wrap, def.Name, other, tmp)
-	f, err := ioutil.TempFile(tmp, "sclang_")
-	if err != nil {
-		return false, err
-	}
-	written, err := f.Write([]byte(contents))
-	if err != nil {
-		return false, err
-	}
-	if written != len(contents) {
-		return false, fmt.Errorf("only wrote %d bytes", written)
-	}
-	// generate the .scsyndef file
-	cmd := exec.Command("sclang", f.Name())
-	err = cmd.Run()
-	if err != nil {
-		return false, err
-	}
-	// read it and compare to this synthdef
-	g, err := os.Open(scSyndef)
-	if err != nil {
-		return false, err
-	}
-	fromDisk, err := ioutil.ReadAll(g)
-	if err != nil {
-		return false, err
-	}
-	buf := bytes.NewBuffer(make([]byte, 0))
-	err = def.Write(buf)
-	if err != nil {
-		return false, err
-	}
-	return compareBytes(buf.Bytes(), fromDisk), nil
 }
 
 func newGraph(name string) *gographviz.Graph {

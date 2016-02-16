@@ -5,7 +5,7 @@ import (
 )
 
 func TestEnvGen(t *testing.T) {
-	def := NewSynthdef("Envgen1", func(p Params) Ugen {
+	def := NewSynthdef("EnvgenTest", func(p Params) Ugen {
 		bus := C(0)
 		attack, release := C(0.01), C(1)
 		level, curvature := C(1), C(-4)
@@ -15,9 +15,7 @@ func TestEnvGen(t *testing.T) {
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)
 		return Out{bus, noise}.Rate(AR)
 	})
-	same, err := def.Compare(`{
-        Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
-    }`)
+	same, err := def.CompareToFile("fixtures/EnvgenTest.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

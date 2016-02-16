@@ -13,7 +13,7 @@ func compareAndWrite(t *testing.T, name string, def *Synthdef) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	same, err := def.CompareToFile(fmt.Sprintf("%s.scsyndef", name))
+	same, err := def.CompareToFile(fmt.Sprintf("fixtures/%s.scsyndef", name))
 	if err != nil {
 		t.Fatal(err)
 	}

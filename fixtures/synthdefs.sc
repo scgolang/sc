@@ -63,6 +63,8 @@ SynthDef(\UseParam, {
 }).writeDefFile(File.getcwd);
 
 SynthDef(\SimpleMulti, {
+    var sine = SinOsc.ar([440, 441]);
+    Out.ar(0, sine);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\Cascade, {
@@ -118,6 +120,21 @@ SynthDef(\BlipExample, {
     var harms = 100;
     var mul = 0.2;
     Out.ar(0, Blip.ar(freq, harms, mul));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\BrownNoiseTest, {
+    var sig = SinOsc.ar(BrownNoise.ar(100, 200));
+    Out.ar(0, sig * 0.1);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\CascadeExample, {
+    var mod1 = SinOsc.ar([440, 441]);
+    var mod2 = SinOsc.ar(mod1);
+    Out.ar(0, SinOsc.ar(mod2));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\EnvgenTest, {
+    Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\LFSawExample, {

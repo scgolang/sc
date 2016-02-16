@@ -12,10 +12,7 @@ func TestBrownNoise(t *testing.T) {
 		sig := SinOsc{Freq: noise}.Rate(AR)
 		return Out{bus, sig.Mul(gain)}.Rate(AR)
 	})
-	same, err := def.Compare(`{
-        var sig = SinOsc.ar(BrownNoise.ar(100, 200));
-        Out.ar(0, sig * 0.1);
-    }`)
+	same, err := def.CompareToFile("fixtures/BrownNoiseTest.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

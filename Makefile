@@ -79,7 +79,7 @@ $(FIXTURES)              : fixtures/synthdefs.sc
 clean                    :
 			@rm -rf *~ *.gosyndef *.svg *.dot *.json *.xml
 
-test                     : .scsynth $(FIXTURES)
+test                     : $(FIXTURES)
 			@go test
 
 .PHONY           : all clean test

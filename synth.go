@@ -27,18 +27,20 @@ func (s *Synth) Set(ctls map[string]float32) error {
 	if err != nil {
 		return err
 	}
-	if err := set.WriteInt32(s.ID); err != nil {
+	if err := set.WriteInt32(0, s.ID); err != nil {
 		return err
 	}
+	argidx := 1
 	for name, value := range ctls {
-		if err := set.WriteString(name); err != nil {
+		if err := set.WriteString(argidx, name); err != nil {
 			return err
 		}
-		if err := set.WriteFloat32(value); err != nil {
+		if err := set.WriteFloat32(argidx, value); err != nil {
 			return err
 		}
 	}
-	return s.client.oscConn.Send(set)
+	_, err = s.client.oscConn.Send(set)
+	return err
 }
 
 // Free a synth node.
@@ -47,10 +49,11 @@ func (s *Synth) Free() error {
 	if err != nil {
 		return err
 	}
-	if err := free.WriteInt32(s.ID); err != nil {
+	if err := free.WriteInt32(0, s.ID); err != nil {
 		return err
 	}
-	return s.client.oscConn.Send(free)
+	_, err = s.client.oscConn.Send(free)
+	return err
 }
 
 // newSynth creates a new synth structure.

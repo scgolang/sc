@@ -19,45 +19,45 @@ type ServerStatus struct {
 }
 
 func newStatus(msg *osc.Message) (*ServerStatus, error) {
-	if msg.Address() != statusReplyAddress {
+	if msg.Address != statusReplyAddress {
 		errmsg := "Can not get status from message with address %s"
 		return nil, fmt.Errorf(errmsg, msg.Address)
 	}
-	numArgs := msg.CountArguments()
+	numArgs := len(msg.Args)
 	status := &ServerStatus{}
 	if numArgs != 9 {
 		return nil, fmt.Errorf("Only got %d arguments in /status.reply message", numArgs)
 	}
 	var err error
-	status.NumUgens, err = msg.ReadInt32()
+	status.NumUgens, err = msg.ReadInt32(0)
 	if err != nil {
 		return nil, err
 	}
-	status.NumSynths, err = msg.ReadInt32()
+	status.NumSynths, err = msg.ReadInt32(1)
 	if err != nil {
 		return nil, err
 	}
-	status.NumGroups, err = msg.ReadInt32()
+	status.NumGroups, err = msg.ReadInt32(2)
 	if err != nil {
 		return nil, err
 	}
-	status.NumSynthdefs, err = msg.ReadInt32()
+	status.NumSynthdefs, err = msg.ReadInt32(3)
 	if err != nil {
 		return nil, err
 	}
-	status.AvgCPU, err = msg.ReadFloat32()
+	status.AvgCPU, err = msg.ReadFloat32(4)
 	if err != nil {
 		return nil, err
 	}
-	status.PeakCPU, err = msg.ReadFloat32()
+	status.PeakCPU, err = msg.ReadFloat32(5)
 	if err != nil {
 		return nil, err
 	}
-	status.NominalSampleRate, err = msg.ReadFloat32()
+	status.NominalSampleRate, err = msg.ReadFloat32(6)
 	if err != nil {
 		return nil, err
 	}
-	status.ActualSampleRate, err = msg.ReadFloat32()
+	status.ActualSampleRate, err = msg.ReadFloat32(7)
 	if err != nil {
 		return nil, err
 	}

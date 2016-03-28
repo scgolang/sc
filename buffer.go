@@ -73,21 +73,21 @@ func (buffer *Buffer) sendGenMsg(routine string, flags int, args ...float32) err
 	if err != nil {
 		return err
 	}
-	if err := gen.WriteInt32(0, buffer.Num); err != nil {
+	if err := gen.WriteInt32(buffer.Num); err != nil {
 		return err
 	}
-	if err := gen.WriteString(1, routine); err != nil {
+	if err := gen.WriteString(routine); err != nil {
 		return err
 	}
-	if err := gen.WriteInt32(2, int32(flags)); err != nil {
+	if err := gen.WriteInt32(int32(flags)); err != nil {
 		return err
 	}
 	for _, arg := range args {
-		if err := gen.WriteFloat32(3, arg); err != nil {
+		if err := gen.WriteFloat32(arg); err != nil {
 			return err
 		}
 	}
-	if _, err := buffer.client.oscConn.Send(gen); err != nil {
+	if err := buffer.client.oscConn.Send(gen); err != nil {
 		return err
 	}
 	return nil
@@ -101,10 +101,10 @@ func (buffer *Buffer) awaitGenReply() error {
 	case err := <-buffer.client.errChan:
 		return err
 	}
-	if len(done.Args) != 2 {
+	if done.CountArguments() != 2 {
 		return errors.New("expected two arguments to /done message")
 	}
-	addr, err := done.ReadString(0)
+	addr, err := done.ReadString()
 	if err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func (buffer *Buffer) awaitGenReply() error {
 		buffer.client.doneChan <- done
 		return nil
 	}
-	bufnum, err := done.ReadInt32(1)
+	bufnum, err := done.ReadInt32()
 	if err != nil {
 		return err
 	}

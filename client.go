@@ -152,7 +152,7 @@ func (c *Client) Status() (*ServerStatus, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, err := c.oscConn.Send(statusReq); err != nil {
+	if err := c.oscConn.Send(statusReq); err != nil {
 		return nil, err
 	}
 	select {
@@ -175,10 +175,10 @@ func (c *Client) SendDef(def *Synthdef) error {
 	if err != nil {
 		return err
 	}
-	if err := msg.WriteBlob(0, db); err != nil {
+	if err := msg.WriteBlob(db); err != nil {
 		return err
 	}
-	if _, err := c.oscConn.Send(msg); err != nil {
+	if err := c.oscConn.Send(msg); err != nil {
 		return err
 	}
 	var done *osc.Message
@@ -192,10 +192,10 @@ func (c *Client) SendDef(def *Synthdef) error {
 ParseMessage:
 	// error if this message was not an ack of the synthdef
 	errmsg := "expected /done with /d_recv argument"
-	if len(done.Args) != 1 {
+	if done.CountArguments() != 1 {
 		return fmt.Errorf(errmsg)
 	}
-	addr, err := done.ReadString(0)
+	addr, err := done.ReadString()
 	if err != nil {
 		return err
 	}
@@ -212,11 +212,10 @@ func (c *Client) DumpOSC(level int32) error {
 	if err != nil {
 		return err
 	}
-	if err := dumpReq.WriteInt32(0, level); err != nil {
+	if err := dumpReq.WriteInt32(level); err != nil {
 		return err
 	}
-	_, err = c.oscConn.Send(dumpReq)
-	return err
+	return c.oscConn.Send(dumpReq)
 }
 
 // Synth creates a synth node.
@@ -225,32 +224,29 @@ func (c *Client) Synth(defName string, id, action, target int32, ctls map[string
 	if err != nil {
 		return nil, err
 	}
-	if err := synthReq.WriteString(0, defName); err != nil {
+	if err := synthReq.WriteString(defName); err != nil {
 		return nil, err
 	}
-	if err := synthReq.WriteInt32(1, id); err != nil {
+	if err := synthReq.WriteInt32(id); err != nil {
 		return nil, err
 	}
-	if err := synthReq.WriteInt32(2, action); err != nil {
+	if err := synthReq.WriteInt32(action); err != nil {
 		return nil, err
 	}
-	if err := synthReq.WriteInt32(3, target); err != nil {
+	if err := synthReq.WriteInt32(target); err != nil {
 		return nil, err
 	}
-	var argidx int
 	if ctls != nil {
 		for k, v := range ctls {
-			if err := synthReq.WriteString(argidx, k); err != nil {
+			if err := synthReq.WriteString(k); err != nil {
 				return nil, err
 			}
-			argidx++
-			if err := synthReq.WriteFloat32(argidx, v); err != nil {
+			if err := synthReq.WriteFloat32(v); err != nil {
 				return nil, err
 			}
-			argidx++
 		}
 	}
-	if _, err := c.oscConn.Send(synthReq); err != nil {
+	if err := c.oscConn.Send(synthReq); err != nil {
 		return nil, err
 	}
 	return newSynth(c, defName, id), nil
@@ -262,16 +258,16 @@ func (c *Client) Group(id, action, target int32) (*Group, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := dumpReq.WriteInt32(0, id); err != nil {
+	if err := dumpReq.WriteInt32(id); err != nil {
 		return nil, err
 	}
-	if err := dumpReq.WriteInt32(1, action); err != nil {
+	if err := dumpReq.WriteInt32(action); err != nil {
 		return nil, err
 	}
-	if err := dumpReq.WriteInt32(2, target); err != nil {
+	if err := dumpReq.WriteInt32(target); err != nil {
 		return nil, err
 	}
-	if _, err := c.oscConn.Send(dumpReq); err != nil {
+	if err := c.oscConn.Send(dumpReq); err != nil {
 		return nil, err
 	}
 	return newGroup(c, id), nil
@@ -289,10 +285,10 @@ func (c *Client) QueryGroup(id int32) (*Group, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := gq.WriteInt32(0, int32(RootNodeID)); err != nil {
+	if err := gq.WriteInt32(int32(RootNodeID)); err != nil {
 		return nil, err
 	}
-	if _, err := c.oscConn.Send(gq); err != nil {
+	if err := c.oscConn.Send(gq); err != nil {
 		return nil, err
 	}
 	// wait for response
@@ -321,13 +317,13 @@ func (c *Client) sendBufReadMsg(path string, num int32) (*Buffer, error) {
 	}
 
 	buf := newReadBuffer(path, num, c)
-	if err := allocRead.WriteInt32(0, buf.Num); err != nil {
+	if err := allocRead.WriteInt32(buf.Num); err != nil {
 		return nil, err
 	}
-	if err := allocRead.WriteString(1, path); err != nil {
+	if err := allocRead.WriteString(path); err != nil {
 		return nil, err
 	}
-	if _, err := c.oscConn.Send(allocRead); err != nil {
+	if err := c.oscConn.Send(allocRead); err != nil {
 		return nil, err
 	}
 	return buf, nil
@@ -343,17 +339,17 @@ func (c *Client) awaitBufReadReply(buf *Buffer) error {
 	}
 
 	// error if this message was not an ack of the buffer read
-	if len(done.Args) != 2 {
+	if done.CountArguments() != 2 {
 		return fmt.Errorf("expected two arguments to /done message")
 	}
-	addr, err := done.ReadString(0)
+	addr, err := done.ReadString()
 	if err != nil {
 		return err
 	}
 	if addr != bufferReadAddress {
 		c.doneChan <- done
 	}
-	bufnum, err := done.ReadInt32(1)
+	bufnum, err := done.ReadInt32()
 	if err != nil {
 		return err
 	}
@@ -382,16 +378,16 @@ func (c *Client) sendBufAllocMsg(frames, channels int) (*Buffer, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := alloc.WriteInt32(0, buf.Num); err != nil {
+	if err := alloc.WriteInt32(buf.Num); err != nil {
 		return nil, err
 	}
-	if err := alloc.WriteInt32(1, int32(frames)); err != nil {
+	if err := alloc.WriteInt32(int32(frames)); err != nil {
 		return nil, err
 	}
-	if err := alloc.WriteInt32(2, int32(channels)); err != nil {
+	if err := alloc.WriteInt32(int32(channels)); err != nil {
 		return nil, err
 	}
-	if _, err := c.oscConn.Send(alloc); err != nil {
+	if err := c.oscConn.Send(alloc); err != nil {
 		return nil, err
 	}
 	return buf, nil
@@ -406,10 +402,10 @@ func (c *Client) awaitBufAllocReply(buf *Buffer) error {
 		return err
 	}
 	// error if this message was not an ack of /b_alloc
-	if len(done.Args) != 2 {
+	if done.CountArguments() != 2 {
 		return fmt.Errorf("expected two arguments to /done message")
 	}
-	addr, err := done.ReadString(0)
+	addr, err := done.ReadString()
 	if err != nil {
 		return err
 	}
@@ -417,7 +413,7 @@ func (c *Client) awaitBufAllocReply(buf *Buffer) error {
 		c.doneChan <- done
 
 	}
-	bufnum, err := done.ReadInt32(1)
+	bufnum, err := done.ReadInt32()
 	if err != nil {
 		return err
 	}
@@ -439,12 +435,11 @@ func (c *Client) FreeAll(gids ...int32) error {
 		return err
 	}
 	for _, gid := range gids {
-		if err := freeReq.WriteInt32(0, gid); err != nil {
+		if err := freeReq.WriteInt32(gid); err != nil {
 			return err
 		}
 	}
-	_, err = c.oscConn.Send(freeReq)
-	return err
+	return c.oscConn.Send(freeReq)
 }
 
 // addOscHandlers adds OSC handlers

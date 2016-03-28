@@ -16,7 +16,10 @@ func TestClient(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer func() { _ = client.Close() }() // Best effort.
+	defer func() {
+		_ = <-client.doneChan
+		_ = client.Close()
+	}() // Best effort.
 
 	// get status
 	// status, err := client.GetStatus()

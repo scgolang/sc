@@ -6,6 +6,7 @@ import (
 	"net"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/scgolang/osc"
 )
@@ -56,6 +57,11 @@ const (
 	DefaultLocalAddr = "0.0.0.0:57110"
 	// DefaultScsynthAddr is the remote address for DefaultClient.
 	DefaultScsynthAddr = "0.0.0.0:57120"
+)
+
+// Common errors.
+var (
+	ErrTimeout = errors.New("timeout error")
 )
 
 // Client manages all communication with scsynth
@@ -146,8 +152,9 @@ func (c *Client) Connect(addr string) error {
 	return nil
 }
 
-// Status gets the status of scsynth.
-func (c *Client) Status() (*ServerStatus, error) {
+// Status gets the status of scsynth with a timeout.
+// If the status request times out it returns ErrTimeout.
+func (c *Client) Status(timeout time.Duration) (*ServerStatus, error) {
 	statusReq, err := osc.NewMessage(statusAddress)
 	if err != nil {
 		return nil, err
@@ -155,7 +162,12 @@ func (c *Client) Status() (*ServerStatus, error) {
 	if err := c.oscConn.Send(statusReq); err != nil {
 		return nil, err
 	}
+
+	after := time.After(timeout)
+
 	select {
+	case _ = <-after:
+		return nil, ErrTimeout
 	case msg := <-c.statusChan:
 		return newStatus(msg)
 	case err = <-c.errChan:

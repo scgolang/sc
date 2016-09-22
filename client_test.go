@@ -1,11 +1,21 @@
 package sc
 
 import (
-	"log"
 	"os"
 	"path"
 	"testing"
+	"time"
 )
+
+// skipIfNoScsynth skips a test if scsynth is not running.
+// A timeout of 2 seconds is used to attempt a connection to scsynth
+// since when it is running it should be local on the same machine
+// and we should be able to connect very quickly.
+func skipIfNoScsynth(t *testing.T, client *Client) {
+	if _, err := client.Status(2 * time.Second); err != nil {
+		t.SkipNow()
+	}
+}
 
 // This test requires a SuperCollider server to be running.
 //
@@ -16,19 +26,14 @@ func TestClient(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// TODO: only skip if there is not a supercollider server running
+	skipIfNoScsynth(t, client)
+
 	defer func() {
 		_ = <-client.doneChan
 		_ = client.Close()
 	}() // Best effort.
-
-	// get status
-	// status, err := client.GetStatus()
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// if status == nil {
-	// 	t.Fatalf("got nil status")
-	// }
 
 	// read a buffer
 	cwd, err := os.Getwd()
@@ -37,12 +42,11 @@ func TestClient(t *testing.T) {
 	}
 	audioFile := path.Join(cwd, "kalimba_mono.wav")
 
-	log.Println("reading buffer...")
 	buf, err := client.ReadBuffer(audioFile, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
-	log.Println("done reading buffer.")
+
 	if buf == nil {
 		t.Fatalf("got nil buffer")
 	}

@@ -327,7 +327,7 @@ SynthDef(\MixTest, {
 }).writeDefFile(File.getcwd);
 
 SynthDef(\THX1, {
-    var numVoices = 5;
+    var numVoices = 4;
     
     // Generate initial random fundamentals.
     var fundamentals = {rrand(200.0, 400.0)}!numVoices;

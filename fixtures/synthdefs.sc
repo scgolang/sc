@@ -326,4 +326,22 @@ SynthDef(\MixTest, {
     ]));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\THX1, {
+    var numVoices = 5;
+    
+    // Generate initial random fundamentals.
+    var fundamentals = {rrand(200.0, 400.0)}!numVoices;
+    
+    var sig = Mix({ |numTone|
+        var freq = fundamentals[numTone];
+        Pan2.ar(
+            Saw.ar(freq),
+            rrand(-0.5, 0.5),    // stereo placement of voices
+            numVoices.reciprocal // scale the amplitude of each voice
+        );
+    }!numVoices);
+
+    Out.ar(0, sig);
+}).writeDefFile(File.getcwd);
+
 0.exit;

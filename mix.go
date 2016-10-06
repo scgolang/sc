@@ -15,6 +15,7 @@ func Mix(rate int8, inputs []Input) Input {
 	case 4:
 		return Sum4(rate, inputs[0], inputs[1], inputs[2], inputs[3])
 	default:
-		return inputs[len(inputs)-1].Add(Mix(rate, inputs[0:len(inputs)-1]))
+		head := []Input{Sum4(rate, inputs[0], inputs[1], inputs[2], inputs[3])}
+		return Mix(rate, append(head, inputs[4:]...))
 	}
 }

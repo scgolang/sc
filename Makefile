@@ -62,6 +62,7 @@ FIXTURES = fixtures/AllpassExample.scsyndef          \
            fixtures/SineTone3.scsyndef               \
            fixtures/SineTone4.scsyndef               \
            fixtures/Sum3.scsyndef                    \
+           fixtures/THX1.scsyndef                    \
            fixtures/UseParam.scsyndef                \
            fixtures/defWith2Params.scsyndef          \
            fixtures/foo.scsyndef                     \

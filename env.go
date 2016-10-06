@@ -61,10 +61,18 @@ func (e *Env) defaults() {
 		}
 		e.Curvature = C(0)
 	}
+	if e.ReleaseNode == nil {
+		e.ReleaseNode = C(-99)
+	}
+	if e.LoopNode == nil {
+		e.LoopNode = C(-99)
+	}
 }
 
 // Inputs returns the array of inputs that defines the Env.
 func (e Env) Inputs() []Input {
+	(&e).defaults()
+
 	// This is how the inputs array is constructed:
 	// 0, 3, -99, -99, -- starting level, num segments, releaseNode, loopNode
 	// 1, 0.1, 5, 4, -- first segment: level, time, curve type, curvature
@@ -77,7 +85,6 @@ func (e Env) Inputs() []Input {
 	if lc != lt {
 		panic(fmt.Errorf("%d curve types != %d times", lc, lt))
 	}
-	(&e).defaults()
 
 	var (
 		numSegments = len(e.Levels) - 1

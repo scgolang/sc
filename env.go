@@ -198,7 +198,11 @@ func shapeNumber(shapeValue interface{}) Input {
 		return C(5)
 	}
 	switch val := shapeValue.(type) {
+	case int:
+		return C(float32(val))
 	case float64:
+		return C(float32(val))
+	case float32:
 		return C(val)
 	case Input:
 		return val
@@ -216,6 +220,8 @@ func shapeNumber(shapeValue interface{}) Input {
 // isValidUgenInput returns false if val is not a valid ugen input and true otherwise.
 func isValidUgenInput(val interface{}) (Input, bool) {
 	switch x := val.(type) {
+	case int:
+		return C(float32(x)), true
 	case float64:
 		return C(float32(x)), true
 	case float32:

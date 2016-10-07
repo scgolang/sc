@@ -113,12 +113,14 @@ func (env Env) Inputs() []Input {
 // curvesArray returns the Curve as an array.
 func (env Env) curvesArray() []interface{} {
 	switch val := env.Curve.(type) {
-	case string, float64, Input:
+	case int, string, float64, Input:
 		return arrayFromScalar(val, len(env.Times))
-	case []string:
-		return stringsToEmpties(val)
+	case []int:
+		return intsToEmpties(val)
 	case []float64:
 		return floatsToEmpties(val)
+	case []string:
+		return stringsToEmpties(val)
 	case []Input:
 		return inputsToEmpties(val)
 	case []interface{}:
@@ -126,6 +128,15 @@ func (env Env) curvesArray() []interface{} {
 	default:
 		panic(fmt.Sprintf("unsupported type for envelope curve: %T", env.Curve))
 	}
+}
+
+// intsToEmpties converts a int slice to a slice of the empty interface.
+func intsToEmpties(arr []int) []interface{} {
+	ret := make([]interface{}, len(arr))
+	for i, ii := range arr {
+		ret[i] = ii
+	}
+	return ret
 }
 
 // floatsToEmpties converts a float slice to a slice of the empty interface.

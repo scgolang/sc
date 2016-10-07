@@ -7,7 +7,7 @@ func TestLFNoise1(t *testing.T) {
 		start, end, dur, done := C(1000), C(10000), C(10), 0
 		bus, gain := C(0), C(0.25)
 		freq := XLine{start, end, dur, done}.Rate(KR)
-		sig := LFNoise1{freq}.Rate(AR).Mul(gain)
+		sig := LFNoise{Interpolation: NoiseLinear, Freq: freq}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
 	same, err := def.CompareToFile("fixtures/LFNoise1Example.scsyndef")

@@ -24,6 +24,24 @@ const (
 	CurveCubed = C(7)
 )
 
+// shapeNames contains the names of the envelope curves.
+// This mirrors the IdentityDictionary in SCClassLibrary/Common/Audio/Env.sc.
+var shapeNames = map[string]int{
+	"step":        0,
+	"lin":         1,
+	"linear":      1,
+	"exp":         2,
+	"exponential": 2,
+	"sin":         3,
+	"sine":        3,
+	"wel":         4,
+	"welch":       4,
+	"sqr":         6,
+	"squared":     6,
+	"cub":         7,
+	"cubed":       7,
+}
+
 // Env is a specification for a breakpoint envelope
 type Env struct {
 	// Levels is the array of levels
@@ -32,46 +50,34 @@ type Env struct {
 	// The length of this array should be one less than the
 	// Levels array.
 	Times []Input
-	// CurveTypes determines the shape of each envelope segment.
-	CurveTypes  []Input
-	Curvature   Input
+	// Curve determines the shape of each envelope segment.
+	// This could be a string, a float, a slice of strings, or a slice of floats.
+	Curve       interface{}
 	ReleaseNode Input
 	LoopNode    Input
 }
 
-func (e *Env) defaults() {
-	if e.Levels == nil {
-		e.Levels = []Input{C(0), C(1), C(0)}
+func (env *Env) defaults() {
+	if env.Levels == nil {
+		env.Levels = []Input{C(0), C(1), C(0)}
 	}
-	if e.Times == nil {
-		e.Times = []Input{C(1), C(1)}
+	if env.Times == nil {
+		env.Times = []Input{C(1), C(1)}
 	}
-	if e.CurveTypes == nil {
-		numSegments := len(e.Times)
-		e.CurveTypes = make([]Input, numSegments)
-
-		if e.Curvature == nil {
-			for i := 0; i < numSegments; i++ {
-				e.CurveTypes[i] = CurveLinear
-			}
-		} else {
-			for i := 0; i < numSegments; i++ {
-				e.CurveTypes[i] = e.Curvature
-			}
-		}
-		e.Curvature = C(0)
+	if env.ReleaseNode == nil {
+		env.ReleaseNode = C(-99)
 	}
-	if e.ReleaseNode == nil {
-		e.ReleaseNode = C(-99)
+	if env.LoopNode == nil {
+		env.LoopNode = C(-99)
 	}
-	if e.LoopNode == nil {
-		e.LoopNode = C(-99)
+	if env.Curve == nil {
+		env.Curve = "linear"
 	}
 }
 
 // Inputs returns the array of inputs that defines the Env.
-func (e Env) Inputs() []Input {
-	(&e).defaults()
+func (env Env) Inputs() []Input {
+	(&env).defaults()
 
 	// This is how the inputs array is constructed:
 	// 0, 3, -99, -99, -- starting level, num segments, releaseNode, loopNode
@@ -79,33 +85,161 @@ func (e Env) Inputs() []Input {
 	// 0.5, 1, 5, -4, -- second segment: level, time, curve type, curvature
 	// 0, 0.2, 5, 4 -- and so on
 	var (
-		lc = len(e.CurveTypes)
-		lt = len(e.Times)
+		curvesArray = env.curvesArray()
+		lc          = len(curvesArray)
+		lt          = len(env.Times)
 	)
 	if lc != lt {
 		panic(fmt.Errorf("%d curve types != %d times", lc, lt))
 	}
 
 	var (
-		numSegments = len(e.Levels) - 1
+		numSegments = len(env.Levels) - 1
 		arr         = make([]Input, 4*(numSegments+1))
 	)
-	arr[0] = e.Levels[0]
+	arr[0] = env.Levels[0]
 	arr[1] = C(numSegments)
-	arr[2] = e.ReleaseNode
-	arr[3] = e.LoopNode
-	for i, t := range e.Times {
-		arr[(4*i)+4] = e.Levels[i+1]
+	arr[2] = env.ReleaseNode
+	arr[3] = env.LoopNode
+	for i, t := range env.Times {
+		arr[(4*i)+4] = env.Levels[i+1]
 		arr[(4*i)+5] = t
-		arr[(4*i)+6] = e.CurveTypes[i]
-		arr[(4*i)+7] = e.Curvature
+		arr[(4*i)+6] = shapeNumber(curvesArray[i])
+		arr[(4*i)+7] = curveValue(curvesArray[i])
 	}
 	return arr
 }
 
+// curvesArray returns the Curve as an array.
+func (env Env) curvesArray() []interface{} {
+	switch val := env.Curve.(type) {
+	case string, float64, Input:
+		return arrayFromScalar(val, len(env.Times))
+	case []string:
+		return stringsToEmpties(val)
+	case []float64:
+		return floatsToEmpties(val)
+	case []Input:
+		return inputsToEmpties(val)
+	case []interface{}:
+		return val
+	default:
+		panic(fmt.Sprintf("unsupported type for envelope curve: %T", env.Curve))
+	}
+}
+
+// floatsToEmpties converts a float slice to a slice of the empty interface.
+func floatsToEmpties(arr []float64) []interface{} {
+	ret := make([]interface{}, len(arr))
+	for i, f := range arr {
+		ret[i] = f
+	}
+	return ret
+}
+
+// stringsToEmpties converts a string slice to a slice of the empty interface.
+func stringsToEmpties(arr []string) []interface{} {
+	ret := make([]interface{}, len(arr))
+	for i, s := range arr {
+		ret[i] = s
+	}
+	return ret
+}
+
+// inputsToEmpties converts an Input slice to a slice of the empty interface.
+func inputsToEmpties(arr []Input) []interface{} {
+	ret := make([]interface{}, len(arr))
+	for i, in := range arr {
+		ret[i] = in
+	}
+	return ret
+}
+
+// arrayFromScalar converts a scalar value to a slice of the empty interface.
+func arrayFromScalar(val interface{}, length int) []interface{} {
+	ret := make([]interface{}, length)
+	for i := range ret {
+		ret[i] = val
+	}
+	return ret
+}
+
+// shapeNumber returns the mysterious shape number for the Env inputs array.
+//
+// The relevant sclang code (from Env.sc) is:
+//
+//     *shapeNumber { arg shapeName;
+//             ^shapeName.asArray.collect { |name|
+//                     var shape;
+//                     if(name.isValidUGenInput) { 5 } {
+//                             shape = shapeNames.at(name);
+//                             if(shape.isNil) { Error("Env shape not defined.").throw };
+//                             shape
+//                     }
+//             }.unbubble
+//     }
+//
+// Note: we don't handle the case where shapeValue is an array since we force
+// this func to be called with either string, float64, or Input.
+//
+func shapeNumber(shapeValue interface{}) Input {
+	if _, ok := isValidUgenInput(shapeValue); ok {
+		return C(5)
+	}
+	switch val := shapeValue.(type) {
+	case float64:
+		return C(val)
+	case Input:
+		return val
+	case string:
+		shapeNum, ok := shapeNames[val]
+		if !ok {
+			panic(fmt.Sprintf("invalid curve: %s", val))
+		}
+		return C(shapeNum)
+	default:
+		panic(fmt.Sprintf("invalid curve type (must be float, string, or Input): %T", shapeValue))
+	}
+}
+
+// isValidUgenInput returns false if val is not a valid ugen input and true otherwise.
+func isValidUgenInput(val interface{}) (Input, bool) {
+	switch x := val.(type) {
+	case float64:
+		return C(float32(x)), true
+	case float32:
+		return C(x), true
+	case Input:
+		return x, true
+	default:
+		return nil, false
+	}
+}
+
+// curveValue returns the mysterious curve value for the Env inputs array.
+//
+// The relevant sclang code (from Env.sc) is:
+//
+// curveValue { arg curve;
+//         ^if(curve.isSequenceableCollection) {
+//                 curve.collect { |x|
+//                         if(x.isValidUGenInput) { x } { 0 }
+//                 }
+//         } {
+//                 if(curve.isValidUGenInput) { curve } { 0 }
+//         }
+// }
+func curveValue(curve interface{}) Input {
+	if input, ok := isValidUgenInput(curve); ok {
+		return input
+	}
+	return C(0)
+}
+
 // EnvLinen creates a new envelope which has a trapezoidal shape
 type EnvLinen struct {
-	Attack, Sustain, Release, Level, CurveType Input
+	Attack, Sustain, Release, Level Input
+	Curve                           interface{}
 }
 
 func (linen *EnvLinen) defaults() {
@@ -121,8 +255,8 @@ func (linen *EnvLinen) defaults() {
 	if linen.Level == nil {
 		linen.Level = C(1)
 	}
-	if linen.CurveType == nil {
-		linen.CurveType = C(1)
+	if linen.Curve == nil {
+		linen.Curve = "lin"
 	}
 }
 
@@ -130,13 +264,11 @@ func (linen *EnvLinen) defaults() {
 func (linen EnvLinen) Inputs() []Input {
 	(&linen).defaults()
 
-	var (
-		levels = []Input{C(0), linen.Level, linen.Level, C(0)}
-		times  = []Input{linen.Attack, linen.Sustain, linen.Release}
-		ct     = linen.CurveType
-		cts    = []Input{ct, ct, ct}
-	)
-	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
+	return Env{
+		Levels: []Input{C(0), linen.Level, linen.Level, C(0)},
+		Times:  []Input{linen.Attack, linen.Sustain, linen.Release},
+		Curve:  linen.Curve,
+	}.Inputs()
 }
 
 // EnvTriangle creates a new envelope that has a triangle shape
@@ -157,13 +289,12 @@ func (tri *EnvTriangle) defaults() {
 func (tri EnvTriangle) Inputs() []Input {
 	(&tri).defaults()
 
-	var (
-		levels = []Input{C(0), tri.Level, C(0)}
-		d      = tri.Dur.Mul(C(0.5))
-		times  = []Input{d, d}
-		cts    = []Input{CurveLinear, CurveLinear}
-	)
-	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
+	d := tri.Dur.Mul(C(0.5))
+
+	return Env{
+		Levels: []Input{C(0), tri.Level, C(0)},
+		Times:  []Input{d, d},
+	}.Inputs()
 }
 
 // EnvSine creates a new envelope which has a hanning window shape
@@ -184,18 +315,18 @@ func (sine *EnvSine) defaults() {
 func (sine EnvSine) Inputs() []Input {
 	(&sine).defaults()
 
-	var (
-		levels = []Input{C(0), sine.Level, C(0)}
-		d      = sine.Dur.Mul(C(0.5))
-		times  = []Input{d, d}
-		cts    = []Input{CurveSine, CurveSine}
-	)
-	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
+	d := sine.Dur.Mul(C(0.5))
+
+	return Env{
+		Levels: []Input{C(0), sine.Level, C(0)},
+		Times:  []Input{d, d},
+		Curve:  "sine",
+	}.Inputs()
 }
 
 // EnvPerc creates a new envelope that has a percussive shape
 type EnvPerc struct {
-	Attack, Release, Level, Curvature Input
+	Attack, Release, Level, Curve Input
 }
 
 func (perc *EnvPerc) defaults() {
@@ -208,8 +339,8 @@ func (perc *EnvPerc) defaults() {
 	if perc.Level == nil {
 		perc.Level = C(1)
 	}
-	if perc.Curvature == nil {
-		perc.Curvature = C(-4)
+	if perc.Curve == nil {
+		perc.Curve = C(-4)
 	}
 }
 
@@ -217,13 +348,11 @@ func (perc *EnvPerc) defaults() {
 func (perc EnvPerc) Inputs() []Input {
 	(&perc).defaults()
 
-	var (
-		levels = []Input{C(0), perc.Level, C(0)}
-		times  = []Input{perc.Attack, perc.Release}
-		cts    = []Input{CurveCustom, CurveCustom}
-		crv    = perc.Curvature
-	)
-	return Env{levels, times, cts, crv, C(-99), C(-99)}.Inputs()
+	return Env{
+		Levels: []Input{C(0), perc.Level, C(0)},
+		Times:  []Input{perc.Attack, perc.Release},
+		Curve:  []Input{perc.Curve, perc.Curve},
+	}.Inputs()
 }
 
 // Pairs are pairs of floats: the first float is time,
@@ -245,8 +374,8 @@ func (p Pairs) Swap(i, j int) {
 
 // EnvPairs creates a new envelope from coordinates/pairs
 type EnvPairs struct {
-	Pairs     Pairs
-	CurveType C
+	Pairs Pairs
+	Curve interface{}
 }
 
 // Inputs returns the array of inputs that defines the Env.
@@ -257,22 +386,24 @@ func (pairs EnvPairs) Inputs() []Input {
 		lp     = len(pairs.Pairs)
 		levels = make([]Input, lp)
 		times  = make([]Input, lp-1)
-		cts    = make([]Input, lp-1)
 	)
 	for i, p := range pairs.Pairs {
 		levels[i] = C(p[1])
 		if i > 0 {
 			times[i-1] = C(p[0] - pairs.Pairs[i-1][0])
-			cts[i-1] = pairs.CurveType
 		}
 	}
-	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
+	return Env{
+		Levels: levels,
+		Times:  times,
+		Curve:  pairs.Curve,
+	}.Inputs()
 }
 
 // TLC (time, level, curve) triplet
 type TLC struct {
 	Time, Level float32
-	Curve       C
+	Curve       interface{}
 }
 
 // EnvTLC creates a new envelope from an array of (time, level, curve) triplets
@@ -300,16 +431,20 @@ func (tlc EnvTLC) Inputs() []Input {
 		lp     = len(tlc)
 		levels = make([]Input, lp)
 		times  = make([]Input, lp-1)
-		cts    = make([]Input, lp-1)
+		curves = make([]interface{}, lp-1)
 	)
 	for i, t := range tlc {
 		levels[i] = C(t.Level)
 		if i > 0 {
 			times[i-1] = C(t.Time - tlc[i-1].Time)
-			cts[i-1] = tlc[i-1].Curve
+			curves[i-1] = tlc[i-1].Curve
 		}
 	}
-	return Env{levels, times, cts, C(0), C(-99), C(-99)}.Inputs()
+	return Env{
+		Levels: levels,
+		Times:  times,
+		Curve:  curves,
+	}.Inputs()
 }
 
 // EnvADSR represents the ever-popular ADSR envelope
@@ -355,7 +490,11 @@ func (adsr EnvADSR) Inputs() []Input {
 		times = []Input{adsr.A, adsr.D, adsr.R}
 		cts   = []Input{CurveCustom, CurveCustom, CurveCustom}
 	)
-	return Env{levels, times, cts, adsr.Curve, C(2), C(-99)}.Inputs()
+	return Env{
+		Levels: levels,
+		Times:  times,
+		Curve:  cts,
+	}.Inputs()
 }
 
 // EnvDADSR is EnvADSR with its onset delayed by D seconds
@@ -405,7 +544,12 @@ func (dadsr EnvDADSR) Inputs() []Input {
 		times = []Input{dadsr.Delay, dadsr.A, dadsr.D, dadsr.R}
 		cts   = []Input{CurveCustom, CurveCustom, CurveCustom, CurveCustom}
 	)
-	return Env{levels, times, cts, dadsr.Curve, C(3), C(-99)}.Inputs()
+	return Env{
+		Levels:      levels,
+		Times:       times,
+		Curve:       cts,
+		ReleaseNode: C(3),
+	}.Inputs()
 }
 
 // EnvASR is an attack-sustain-release envelope
@@ -437,7 +581,12 @@ func (asr EnvASR) Inputs() []Input {
 		times  = []Input{asr.A, asr.R}
 		cts    = []Input{CurveCustom, CurveCustom}
 	)
-	return Env{levels, times, cts, asr.Curve, C(1), C(-99)}.Inputs()
+	return Env{
+		Levels:      levels,
+		Times:       times,
+		Curve:       cts,
+		ReleaseNode: C(1),
+	}.Inputs()
 }
 
 // EnvCutoff creates an envelope with no attack segment.
@@ -467,7 +616,12 @@ func (cutoff EnvCutoff) Inputs() []Input {
 		times  = []Input{cutoff.R}
 		cts    = []Input{cutoff.CurveType}
 	)
-	return Env{levels, times, cts, C(0), C(0), C(-99)}.Inputs()
+	return Env{
+		Levels:      levels,
+		Times:       times,
+		Curve:       cts,
+		ReleaseNode: C(0),
+	}.Inputs()
 }
 
 // I don't understand Env.circle [briansorahan]

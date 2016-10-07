@@ -327,21 +327,23 @@ SynthDef(\MixTest, {
 }).writeDefFile(File.getcwd);
 
 SynthDef(\THX, {
-	var numVoices = 30;
-	var fundamentals = ({rrand(200.0, 400.0)}!numVoices).sort;
-	var finalPitches = (numVoices.collect({|nv| (nv/(numVoices/6)).round * 12; }) + 14.5).midicps;
-	var sweepEnv = EnvGen.kr(Env([0, 1], [13]));
-	var sig = Mix({ |numTone|
-		var initRandomFreq = fundamentals[numTone] + LFNoise2.kr(0.5, 3 * (numTone + 1));
-		var destinationFreq = finalPitches[numTone];
-		var freq = ((1 - sweepEnv) * initRandomFreq) + (sweepEnv * destinationFreq);
-		Pan2.ar(
-			BLowPass.ar(Saw.ar(freq), freq * 5, 0.5),
-			rrand(-0.5, 0.5),
-			numVoices.reciprocal //scale the amplitude of each voice
-		)
-	}!numVoices);
-	Out.ar(0, sig);
+var numVoices = 30;
+var fundamentals = ({rrand(200.0, 400.0)}!numVoices).sort;
+var finalPitches = (numVoices.collect({|nv| (nv/(numVoices/6)).round * 12; }) + 14.5).midicps;
+var sweepEnv = EnvGen.kr(Env([0, 0.1, 1], [5, 8], [2, 5]));
+var sig = Mix
+({|numTone|
+	var initRandomFreq = fundamentals[numTone] + LFNoise2.kr(0.5, 3 * (numTone + 1));
+	var destinationFreq = finalPitches[numTone] + LFNoise2.kr(0.1, (numTone / 4));
+	var freq = ((1 - sweepEnv) * initRandomFreq) + (sweepEnv * destinationFreq);
+	Pan2.ar
+	(
+		BLowPass.ar(Saw.ar(freq), freq * 8, 0.5),
+		rrand(-0.5, 0.5),
+		numVoices.reciprocal
+	)
+}!numVoices);
+Out.ar(0, sig);
 }).writeDefFile(File.getcwd);
 
 0.exit;

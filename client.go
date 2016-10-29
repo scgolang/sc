@@ -51,12 +51,17 @@ const (
 const (
 	// RootNodeID is what sclang uses as the root node ID. See http://doc.sccode.org/Classes/RootNode.html.
 	RootNodeID = int32(0)
+
 	// DefaultGroupID is what sclang uses for the default group ID. See http://doc.sccode.org/Reference/default_group.html.
 	DefaultGroupID = int32(1)
+
 	// DefaultLocalAddr is the listening address for DefaultClient.
 	DefaultLocalAddr = "0.0.0.0:57110"
+
 	// DefaultScsynthAddr is the remote address for DefaultClient.
 	DefaultScsynthAddr = "0.0.0.0:57120"
+
+	DefaultConnectTimeout = time.Second
 )
 
 // Common errors.
@@ -89,7 +94,7 @@ const numDoneHandlers = 8
 // NewClient creates a new SuperCollider client.
 // The client will bind to the provided address and port
 // to receive messages from scsynth.
-func NewClient(network, local, scsynth string) (*Client, error) {
+func NewClient(network, local, scsynth string, timeout time.Duration) (*Client, error) {
 	addr, err := net.ResolveUDPAddr(network, local)
 	if err != nil {
 		return nil, err
@@ -102,7 +107,7 @@ func NewClient(network, local, scsynth string) (*Client, error) {
 		addr:           addr,
 		nextSynthID:    1000,
 	}
-	if err := c.Connect(scsynth); err != nil {
+	if err := c.Connect(scsynth, timeout); err != nil {
 		return nil, err
 	}
 	return c, nil
@@ -118,7 +123,7 @@ func DefaultClient() (*Client, error) {
 	var err error
 
 	if defaultClient == nil {
-		defaultClient, err = NewClient("udp", DefaultLocalAddr, DefaultScsynthAddr)
+		defaultClient, err = NewClient("udp", DefaultLocalAddr, DefaultScsynthAddr, DefaultConnectTimeout)
 		if err != nil {
 			return nil, err
 		}
@@ -131,17 +136,30 @@ func DefaultClient() (*Client, error) {
 }
 
 // Connect connects to an scsynth instance via UDP.
-func (c *Client) Connect(addr string) error {
+func (c *Client) Connect(addr string, timeout time.Duration) error {
 	raddr, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
 		return err
 	}
 
-	oscConn, err := osc.DialUDP("udp", c.addr, raddr)
-	if err != nil {
-		return err
+	// Attempt connection with a timeout.
+	var (
+		start    = time.Now()
+		timedOut = true
+	)
+	for time.Now().Sub(start) < timeout {
+		oscConn, err := osc.DialUDP("udp", c.addr, raddr)
+		if err != nil {
+			time.Sleep(100 * time.Millisecond)
+			continue
+		}
+		c.oscConn = oscConn
+		timedOut = false
+		break
 	}
-	c.oscConn = oscConn
+	if timedOut {
+		return errors.New("connection timeout")
+	}
 
 	// listen for OSC messages
 	go func() {

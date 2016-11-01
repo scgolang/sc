@@ -22,7 +22,7 @@ func skipIfNoScsynth(t *testing.T, client *Client) {
 //     scsynth -u 57120
 //
 func TestClient(t *testing.T) {
-	client, err := NewClient("udp", "127.0.0.1:57200", "127.0.0.1:57120")
+	client, err := NewClient("udp", "127.0.0.1:57200", "127.0.0.1:57120", 5*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}

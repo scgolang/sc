@@ -61,6 +61,7 @@ const (
 	// DefaultScsynthAddr is the remote address for DefaultClient.
 	DefaultScsynthAddr = "0.0.0.0:57120"
 
+	// DefaultConnectTimeout is the default timeout for connecting to scsynth.
 	DefaultConnectTimeout = time.Second
 )
 

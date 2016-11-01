@@ -1,9 +1,12 @@
 package sc
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestBuffer(t *testing.T) {
-	c, err := NewClient("udp", "127.0.0.1:57112", "127.0.0.1:57120")
+	c, err := NewClient("udp", "127.0.0.1:57112", "127.0.0.1:57120", 5*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}

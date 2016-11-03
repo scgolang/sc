@@ -163,11 +163,23 @@ func (c *Client) Connect(addr string, timeout time.Duration) error {
 	}
 
 	// listen for OSC messages
-	go func() {
-		if err := c.oscConn.Serve(c.oscHandlers()); !c.isClosed() {
-			c.errChan <- err
+	go func(errChan chan error) {
+		var (
+			start = time.Now()
+			err   error
+		)
+		for time.Now().Sub(start) < timeout {
+			err = c.oscConn.Serve(c.oscHandlers())
+			if err != nil {
+				time.Sleep(100 * time.Second)
+				continue
+			}
 		}
-	}()
+		if err != nil {
+			errChan <- err
+		}
+	}(c.errChan)
+
 	return nil
 }
 

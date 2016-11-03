@@ -1,8 +1,10 @@
 package sc
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strconv"
@@ -89,26 +91,51 @@ func (s *Server) args() ([]string, error) {
 	return args, nil
 }
 
+const ServerReadyMessage = "server ready"
+
 // Start starts a new instance of scsynth.
-func (s *Server) Start() error {
+// If the server doesn't print a line containing ServerReadyMessage
+// within the timeout then ErrTimeout is returned.
+func (s *Server) Start(timeout time.Duration) (io.ReadCloser, io.ReadCloser, error) {
 	args, err := s.args()
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	serverPath, err := s.getServerPath()
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	s.Cmd = exec.Command(serverPath, args...)
+	stdout, err := s.StdoutPipe()
+	if err != nil {
+		return nil, nil, err
+	}
+	stderr, err := s.StderrPipe()
+	if err != nil {
+		return nil, nil, err
+	}
 	if err := s.Cmd.Start(); err != nil {
-		return err
+		return nil, nil, err
 	}
 
-	// Wait until the server returns a status.
-	_, err = NewClient(s.Network, "0.0.0.0:0", fmt.Sprintf("0.0.0.0:%d", s.Port), 5*time.Second)
-	return err
+	// Wait until the server prints a ready message.
+	var (
+		scanner = bufio.NewScanner(stdout)
+		start   = time.Now()
+	)
+	for i := 0; scanner.Scan(); i++ {
+		if time.Now().Sub(start) > timeout {
+			return nil, nil, ErrTimeout
+		}
+		if strings.Index(scanner.Text(), ServerReadyMessage) == -1 {
+			continue
+		} else {
+			break
+		}
+	}
+	return stdout, stderr, scanner.Err()
 }
 
 // Stop stops a running server.

@@ -108,11 +108,11 @@ func (s *Server) Start(timeout time.Duration) (io.ReadCloser, io.ReadCloser, err
 	}
 
 	s.Cmd = exec.Command(serverPath, args...)
-	stdout, err := s.StdoutPipe()
+	stdout, err := s.Cmd.StdoutPipe()
 	if err != nil {
 		return nil, nil, err
 	}
-	stderr, err := s.StderrPipe()
+	stderr, err := s.Cmd.StderrPipe()
 	if err != nil {
 		return nil, nil, err
 	}

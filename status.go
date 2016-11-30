@@ -18,46 +18,46 @@ type ServerStatus struct {
 	ActualSampleRate  float32 `json:"actualSampleRate"`
 }
 
-func newStatus(msg *osc.Message) (*ServerStatus, error) {
-	if msg.Address() != statusReplyAddress {
+func newStatus(msg osc.Message) (*ServerStatus, error) {
+	if msg.Address != statusReplyAddress {
 		errmsg := "Can not get status from message with address %s"
-		return nil, fmt.Errorf(errmsg, msg.Address())
+		return nil, fmt.Errorf(errmsg, msg.Address)
 	}
-	numArgs := msg.CountArguments()
+	numArgs := len(msg.Arguments)
 	status := &ServerStatus{}
 	if numArgs != 9 {
 		return nil, fmt.Errorf("Only got %d arguments in /status.reply message", numArgs)
 	}
 	var err error
-	status.NumUgens, err = msg.ReadInt32()
+	status.NumUgens, err = msg.Arguments[0].ReadInt32()
 	if err != nil {
 		return nil, err
 	}
-	status.NumSynths, err = msg.ReadInt32()
+	status.NumSynths, err = msg.Arguments[1].ReadInt32()
 	if err != nil {
 		return nil, err
 	}
-	status.NumGroups, err = msg.ReadInt32()
+	status.NumGroups, err = msg.Arguments[2].ReadInt32()
 	if err != nil {
 		return nil, err
 	}
-	status.NumSynthdefs, err = msg.ReadInt32()
+	status.NumSynthdefs, err = msg.Arguments[3].ReadInt32()
 	if err != nil {
 		return nil, err
 	}
-	status.AvgCPU, err = msg.ReadFloat32()
+	status.AvgCPU, err = msg.Arguments[4].ReadFloat32()
 	if err != nil {
 		return nil, err
 	}
-	status.PeakCPU, err = msg.ReadFloat32()
+	status.PeakCPU, err = msg.Arguments[5].ReadFloat32()
 	if err != nil {
 		return nil, err
 	}
-	status.NominalSampleRate, err = msg.ReadFloat32()
+	status.NominalSampleRate, err = msg.Arguments[6].ReadFloat32()
 	if err != nil {
 		return nil, err
 	}
-	status.ActualSampleRate, err = msg.ReadFloat32()
+	status.ActualSampleRate, err = msg.Arguments[7].ReadFloat32()
 	if err != nil {
 		return nil, err
 	}

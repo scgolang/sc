@@ -64,21 +64,21 @@ func newGroup(client *Client, id int32) *Group {
 
 // parseGroup parses information about a group from a message received at /g_queryTree.
 // It *does not* recursively query for child groups.
-func parseGroup(msg *osc.Message) (*Group, error) {
+func parseGroup(msg osc.Message) (*Group, error) {
 	// return an error if msg.Address is not right
-	if msg.Address() != gQueryTreeReply {
-		return nil, fmt.Errorf("msg.Address should be %s, got %s", gQueryTreeReply, msg.Address())
+	if msg.Address != gQueryTreeReply {
+		return nil, fmt.Errorf("msg.Address should be %s, got %s", gQueryTreeReply, msg.Address)
 	}
 	// g_queryTree replies should have at least 3 arguments
 	var (
 		g       = &Group{}
-		numArgs = msg.CountArguments()
+		numArgs = len(msg.Arguments)
 	)
 	if numArgs < 3 {
 		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
 	}
 	// get the id of the group this reply is for
-	nodeID, err := msg.ReadInt32()
+	nodeID, err := msg.Arguments[0].ReadInt32()
 	if err != nil {
 		return nil, err
 	}
@@ -91,10 +91,11 @@ func parseGroup(msg *osc.Message) (*Group, error) {
 }
 
 // getChildren gets all the children of a group.
-func (g *Group) getChildren(msg *osc.Message) error {
-	numArgs := msg.CountArguments()
+func (g *Group) getChildren(msg osc.Message) error {
+	numArgs := len(msg.Arguments)
+
 	// initialize the children array
-	numChildren, err := msg.ReadInt32()
+	numChildren, err := msg.Arguments[1].ReadInt32()
 	if err != nil {
 		return err
 	}
@@ -102,24 +103,28 @@ func (g *Group) getChildren(msg *osc.Message) error {
 		return fmt.Errorf("expected numChildren >= 0, got %d", numChildren)
 	}
 	g.Children = make([]*Node, numChildren)
+
 	// get the childrens' ids
 	var numControls, numSubChildren int32
+
 	for i := 3; i < numArgs; {
-		nodeID, err := msg.ReadInt32()
+		j := (3 * i) - 7
+
+		nodeID, err := msg.Arguments[j].ReadInt32()
 		if err != nil {
 			return err
 		}
 		g.Children[i-3] = &Node{ID: nodeID}
 		// get the number of children of this node
 		// if -1 this is a synth, if >= 0 this is a group
-		numSubChildren, err = msg.ReadInt32()
+		numSubChildren, err = msg.Arguments[j+1].ReadInt32()
 		if err != nil {
 			return err
 		}
 		if numSubChildren == -1 {
 			// synth
 			i += 3
-			numControls, err = msg.ReadInt32()
+			numControls, err = msg.Arguments[j+2].ReadInt32()
 			if err != nil {
 				return err
 			}

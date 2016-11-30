@@ -23,22 +23,17 @@ func (s *Synth) Get(controlName string) (float32, error) {
 
 // Set the value of a synth control.
 func (s *Synth) Set(ctls map[string]float32) error {
-	set, err := osc.NewMessage(setSynthNodeAddress)
-	if err != nil {
-		return err
-	}
-	if err := set.WriteInt32(s.ID); err != nil {
-		return err
+	msg := osc.Message{
+		Address: setSynthNodeAddress,
+		Arguments: osc.Arguments{
+			osc.Int(s.ID),
+		},
 	}
 	for name, value := range ctls {
-		if err := set.WriteString(name); err != nil {
-			return err
-		}
-		if err := set.WriteFloat32(value); err != nil {
-			return err
-		}
+		msg.Arguments = append(msg.Arguments, osc.String(name))
+		msg.Arguments = append(msg.Arguments, osc.Float(value))
 	}
-	return s.client.oscConn.Send(set)
+	return s.client.oscConn.Send(msg)
 }
 
 // newSynth creates a new synth structure.

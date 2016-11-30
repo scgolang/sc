@@ -69,25 +69,18 @@ func (buffer *Buffer) Gen(routine string, flags int, args ...float32) error {
 
 // sendGenMsg sends a /b_gen command.
 func (buffer *Buffer) sendGenMsg(routine string, flags int, args ...float32) error {
-	gen, err := osc.NewMessage(bufferGenAddress)
-	if err != nil {
-		return err
-	}
-	if err := gen.WriteInt32(buffer.Num); err != nil {
-		return err
-	}
-	if err := gen.WriteString(routine); err != nil {
-		return err
-	}
-	if err := gen.WriteInt32(int32(flags)); err != nil {
-		return err
+	msg := osc.Message{
+		Address: bufferGenAddress,
+		Arguments: osc.Arguments{
+			osc.Int(buffer.Num),
+			osc.String(routine),
+			osc.Int(int32(flags)),
+		},
 	}
 	for _, arg := range args {
-		if err := gen.WriteFloat32(arg); err != nil {
-			return err
-		}
+		msg.Arguments = append(msg.Arguments, osc.Float(arg))
 	}
-	if err := buffer.client.oscConn.Send(gen); err != nil {
+	if err := buffer.client.oscConn.Send(msg); err != nil {
 		return err
 	}
 	return nil
@@ -95,16 +88,16 @@ func (buffer *Buffer) sendGenMsg(routine string, flags int, args ...float32) err
 
 // awaitGenReply waits for a reply to the /b_gen command
 func (buffer *Buffer) awaitGenReply() error {
-	var done *osc.Message
+	var done osc.Message
 	select {
 	case done = <-buffer.client.doneChan:
 	case err := <-buffer.client.errChan:
 		return err
 	}
-	if done.CountArguments() != 2 {
+	if len(done.Arguments) != 2 {
 		return errors.New("expected two arguments to /done message")
 	}
-	addr, err := done.ReadString()
+	addr, err := done.Arguments[0].ReadString()
 	if err != nil {
 		return err
 	}
@@ -113,7 +106,7 @@ func (buffer *Buffer) awaitGenReply() error {
 		buffer.client.doneChan <- done
 		return nil
 	}
-	bufnum, err := done.ReadInt32()
+	bufnum, err := done.Arguments[1].ReadInt32()
 	if err != nil {
 		return err
 	}

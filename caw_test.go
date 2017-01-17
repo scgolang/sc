@@ -1,8 +1,10 @@
 package sc
 
-import "fmt"
-import "os"
-import "testing"
+import (
+	"fmt"
+	"os"
+	"testing"
+)
 
 func compareAndWrite(t *testing.T, name string, def *Synthdef) {
 	f, err := os.Create(fmt.Sprintf("%s.gosyndef", name))

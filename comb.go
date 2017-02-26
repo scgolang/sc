@@ -44,7 +44,7 @@ func (comb Comb) Rate(rate int8) Input {
 	case InterpolationLinear:
 		return UgenInput("CombL", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
 	case InterpolationCubic:
-		return UgenInput("Comb", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
+		return UgenInput("CombC", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
 	default:
 		panic(fmt.Errorf("invalid interpolation: %d", comb.Interpolation))
 	}

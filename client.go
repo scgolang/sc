@@ -453,19 +453,19 @@ func (c *Client) FreeAll(gids ...int32) error {
 
 // addOscHandlers adds OSC handlers
 func (c *Client) oscHandlers() osc.Dispatcher {
-	return map[string]osc.Method{
-		statusReplyAddress: func(msg osc.Message) error {
+	return map[string]osc.MessageHandler{
+		statusReplyAddress: osc.Method(func(msg osc.Message) error {
 			c.statusChan <- msg
 			return nil
-		},
-		doneOscAddress: func(msg osc.Message) error {
+		}),
+		doneOscAddress: osc.Method(func(msg osc.Message) error {
 			c.doneChan <- msg
 			return nil
-		},
-		gqueryTreeReplyAddress: func(msg osc.Message) error {
+		}),
+		gqueryTreeReplyAddress: osc.Method(func(msg osc.Message) error {
 			c.gqueryTreeChan <- msg
 			return nil
-		},
+		}),
 	}
 }
 

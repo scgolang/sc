@@ -20,6 +20,7 @@ func BinOpAdd(rate int8, x, y Input, numOutputs int) *UgenNode {
 
 // MulAdd creates a MulAdd ugen.
 func MulAdd(rate int8, in, mul, add Input, numOutputs int) *UgenNode {
+	CheckRate(rate)
 	return NewUgenNode("MulAdd", rate, 0, numOutputs, in, mul, add)
 }
 

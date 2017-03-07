@@ -9,9 +9,20 @@ import (
 // ugen input. This includes synthdef parameters,
 // constants, and other ugens.
 type Input interface {
+	// Max returns the max of one signal and another.
+	Max(other Input) Input
+
+	// Mul multiplies one Input by another.
 	Mul(val Input) Input
+
+	// Add adds one Input to another.
 	Add(val Input) Input
+
+	// MulAdd multiplies and adds an Input using two others.
 	MulAdd(mul, add Input) Input
+
+	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
+	SoftClip() Input
 }
 
 // MultiInput is the interface of an input that causes

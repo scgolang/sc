@@ -20,10 +20,18 @@ func (mn *MultiNode) Nodes() []*UgenNode {
 	return mn.nodes
 }
 
+// Max returns the maximum of one Input and another.
+func (mn *MultiNode) Max(other Input) Input {
+	a := make([]*UgenNode, len(mn.nodes))
+	for i, n := range mn.nodes {
+		a[i] = BinOpMax(n.Rate(), n, other, n.numOutputs)
+	}
+	return &MultiNode{a}
+}
+
 // Mul multiplies all the ugens by an input.
 func (mn *MultiNode) Mul(val Input) Input {
-	l := len(mn.nodes)
-	a := make([]*UgenNode, l)
+	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
 		a[i] = BinOpMul(n.Rate(), n, val, n.numOutputs)
 	}
@@ -32,8 +40,7 @@ func (mn *MultiNode) Mul(val Input) Input {
 
 // Add adds an input to all the ugens.
 func (mn *MultiNode) Add(val Input) Input {
-	l := len(mn.nodes)
-	a := make([]*UgenNode, l)
+	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
 		a[i] = BinOpAdd(n.Rate(), n, val, n.numOutputs)
 	}
@@ -43,10 +50,18 @@ func (mn *MultiNode) Add(val Input) Input {
 // MulAdd does both multiplication and addition on all the
 // ugen nodes.
 func (mn *MultiNode) MulAdd(mul, add Input) Input {
-	l := len(mn.nodes)
-	a := make([]*UgenNode, l)
+	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
 		a[i] = MulAdd(n.Rate(), n, mul, add, n.numOutputs)
+	}
+	return &MultiNode{a}
+}
+
+// SoftClip adds distortion to the MultiNode.
+func (mn *MultiNode) SoftClip() Input {
+	a := make([]*UgenNode, len(mn.nodes))
+	for i, n := range mn.nodes {
+		a[i] = BinOpSoftClip(n.Rate(), n, n.numOutputs)
 	}
 	return &MultiNode{a}
 }

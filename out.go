@@ -2,7 +2,7 @@ package sc
 
 // Out writes a signal to a bus.
 type Out struct {
-	Bus      C
+	Bus      Input
 	Channels Input
 }
 

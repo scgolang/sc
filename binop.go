@@ -23,8 +23,8 @@ func MulAdd(rate int8, in, mul, add Input, numOutputs int) *UgenNode {
 	return NewUgenNode("MulAdd", rate, 0, numOutputs, in, mul, add)
 }
 
-// BinOpSoftClip adds distortion to a ugen.
-func BinOpSoftClip(rate int8, in Input, numOutputs int) *UgenNode {
+// UnaryOpSoftClip adds distortion to a ugen.
+func UnaryOpSoftClip(rate int8, in Input, numOutputs int) *UgenNode {
 	CheckRate(rate)
-	return NewUgenNode("BinaryOpUGen", rate, 43, numOutputs, in)
+	return NewUgenNode("UnaryOpUGen", rate, 43, numOutputs, in)
 }

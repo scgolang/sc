@@ -61,7 +61,7 @@ func (mn *MultiNode) MulAdd(mul, add Input) Input {
 func (mn *MultiNode) SoftClip() Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = BinOpSoftClip(n.Rate(), n, n.numOutputs)
+		a[i] = UnaryOpSoftClip(n.Rate(), n, n.numOutputs)
 	}
 	return &MultiNode{a}
 }

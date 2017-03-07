@@ -85,7 +85,7 @@ func (p *param) MulAdd(mul, add Input) Input {
 }
 
 func (p *param) SoftClip() Input {
-	return BinOpSoftClip(KR, p, 1)
+	return UnaryOpSoftClip(KR, p, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

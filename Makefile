@@ -2,7 +2,7 @@
 PLATFORM = $(shell uname -s)
 
 ifeq ($(PLATFORM),Darwin)
-SCLANG = /Applications/SuperCollider/SuperCollider.app/Contents//Resources/sclang
+SCLANG = /Applications/SuperCollider.app/Contents/MacOS/sclang
 endif
 
 ifeq ($(PLATFORM),Linux)
@@ -74,6 +74,8 @@ FIXTURES = fixtures/AllpassExample.scsyndef          \
 all:
 	@go install
 
+fixtures: $(FIXTURES)
+
 $(FIXTURES): fixtures/synthdefs.sc
 	@cd fixtures $(SCLANG) synthdefs.sc
 
@@ -85,9 +87,9 @@ coverage:
 	@go test -coverprofile cover.out && go tool cover -html cover.out -o cover.html
 
 clean:
-	@rm -rf *~ *.gosyndef *.svg *.dot *.json *.xml
+	@rm -rf *~ *.gosyndef *.svg *.dot *.json *.xml fixtures/*.scsyndef
 
 test: $(FIXTURES)
 	@go test
 
-.PHONY: all clean test
+.PHONY: all clean fixtures test

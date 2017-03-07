@@ -68,6 +68,10 @@ func (p *param) InitialValue() float32 {
 	return p.val
 }
 
+func (p *param) Max(other Input) Input {
+	return BinOpMax(KR, p, other, 1)
+}
+
 func (p *param) Mul(in Input) Input {
 	return BinOpMul(KR, p, in, 1)
 }
@@ -78,6 +82,10 @@ func (p *param) Add(in Input) Input {
 
 func (p *param) MulAdd(mul, add Input) Input {
 	return MulAdd(KR, p, mul, add, 1)
+}
+
+func (p *param) SoftClip() Input {
+	return BinOpSoftClip(KR, p, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

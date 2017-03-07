@@ -37,6 +37,11 @@ func (ctl *Control) Add(val Input) Input {
 	return ctl
 }
 
+// Max computes the maximum of the Control and another UGen.
+func (ctl *Control) Max(other Input) Input {
+	return ctl
+}
+
 // Mul multiplies another input by the Control.
 func (ctl *Control) Mul(val Input) Input {
 	return ctl
@@ -44,6 +49,11 @@ func (ctl *Control) Mul(val Input) Input {
 
 // MulAdd multiplies and adds inputs to the Control.
 func (ctl *Control) MulAdd(mul, add Input) Input {
+	return ctl
+}
+
+// SoftClip adds distortion to the Control.
+func (ctl *Control) SoftClip() Input {
 	return ctl
 }
 

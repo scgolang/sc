@@ -169,7 +169,7 @@ func (c *Client) Connect(addr string, timeout time.Duration) error {
 			err   error
 		)
 		for time.Now().Sub(start) < timeout {
-			err = c.oscConn.Serve(c.oscHandlers())
+			err = c.oscConn.Serve(8, c.oscHandlers()) // Arbitrary number of worker routines.
 			if err != nil {
 				time.Sleep(100 * time.Second)
 				continue

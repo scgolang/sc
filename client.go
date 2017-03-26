@@ -280,6 +280,39 @@ func (c *Client) Synth(defName string, id, action, target int32, ctls map[string
 	return newSynth(c, defName, id), nil
 }
 
+// SynthArgs contains the arguments necessary to create a synth that is part of a group.
+type SynthArgs struct {
+	DefName string
+	ID      int32
+	Action  int32
+	Target  int32
+	Ctls    map[string]float32
+}
+
+// Synths creates multiple synth nodes at once with an OSC bundle.
+func (c *Client) Synths(args []SynthArgs) error {
+	bun := osc.Bundle{
+		Packets: make([]osc.Packet, len(args)),
+	}
+	for i, arg := range args {
+		msg := osc.Message{
+			Address: synthNewAddress,
+			Arguments: osc.Arguments{
+				osc.String(arg.DefName),
+				osc.Int(arg.ID),
+				osc.Int(arg.Action),
+				osc.Int(arg.Target),
+			},
+		}
+		for k, v := range arg.Ctls {
+			msg.Arguments = append(msg.Arguments, osc.String(k))
+			msg.Arguments = append(msg.Arguments, osc.Float(v))
+		}
+		bun.Packets[i] = msg
+	}
+	return c.oscConn.Send(bun)
+}
+
 // Group creates a group.
 func (c *Client) Group(id, action, target int32) (*Group, error) {
 	msg := osc.Message{

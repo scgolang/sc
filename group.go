@@ -31,12 +31,22 @@ func (g *Group) Synth(defName string, id, action int32, ctls map[string]float32)
 	return g.client.Synth(defName, id, action, g.Node.ID, ctls)
 }
 
-// Free frees all the nodes in a group
+// Synths creates multiple synth nodes at once with an OSC bundle.
+func (g *Group) Synths(args []SynthArgs) error {
+	for _, arg := range args {
+		arg.Target = g.Node.ID
+	}
+	return g.client.Synths(args)
+}
+
+// Free frees all the nodes in a group.
+// TODO
 func (g *Group) Free() error {
 	return nil
 }
 
-// FreeAll frees all the nodes in a group recursively
+// FreeAll frees all the nodes in a group recursively.
+// TODO
 func (g *Group) FreeAll() error {
 	return nil
 }

@@ -91,7 +91,7 @@ func (s *Server) args() ([]string, error) {
 	return args, nil
 }
 
-const ServerReadyMessage = "server ready"
+const serverReadyMessage = "server ready"
 
 // Start starts a new instance of scsynth.
 // If the server doesn't print a line containing ServerReadyMessage
@@ -129,7 +129,7 @@ func (s *Server) Start(timeout time.Duration) (io.ReadCloser, io.ReadCloser, err
 		if time.Now().Sub(start) > timeout {
 			return nil, nil, ErrTimeout
 		}
-		if strings.Index(scanner.Text(), ServerReadyMessage) == -1 {
+		if strings.Index(scanner.Text(), serverReadyMessage) == -1 {
 			continue
 		} else {
 			break

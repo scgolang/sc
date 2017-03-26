@@ -3,6 +3,7 @@ package sc
 // C wraps a float32 and implements the Input interface.
 type C float32
 
+// Max returns the maximum of one input and another.
 func (c C) Max(other Input) Input {
 	if v, ok := other.(C); ok {
 		return C(maxFloat32(float32(c), float32(v)))

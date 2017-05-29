@@ -505,12 +505,13 @@ func (adsr EnvADSR) Inputs() []Input {
 	}
 	var (
 		times = []Input{adsr.A, adsr.D, adsr.R}
-		cts   = []Input{CurveCustom, CurveCustom, CurveCustom}
+		cts   = []Input{C(-4), C(-4), C(-4)}
 	)
 	return Env{
-		Levels: levels,
-		Times:  times,
-		Curve:  cts,
+		Levels:      levels,
+		Times:       times,
+		Curve:       cts,
+		ReleaseNode: C(2),
 	}.Inputs()
 }
 

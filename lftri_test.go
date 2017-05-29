@@ -9,7 +9,7 @@ func TestLFTri(t *testing.T) {
 		sig := LFTri{freq, C(0)}.Rate(AR).Mul(C(0.1))
 		return Out{bus, sig}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/LFTriExample.scsyndef")
+	same, err := def.CompareToFile("testdata/LFTriExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

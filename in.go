@@ -21,9 +21,12 @@ func (in In) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&in).defaults()
 
-	ins := make([]Input, in.NumChannels)
+	var (
+		uin = UgenInput("In", rate, 0, in.NumChannels, in.Bus)
+		ins = make([]Input, in.NumChannels)
+	)
 	for i := range ins {
-		ins[i] = UgenInput("In", rate, 0, 1, in.Bus)
+		ins[i] = uin
 	}
 	return Multi(ins...)
 }

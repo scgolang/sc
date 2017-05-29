@@ -41,6 +41,15 @@ type Synthdef struct {
 	// Variants is the list of variants contained in the synth def
 	Variants []*Variant `json:"variants" xml:"Variants>Variant"`
 
+	// inidx helps us track which outputs we have consumed from the In ugen.
+	// In triggers multichannel expansion when it has > 1 outputs,
+	// but usually the behavior for ugens with multiple outputs that act
+	// as an input to another ugen is that the outputs get appended as
+	// consecutive inputs.
+	// In, on the other hand, puts one of its output channels on each channel of the
+	// expression tree above it.
+	inidx int
+
 	// seen is an array of ugen nodes that have been added
 	// to the synthdef
 	seen []Ugen
@@ -198,6 +207,15 @@ func (def *Synthdef) flattenInput(params Params, ugen *ugen, input Input) {
 	switch v := input.(type) {
 	case Ugen:
 		_, idx, _ := def.addUgen(v)
+
+		// In has different behavior than other ugens when it is multichannel expanded.
+		// Each channel of its output gets mapped to a single channel of the expression
+		// tree above it. [briansorahan]
+		if v.Name() == "In" {
+			ugen.AppendInput(newInput(int32(idx), int32(def.inidx)))
+			def.inidx++
+			break
+		}
 		for outputIndex := range v.Outputs() {
 			ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
 		}

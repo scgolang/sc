@@ -98,13 +98,13 @@ func NewUgenNode(name string, rate int8, specialIndex int16, numOutputs int, inp
 	if numOutputs <= 0 {
 		panic("numOutputs must be a positive int")
 	}
-	n := new(UgenNode)
-	n.name = name
-	n.rate = rate
-	n.specialIndex = specialIndex
-	n.numOutputs = numOutputs
-	n.inputs = make([]Input, len(inputs))
-
+	n := &UgenNode{
+		name:         name,
+		rate:         rate,
+		specialIndex: specialIndex,
+		numOutputs:   numOutputs,
+		inputs:       make([]Input, len(inputs)),
+	}
 	// If any inputs are multi inputs, then this node
 	// should get promoted to a multi node
 	for i, input := range inputs {

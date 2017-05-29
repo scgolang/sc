@@ -7,8 +7,7 @@ type MultiNode struct {
 
 // InputArray returns the ugens as a slice of Inputs.
 func (mn *MultiNode) InputArray() []Input {
-	l := len(mn.nodes)
-	inputs := make([]Input, l)
+	inputs := make([]Input, len(mn.nodes))
 	for i, n := range mn.nodes {
 		inputs[i] = n
 	}

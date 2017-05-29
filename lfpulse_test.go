@@ -13,7 +13,7 @@ func TestLFPulse(t *testing.T) {
 		sig := LFPulse{freq, iphase, width}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/LFPulseTest.scsyndef")
+	same, err := def.CompareToFile("testdata/LFPulseTest.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -326,6 +326,10 @@ SynthDef(\MixTest, {
     ]));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\TestEnvADSR, {
+    Out.ar(0, SinOsc.ar() * EnvGen.kr(Env.adsr(), doneAction: 2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\THX, {
     var numVoices = 30;
     var fundamentals = ({rrand(200.0, 400.0)}!numVoices).sort;

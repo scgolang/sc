@@ -14,61 +14,62 @@ ifeq ($(GUI),no)
 SCLANG = /usr/bin/xvfb-run --server-args="-screen 0, 1280x800x24" $(SCLANG)
 endif
 
-FIXTURES = fixtures/AllpassExample.scsyndef          \
-           fixtures/AllpassnExample.scsyndef         \
-           fixtures/BPFExample.scsyndef              \
-           fixtures/BRFExample.scsyndef              \
-           fixtures/Balance2Test.scsyndef            \
-           fixtures/Beats.scsyndef                   \
-           fixtures/BlipExample.scsyndef             \
-           fixtures/BrownNoiseTest.scsyndef          \
-           fixtures/COsc.scsyndef                    \
-           fixtures/Cascade.scsyndef                 \
-           fixtures/CascadeExample.scsyndef          \
-           fixtures/ClipNoiseTest.scsyndef           \
-           fixtures/CombCTest.scsyndef               \
-           fixtures/CombLTest.scsyndef               \
-           fixtures/CombNTest.scsyndef               \
-           fixtures/Crackle.scsyndef                 \
-           fixtures/Decay2.scsyndef                  \
-           fixtures/DelayCTest.scsyndef              \
-           fixtures/DelayLTest.scsyndef              \
-           fixtures/DelayNTest.scsyndef              \
-           fixtures/DustTest.scsyndef                \
-           fixtures/Dust2Test.scsyndef               \
-           fixtures/EnvgenTest.scsyndef              \
-           fixtures/FSinOscExample.scsyndef          \
-           fixtures/FormletTest.scsyndef             \
-           fixtures/FreeVerbTest.scsyndef            \
-           fixtures/GateTest.scsyndef                \
-           fixtures/GrainBufTest.scsyndef            \
-           fixtures/GrainFMTest.scsyndef             \
-           fixtures/ImpulseExample.scsyndef          \
-           fixtures/IntegratorExample.scsyndef       \
-           fixtures/LFNoise1Test.scsyndef            \
-           fixtures/LFPulseTest.scsyndef             \
-           fixtures/LFSawExample.scsyndef            \
-           fixtures/LFTriExample.scsyndef            \
-           fixtures/MixTest.scsyndef                 \
-           fixtures/PMOscTest.scsyndef               \
-           fixtures/PlayBufExample.scsyndef          \
-           fixtures/PulseTest.scsyndef               \
-           fixtures/SameSame.scsyndef                \
-           fixtures/SawTone1.scsyndef                \
-           fixtures/SelectTest.scsyndef              \
-           fixtures/SimpleMulti.scsyndef             \
-           fixtures/SineTone.scsyndef                \
-           fixtures/SineTone2.scsyndef               \
-           fixtures/SineTone3.scsyndef               \
-           fixtures/SineTone4.scsyndef               \
-           fixtures/Sum3.scsyndef                    \
-           fixtures/THX1.scsyndef                    \
-           fixtures/UseParam.scsyndef                \
-           fixtures/defWith2Params.scsyndef          \
-           fixtures/foo.scsyndef                     \
-           fixtures/bar.scsyndef                     \
-           fixtures/baz.scsyndef                     \
-           fixtures/sub.scsyndef
+FIXTURES = testdata/AllpassExample.scsyndef          \
+           testdata/AllpassnExample.scsyndef         \
+           testdata/BPFExample.scsyndef              \
+           testdata/BRFExample.scsyndef              \
+           testdata/Balance2Test.scsyndef            \
+           testdata/Beats.scsyndef                   \
+           testdata/BlipExample.scsyndef             \
+           testdata/BrownNoiseTest.scsyndef          \
+           testdata/COsc.scsyndef                    \
+           testdata/Cascade.scsyndef                 \
+           testdata/CascadeExample.scsyndef          \
+           testdata/ClipNoiseTest.scsyndef           \
+           testdata/CombCTest.scsyndef               \
+           testdata/CombLTest.scsyndef               \
+           testdata/CombNTest.scsyndef               \
+           testdata/Crackle.scsyndef                 \
+           testdata/Decay2.scsyndef                  \
+           testdata/DelayCTest.scsyndef              \
+           testdata/DelayLTest.scsyndef              \
+           testdata/DelayNTest.scsyndef              \
+           testdata/DustTest.scsyndef                \
+           testdata/Dust2Test.scsyndef               \
+           testdata/EnvgenTest.scsyndef              \
+           testdata/FSinOscExample.scsyndef          \
+           testdata/FormletTest.scsyndef             \
+           testdata/FreeVerbTest.scsyndef            \
+           testdata/GateTest.scsyndef                \
+           testdata/GrainBufTest.scsyndef            \
+           testdata/GrainFMTest.scsyndef             \
+           testdata/ImpulseExample.scsyndef          \
+           testdata/IntegratorExample.scsyndef       \
+           testdata/LFNoise1Test.scsyndef            \
+           testdata/LFPulseTest.scsyndef             \
+           testdata/LFSawExample.scsyndef            \
+           testdata/LFTriExample.scsyndef            \
+           testdata/MixTest.scsyndef                 \
+           testdata/PMOscTest.scsyndef               \
+           testdata/PlayBufExample.scsyndef          \
+           testdata/PulseTest.scsyndef               \
+           testdata/SameSame.scsyndef                \
+           testdata/SawTone1.scsyndef                \
+           testdata/SelectTest.scsyndef              \
+           testdata/SimpleMulti.scsyndef             \
+           testdata/SineTone.scsyndef                \
+           testdata/SineTone2.scsyndef               \
+           testdata/SineTone3.scsyndef               \
+           testdata/SineTone4.scsyndef               \
+           testdata/Sum3.scsyndef                    \
+           testdata/TestEnvADSR.scsyndef             \
+           testdata/THX1.scsyndef                    \
+           testdata/UseParam.scsyndef                \
+           testdata/defWith2Params.scsyndef          \
+           testdata/foo.scsyndef                     \
+           testdata/bar.scsyndef                     \
+           testdata/baz.scsyndef                     \
+           testdata/sub.scsyndef
 
 # Default target
 all:
@@ -76,8 +77,8 @@ all:
 
 fixtures: $(FIXTURES)
 
-$(FIXTURES): fixtures/synthdefs.sc
-	@cd fixtures $(SCLANG) synthdefs.sc
+$(FIXTURES): testdata/synthdefs.sc
+	@cd testdata && $(SCLANG) synthdefs.sc
 
 lint:
 	@gometalinter

@@ -173,7 +173,7 @@ func (def *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
 
 // flatten converts a ugen graph into a format more
 // suitable for sending /d_recv
-func (def *Synthdef) flatten(params Params) {
+func (def *Synthdef) flatten(params Params) *Synthdef {
 	def.addParams(params)
 	// get a topologically sorted ugens list
 	ugenNodes := def.topsort(def.root)
@@ -189,6 +189,7 @@ func (def *Synthdef) flatten(params Params) {
 			def.flattenInput(params, ugen, input)
 		}
 	}
+	return def
 }
 
 // flattenInput flattens a ugen graph starting from
@@ -333,17 +334,16 @@ func (def *Synthdef) addConstant(c C) int {
 }
 
 func newsynthdef(name string, root Ugen) *Synthdef {
-	def := Synthdef{
-		name,
-		make([]float32, 0),
-		make([]float32, 0),
-		make([]ParamName, 0),
-		make([]*ugen, 0),
-		make([]*Variant, 0),
-		make([]Ugen, 0), // seen
-		root,
+	return &Synthdef{
+		Name:               name,
+		Constants:          make([]float32, 0),
+		InitialParamValues: make([]float32, 0),
+		ParamNames:         make([]ParamName, 0),
+		Ugens:              make([]*ugen, 0),
+		Variants:           make([]*Variant, 0),
+		seen:               make([]Ugen, 0), // seen
+		root:               root,
 	}
-	return &def
 }
 
 // NewSynthdef creates a synthdef by traversing a ugen graph
@@ -358,9 +358,10 @@ func NewSynthdef(name string, graphFunc UgenFunc) *Synthdef {
 	// Then in order to correctly map the values passed when creating
 	// a synth node they have to be passed in the same order
 	// they were created in the UgenFunc.
-	params := newParams()
-	root := graphFunc(params)
-	def := newsynthdef(name, root)
-	def.flatten(params)
-	return def
+	var (
+		params = newParams()
+		root   = graphFunc(params)
+		def    = newsynthdef(name, root)
+	)
+	return def.flatten(params)
 }

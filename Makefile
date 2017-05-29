@@ -44,6 +44,7 @@ FIXTURES = testdata/AllpassExample.scsyndef          \
            testdata/GrainBufTest.scsyndef            \
            testdata/GrainFMTest.scsyndef             \
            testdata/ImpulseExample.scsyndef          \
+           testdata/InTest.scsyndef                  \
            testdata/IntegratorExample.scsyndef       \
            testdata/LFNoise1Test.scsyndef            \
            testdata/LFPulseTest.scsyndef             \

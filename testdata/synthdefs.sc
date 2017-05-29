@@ -355,4 +355,8 @@ SynthDef(\DetectSilence, { arg out;
     Out.ar(out, z);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\InTest, { arg out=0, in=0;
+    Out.ar(out, SinOsc.ar(In.kr(in, 2), 0, 0.1));
+}).writeDefFile(File.getcwd);
+
 0.exit;

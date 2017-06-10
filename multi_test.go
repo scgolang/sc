@@ -10,7 +10,7 @@ func TestMulti(t *testing.T) {
 		sine := SinOsc{Freq: freq}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/SimpleMulti.scsyndef")
+	same, err := def.CompareToFile("testdata/SimpleMulti.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

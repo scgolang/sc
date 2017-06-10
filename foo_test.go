@@ -10,7 +10,7 @@ func TestFoo(t *testing.T) {
 		sine := SinOsc{}.Rate(AR)
 		return Out{bus, sine.Mul(blip)}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/foo.scsyndef")
+	same, err := def.CompareToFile("testdata/foo.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

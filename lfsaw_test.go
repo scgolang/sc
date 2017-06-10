@@ -10,7 +10,7 @@ func TestLFSaw(t *testing.T) {
 		sig := LFSaw{freq, C(0)}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/LFSawExample.scsyndef")
+	same, err := def.CompareToFile("testdata/LFSawExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

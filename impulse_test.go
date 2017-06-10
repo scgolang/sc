@@ -12,7 +12,7 @@ func TestImpulse(t *testing.T) {
 		sig := Impulse{freq, phase}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/ImpulseExample.scsyndef")
+	same, err := def.CompareToFile("testdata/ImpulseExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

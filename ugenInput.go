@@ -36,10 +36,10 @@ func expandInputs(inputs ...Input) [][]Input {
 		// none were multi-channel inputs
 		return [][]Input{inputs}
 	}
-
-	n := len(inputs)
-	arr := make([][]Input, sz)
-
+	var (
+		arr = make([][]Input, sz)
+		n   = len(inputs)
+	)
 	for i := range arr {
 		arr[i] = make([]Input, n)
 

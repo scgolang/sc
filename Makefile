@@ -45,6 +45,7 @@ FIXTURES = testdata/AllpassExample.scsyndef          \
            testdata/GrainBufTest.scsyndef            \
            testdata/GrainFMTest.scsyndef             \
            testdata/ImpulseExample.scsyndef          \
+           testdata/InTest.scsyndef                  \
            testdata/IntegratorExample.scsyndef       \
            testdata/LFNoise1Test.scsyndef            \
            testdata/LFPulseTest.scsyndef             \
@@ -63,6 +64,7 @@ FIXTURES = testdata/AllpassExample.scsyndef          \
            testdata/SineTone3.scsyndef               \
            testdata/SineTone4.scsyndef               \
            testdata/Sum3.scsyndef                    \
+           testdata/TestEnvADSR.scsyndef             \
            testdata/THX1.scsyndef                    \
            testdata/UseParam.scsyndef                \
            testdata/defWith2Params.scsyndef          \
@@ -78,7 +80,7 @@ all:
 fixtures: $(FIXTURES)
 
 $(FIXTURES): testdata/synthdefs.sc
-	@cd testdata $(SCLANG) synthdefs.sc
+	@cd testdata && $(SCLANG) synthdefs.sc
 
 lint:
 	@gometalinter

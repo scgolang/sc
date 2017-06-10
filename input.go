@@ -9,14 +9,17 @@ import (
 // ugen input. This includes synthdef parameters,
 // constants, and other ugens.
 type Input interface {
+	// Add adds one Input to another.
+	Add(val Input) Input
+
 	// Max returns the max of one signal and another.
 	Max(other Input) Input
 
+	// Midicps converts MIDI note number to cycles per second.
+	Midicps() Input
+
 	// Mul multiplies one Input by another.
 	Mul(val Input) Input
-
-	// Add adds one Input to another.
-	Add(val Input) Input
 
 	// MulAdd multiplies and adds an Input using two others.
 	MulAdd(mul, add Input) Input

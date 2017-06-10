@@ -85,6 +85,11 @@ func (un *UgenNode) MulAdd(mul, add Input) Input {
 	return MulAdd(un.rate, un, mul, add, un.numOutputs)
 }
 
+// Midicps converts MIDI note number to cycles per second.
+func (un *UgenNode) Midicps() Input {
+	return UnaryOpMidicps(un.rate, un, un.numOutputs)
+}
+
 // SoftClip adds distortion to a ugen.
 func (un *UgenNode) SoftClip() Input {
 	return UnaryOpSoftClip(un.rate, un, un.numOutputs)

@@ -12,7 +12,7 @@ func TestCascade(t *testing.T) {
 		mod2 := SinOsc{Freq: mod1}.Rate(AR)
 		return Out{bus, SinOsc{Freq: mod2}.Rate(AR)}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/CascadeExample.scsyndef")
+	same, err := def.CompareToFile("testdata/CascadeExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

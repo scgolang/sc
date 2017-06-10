@@ -326,6 +326,10 @@ SynthDef(\MixTest, {
     ]));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\TestEnvADSR, {
+    Out.ar(0, SinOsc.ar() * EnvGen.kr(Env.adsr(), doneAction: 2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\THX, {
     var numVoices = 30;
     var fundamentals = ({rrand(200.0, 400.0)}!numVoices).sort;
@@ -361,6 +365,9 @@ SynthDef(\FittonBubbles, {
         0.2,
         4
     ));
+
+SynthDef(\InTest, { arg out=0, in=0;
+    Out.ar(out, SinOsc.ar(In.kr(in, 2), 0, 0.1));
 }).writeDefFile(File.getcwd);
 
 0.exit;

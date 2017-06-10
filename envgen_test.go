@@ -15,7 +15,7 @@ func TestEnvGen(t *testing.T) {
 		noise := PinkNoise{}.Rate(AR).Mul(ampEnv)
 		return Out{bus, noise}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/EnvgenTest.scsyndef")
+	same, err := def.CompareToFile("testdata/EnvgenTest.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

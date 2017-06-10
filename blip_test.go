@@ -12,7 +12,7 @@ func TestBlip(t *testing.T) {
 		sig := Blip{freq, harms}.Rate(AR).Mul(gain)
 		return Out{bus, sig}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/BlipExample.scsyndef")
+	same, err := def.CompareToFile("testdata/BlipExample.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

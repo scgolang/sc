@@ -2,6 +2,7 @@ package sc
 
 import (
 	"math"
+	"os"
 	"testing"
 )
 
@@ -98,6 +99,36 @@ func TestTHX(t *testing.T) {
 		expect = []float32{0, 2, -99, -99, 0.1, 5, 5, 2, 1, 8, 5, 5}
 	)
 	verifyInputs(t, expect, env.Inputs())
+}
+
+func TestEnvADSR(t *testing.T) {
+	const name = "TestEnvADSR"
+
+	def := NewSynthdef(name, func(params Params) Ugen {
+		var (
+			bus = C(0)
+			sig = SinOsc{}.Rate(AR).Mul(EnvGen{
+				Env:  EnvADSR{},
+				Done: FreeEnclosing,
+			}.Rate(KR))
+		)
+		return Out{bus, sig}.Rate(AR)
+
+	})
+	f, err := os.Create("testdata/" + name + ".gosyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := def.Write(f); err != nil {
+		t.Fatal(err)
+	}
+	same, err := def.CompareToFile("testdata/" + name + ".scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang version")
+	}
 }
 
 const epsilon = 1e-6

@@ -11,7 +11,7 @@ func TestSinOsc(t *testing.T) {
 		sine := SinOsc{Freq: freq}.Rate(AR)
 		return Out{bus, sine}.Rate(AR)
 	})
-	same, err := def.CompareToFile("fixtures/SineTone.scsyndef")
+	same, err := def.CompareToFile("testdata/SineTone.scsyndef")
 	if err != nil {
 		t.Fatal(err)
 	}

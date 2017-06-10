@@ -39,6 +39,15 @@ func (ins Inputs) MulAdd(mul, add Input) Input {
 	return Inputs(ia)
 }
 
+// Midicps converts MIDI note number to cycles per second.
+func (ins Inputs) Midicps() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Midicps()
+	}
+	return Inputs(converted)
+}
+
 // SoftClip adds distortion to the inputs.
 func (ins Inputs) SoftClip() Input {
 	clipped := make([]Input, len(ins))

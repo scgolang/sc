@@ -52,6 +52,11 @@ func (ctl *Control) MulAdd(mul, add Input) Input {
 	return ctl
 }
 
+// Midicps converts MIDI note number to cycles per second.
+func (ctl *Control) Midicps() Input {
+	return ctl
+}
+
 // SoftClip adds distortion to the Control.
 func (ctl *Control) SoftClip() Input {
 	return ctl

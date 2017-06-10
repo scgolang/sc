@@ -84,6 +84,10 @@ func (p *param) MulAdd(mul, add Input) Input {
 	return MulAdd(KR, p, mul, add, 1)
 }
 
+func (p *param) Midicps() Input {
+	return UnaryOpMidicps(KR, p, 1)
+}
+
 func (p *param) SoftClip() Input {
 	return UnaryOpSoftClip(KR, p, 1)
 }

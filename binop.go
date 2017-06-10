@@ -24,6 +24,12 @@ func MulAdd(rate int8, in, mul, add Input, numOutputs int) *UgenNode {
 	return NewUgenNode("MulAdd", rate, 0, numOutputs, in, mul, add)
 }
 
+// UnaryOpMidicps converts MIDI note numbers to cycles per second.
+func UnaryOpMidicps(rate int8, in Input, numOutputs int) *UgenNode {
+	CheckRate(rate)
+	return NewUgenNode("UnaryOpUGen", rate, 17, numOutputs, in)
+}
+
 // UnaryOpSoftClip adds distortion to a ugen.
 func UnaryOpSoftClip(rate int8, in Input, numOutputs int) *UgenNode {
 	CheckRate(rate)

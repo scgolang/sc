@@ -38,6 +38,11 @@ func (c C) MulAdd(mul, add Input) Input {
 	return mul.MulAdd(c, add)
 }
 
+// Midicps converts MIDI note number to cycles per second.
+func (c C) Midicps() Input {
+	return C(Midicps(float32(c)))
+}
+
 // SoftClip clips the constant to the range [-0.5, 0.5]
 func (c C) SoftClip() Input {
 	if float32(c) < -0.5 {

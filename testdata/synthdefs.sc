@@ -351,4 +351,16 @@ SynthDef(\DetectSilence, { arg out;
     Out.ar(out, z);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\FittonBubbles, {
+    var saw2 = LFSaw.ar([8,7.23],0,3,80);
+    var saw1 = LFSaw.ar(0.4, 0, 24, saw2).midicps;
+    
+    Out.ar(0, CombC.ar(
+        SinOsc.ar(saw1, 0, 0.04),
+        0.2,
+        0.2,
+        4
+    ));
+}).writeDefFile(File.getcwd);
+
 0.exit;

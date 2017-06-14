@@ -15,7 +15,6 @@ SCLANG = /usr/bin/xvfb-run --server-args="-screen 0, 1280x800x24" $(SCLANG)
 endif
 
 FIXTURES = testdata/AllpassExample.scsyndef          \
-           testdata/AllpassnExample.scsyndef         \
            testdata/BPFExample.scsyndef              \
            testdata/BRFExample.scsyndef              \
            testdata/Balance2Test.scsyndef            \

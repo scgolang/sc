@@ -74,7 +74,7 @@ SynthDef(\Cascade, {
 }).writeDefFile(File.getcwd);
 
 SynthDef(\AllpassExample, {
-    Out.ar(0, AllpassC.ar(WhiteNoise.ar(0.1), 0.01, XLine.kr(0.0001, 0.01, 20), 0.2));
+    Out.ar(0, AllpassC.ar(Decay.ar(Dust.ar(1,0.5), 0.2, WhiteNoise.ar), 0.2, 0.2, 3));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\AllpassnExample, {

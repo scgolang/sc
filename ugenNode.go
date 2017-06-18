@@ -90,6 +90,11 @@ func (un *UgenNode) Midicps() Input {
 	return UnaryOpMidicps(un.rate, un, un.numOutputs)
 }
 
+// Neg is a convenience operator that multiplies a signal by -1.
+func (un *UgenNode) Neg() Input {
+	return UnaryOpNeg(un.rate, un, un.numOutputs)
+}
+
 // SoftClip adds distortion to a ugen.
 func (un *UgenNode) SoftClip() Input {
 	return UnaryOpSoftClip(un.rate, un, un.numOutputs)

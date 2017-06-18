@@ -43,6 +43,11 @@ func (c C) Midicps() Input {
 	return C(Midicps(float32(c)))
 }
 
+// Neg is a convenience operator that multiplies a signal by -1.
+func (c C) Neg() Input {
+	return C(float32(c) * -1)
+}
+
 // SoftClip clips the constant to the range [-0.5, 0.5]
 func (c C) SoftClip() Input {
 	if float32(c) < -0.5 {

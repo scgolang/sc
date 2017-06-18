@@ -65,6 +65,15 @@ func (mn *MultiNode) Midicps() Input {
 	return &MultiNode{a}
 }
 
+// Neg is a convenience operator that multiplies a signal by -1.
+func (mn *MultiNode) Neg() Input {
+	a := make([]*UgenNode, len(mn.nodes))
+	for i, n := range mn.nodes {
+		a[i] = UnaryOpNeg(n.Rate(), n, n.numOutputs)
+	}
+	return &MultiNode{a}
+}
+
 // SoftClip adds distortion to the MultiNode.
 func (mn *MultiNode) SoftClip() Input {
 	a := make([]*UgenNode, len(mn.nodes))

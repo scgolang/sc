@@ -19,6 +19,10 @@ SynthDef(\sub, {
     Out.ar(0, SinOsc.ar() - Blip.ar());
 }).writeDefFile(File.getcwd);
 
+SynthDef(\negExample, {
+    Out.ar(0, LFNoise1.ar(1500).neg);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\Envgen1, {
     Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
 }).writeDefFile(File.getcwd);
@@ -77,11 +81,9 @@ SynthDef(\AllpassExample, {
     Out.ar(0, AllpassC.ar(Decay.ar(Dust.ar(1,0.5), 0.2, WhiteNoise.ar), 0.2, 0.2, 3));
 }).writeDefFile(File.getcwd);
 
-SynthDef(\AllpassnExample, {
-    var noise = WhiteNoise.ar();
-    var dust = Dust.ar(1, 0.5);
-    var decay = Decay.ar(dust, 0.2, noise);
-    var sig = AllpassN.ar(decay, 0.2, 0.2, 3);
+SynthDef(\BAllPassExample, {
+    var sig = Saw.ar();
+    sig = BAllPass.ar(sig, MouseX.kr(10, 18000, \exponential), 0.8);
     Out.ar(0, sig);
 }).writeDefFile(File.getcwd);
 
@@ -369,6 +371,30 @@ SynthDef(\FittonBubbles, {
 
 SynthDef(\InTest, { arg out=0, in=0;
     Out.ar(out, SinOsc.ar(In.kr(in, 2), 0, 0.1));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SoundInTest0, {
+    Out.ar(0, SoundIn.ar(0));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SoundInTest00, {
+    Out.ar(0, SoundIn.ar([0, 0]));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SoundInTest01, {
+    Out.ar(0, SoundIn.ar([0, 1]));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SoundInTest02, {
+    Out.ar(0, SoundIn.ar([0, 2]));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SoundInTest12, {
+    Out.ar(0, SoundIn.ar([1, 2]));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SoundInTest20, {
+    Out.ar(0, SoundIn.ar([2, 0]));
 }).writeDefFile(File.getcwd);
 
 0.exit;

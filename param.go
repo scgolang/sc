@@ -88,6 +88,10 @@ func (p *param) Midicps() Input {
 	return UnaryOpMidicps(KR, p, 1)
 }
 
+func (p *param) Neg() Input {
+	return UnaryOpNeg(KR, p, 1)
+}
+
 func (p *param) SoftClip() Input {
 	return UnaryOpSoftClip(KR, p, 1)
 }

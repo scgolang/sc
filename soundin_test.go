@@ -34,4 +34,25 @@ func TestSoundIn(t *testing.T) {
 		}.Rate(AR)
 	}))
 
+	// FIXME
+	// defName = "SoundInTest02"
+	// compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+	// 	return Out{
+	// 		Bus: C(0),
+	// 		Channels: SoundIn{
+	// 			Bus: Multi(C(0), C(2)),
+	// 		}.Rate(AR),
+	// 	}.Rate(AR)
+	// }))
+
+	// FIXME
+	// defName = "SoundInTest12"
+	// compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+	// 	return Out{
+	// 		Bus: C(0),
+	// 		Channels: SoundIn{
+	// 			Bus: Multi(C(1), C(2)),
+	// 		}.Rate(AR),
+	// 	}.Rate(AR)
+	// }))
 }

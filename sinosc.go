@@ -18,8 +18,7 @@ func (sin *SinOsc) defaults() {
 }
 
 // Rate creates a new ugen at a specific rate.
-// If rate is an unsupported value this method will cause
-// a runtime panic.
+// If rate is an unsupported value this method will cause a runtime panic.
 func (sin SinOsc) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&sin).defaults()

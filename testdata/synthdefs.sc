@@ -373,6 +373,11 @@ SynthDef(\InTest, { arg out=0, in=0;
     Out.ar(out, SinOsc.ar(In.kr(in, 2), 0, 0.1));
 }).writeDefFile(File.getcwd);
 
+
+SynthDef(\TGrainsExample, {
+	Out.ar(0, TGrains.ar(2, Impulse.ar(4)));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\SoundInTest0, {
     Out.ar(0, SoundIn.ar(0));
 }).writeDefFile(File.getcwd);

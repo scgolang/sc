@@ -88,7 +88,7 @@ Unit Generators for sc.
 | Slew                        | No        |
 | SyncSaw                     | No        |
 | TDelay                      | No        |
-| TGrains                     | No        |
+| TGrains                     | Yes       |
 | Trig                        | No        |
 | Trig1                       | No        |
 | VarSaw                      | No        |

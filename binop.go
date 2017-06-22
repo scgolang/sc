@@ -30,6 +30,12 @@ func UnaryOpMidicps(rate int8, in Input, numOutputs int) *UgenNode {
 	return NewUgenNode("UnaryOpUGen", rate, 17, numOutputs, in)
 }
 
+// UnaryOpNeg multiplies a signal by -1.
+func UnaryOpNeg(rate int8, in Input, numOutputs int) *UgenNode {
+	CheckRate(rate)
+	return NewUgenNode("UnaryOpUGen", rate, 0, numOutputs, in)
+}
+
 // UnaryOpSoftClip adds distortion to a ugen.
 func UnaryOpSoftClip(rate int8, in Input, numOutputs int) *UgenNode {
 	CheckRate(rate)

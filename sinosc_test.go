@@ -1,8 +1,6 @@
 package sc
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestSinOsc(t *testing.T) {
 	name := "SineTone"

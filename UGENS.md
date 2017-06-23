@@ -94,6 +94,7 @@ Unit Generators for sc.
 | VarSaw                      | No        |
 | VOsc                        | No        |
 | VOsc3                       | No        |
+| Warp1                       | Yes       |
 | WhiteNoise                  | Yes       |
 | XFade2                      | No        |
 | XLine                       | Yes       |

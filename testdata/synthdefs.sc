@@ -402,4 +402,8 @@ SynthDef(\SoundInTest20, {
     Out.ar(0, SoundIn.ar([2, 0]));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Warp1Example, {
+	Out.ar(0, Warp1.ar(2));
+}).writeDefFile(File.getcwd);
+
 0.exit;

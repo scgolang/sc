@@ -406,4 +406,8 @@ SynthDef(\Warp1Example, {
 	Out.ar(0, Warp1.ar(2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\GVerbExample, {
+	Out.ar(0, GVerb.ar(SinOsc.ar(220)));
+}).writeDefFile(File.getcwd);
+
 0.exit;

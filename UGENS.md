@@ -33,7 +33,7 @@ Unit Generators for sc.
 | FSinOsc                     | Yes       |
 | Formlet                     | Yes       |
 | FreeVerb                    | No        |
-| GVerb                       | No        |
+| GVerb                       | Yes       |
 | Gate                        | Yes       |
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |

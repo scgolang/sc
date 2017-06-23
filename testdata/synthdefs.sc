@@ -410,4 +410,12 @@ SynthDef(\GVerbExample, {
 	Out.ar(0, GVerb.ar(SinOsc.ar(220)));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LPFExample, {
+	Out.ar(0, LPF.ar(SinOsc.ar(220)));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\HPFExample, {
+	Out.ar(0, HPF.ar(SinOsc.ar(220)));
+}).writeDefFile(File.getcwd);
+
 0.exit;

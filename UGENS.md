@@ -40,7 +40,7 @@ Unit Generators for sc.
 | GrainFM                     | No        |
 | GrainIn                     | No        |
 | GrainSin                    | No        |
-| HPF                         | No        |
+| HPF                         | Yes       |
 | IFFT                        | No        |
 | Impulse                     | Yes       |
 | Integrator                  | Yes       |
@@ -56,7 +56,7 @@ Unit Generators for sc.
 | LFPulse                     | Yes       |
 | LFSaw                       | Yes       |
 | LFTri                       | Yes       |
-| LPF                         | No        |
+| LPF                         | Yes       |
 | Lag                         | No        |
 | LinPan2                     | No        |
 | Line                        | No        |

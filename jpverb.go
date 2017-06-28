@@ -50,6 +50,7 @@ type JPverb struct {
 
 	// HighCut is the frequency at which the crossover between
 	// the mid and high bands of the reverb occurs. (1000..10000)
+
 	HighCut Input
 }
 
@@ -75,6 +76,9 @@ func (jpv *JPverb) defaults() {
 	if jpv.Low == nil {
 		jpv.Low = C(1)
 	}
+	if jpv.Mid == nil {
+		jpv.Mid = C(1)
+	}
 	if jpv.High == nil {
 		jpv.High = C(1)
 	}
@@ -95,12 +99,25 @@ func (jpv JPverb) Rate(rate int8) Input {
 		panic("JPverb requires an input signal")
 	}
 	(&jpv).defaults()
-	return UgenInput("JPverbRaw", rate, 0, 1, jpv.In, jpv.T60, jpv.Damp, jpv.Size, jpv.EarlyDiff, jpv.ModDepth, jpv.ModFreq, jpv.Low, jpv.High, jpv.LowCut, jpv.HighCut)
+
+	var in1, in2 Input
+
+	switch x := jpv.In.(type) {
+	case Inputs:
+		if len(x) == 0 {
+			panic("JPverb requires an input signal")
+		}
+		in1, in2 = x[0], x[len(x)-1]
+	default:
+		in1, in2 = jpv.In, jpv.In
+	}
+	return UgenInput("JPverbRaw", rate, 0, 2, in1, in2, jpv.T60, jpv.Damp, jpv.Size, jpv.EarlyDiff, jpv.ModDepth, jpv.ModFreq, jpv.Low, jpv.Mid, jpv.High, jpv.LowCut, jpv.HighCut)
 }
 
-var DefJPverbMono = NewSynthdef("DefJPverbMono", func(params Params) Ugen {
+var DefJPverb = NewSynthdef("DefJPverb", func(params Params) Ugen {
 	var (
-		in0       = params.Add("in0", 0)
+		in1       = params.Add("in1", 0)
+		in2       = params.Add("in2", 0)
 		out0      = params.Add("out0", 0)
 		t60       = params.Add("t60", 1)
 		damp      = params.Add("damp", 0)
@@ -109,6 +126,7 @@ var DefJPverbMono = NewSynthdef("DefJPverbMono", func(params Params) Ugen {
 		modDepth  = params.Add("modDepth", 0.1)
 		modFreq   = params.Add("modFreq", 2)
 		low       = params.Add("low", 1)
+		mid       = params.Add("mid", 1)
 		high      = params.Add("high", 1)
 		lowcut    = params.Add("lowcut", 500)
 		highcut   = params.Add("highcut", 2000)
@@ -116,7 +134,7 @@ var DefJPverbMono = NewSynthdef("DefJPverbMono", func(params Params) Ugen {
 	return Out{
 		Bus: out0,
 		Channels: JPverb{
-			In:        In{NumChannels: 1, Bus: in0}.Rate(AR),
+			In:        Multi(in1, in2),
 			T60:       t60,
 			Damp:      damp,
 			Size:      size,
@@ -124,6 +142,7 @@ var DefJPverbMono = NewSynthdef("DefJPverbMono", func(params Params) Ugen {
 			ModDepth:  modDepth,
 			ModFreq:   modFreq,
 			Low:       low,
+			Mid:       mid,
 			High:      high,
 			LowCut:    lowcut,
 			HighCut:   highcut,

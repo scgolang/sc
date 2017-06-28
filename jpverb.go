@@ -95,7 +95,7 @@ func (jpv JPverb) Rate(rate int8) Input {
 		panic("JPverb requires an input signal")
 	}
 	(&jpv).defaults()
-	return UgenInput("JPverb", rate, 0, 1, jpv.In, jpv.T60, jpv.Damp, jpv.Size, jpv.EarlyDiff, jpv.ModDepth, jpv.ModFreq, jpv.Low, jpv.High, jpv.LowCut, jpv.HighCut)
+	return UgenInput("JPverbRaw", rate, 0, 1, jpv.In, jpv.T60, jpv.Damp, jpv.Size, jpv.EarlyDiff, jpv.ModDepth, jpv.ModFreq, jpv.Low, jpv.High, jpv.LowCut, jpv.HighCut)
 }
 
 var DefJPverbMono = NewSynthdef("DefJPverbMono", func(params Params) Ugen {

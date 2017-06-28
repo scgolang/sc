@@ -33,14 +33,14 @@ Unit Generators for sc.
 | FSinOsc                     | Yes       |
 | Formlet                     | Yes       |
 | FreeVerb                    | No        |
-| GVerb                       | No        |
+| GVerb                       | Yes       |
 | Gate                        | Yes       |
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
 | GrainFM                     | No        |
 | GrainIn                     | No        |
 | GrainSin                    | No        |
-| HPF                         | No        |
+| HPF                         | Yes       |
 | IFFT                        | No        |
 | Impulse                     | Yes       |
 | Integrator                  | Yes       |
@@ -56,7 +56,7 @@ Unit Generators for sc.
 | LFPulse                     | Yes       |
 | LFSaw                       | Yes       |
 | LFTri                       | Yes       |
-| LPF                         | No        |
+| LPF                         | Yes       |
 | Lag                         | No        |
 | LinPan2                     | No        |
 | Line                        | No        |
@@ -94,6 +94,7 @@ Unit Generators for sc.
 | VarSaw                      | No        |
 | VOsc                        | No        |
 | VOsc3                       | No        |
+| Warp1                       | Yes       |
 | WhiteNoise                  | Yes       |
 | XFade2                      | No        |
 | XLine                       | Yes       |

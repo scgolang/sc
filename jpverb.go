@@ -116,9 +116,8 @@ func (jpv JPverb) Rate(rate int8) Input {
 
 var DefJPverb = NewSynthdef("DefJPverb", func(params Params) Ugen {
 	var (
-		in1       = params.Add("in1", 0)
-		in2       = params.Add("in2", 0)
-		out0      = params.Add("out0", 0)
+		in        = params.Add("in", 0)
+		out       = params.Add("out", 0)
 		t60       = params.Add("t60", 1)
 		damp      = params.Add("damp", 0)
 		size      = params.Add("size", 1)
@@ -132,9 +131,50 @@ var DefJPverb = NewSynthdef("DefJPverb", func(params Params) Ugen {
 		highcut   = params.Add("highcut", 2000)
 	)
 	return Out{
-		Bus: out0,
+		Bus: out,
 		Channels: JPverb{
-			In:        Multi(in1, in2),
+			In: In{
+				Bus:         in,
+				NumChannels: 2,
+			}.Rate(AR),
+			T60:       t60,
+			Damp:      damp,
+			Size:      size,
+			EarlyDiff: earlyDiff,
+			ModDepth:  modDepth,
+			ModFreq:   modFreq,
+			Low:       low,
+			Mid:       mid,
+			High:      high,
+			LowCut:    lowcut,
+			HighCut:   highcut,
+		}.Rate(AR),
+	}.Rate(AR)
+})
+
+var DefJPverbMono = NewSynthdef("DefJPverbMono", func(params Params) Ugen {
+	var (
+		in        = params.Add("in", 0)
+		out       = params.Add("out", 0)
+		t60       = params.Add("t60", 1)
+		damp      = params.Add("damp", 0)
+		size      = params.Add("size", 1)
+		earlyDiff = params.Add("earlyDiff", 0.707)
+		modDepth  = params.Add("modDepth", 0.1)
+		modFreq   = params.Add("modFreq", 2)
+		low       = params.Add("low", 1)
+		mid       = params.Add("mid", 1)
+		high      = params.Add("high", 1)
+		lowcut    = params.Add("lowcut", 500)
+		highcut   = params.Add("highcut", 2000)
+	)
+	return Out{
+		Bus: out,
+		Channels: JPverb{
+			In: In{
+				Bus:         in,
+				NumChannels: 1,
+			}.Rate(AR),
 			T60:       t60,
 			Damp:      damp,
 			Size:      size,

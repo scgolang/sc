@@ -418,4 +418,8 @@ SynthDef(\HPFExample, {
 	Out.ar(0, HPF.ar(SinOsc.ar(220)));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\FreeVerbExample, {
+	Out.ar(0, FreeVerb.ar(SinOsc.ar(220)));
+}).writeDefFile(File.getcwd);
+
 0.exit;

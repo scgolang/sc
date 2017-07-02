@@ -1,10 +1,7 @@
 package sc
 
 import (
-	"encoding/json"
-	"encoding/xml"
 	"fmt"
-	"io"
 
 	"github.com/scgolang/osc"
 )
@@ -14,85 +11,89 @@ const (
 	gQueryTreeReply = "/g_queryTree.reply"
 )
 
-// Node is a node in a graph
-type Node struct {
-	ID int32 `json:"id" xml:"id,attr"`
+// Node is a node in a synth execution tree.
+// It could be a synth node or a group.
+type Node interface {
+	Free() error
+	ID() int32
 }
 
-// Group is a group of synth nodes
-type Group struct {
-	Node     `json:"node" xml:"node"`
-	Children []*Node `json:"children" xml:"children>child"`
-	client   *Client
+// SynthNode is a node in a graph
+type SynthNode struct {
+	id int32
 }
 
-// Synth adds a synth to a group
-func (g *Group) Synth(defName string, id, action int32, ctls map[string]float32) (*Synth, error) {
-	return g.client.Synth(defName, id, action, g.Node.ID, ctls)
+// Free frees the node.
+func (g *SynthNode) Free() error {
+	return nil
 }
 
-// Synths creates multiple synth nodes at once with an OSC bundle.
-func (g *Group) Synths(args []SynthArgs) error {
-	for _, arg := range args {
-		arg.Target = g.Node.ID
-	}
-	return g.client.Synths(args)
+// ID returns the node ID.
+func (g *SynthNode) ID() int32 {
+	return g.id
+}
+
+// GroupNode is a group of nodes.
+type GroupNode struct {
+	Children []Node
+
+	id     int32
+	client *Client
 }
 
 // Free frees all the nodes in a group.
 // TODO
-func (g *Group) Free() error {
+func (g *GroupNode) Free() error {
 	return nil
 }
 
 // FreeAll frees all the nodes in a group recursively.
 // TODO
-func (g *Group) FreeAll() error {
+func (g *GroupNode) FreeAll() error {
 	return nil
 }
 
-// WriteJSON writes a JSON representation of a group to an io.Writer
-func (g *Group) WriteJSON(w io.Writer) error {
-	enc := json.NewEncoder(w)
-	return enc.Encode(g)
+// ID returns the node ID.
+func (g *GroupNode) ID() int32 {
+	return g.id
 }
 
-// WriteXML writes an XML representation of a group to an io.Writer
-func (g *Group) WriteXML(w io.Writer) error {
-	enc := xml.NewEncoder(w)
-	return enc.Encode(g)
+// Synth adds a synth to a group
+func (g *GroupNode) Synth(defName string, id, action int32, ctls map[string]float32) (*Synth, error) {
+	return g.client.Synth(defName, id, action, g.id, ctls)
+}
+
+// Synths creates multiple synth nodes at once with an OSC bundle.
+func (g *GroupNode) Synths(args []SynthArgs) error {
+	for _, arg := range args {
+		arg.Target = g.id
+	}
+	return g.client.Synths(args)
 }
 
 // newGroup creates a new Group structure
-func newGroup(client *Client, id int32) *Group {
-	return &Group{
-		Node:     Node{ID: id},
-		Children: make([]*Node, 0),
+func newGroup(client *Client, id int32) *GroupNode {
+	return &GroupNode{
 		client:   client,
+		id:       id,
+		Children: []Node{},
 	}
 }
 
 // parseGroup parses information about a group from a message received at /g_queryTree.
 // It *does not* recursively query for child groups.
-func parseGroup(msg osc.Message) (*Group, error) {
-	// return an error if msg.Address is not right
-	if msg.Address != gQueryTreeReply {
-		return nil, fmt.Errorf("msg.Address should be %s, got %s", gQueryTreeReply, msg.Address)
-	}
+func parseGroup(msg osc.Message) (*GroupNode, error) {
 	// g_queryTree replies should have at least 3 arguments
-	var (
-		g       = &Group{}
-		numArgs = len(msg.Arguments)
-	)
+	numArgs := len(msg.Arguments)
 	if numArgs < 3 {
 		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
 	}
 	// get the id of the group this reply is for
-	nodeID, err := msg.Arguments[0].ReadInt32()
+	nodeID, err := msg.Arguments[1].ReadInt32()
 	if err != nil {
 		return nil, err
 	}
-	g.Node.ID = nodeID
+	g := &GroupNode{id: nodeID}
 
 	if err := g.getChildren(msg); err != nil {
 		return nil, err
@@ -101,48 +102,39 @@ func parseGroup(msg osc.Message) (*Group, error) {
 }
 
 // getChildren gets all the children of a group.
-func (g *Group) getChildren(msg osc.Message) error {
-	numArgs := len(msg.Arguments)
-
+func (g *GroupNode) getChildren(msg osc.Message) error {
 	// initialize the children array
-	numChildren, err := msg.Arguments[1].ReadInt32()
+	numChildren, err := msg.Arguments[2].ReadInt32()
 	if err != nil {
 		return err
 	}
 	if numChildren < 0 {
 		return fmt.Errorf("expected numChildren >= 0, got %d", numChildren)
 	}
-	g.Children = make([]*Node, numChildren)
+	g.Children = make([]Node, numChildren)
+	return g.getChildrenR(msg, 0, 3)
+}
 
-	// get the childrens' ids
-	var numControls, numSubChildren int32
+func (g *GroupNode) getChildrenR(msg osc.Message, childIndex, startIndex int) error {
+	nodeID, err := msg.Arguments[startIndex].ReadInt32()
+	if err != nil {
+		return err
+	}
+	g.Children[childIndex] = &GroupNode{id: nodeID}
 
-	for i := 3; i < numArgs; {
-		j := (3 * i) - 7
-
-		nodeID, err := msg.Arguments[j].ReadInt32()
+	// get the number of children of this node
+	// if -1 this is a synth, if >= 0 this is a group
+	numSubChildren, err := msg.Arguments[startIndex+1].ReadInt32()
+	if err != nil {
+		return err
+	}
+	if numSubChildren == -1 {
+		// synth
+		_, err := msg.Arguments[startIndex+2].ReadInt32()
 		if err != nil {
 			return err
 		}
-		g.Children[i-3] = &Node{ID: nodeID}
-		// get the number of children of this node
-		// if -1 this is a synth, if >= 0 this is a group
-		numSubChildren, err = msg.Arguments[j+1].ReadInt32()
-		if err != nil {
-			return err
-		}
-		if numSubChildren == -1 {
-			// synth
-			i += 3
-			numControls, err = msg.Arguments[j+2].ReadInt32()
-			if err != nil {
-				return err
-			}
-			i += 1 + int(numControls*2)
-		} else if numSubChildren >= 0 {
-			// group
-			i += 2
-		}
+	} else if numSubChildren >= 0 {
 	}
 	return nil
 }

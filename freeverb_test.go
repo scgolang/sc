@@ -6,8 +6,8 @@ func TestFreeVerb(t *testing.T) {
 	name := "FreeVerbExample"
 	def := NewSynthdef(name, func(params Params) Ugen {
 		bus, In := C(0), SinOsc{Freq: C(220)}.Rate(AR)
-		wrp := FreeVerb{In: In}.Rate(AR)
-		return Out{bus, wrp}.Rate(AR)
+		src := FreeVerb{In: In}.Rate(AR)
+		return Out{bus, src}.Rate(AR)
 	})
 	same, err := def.CompareToFile("testdata/FreeVerbExample.scsyndef")
 	if err != nil {

@@ -32,12 +32,12 @@ Unit Generators for sc.
 | FFT                         | No        |
 | FSinOsc                     | Yes       |
 | Formlet                     | Yes       |
-| FreeVerb                    | No        |
+| FreeVerb                    | Yes       |
 | GVerb                       | Yes       |
 | Gate                        | Yes       |
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
-| GrainFM                     | No        |
+| GrainFM                     | Yes       |
 | GrainIn                     | No        |
 | GrainSin                    | No        |
 | HPF                         | Yes       |

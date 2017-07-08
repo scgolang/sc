@@ -1,10 +1,24 @@
 package sc
 
-// FIXME
+import "testing"
 
-// import (
-// 	"testing"
-// )
+func TestGrainFM(t *testing.T) {
+	name := "GrainFMExample"
+	def := NewSynthdef(name, func(params Params) Ugen {
+		bus := C(0)
+		src := GrainFM{}.Rate(AR)
+		return Out{bus, src}.Rate(AR)
+	})
+	same, err := def.CompareToFile("testdata/GrainFMExample.scsyndef")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !same {
+		t.Fatalf("synthdef different from sclang version")
+	}
+}
+
+// FIXME
 
 // func TestGrainFM(t *testing.T) {
 // 	const defName = "GrainFMTest"

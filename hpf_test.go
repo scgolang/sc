@@ -6,8 +6,8 @@ func TestHPF(t *testing.T) {
 	name := "HPFExample"
 	def := NewSynthdef(name, func(params Params) Ugen {
 		bus, In := C(0), SinOsc{Freq: C(220)}.Rate(AR)
-		wrp := HPF{In: In}.Rate(AR)
-		return Out{bus, wrp}.Rate(AR)
+		src := HPF{In: In}.Rate(AR)
+		return Out{bus, src}.Rate(AR)
 	})
 	same, err := def.CompareToFile("testdata/HPFExample.scsyndef")
 	if err != nil {

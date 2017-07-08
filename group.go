@@ -3,6 +3,7 @@ package sc
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/scgolang/osc"
 )
 
@@ -20,7 +21,11 @@ type Node interface {
 
 // SynthNode is a node in a graph
 type SynthNode struct {
-	id int32
+	Controls map[string]float32
+	DefName  string
+
+	client *Client
+	id     int32
 }
 
 // Free frees the node.
@@ -37,8 +42,8 @@ func (g *SynthNode) ID() int32 {
 type GroupNode struct {
 	Children []Node
 
-	id     int32
 	client *Client
+	id     int32
 }
 
 // Free frees all the nodes in a group.
@@ -74,67 +79,104 @@ func (g *GroupNode) Synths(args []SynthArgs) error {
 // newGroup creates a new Group structure
 func newGroup(client *Client, id int32) *GroupNode {
 	return &GroupNode{
-		client:   client,
-		id:       id,
-		Children: []Node{},
+		client: client,
+		id:     id,
 	}
 }
 
-// parseGroup parses information about a group from a message received at /g_queryTree.
+// parseGroup parses information about a group from a reply to /g_queryTree.
+func (c *Client) parseGroup(msg osc.Message) (*GroupNode, error) {
+	n, _, err := c.parseNodeFrom(msg, 0)
+	if err != nil {
+		return nil, err
+	}
+	gn, ok := n.(*GroupNode)
+	if !ok {
+		return nil, errors.Wrap(err, "type assertion from Node to *GroupNode")
+	}
+	return gn, nil
+}
+
+// parseNodeFrom parses information about a group from a message received at /g_queryTree.
 // It *does not* recursively query for child groups.
-func parseGroup(msg osc.Message) (*GroupNode, error) {
-	// g_queryTree replies should have at least 3 arguments
-	numArgs := len(msg.Arguments)
-	if numArgs < 3 {
-		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
+func (c *Client) parseNodeFrom(msg osc.Message, startIndex int) (Node, int, error) {
+	argsConsumed := 0
+
+	// We should have at least 2 arguments for nodes contained in the group.
+	if numArgs := len(msg.Arguments); numArgs < 2 {
+		return nil, 0, fmt.Errorf("expected 2 arguments for message, got %d", numArgs)
 	}
 	// get the id of the group this reply is for
-	nodeID, err := msg.Arguments[1].ReadInt32()
-	if err != nil {
-		return nil, err
-	}
-	g := &GroupNode{id: nodeID}
-
-	if err := g.getChildren(msg); err != nil {
-		return nil, err
-	}
-	return g, nil
-}
-
-// getChildren gets all the children of a group.
-func (g *GroupNode) getChildren(msg osc.Message) error {
-	// initialize the children array
-	numChildren, err := msg.Arguments[2].ReadInt32()
-	if err != nil {
-		return err
-	}
-	if numChildren < 0 {
-		return fmt.Errorf("expected numChildren >= 0, got %d", numChildren)
-	}
-	g.Children = make([]Node, numChildren)
-	return g.getChildrenR(msg, 0, 3)
-}
-
-func (g *GroupNode) getChildrenR(msg osc.Message, childIndex, startIndex int) error {
 	nodeID, err := msg.Arguments[startIndex].ReadInt32()
 	if err != nil {
-		return err
+		return nil, 0, err
 	}
-	g.Children[childIndex] = &GroupNode{id: nodeID}
+	argsConsumed++
 
-	// get the number of children of this node
-	// if -1 this is a synth, if >= 0 this is a group
-	numSubChildren, err := msg.Arguments[startIndex+1].ReadInt32()
+	numChildren, err := msg.Arguments[startIndex+1].ReadInt32()
 	if err != nil {
-		return err
+		return nil, 0, err
 	}
-	if numSubChildren == -1 {
-		// synth
-		_, err := msg.Arguments[startIndex+2].ReadInt32()
+	argsConsumed++
+
+	if numChildren < 0 {
+		// Synth node.
+		node, synthArgsConsumed, err := c.parseSynthNodeFrom(msg, nodeID, startIndex+argsConsumed)
+		return node, argsConsumed + synthArgsConsumed, errors.Wrap(err, "parsing synth node")
+	}
+	g := &GroupNode{
+		Children: make([]Node, numChildren),
+		client:   c,
+		id:       nodeID,
+	}
+	startIndex = startIndex + 2
+
+	for i := 0; int32(i) < numChildren; i++ {
+		node, childArgsConsumed, err := c.parseNodeFrom(msg, startIndex)
 		if err != nil {
-			return err
+			return nil, 0, err
 		}
-	} else if numSubChildren >= 0 {
+		startIndex += childArgsConsumed
+		argsConsumed += childArgsConsumed
+		g.Children[i] = node
 	}
-	return nil
+	return g, argsConsumed, nil
+}
+
+func (c *Client) parseSynthNodeFrom(msg osc.Message, nodeID int32, startIndex int) (n Node, argsConsumed int, err error) {
+	// Assume we are starting at the synthdef name.
+	defName, err := msg.Arguments[startIndex+argsConsumed].ReadString()
+	if err != nil {
+		return nil, 0, errors.Wrap(err, "reading synthdef name")
+	}
+	argsConsumed++
+
+	numControls, err := msg.Arguments[startIndex+argsConsumed].ReadInt32()
+	if err != nil {
+		return nil, 0, errors.Wrap(err, "reading number of synth controls")
+	}
+	argsConsumed++
+
+	sn := &SynthNode{
+		DefName:  defName,
+		Controls: make(map[string]float32, numControls),
+		client:   c,
+		id:       nodeID,
+	}
+	for i := 0; int32(i) < numControls; i++ {
+		controlName, err := msg.Arguments[startIndex+argsConsumed].ReadString()
+		if err != nil {
+			return nil, 0, errors.Wrap(err, "reading synth control name")
+		}
+		argsConsumed++
+
+		controlValue, err := msg.Arguments[startIndex+argsConsumed].ReadFloat32()
+		if err != nil {
+			return nil, 0, errors.Wrap(err, "reading synth control value")
+		}
+		argsConsumed++
+
+		sn.Controls[controlName] = controlValue
+	}
+	return sn, argsConsumed, nil
 }

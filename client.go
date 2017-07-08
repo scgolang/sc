@@ -356,7 +356,13 @@ func (c *Client) QueryGroup(id int32) (*GroupNode, error) {
 	case <-time.After(2 * time.Second):
 		return nil, errors.New("timeout waiting for response")
 	}
-	return parseGroup(resp)
+	if numArgs := len(resp.Arguments); numArgs < 3 {
+		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
+	}
+	// Throw away the flag that tells us we want to include synth controls in the reply.
+	// We already know we requested that!
+	resp.Arguments = resp.Arguments[1:]
+	return c.parseGroup(resp)
 }
 
 // ReadBuffer tells the server to read an audio file and

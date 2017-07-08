@@ -24,3 +24,22 @@ func (sin SinOsc) Rate(rate int8) Input {
 	(&sin).defaults()
 	return UgenInput("SinOsc", rate, 0, 1, sin.Freq, sin.Phase)
 }
+
+func init() {
+	if err := RegisterSynthdef("sine", func(params Params) Ugen {
+		var (
+			out   = params.Add("out", 0)
+			freq  = params.Add("freq", 440)
+			phase = params.Add("phase", 0)
+		)
+		return Out{
+			Bus: out,
+			Channels: SinOsc{
+				Freq:  freq,
+				Phase: phase,
+			}.Rate(AR),
+		}.Rate(AR)
+	}); err != nil {
+		panic(err)
+	}
+}

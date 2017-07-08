@@ -9,11 +9,18 @@ const (
 	setSynthNodeAddress  = "/n_set"
 )
 
+// SynthControl represents a synth control in a group query.
+type SynthControl struct {
+	Name  string
+	Value float32
+}
+
 // Synth encapsulates a synth node.
 type Synth struct {
-	DefName string `json:"defName"`
-	ID      int32  `json:"id"`
-	client  *Client
+	Controls []SynthControl `json:"control"`
+	DefName  string         `json:"defName"`
+	ID       int32          `json:"id"`
+	client   *Client
 }
 
 // Get the value of a synth control.

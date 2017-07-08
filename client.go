@@ -14,19 +14,23 @@ import (
 // OSC addresses.
 // See http://doc.sccode.org/Reference/Server-Command-Reference.html.
 const (
-	statusAddress          = "/status"
-	statusReplyAddress     = "/status.reply"
-	gqueryTreeAddress      = "/g_queryTree"
-	gqueryTreeReplyAddress = "/g_queryTree.reply"
-	synthdefReceiveAddress = "/d_recv"
-	dumpOscAddress         = "/dumpOSC"
-	doneOscAddress         = "/done"
-	synthNewAddress        = "/s_new"
-	groupNewAddress        = "/g_new"
-	groupFreeAllAddress    = "/g_freeAll"
-	bufferAllocAddress     = "/b_alloc"
-	bufferReadAddress      = "/b_allocRead"
-	bufferGenAddress       = "/b_gen"
+	statusAddress              = "/status"
+	statusReplyAddress         = "/status.reply"
+	synthdefReceiveAddress     = "/d_recv"
+	dumpOscAddress             = "/dumpOSC"
+	doneOscAddress             = "/done"
+	synthNewAddress            = "/s_new"
+	groupNewAddress            = "/g_new"
+	groupHeadAddress           = "/g_head"
+	groupTailAddress           = "/g_tail"
+	groupFreeAllAddress        = "/g_freeAll"
+	groupDeepFreeAddress       = "/g_deepFree"
+	groupDumpTreeAddress       = "/g_dumpTree"
+	groupQueryTreeAddress      = "/g_queryTree"
+	groupQueryTreeReplyAddress = "/g_queryTree.reply"
+	bufferAllocAddress         = "/b_alloc"
+	bufferReadAddress          = "/b_allocRead"
+	bufferGenAddress           = "/b_gen"
 )
 
 // Arguments to dumpOSC command.
@@ -116,7 +120,7 @@ func NewClient(network, local, scsynth string, timeout time.Duration) (*Client, 
 
 var (
 	defaultClient *Client
-	defaultGroup  *Group
+	defaultGroup  *GroupNode
 )
 
 // DefaultClient returns the default sc client.
@@ -314,7 +318,7 @@ func (c *Client) Synths(args []SynthArgs) error {
 }
 
 // Group creates a group.
-func (c *Client) Group(id, action, target int32) (*Group, error) {
+func (c *Client) Group(id, action, target int32) (*GroupNode, error) {
 	msg := osc.Message{
 		Address: groupNewAddress,
 		Arguments: osc.Arguments{
@@ -330,24 +334,35 @@ func (c *Client) Group(id, action, target int32) (*Group, error) {
 }
 
 // AddDefaultGroup adds the default group.
-func (c *Client) AddDefaultGroup() (*Group, error) {
+func (c *Client) AddDefaultGroup() (*GroupNode, error) {
 	return c.Group(DefaultGroupID, AddToTail, RootNodeID)
 }
 
 // QueryGroup g_queryTree for a particular group.
-func (c *Client) QueryGroup(id int32) (*Group, error) {
-	msg := osc.Message{
-		Address: gqueryTreeAddress,
+func (c *Client) QueryGroup(id int32) (*GroupNode, error) {
+	if err := c.oscConn.Send(osc.Message{
+		Address: groupQueryTreeAddress,
 		Arguments: osc.Arguments{
-			osc.Int(RootNodeID),
+			osc.Int(id),
+			osc.Int(1),
 		},
-	}
-	if err := c.oscConn.Send(msg); err != nil {
+	}); err != nil {
 		return nil, err
 	}
 	// wait for response
-	resp := <-c.gqueryTreeChan
-	return parseGroup(resp)
+	var resp osc.Message
+	select {
+	case resp = <-c.gqueryTreeChan:
+	case <-time.After(2 * time.Second):
+		return nil, errors.New("timeout waiting for response")
+	}
+	if numArgs := len(resp.Arguments); numArgs < 3 {
+		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
+	}
+	// Throw away the flag that tells us we want to include synth controls in the reply.
+	// We already know we requested that!
+	resp.Arguments = resp.Arguments[1:]
+	return c.parseGroup(resp)
 }
 
 // ReadBuffer tells the server to read an audio file and
@@ -495,7 +510,7 @@ func (c *Client) oscHandlers() osc.Dispatcher {
 			c.doneChan <- msg
 			return nil
 		}),
-		gqueryTreeReplyAddress: osc.Method(func(msg osc.Message) error {
+		groupQueryTreeReplyAddress: osc.Method(func(msg osc.Message) error {
 			c.gqueryTreeChan <- msg
 			return nil
 		}),

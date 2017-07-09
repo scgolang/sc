@@ -87,8 +87,7 @@ func (gb *GrainBuf) defaults() {
 }
 
 // Rate creates a new ugen at a specific rate.
-// If rate is an unsupported value this method will cause
-// a runtime panic.
+// If rate is an unsupported value this method will cause a runtime panic.
 // There will also be a runtime panic if BufNum is nil.
 func (gb GrainBuf) Rate(rate int8) Input {
 	CheckRate(rate)
@@ -97,4 +96,43 @@ func (gb GrainBuf) Rate(rate int8) Input {
 	}
 	(&gb).defaults()
 	return UgenInput("GrainBuf", rate, 0, gb.NumChannels, gb.Trigger, gb.Dur, gb.BufNum, gb.Speed, gb.Pos, gb.Interp, gb.Pan, gb.EnvBuf, gb.MaxGrains)
+}
+
+func init() {
+	RegisterSynthdef("grainbuf_mono", defGrainBuf(1))
+	RegisterSynthdef("grainbuf_stereo", defGrainBuf(2))
+}
+
+func defGrainBuf(channels int) UgenFunc {
+	return func(params Params) Ugen {
+		var (
+			out       = params.Add("out", 0)
+			trigger   = params.Add("trigger", 0)
+			dur       = params.Add("dur", 1)
+			bufnum    = params.Add("bufnum", 0)
+			speed     = params.Add("speed", 1)
+			pos       = params.Add("pos", 0)
+			interp    = params.Add("interp", GrainBufLinearInterp)
+			pan       = params.Add("pan", 0)
+			envbuf    = params.Add("envbuf", GrainBufHanningEnv)
+			maxgrains = params.Add("maxgrains", GrainBufDefaultMaxGrains)
+		)
+		trigger = In{NumChannels: 1, Bus: trigger}.Rate(AR)
+
+		return Out{
+			Bus: out,
+			Channels: GrainBuf{
+				NumChannels: channels,
+				Trigger:     trigger,
+				Dur:         dur,
+				BufNum:      bufnum,
+				Speed:       speed,
+				Pos:         pos,
+				Interp:      interp,
+				Pan:         pan,
+				EnvBuf:      envbuf,
+				MaxGrains:   maxgrains,
+			}.Rate(AR),
+		}.Rate(AR)
+	}
 }

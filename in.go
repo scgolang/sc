@@ -30,3 +30,22 @@ func (in In) Rate(rate int8) Input {
 	}
 	return Multi(ins...)
 }
+
+func init() {
+	if err := RegisterSynthdef("in", func(params Params) Ugen {
+		var (
+			in  = params.Add("in", 0)
+			out = params.Add("out", 0)
+		)
+		return Out{
+			Bus: out,
+			Channels: In{
+				NumChannels: 1,
+				Bus:         in,
+			}.Rate(AR),
+		}.Rate(AR)
+		var ()
+	}); err != nil {
+		panic(err)
+	}
+}

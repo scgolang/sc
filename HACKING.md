@@ -18,7 +18,7 @@ Writing a test for a new ugen should involve:
    for any issues you may encounter when translating synthdefs to Go.
 
 3. Comparing the Go synthdef to the sc synthdef. This is simplified by
-   a utility function called [compareAndWrite](caw.go). This function will
+   a utility function called [compareAndWrite](caw_test.go). This function will
    read the synthdef file created by sclang in step 1, create a synthdef
    file for your Go synthdef called `NAME.gosyndef`, compare the
    two files byte-for-byte, and fail your test if the two files differ.

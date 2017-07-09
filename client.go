@@ -209,6 +209,18 @@ func (c *Client) Status(timeout time.Duration) (*ServerStatus, error) {
 	}
 }
 
+// SendAllDefs sends all the synthdefs that have been registered with RegisterSynthdef.
+func (c *Client) SendAllDefs() error {
+	synthdefsMu.RLock()
+	defer synthdefsMu.RUnlock()
+	for _, def := range Synthdefs {
+		if err := c.SendDef(def); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // SendDef sends a synthdef to scsynth.
 // This method blocks until a /done message is received
 // indicating that the synthdef was loaded

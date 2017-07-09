@@ -44,7 +44,11 @@ const (
 
 // Buffer is a client-side representation of an scsynth audio buffer
 type Buffer struct {
-	Num    int32
+	Channels   int32
+	Frames     int32
+	Num        int32
+	SampleRate float32
+
 	client *Client
 }
 

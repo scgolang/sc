@@ -31,6 +31,8 @@ const (
 	bufferAllocAddress         = "/b_alloc"
 	bufferReadAddress          = "/b_allocRead"
 	bufferGenAddress           = "/b_gen"
+	bufferInfoAddress          = "/b_info"
+	bufferQueryAddress         = "/b_query"
 )
 
 // Arguments to dumpOSC command.
@@ -86,6 +88,7 @@ type Client struct {
 	addr    *net.UDPAddr
 	oscConn osc.Conn
 
+	bufferInfoChan chan osc.Message // bufferInfoChan relays /b_info messages
 	doneChan       chan osc.Message // doneChan relays /done messages
 	statusChan     chan osc.Message // statusChan relays /status.reply messages
 	gqueryTreeChan chan osc.Message // gqueryTreeChan relays /done messages
@@ -106,9 +109,10 @@ func NewClient(network, local, scsynth string, timeout time.Duration) (*Client, 
 	}
 	c := &Client{
 		errChan:        make(chan error),
-		statusChan:     make(chan osc.Message),
-		gqueryTreeChan: make(chan osc.Message),
+		bufferInfoChan: make(chan osc.Message),
 		doneChan:       make(chan osc.Message, numDoneHandlers),
+		gqueryTreeChan: make(chan osc.Message),
+		statusChan:     make(chan osc.Message),
 		addr:           addr,
 		nextSynthID:    1000,
 	}
@@ -377,124 +381,6 @@ func (c *Client) QueryGroup(id int32) (*GroupNode, error) {
 	return c.parseGroup(resp)
 }
 
-// ReadBuffer tells the server to read an audio file and
-// load it into a buffer
-func (c *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
-	buf, err := c.sendBufReadMsg(path, num)
-	if err != nil {
-		return nil, err
-	}
-	if err := c.awaitBufReadReply(buf); err != nil {
-
-	}
-	return buf, nil
-}
-
-// sendBufReadMsg sends a /b_allocRead command.
-func (c *Client) sendBufReadMsg(path string, num int32) (*Buffer, error) {
-	buf := newReadBuffer(path, num, c)
-	msg := osc.Message{
-		Address: bufferReadAddress,
-		Arguments: osc.Arguments{
-			osc.Int(buf.Num),
-			osc.String(path),
-		},
-	}
-	if err := c.oscConn.Send(msg); err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
-// awaitBufReadReply waits for a reply to /b_allocRead
-func (c *Client) awaitBufReadReply(buf *Buffer) error {
-	var done osc.Message
-	select {
-	case done = <-c.doneChan:
-	case err := <-c.errChan:
-		return err
-	}
-
-	// error if this message was not an ack of the buffer read
-	if len(done.Arguments) != 2 {
-		return fmt.Errorf("expected two arguments to /done message")
-	}
-	addr, err := done.Arguments[0].ReadString()
-	if err != nil {
-		return err
-	}
-	if addr != bufferReadAddress {
-		c.doneChan <- done
-	}
-	bufnum, err := done.Arguments[1].ReadInt32()
-	if err != nil {
-		return err
-	}
-	if bufnum != buf.Num {
-		c.doneChan <- done
-	}
-	return nil
-}
-
-// AllocBuffer allocates a buffer on the server
-func (c *Client) AllocBuffer(frames, channels int) (*Buffer, error) {
-	buf, err := c.sendBufAllocMsg(frames, channels)
-	if err != nil {
-		return nil, err
-	}
-	if err := c.awaitBufAllocReply(buf); err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
-// sendBufAllocMsg sends a /b_alloc message
-func (c *Client) sendBufAllocMsg(frames, channels int) (*Buffer, error) {
-	buf := &Buffer{client: c}
-	msg := osc.Message{
-		Address: bufferAllocAddress,
-		Arguments: osc.Arguments{
-			osc.Int(buf.Num),
-			osc.Int(int32(frames)),
-			osc.Int(int32(channels)),
-		},
-	}
-	if err := c.oscConn.Send(msg); err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
-// awaitBufAllocReply waits for a reply to /b_alloc
-func (c *Client) awaitBufAllocReply(buf *Buffer) error {
-	var done osc.Message
-	select {
-	case done = <-c.doneChan:
-	case err := <-c.errChan:
-		return err
-	}
-	// error if this message was not an ack of /b_alloc
-	if len(done.Arguments) != 2 {
-		return fmt.Errorf("expected two arguments to /done message")
-	}
-	addr, err := done.Arguments[0].ReadString()
-	if err != nil {
-		return err
-	}
-	if addr != bufferAllocAddress {
-		c.doneChan <- done
-
-	}
-	bufnum, err := done.Arguments[1].ReadInt32()
-	if err != nil {
-		return err
-	}
-	if bufnum != buf.Num {
-		c.doneChan <- done
-	}
-	return nil
-}
-
 // NextSynthID gets the next available ID for creating a synth
 func (c *Client) NextSynthID() int32 {
 	return atomic.AddInt32(&c.nextSynthID, 1)
@@ -514,6 +400,10 @@ func (c *Client) FreeAll(gids ...int32) error {
 // addOscHandlers adds OSC handlers
 func (c *Client) oscHandlers() osc.Dispatcher {
 	return map[string]osc.MessageHandler{
+		bufferInfoAddress: osc.Method(func(msg osc.Message) error {
+			c.bufferInfoChan <- msg
+			return nil
+		}),
 		statusReplyAddress: osc.Method(func(msg osc.Message) error {
 			c.statusChan <- msg
 			return nil

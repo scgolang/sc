@@ -126,15 +126,14 @@ func (c *Client) awaitBufInfoReply() (*Buffer, error) {
 	}, nil
 }
 
-// ReadBuffer tells the server to read an audio file and
-// load it into a buffer
-func (c *Client) ReadBuffer(path string, num int32) (*Buffer, error) {
-	buf, err := c.sendBufReadMsg(path, num)
+// ReadBuffer tells the server to read an audio file and load it into a buffer.
+func (c *Client) ReadBuffer(path string, num int32, channels ...int) (*Buffer, error) {
+	buf, err := c.sendBufReadMsg(path, num, channels...)
 	if err != nil {
 		return nil, err
 	}
 	if err := c.awaitBufReadReply(buf); err != nil {
-
+		return nil, err
 	}
 	return buf, nil
 }
@@ -157,14 +156,24 @@ func (c *Client) sendBufAllocMsg(frames, channels int) (*Buffer, error) {
 }
 
 // sendBufReadMsg sends a /b_allocRead command.
-func (c *Client) sendBufReadMsg(path string, num int32) (*Buffer, error) {
+func (c *Client) sendBufReadMsg(path string, num int32, channels ...int) (*Buffer, error) {
 	buf := newReadBuffer(path, num, c)
+
+	var addr string
+	if len(channels) == 0 {
+		addr = bufferReadAddress
+	} else {
+		addr = bufferReadChannelAddress
+	}
 	msg := osc.Message{
-		Address: bufferReadAddress,
+		Address: addr,
 		Arguments: osc.Arguments{
 			osc.Int(buf.Num),
 			osc.String(path),
 		},
+	}
+	for _, channel := range channels {
+		msg.Arguments = append(msg.Arguments, osc.Int(channel))
 	}
 	if err := c.oscConn.Send(msg); err != nil {
 		return nil, err

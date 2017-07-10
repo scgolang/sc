@@ -30,6 +30,7 @@ const (
 	groupQueryTreeReplyAddress = "/g_queryTree.reply"
 	bufferAllocAddress         = "/b_alloc"
 	bufferReadAddress          = "/b_allocRead"
+	bufferReadChannelAddress   = "/b_allocReadChannel"
 	bufferGenAddress           = "/b_gen"
 	bufferInfoAddress          = "/b_info"
 	bufferQueryAddress         = "/b_query"

@@ -14,26 +14,35 @@ import (
 // OSC addresses.
 // See http://doc.sccode.org/Reference/Server-Command-Reference.html.
 const (
-	statusAddress              = "/status"
-	statusReplyAddress         = "/status.reply"
-	synthdefReceiveAddress     = "/d_recv"
-	dumpOscAddress             = "/dumpOSC"
-	doneOscAddress             = "/done"
-	synthNewAddress            = "/s_new"
-	groupNewAddress            = "/g_new"
-	groupHeadAddress           = "/g_head"
-	groupTailAddress           = "/g_tail"
-	groupFreeAllAddress        = "/g_freeAll"
-	groupDeepFreeAddress       = "/g_deepFree"
-	groupDumpTreeAddress       = "/g_dumpTree"
-	groupQueryTreeAddress      = "/g_queryTree"
-	groupQueryTreeReplyAddress = "/g_queryTree.reply"
 	bufferAllocAddress         = "/b_alloc"
-	bufferReadAddress          = "/b_allocRead"
-	bufferReadChannelAddress   = "/b_allocReadChannel"
 	bufferGenAddress           = "/b_gen"
 	bufferInfoAddress          = "/b_info"
 	bufferQueryAddress         = "/b_query"
+	bufferReadAddress          = "/b_allocRead"
+	bufferReadChannelAddress   = "/b_allocReadChannel"
+	doneOscAddress             = "/done"
+	dumpOscAddress             = "/dumpOSC"
+	groupDeepFreeAddress       = "/g_deepFree"
+	groupDumpTreeAddress       = "/g_dumpTree"
+	groupFreeAllAddress        = "/g_freeAll"
+	groupHeadAddress           = "/g_head"
+	groupNewAddress            = "/g_new"
+	groupQueryTreeAddress      = "/g_queryTree"
+	groupQueryTreeReplyAddress = "/g_queryTree.reply"
+	groupTailAddress           = "/g_tail"
+	nodeFreeAddress            = "/n_free"
+	nodeFillAddress            = "/n_fill"
+	nodeMapAddress             = "/n_map"
+	nodeMapnAddress            = "/n_mapn"
+	nodeMapaAddress            = "/n_mapa"
+	nodeMapanAddress           = "/n_mapan"
+	nodeRunAddress             = "/n_run"
+	nodeSetAddress             = "/n_set"
+	nodeSetnAddress            = "/n_setn"
+	statusAddress              = "/status"
+	statusReplyAddress         = "/status.reply"
+	synthNewAddress            = "/s_new"
+	synthdefReceiveAddress     = "/d_recv"
 )
 
 // Arguments to dumpOSC command.
@@ -145,6 +154,11 @@ func DefaultClient() (*Client, error) {
 	return defaultClient, nil
 }
 
+// AddDefaultGroup adds the default group.
+func (c *Client) AddDefaultGroup() (*GroupNode, error) {
+	return c.Group(DefaultGroupID, AddToTail, RootNodeID)
+}
+
 // Connect connects to an scsynth instance via UDP.
 func (c *Client) Connect(addr string, timeout time.Duration) error {
 	raddr, err := net.ResolveUDPAddr("udp", addr)
@@ -192,26 +206,86 @@ func (c *Client) Connect(addr string, timeout time.Duration) error {
 	return nil
 }
 
-// Status gets the status of scsynth with a timeout.
-// If the status request times out it returns ErrTimeout.
-func (c *Client) Status(timeout time.Duration) (*ServerStatus, error) {
-	statusReq := osc.Message{
-		Address: statusAddress,
+// DumpOSC sends a /dumpOSC message to scsynth
+// level should be DumpOff, DumpParsed, DumpContents, DumpAll
+func (c *Client) DumpOSC(level int32) error {
+	return c.oscConn.Send(osc.Message{
+		Address: dumpOscAddress,
+		Arguments: osc.Arguments{
+			osc.Int(level),
+		},
+	})
+}
+
+// FreeAll frees all nodes in a group
+func (c *Client) FreeAll(gids ...int32) error {
+	msg := osc.Message{
+		Address: groupFreeAllAddress,
 	}
-	if err := c.oscConn.Send(statusReq); err != nil {
+	for _, gid := range gids {
+		msg.Arguments = append(msg.Arguments, osc.Int(gid))
+	}
+	return c.oscConn.Send(msg)
+}
+
+// Group creates a group.
+func (c *Client) Group(id, action, target int32) (*GroupNode, error) {
+	msg := osc.Message{
+		Address: groupNewAddress,
+		Arguments: osc.Arguments{
+			osc.Int(id),
+			osc.Int(action),
+			osc.Int(target),
+		},
+	}
+	if err := c.oscConn.Send(msg); err != nil {
 		return nil, err
 	}
+	return newGroup(c, id), nil
+}
 
-	after := time.After(timeout)
+// NextSynthID gets the next available ID for creating a synth
+func (c *Client) NextSynthID() int32 {
+	return atomic.AddInt32(&c.nextSynthID, 1)
+}
 
+// NodeSet sets a control value on a node.
+func (c *Client) NodeSet(id int32, name string, value float32) error {
+	return c.oscConn.Send(osc.Message{
+		Address: nodeSetAddress,
+		Arguments: osc.Arguments{
+			osc.Int(id),
+			osc.String(name),
+			osc.Float(value),
+		},
+	})
+}
+
+// QueryGroup g_queryTree for a particular group.
+func (c *Client) QueryGroup(id int32) (*GroupNode, error) {
+	if err := c.oscConn.Send(osc.Message{
+		Address: groupQueryTreeAddress,
+		Arguments: osc.Arguments{
+			osc.Int(id),
+			osc.Int(1),
+		},
+	}); err != nil {
+		return nil, err
+	}
+	// wait for response
+	var resp osc.Message
 	select {
-	case _ = <-after:
-		return nil, ErrTimeout
-	case msg := <-c.statusChan:
-		return newStatus(msg)
-	case err := <-c.errChan:
-		return nil, err
+	case resp = <-c.gqueryTreeChan:
+	case <-time.After(2 * time.Second):
+		return nil, errors.New("timeout waiting for response")
 	}
+	if numArgs := len(resp.Arguments); numArgs < 3 {
+		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
+	}
+	// Throw away the flag that tells us we want to include synth controls in the reply.
+	// We already know we requested that!
+	resp.Arguments = resp.Arguments[1:]
+	return c.parseGroup(resp)
 }
 
 // SendAllDefs sends all the synthdefs that have been registered with RegisterSynthdef.
@@ -267,15 +341,26 @@ ParseMessage:
 	return nil
 }
 
-// DumpOSC sends a /dumpOSC message to scsynth
-// level should be DumpOff, DumpParsed, DumpContents, DumpAll
-func (c *Client) DumpOSC(level int32) error {
-	return c.oscConn.Send(osc.Message{
-		Address: dumpOscAddress,
-		Arguments: osc.Arguments{
-			osc.Int(level),
-		},
-	})
+// Status gets the status of scsynth with a timeout.
+// If the status request times out it returns ErrTimeout.
+func (c *Client) Status(timeout time.Duration) (*ServerStatus, error) {
+	statusReq := osc.Message{
+		Address: statusAddress,
+	}
+	if err := c.oscConn.Send(statusReq); err != nil {
+		return nil, err
+	}
+
+	after := time.After(timeout)
+
+	select {
+	case _ = <-after:
+		return nil, ErrTimeout
+	case msg := <-c.statusChan:
+		return newStatus(msg)
+	case err := <-c.errChan:
+		return nil, err
+	}
 }
 
 // Synth creates a synth node.
@@ -332,70 +417,6 @@ func (c *Client) Synths(args []SynthArgs) error {
 		bun.Packets[i] = msg
 	}
 	return c.oscConn.Send(bun)
-}
-
-// Group creates a group.
-func (c *Client) Group(id, action, target int32) (*GroupNode, error) {
-	msg := osc.Message{
-		Address: groupNewAddress,
-		Arguments: osc.Arguments{
-			osc.Int(id),
-			osc.Int(action),
-			osc.Int(target),
-		},
-	}
-	if err := c.oscConn.Send(msg); err != nil {
-		return nil, err
-	}
-	return newGroup(c, id), nil
-}
-
-// AddDefaultGroup adds the default group.
-func (c *Client) AddDefaultGroup() (*GroupNode, error) {
-	return c.Group(DefaultGroupID, AddToTail, RootNodeID)
-}
-
-// QueryGroup g_queryTree for a particular group.
-func (c *Client) QueryGroup(id int32) (*GroupNode, error) {
-	if err := c.oscConn.Send(osc.Message{
-		Address: groupQueryTreeAddress,
-		Arguments: osc.Arguments{
-			osc.Int(id),
-			osc.Int(1),
-		},
-	}); err != nil {
-		return nil, err
-	}
-	// wait for response
-	var resp osc.Message
-	select {
-	case resp = <-c.gqueryTreeChan:
-	case <-time.After(2 * time.Second):
-		return nil, errors.New("timeout waiting for response")
-	}
-	if numArgs := len(resp.Arguments); numArgs < 3 {
-		return nil, fmt.Errorf("expected 3 arguments for message, got %d", numArgs)
-	}
-	// Throw away the flag that tells us we want to include synth controls in the reply.
-	// We already know we requested that!
-	resp.Arguments = resp.Arguments[1:]
-	return c.parseGroup(resp)
-}
-
-// NextSynthID gets the next available ID for creating a synth
-func (c *Client) NextSynthID() int32 {
-	return atomic.AddInt32(&c.nextSynthID, 1)
-}
-
-// FreeAll frees all nodes in a group
-func (c *Client) FreeAll(gids ...int32) error {
-	msg := osc.Message{
-		Address: groupFreeAllAddress,
-	}
-	for _, gid := range gids {
-		msg.Arguments = append(msg.Arguments, osc.Int(gid))
-	}
-	return c.oscConn.Send(msg)
 }
 
 // addOscHandlers adds OSC handlers

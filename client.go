@@ -250,15 +250,18 @@ func (c *Client) NextSynthID() int32 {
 }
 
 // NodeSet sets a control value on a node.
-func (c *Client) NodeSet(id int32, name string, value float32) error {
-	return c.oscConn.Send(osc.Message{
+func (c *Client) NodeSet(id int32, ctls map[string]float32) error {
+	msg := osc.Message{
 		Address: nodeSetAddress,
 		Arguments: osc.Arguments{
 			osc.Int(id),
-			osc.String(name),
-			osc.Float(value),
 		},
-	})
+	}
+	for k, v := range ctls {
+		msg.Arguments = append(msg.Arguments, osc.String(k))
+		msg.Arguments = append(msg.Arguments, osc.Float(v))
+	}
+	return c.oscConn.Send(msg)
 }
 
 // QueryGroup g_queryTree for a particular group.

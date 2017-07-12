@@ -2,6 +2,7 @@ package sc
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/scgolang/osc"
@@ -21,7 +22,7 @@ type Node interface {
 
 // SynthNode is a node in a graph
 type SynthNode struct {
-	Controls map[string]float32
+	Controls map[string]string
 	DefName  string
 
 	client *Client
@@ -159,7 +160,7 @@ func (c *Client) parseSynthNodeFrom(msg osc.Message, nodeID int32, startIndex in
 
 	sn := &SynthNode{
 		DefName:  defName,
-		Controls: make(map[string]float32, numControls),
+		Controls: make(map[string]string, numControls),
 		client:   c,
 		id:       nodeID,
 	}
@@ -170,13 +171,18 @@ func (c *Client) parseSynthNodeFrom(msg osc.Message, nodeID int32, startIndex in
 		}
 		argsConsumed++
 
-		controlValue, err := msg.Arguments[startIndex+argsConsumed].ReadFloat32()
-		if err != nil {
-			return nil, 0, errors.Wrap(err, "reading synth control value")
+		var cvstr string
+		cvflt, err := msg.Arguments[startIndex+argsConsumed].ReadFloat32()
+		if err == nil {
+			cvstr = strconv.FormatFloat(float64(cvflt), 'f', -1, 32)
+		} else {
+			cvstr, err = msg.Arguments[startIndex+argsConsumed].ReadString()
+			if err != nil {
+				return nil, 0, errors.Wrap(err, "reading synth control value")
+			}
 		}
 		argsConsumed++
-
-		sn.Controls[controlName] = controlValue
+		sn.Controls[controlName] = cvstr
 	}
 	return sn, argsConsumed, nil
 }

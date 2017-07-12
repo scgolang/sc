@@ -275,6 +275,23 @@ func (c *Client) NodeMap(id int32, m map[string]int32) error {
 	return c.oscConn.Send(msg)
 }
 
+// NodeMapa causes controls of a node to be read from an audio bus.
+// The first argument is the node ID.
+// The second argument is a map from control names to audio bus indices.
+func (c *Client) NodeMapa(id int32, m map[string]int32) error {
+	msg := osc.Message{
+		Address: nodeMapaAddress,
+		Arguments: osc.Arguments{
+			osc.Int(id),
+		},
+	}
+	for k, v := range m {
+		msg.Arguments = append(msg.Arguments, osc.String(k))
+		msg.Arguments = append(msg.Arguments, osc.Int(v))
+	}
+	return c.oscConn.Send(msg)
+}
+
 // NodeSet sets a control value on a node.
 func (c *Client) NodeSet(id int32, ctls map[string]float32) error {
 	msg := osc.Message{

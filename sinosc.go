@@ -28,6 +28,8 @@ func (sin SinOsc) Rate(rate int8) Input {
 func init() {
 	if err := RegisterSynthdef("sine", func(params Params) Ugen {
 		var (
+			add   = params.Add("add", 0)
+			mul   = params.Add("mul", 1)
 			out   = params.Add("out", 0)
 			freq  = params.Add("freq", 440)
 			phase = params.Add("phase", 0)
@@ -37,7 +39,7 @@ func init() {
 			Channels: SinOsc{
 				Freq:  freq,
 				Phase: phase,
-			}.Rate(AR),
+			}.Rate(AR).MulAdd(mul, add),
 		}.Rate(AR)
 	}); err != nil {
 		panic(err)

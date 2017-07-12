@@ -249,6 +249,15 @@ func (c *Client) NextSynthID() int32 {
 	return atomic.AddInt32(&c.nextSynthID, 1)
 }
 
+// NodeFree stops a node abruptly, removes it from its group, and frees its memory.
+// Using this method can cause a click if the node is not silent at the time it is freed.
+func (c *Client) NodeFree(id int32) error {
+	return c.oscConn.Send(osc.Message{
+		Address:   nodeFreeAddress,
+		Arguments: osc.Arguments{osc.Int(id)},
+	})
+}
+
 // NodeMap causes controls of a node to be read from a control bus.
 // The first argument is the node ID.
 // The second argument is a map from control names to control bus indices.

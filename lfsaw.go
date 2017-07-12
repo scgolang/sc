@@ -27,3 +27,24 @@ func (lfsaw LFSaw) Rate(rate int8) Input {
 	(&lfsaw).defaults()
 	return UgenInput("LFSaw", rate, 0, 1, lfsaw.Freq, lfsaw.Iphase)
 }
+
+func init() {
+	if err := RegisterSynthdef("lfsaw", func(params Params) Ugen {
+		var (
+			add    = params.Add("add", 0)
+			freq   = params.Add("freq", 440)
+			iphase = params.Add("iphase", 0)
+			mul    = params.Add("mul", 1)
+			out    = params.Add("out", 0)
+		)
+		return Out{
+			Bus: out,
+			Channels: LFSaw{
+				Freq:   freq,
+				Iphase: iphase,
+			}.Rate(AR).MulAdd(mul, add),
+		}.Rate(AR)
+	}); err != nil {
+		panic(err)
+	}
+}

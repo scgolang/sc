@@ -30,3 +30,26 @@ func (lfpulse LFPulse) Rate(rate int8) Input {
 	(&lfpulse).defaults()
 	return UgenInput("LFPulse", rate, 0, 1, lfpulse.Freq, lfpulse.Iphase, lfpulse.Width)
 }
+
+func init() {
+	if err := RegisterSynthdef("lfpulse", func(params Params) Ugen {
+		var (
+			add    = params.Add("add", 0)
+			freq   = params.Add("freq", 440)
+			iphase = params.Add("iphase", 0)
+			mul    = params.Add("mul", 1)
+			out    = params.Add("out", 0)
+			width  = params.Add("width", 0)
+		)
+		return Out{
+			Bus: out,
+			Channels: LFPulse{
+				Freq:   freq,
+				Iphase: iphase,
+				Width:  width,
+			}.Rate(AR).MulAdd(mul, add),
+		}.Rate(AR)
+	}); err != nil {
+		panic(err)
+	}
+}

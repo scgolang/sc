@@ -14,7 +14,7 @@ replacing sclang with Go makes a lot of sense to me.
 
 ## Who
 
-See https://github.com/scgolang/sc/blob/master/AUTHORS
+See [AUTHORS](AUTHORS).
 
 ## What this is not
 
@@ -23,6 +23,10 @@ http://en.wikipedia.org/wiki/Live_coding). I may decide someday
 to support some livecoding-esque features, but for now the
 goal is to be able to build music applications
 that use supercollider as the audio engine.
+
+### Update July 2017
+
+Check out the [SuperCollider CLI tool](https://github.com/scgolang/scc) that uses this package.
 
 ## Install
 

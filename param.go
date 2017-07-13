@@ -69,31 +69,31 @@ func (p *param) InitialValue() float32 {
 }
 
 func (p *param) Max(other Input) Input {
-	return BinOpMax(KR, p, other, 1)
+	return binOpMax(KR, p, other, 1)
 }
 
 func (p *param) Mul(in Input) Input {
-	return BinOpMul(KR, p, in, 1)
+	return binOpMul(KR, p, in, 1)
 }
 
 func (p *param) Add(in Input) Input {
-	return BinOpAdd(KR, p, in, 1)
+	return binOpAdd(KR, p, in, 1)
 }
 
 func (p *param) MulAdd(mul, add Input) Input {
-	return MulAdd(KR, p, mul, add, 1)
+	return mulAdd(KR, p, mul, add, 1)
 }
 
 func (p *param) Midicps() Input {
-	return UnaryOpMidicps(KR, p, 1)
+	return unaryOpMidicps(KR, p, 1)
 }
 
 func (p *param) Neg() Input {
-	return UnaryOpNeg(KR, p, 1)
+	return unaryOpNeg(KR, p, 1)
 }
 
 func (p *param) SoftClip() Input {
-	return UnaryOpSoftClip(KR, p, 1)
+	return unaryOpSoftClip(KR, p, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

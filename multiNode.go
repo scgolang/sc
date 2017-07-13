@@ -23,7 +23,7 @@ func (mn *MultiNode) Nodes() []*UgenNode {
 func (mn *MultiNode) Max(other Input) Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = BinOpMax(n.Rate(), n, other, n.numOutputs)
+		a[i] = binOpMax(n.Rate(), n, other, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -32,7 +32,7 @@ func (mn *MultiNode) Max(other Input) Input {
 func (mn *MultiNode) Mul(val Input) Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = BinOpMul(n.Rate(), n, val, n.numOutputs)
+		a[i] = binOpMul(n.Rate(), n, val, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -41,7 +41,7 @@ func (mn *MultiNode) Mul(val Input) Input {
 func (mn *MultiNode) Add(val Input) Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = BinOpAdd(n.Rate(), n, val, n.numOutputs)
+		a[i] = binOpAdd(n.Rate(), n, val, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -51,7 +51,7 @@ func (mn *MultiNode) Add(val Input) Input {
 func (mn *MultiNode) MulAdd(mul, add Input) Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = MulAdd(n.Rate(), n, mul, add, n.numOutputs)
+		a[i] = mulAdd(n.Rate(), n, mul, add, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -60,7 +60,7 @@ func (mn *MultiNode) MulAdd(mul, add Input) Input {
 func (mn *MultiNode) Midicps() Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = UnaryOpMidicps(n.Rate(), n, n.numOutputs)
+		a[i] = unaryOpMidicps(n.Rate(), n, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -69,7 +69,7 @@ func (mn *MultiNode) Midicps() Input {
 func (mn *MultiNode) Neg() Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = UnaryOpNeg(n.Rate(), n, n.numOutputs)
+		a[i] = unaryOpNeg(n.Rate(), n, n.numOutputs)
 	}
 	return &MultiNode{a}
 }
@@ -78,7 +78,7 @@ func (mn *MultiNode) Neg() Input {
 func (mn *MultiNode) SoftClip() Input {
 	a := make([]*UgenNode, len(mn.nodes))
 	for i, n := range mn.nodes {
-		a[i] = UnaryOpSoftClip(n.Rate(), n, n.numOutputs)
+		a[i] = unaryOpSoftClip(n.Rate(), n, n.numOutputs)
 	}
 	return &MultiNode{a}
 }

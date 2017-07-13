@@ -67,37 +67,37 @@ func (un *UgenNode) IsOutput() {
 
 // Max computes the maximum of one Input and another.
 func (un *UgenNode) Max(other Input) Input {
-	return BinOpMax(un.rate, un, other, un.numOutputs)
+	return binOpMax(un.rate, un, other, un.numOutputs)
 }
 
 // Mul multiplies the ugen node by an input.
 func (un *UgenNode) Mul(val Input) Input {
-	return BinOpMul(un.rate, un, val, un.numOutputs)
+	return binOpMul(un.rate, un, val, un.numOutputs)
 }
 
 // Add adds an input to a ugen node.
 func (un *UgenNode) Add(val Input) Input {
-	return BinOpAdd(un.rate, un, val, un.numOutputs)
+	return binOpAdd(un.rate, un, val, un.numOutputs)
 }
 
 // MulAdd multiplies and adds inputs to a ugen node.
 func (un *UgenNode) MulAdd(mul, add Input) Input {
-	return MulAdd(un.rate, un, mul, add, un.numOutputs)
+	return mulAdd(un.rate, un, mul, add, un.numOutputs)
 }
 
 // Midicps converts MIDI note number to cycles per second.
 func (un *UgenNode) Midicps() Input {
-	return UnaryOpMidicps(un.rate, un, un.numOutputs)
+	return unaryOpMidicps(un.rate, un, un.numOutputs)
 }
 
 // Neg is a convenience operator that multiplies a signal by -1.
 func (un *UgenNode) Neg() Input {
-	return UnaryOpNeg(un.rate, un, un.numOutputs)
+	return unaryOpNeg(un.rate, un, un.numOutputs)
 }
 
 // SoftClip adds distortion to a ugen.
 func (un *UgenNode) SoftClip() Input {
-	return UnaryOpSoftClip(un.rate, un, un.numOutputs)
+	return unaryOpSoftClip(un.rate, un, un.numOutputs)
 }
 
 // NewUgenNode is a factory function for creating new UgenNode instances.

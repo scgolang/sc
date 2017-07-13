@@ -438,4 +438,8 @@ SynthDef(\SweepTest, {
 	Out.ar(0, LFPulse.ar() * Sweep.ar());
 }).writeDefFile(File.getcwd);
 
+SynthDef(\HasherTest, {
+	Out.ar(0, SinOsc.ar(Hasher.kr(MouseX.kr(0, 10), 300, 500)));
+}).writeDefFile(File.getcwd);
+
 0.exit;

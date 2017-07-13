@@ -58,6 +58,8 @@ func (tg *TGrains) defaults() {
 	}
 }
 
+// Rate creates a new ugen at a specific rate.
+// If rate is an unsupported value this method will cause a runtime panic.
 func (tg TGrains) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&tg).defaults()

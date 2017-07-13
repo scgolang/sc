@@ -1,5 +1,6 @@
 package sc
 
+// FFT implements the Fast Fourier Transform.
 // The fast fourier transform analyzes the frequency content of a signal,
 // which can be useful for audio analysis or for frequency-domain sound processing (phase vocoder).
 type FFT struct {

@@ -40,22 +40,22 @@ func (apc *Allpass) defaults() {
 // If rate is an unsupported value this method will cause a runtime panic.
 // If an In signal is not provided this method will panic.
 // If Interpolation is set to an unsupported value this method will panic.
-func (a Allpass) Rate(rate int8) Input {
-	if a.In == nil {
+func (apc Allpass) Rate(rate int8) Input {
+	if apc.In == nil {
 		panic("Allpass expects In to not be nil")
 	}
 	CheckRate(rate)
 
-	(&a).defaults()
+	(&apc).defaults()
 
-	switch a.Interpolation {
+	switch apc.Interpolation {
 	case InterpolationNone:
-		return UgenInput("AllpassN", rate, 0, 1, a.In, a.MaxDelayTime, a.DelayTime, a.DecayTime)
+		return UgenInput("AllpassN", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
 	case InterpolationLinear:
-		return UgenInput("AllpassL", rate, 0, 1, a.In, a.MaxDelayTime, a.DelayTime, a.DecayTime)
+		return UgenInput("AllpassL", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
 	case InterpolationCubic:
-		return UgenInput("AllpassC", rate, 0, 1, a.In, a.MaxDelayTime, a.DelayTime, a.DecayTime)
+		return UgenInput("AllpassC", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
 	default:
-		panic(fmt.Errorf("invalid interpolation: %d", a.Interpolation))
+		panic(fmt.Errorf("invalid interpolation: %d", apc.Interpolation))
 	}
 }

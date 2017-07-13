@@ -1,6 +1,6 @@
 package sc
 
-// A two-channel reverb UGen.
+// GVerb is a two-channel reverb UGen.
 // Based on the "GVerb" LADSPA effect by Juhana Sadeharju (kouhia at nic.funet.fi).
 type GVerb struct {
 	// Mono Input

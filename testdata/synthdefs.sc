@@ -430,4 +430,8 @@ SynthDef(\DCTest, {
 	Out.ar(0, DC.ar());
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LeakDCTest, {
+	Out.ar(0, LeakDC.ar(LFPulse.ar(800, 0.5, 0.5, 0.5)));
+}).writeDefFile(File.getcwd);
+
 0.exit;

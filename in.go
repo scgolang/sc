@@ -44,7 +44,6 @@ func init() {
 				Bus:         in,
 			}.Rate(AR),
 		}.Rate(AR)
-		var ()
 	}); err != nil {
 		panic(err)
 	}

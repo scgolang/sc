@@ -24,6 +24,10 @@ to support some livecoding-esque features, but for now the
 goal is to be able to build music applications
 that use supercollider as the audio engine.
 
+### Update July 2017
+
+Check out the [SuperCollider CLI tool](https://github.com/scgolang/scc) that uses this package.
+
 ## Install
 
 First, and most importantly, you must have supercollider

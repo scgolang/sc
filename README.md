@@ -14,7 +14,7 @@ replacing sclang with Go makes a lot of sense to me.
 
 ## Who
 
-See https://github.com/scgolang/sc/blob/master/AUTHORS
+See [AUTHORS](AUTHORS).
 
 ## What this is not
 

@@ -6,3 +6,6 @@
 *.xml
 *.json
 core
+
+# makefile cache
+.fixtures

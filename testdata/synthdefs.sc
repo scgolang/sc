@@ -426,4 +426,8 @@ SynthDef(\GrainFMExample, {
 	Out.ar(0, GrainFM.ar());
 }).writeDefFile(File.getcwd);
 
+SynthDef(\DCTest, {
+	Out.ar(0, DC.ar());
+}).writeDefFile(File.getcwd);
+
 0.exit;

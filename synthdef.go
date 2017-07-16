@@ -134,7 +134,7 @@ func (def *Synthdef) Root() int32 {
 
 	for _, u := range def.Ugens {
 		for _, in := range u.Inputs {
-			if isConstant(in) {
+			if in.IsConstant() {
 				continue
 			}
 			parents[in.UgenIndex]++
@@ -387,7 +387,7 @@ func (d differ) crawl(diffs [][2]string, idx1, idx2 int32) [][2]string {
 			ui1 = in1.UgenIndex
 			ui2 = in2.UgenIndex
 		)
-		if isConstant(in1) && isConstant(in2) {
+		if in1.IsConstant() && in2.IsConstant() {
 			if v1, v2 := d[0].Constants[oi1], d[1].Constants[oi2]; v1 != v2 {
 				diffs = append(diffs, [2]string{
 					fmt.Sprintf("%s (ugen %d), input %d has constant value %f", u1.Name, idx1, i, v1),
@@ -396,14 +396,14 @@ func (d differ) crawl(diffs [][2]string, idx1, idx2 int32) [][2]string {
 			}
 			continue
 		}
-		if isConstant(in1) && !isConstant(in2) {
+		if in1.IsConstant() && !in2.IsConstant() {
 			diffs = append(diffs, [2]string{
 				fmt.Sprintf("%s(%d), input %d is constant (%f)", u1.Name, idx1, i, d[0].Constants[oi1]),
 				fmt.Sprintf("%s(%d), input %d points to %s(%d)", u2.Name, idx2, i, d[1].Ugens[ui2].Name, ui2),
 			})
 			continue
 		}
-		if !isConstant(in1) && isConstant(in2) {
+		if !in1.IsConstant() && in2.IsConstant() {
 			diffs = append(diffs, [2]string{
 				fmt.Sprintf("%s(%d), input %d points to %s(%d)", u1.Name, idx1, i, d[0].Ugens[ui1].Name, ui1),
 				fmt.Sprintf("%s(%d), input %d is constant (%f)", u2.Name, idx2, i, d[1].Constants[oi2]),
@@ -439,10 +439,6 @@ func (d differ) do() [][2]string {
 		}
 	}
 	return d.crawl([][2]string{}, d[0].Root(), d[1].Root())
-}
-
-func isConstant(in UgenInput) bool {
-	return in.UgenIndex == -1
 }
 
 var commutative = map[string]struct{}{

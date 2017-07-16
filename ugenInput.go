@@ -70,6 +70,11 @@ type UgenInput struct {
 	OutputIndex int32 `json:"outputIndex" xml:"outputIndex,attr"`
 }
 
+// IsConstant returns true if a UgenInput has a UgenIndex of -1
+func (ui UgenInput) IsConstant() bool {
+	return ui.UgenIndex == -1
+}
+
 // Write writes an input to an io.Writer
 func (ui UgenInput) Write(w io.Writer) error {
 	if we := binary.Write(w, byteOrder, ui.UgenIndex); we != nil {

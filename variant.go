@@ -13,13 +13,11 @@ type Variant struct {
 
 // Write writes a variant to an io.Writer.
 func (variant *Variant) Write(w io.Writer) error {
-	err := newPstring(variant.Name).Write(w)
-	if err != nil {
+	if err := newPstring(variant.Name).Write(w); err != nil {
 		return err
 	}
 	for _, v := range variant.InitialParamValues {
-		err = binary.Write(w, byteOrder, v)
-		if err != nil {
+		if err := binary.Write(w, byteOrder, v); err != nil {
 			return err
 		}
 	}
@@ -34,8 +32,7 @@ func readVariant(r io.Reader, numParams int32) (*Variant, error) {
 	}
 	paramValues := make([]float32, numParams)
 	for i := 0; int32(i) < numParams; i++ {
-		err = binary.Read(r, byteOrder, &paramValues[i])
-		if err != nil {
+		if err := binary.Read(r, byteOrder, &paramValues[i]); err != nil {
 			return nil, err
 		}
 	}

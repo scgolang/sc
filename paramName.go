@@ -12,8 +12,7 @@ type ParamName struct {
 }
 
 func (pn *ParamName) Write(w io.Writer) error {
-	err := newPstring(pn.Name).Write(w)
-	if err != nil {
+	if err := newPstring(pn.Name).Write(w); err != nil {
 		return err
 	}
 	return binary.Write(w, byteOrder, int32(pn.Index))
@@ -26,8 +25,7 @@ func readParamName(r io.Reader) (*ParamName, error) {
 		return nil, err
 	}
 	var idx int32
-	err = binary.Read(r, byteOrder, &idx)
-	if err != nil {
+	if err := binary.Read(r, byteOrder, &idx); err != nil {
 		return nil, err
 	}
 	pn := ParamName{name.String(), idx}

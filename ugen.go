@@ -113,37 +113,36 @@ func (u *Ugen) SoftClip() Input {
 // Write writes a Ugen
 func (u *Ugen) Write(w io.Writer) error {
 	// write the synthdef name
-	err := newPstring(u.Name).Write(w)
-	if err != nil {
+	if err := newPstring(u.Name).Write(w); err != nil {
 		return err
 	}
 	// write rate
-	if err = binary.Write(w, byteOrder, u.Rate); err != nil {
+	if err := binary.Write(w, byteOrder, u.Rate); err != nil {
 		return err
 	}
 	// write inputs
 	numInputs := int32(len(u.Inputs))
-	if err = binary.Write(w, byteOrder, numInputs); err != nil {
+	if err := binary.Write(w, byteOrder, numInputs); err != nil {
 		return err
 	}
 	// write outputs
 	numOutputs := int32(len(u.Outputs))
-	if err = binary.Write(w, byteOrder, numOutputs); err != nil {
+	if err := binary.Write(w, byteOrder, numOutputs); err != nil {
 		return err
 	}
 	// special index
-	if err = binary.Write(w, byteOrder, u.SpecialIndex); err != nil {
+	if err := binary.Write(w, byteOrder, u.SpecialIndex); err != nil {
 		return err
 	}
 	// inputs
 	for _, i := range u.Inputs {
-		if err = i.Write(w); err != nil {
+		if err := i.Write(w); err != nil {
 			return err
 		}
 	}
 	// outputs
 	for _, o := range u.Outputs {
-		if err = o.Write(w); err != nil {
+		if err := o.Write(w); err != nil {
 			return err
 		}
 	}
@@ -163,27 +162,22 @@ func readUgen(r io.Reader) (*Ugen, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	// read calculation rate
-	if err = binary.Read(r, byteOrder, &rate); err != nil {
+	if err := binary.Read(r, byteOrder, &rate); err != nil {
 		return nil, err
 	}
-
 	// read number of inputs
-	if err = binary.Read(r, byteOrder, &numInputs); err != nil {
+	if err := binary.Read(r, byteOrder, &numInputs); err != nil {
 		return nil, err
 	}
-
 	// read number of outputs
-	if err = binary.Read(r, byteOrder, &numOutputs); err != nil {
+	if err := binary.Read(r, byteOrder, &numOutputs); err != nil {
 		return nil, err
 	}
-
 	// read special index
-	if err = binary.Read(r, byteOrder, &specialIndex); err != nil {
+	if err := binary.Read(r, byteOrder, &specialIndex); err != nil {
 		return nil, err
 	}
-
 	var (
 		inputs  = make([]UgenInput, numInputs)
 		outputs = make([]Output, numOutputs)

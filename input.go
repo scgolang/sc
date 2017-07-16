@@ -33,12 +33,10 @@ type Input interface {
 
 func readInput(r io.Reader) (UgenInput, error) {
 	var ui UgenInput
-	err := binary.Read(r, byteOrder, ui.UgenIndex)
-	if err != nil {
+	if err := binary.Read(r, byteOrder, &ui.UgenIndex); err != nil {
 		return ui, err
 	}
-	err = binary.Read(r, byteOrder, ui.OutputIndex)
-	if err != nil {
+	if err := binary.Read(r, byteOrder, &ui.OutputIndex); err != nil {
 		return ui, err
 	}
 	return ui, nil

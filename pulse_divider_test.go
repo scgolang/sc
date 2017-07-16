@@ -7,7 +7,7 @@ import (
 func TestPulseDivider(t *testing.T) {
 	defName := "PulseDividerTest"
 
-	compareAndWrite(t, defName, NewSynthdef(defName, func(params Params) Ugen {
+	compareAndWriteStructure(t, defName, NewSynthdef(defName, func(params Params) Ugen {
 		var (
 			out    = params.Add("out", 0)
 			p      = Impulse{Freq: C(8)}.Rate(AR)

@@ -226,8 +226,5 @@ func asOutput(u *Ugen) *Ugen {
 
 func cloneUgen(v *Ugen) *Ugen {
 	u := *v
-	// for _, out := range v.Outputs {
-	// 	u.Outputs = append(u.Outputs, out)
-	// }
 	return &u
 }

@@ -31,6 +31,7 @@ Unit Generators for sc.
 | EnvGen                      | Yes       |
 | FFT                         | No        |
 | FSinOsc                     | Yes       |
+| Formant                     | No        |
 | Formlet                     | Yes       |
 | FreeVerb                    | Yes       |
 | GVerb                       | Yes       |
@@ -59,7 +60,7 @@ Unit Generators for sc.
 | LPF                         | Yes       |
 | Lag                         | No        |
 | LinPan2                     | No        |
-| Line                        | No        |
+| Line                        | Yes       |
 | Median                      | No        |
 | MouseX                      | Yes       |
 | MouseY                      | Yes       |

@@ -440,6 +440,10 @@ SynthDef(\LatchTest, {
 	Out.ar(0, Blip.ar(Latch.ar(WhiteNoise.ar, Impulse.ar(9)) * 400 + 500, 4, 0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LineTest, {
+	Out.ar(0, SinOsc.ar(Line.kr(200, 17000, 10), 0, 0.1));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\PulseDividerTest, { arg out = 0;
     var p, a, b;
     p = Impulse.ar(8);

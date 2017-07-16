@@ -5,18 +5,19 @@ import (
 )
 
 func TestCascade(t *testing.T) {
-	def := NewSynthdef("CascadeExample", func(p Params) Ugen {
-		bus := C(0)
-		freq := Multi(C(440), C(441))
-		mod1 := SinOsc{Freq: freq}.Rate(AR)
-		mod2 := SinOsc{Freq: mod1}.Rate(AR)
-		return Out{bus, SinOsc{Freq: mod2}.Rate(AR)}.Rate(AR)
-	})
-	same, err := def.CompareToFile("testdata/CascadeExample.scsyndef")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !same {
-		t.Fatalf("synthdef different from sclang version")
-	}
+	const defName = "CascadeExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		var (
+			freq = Multi(C(440), C(441))
+			mod1 = SinOsc{Freq: freq}.Rate(AR)
+			mod2 = SinOsc{Freq: mod1}.Rate(AR)
+		)
+		return Out{
+			Bus: C(0),
+			Channels: SinOsc{
+				Freq: mod2,
+			}.Rate(AR),
+		}.Rate(AR)
+	}))
 }

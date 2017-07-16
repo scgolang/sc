@@ -9,7 +9,7 @@ type Params interface {
 	List() []Param
 	// Control returns a Ugen that should be used as the first ugen
 	// of any synthdef that has parameters
-	Control() Ugen
+	Control() *Ugen
 }
 
 // Param is the interface of a single synthdef parameter.
@@ -35,14 +35,14 @@ func (ps *params) Add(name string, initialValue float32) Input {
 	return p
 }
 
+// Control param implementation
+func (ps *params) Control() *Ugen {
+	return NewControl(len(ps.l))
+}
+
 // List param implementation
 func (ps *params) List() []Param {
 	return ps.l
-}
-
-// Control param implementation
-func (ps *params) Control() Ugen {
-	return NewControl(len(ps.l))
 }
 
 // newParams creates a new params instance
@@ -56,8 +56,8 @@ type param struct {
 	val   float32
 }
 
-func (p *param) Name() string {
-	return p.name
+func (p *param) Add(in Input) Input {
+	return binOpAdd(KR, p, in, 1)
 }
 
 func (p *param) Index() int32 {
@@ -72,20 +72,20 @@ func (p *param) Max(other Input) Input {
 	return binOpMax(KR, p, other, 1)
 }
 
-func (p *param) Mul(in Input) Input {
-	return binOpMul(KR, p, in, 1)
+func (p *param) Midicps() Input {
+	return unaryOpMidicps(KR, p, 1)
 }
 
-func (p *param) Add(in Input) Input {
-	return binOpAdd(KR, p, in, 1)
+func (p *param) Mul(in Input) Input {
+	return binOpMul(KR, p, in, 1)
 }
 
 func (p *param) MulAdd(mul, add Input) Input {
 	return mulAdd(KR, p, mul, add, 1)
 }
 
-func (p *param) Midicps() Input {
-	return unaryOpMidicps(KR, p, 1)
+func (p *param) Name() string {
+	return p.name
 }
 
 func (p *param) Neg() Input {

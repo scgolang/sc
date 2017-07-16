@@ -23,5 +23,5 @@ func (hpf HPF) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&hpf).defaults()
-	return UgenInput("HPF", rate, 0, 1, hpf.In, hpf.Freq)
+	return NewInput("HPF", rate, 0, 1, hpf.In, hpf.Freq)
 }

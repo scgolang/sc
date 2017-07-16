@@ -40,11 +40,11 @@ func (comb Comb) Rate(rate int8) Input {
 	}
 	switch comb.Interpolation {
 	case InterpolationNone:
-		return UgenInput("CombN", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
+		return NewInput("CombN", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
 	case InterpolationLinear:
-		return UgenInput("CombL", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
+		return NewInput("CombL", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
 	case InterpolationCubic:
-		return UgenInput("CombC", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
+		return NewInput("CombC", rate, 0, 1, comb.In, comb.MaxDelayTime, comb.DelayTime, comb.DecayTime)
 	default:
 		panic(fmt.Errorf("invalid interpolation: %d", comb.Interpolation))
 	}

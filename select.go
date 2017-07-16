@@ -12,5 +12,5 @@ type Select struct {
 func (sel Select) Rate(rate int8) Input {
 	CheckRate(rate)
 	inputs := append([]Input{sel.Which}, sel.Inputs...)
-	return UgenInput("Select", rate, 0, 1, inputs...)
+	return NewInput("Select", rate, 0, 1, inputs...)
 }

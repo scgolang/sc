@@ -28,5 +28,5 @@ func (bpf BPF) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&bpf).defaults()
-	return UgenInput("BPF", rate, 0, 1, bpf.In, bpf.Freq, bpf.RQ)
+	return NewInput("BPF", rate, 0, 1, bpf.In, bpf.Freq, bpf.RQ)
 }

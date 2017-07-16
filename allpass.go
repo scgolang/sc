@@ -50,11 +50,11 @@ func (apc Allpass) Rate(rate int8) Input {
 
 	switch apc.Interpolation {
 	case InterpolationNone:
-		return UgenInput("AllpassN", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
+		return NewInput("AllpassN", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
 	case InterpolationLinear:
-		return UgenInput("AllpassL", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
+		return NewInput("AllpassL", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
 	case InterpolationCubic:
-		return UgenInput("AllpassC", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
+		return NewInput("AllpassC", rate, 0, 1, apc.In, apc.MaxDelayTime, apc.DelayTime, apc.DecayTime)
 	default:
 		panic(fmt.Errorf("invalid interpolation: %d", apc.Interpolation))
 	}

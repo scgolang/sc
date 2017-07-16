@@ -95,12 +95,7 @@ func (gb GrainBuf) Rate(rate int8) Input {
 		panic(fmt.Errorf("BufNum can not be nil"))
 	}
 	(&gb).defaults()
-	return UgenInput("GrainBuf", rate, 0, gb.NumChannels, gb.Trigger, gb.Dur, gb.BufNum, gb.Speed, gb.Pos, gb.Interp, gb.Pan, gb.EnvBuf, gb.MaxGrains)
-}
-
-func init() {
-	RegisterSynthdef("grainbuf_mono", defGrainBuf(1))
-	RegisterSynthdef("grainbuf_stereo", defGrainBuf(2))
+	return NewInput("GrainBuf", rate, 0, gb.NumChannels, gb.Trigger, gb.Dur, gb.BufNum, gb.Speed, gb.Pos, gb.Interp, gb.Pan, gb.EnvBuf, gb.MaxGrains)
 }
 
 func defGrainBuf(channels int) UgenFunc {

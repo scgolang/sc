@@ -17,5 +17,5 @@ func (saw *Saw) defaults() {
 func (saw Saw) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&saw).defaults()
-	return UgenInput("Saw", rate, 0, 1, saw.Freq)
+	return NewInput("Saw", rate, 0, 1, saw.Freq)
 }

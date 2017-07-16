@@ -32,5 +32,5 @@ func (ldc LeakDC) Rate(rate int8) Input {
 	}
 	ldc.rate = rate
 	(&ldc).defaults()
-	return UgenInput("LeakDC", rate, 0, 1, ldc.In, ldc.Coeff)
+	return NewInput("LeakDC", rate, 0, 1, ldc.In, ldc.Coeff)
 }

@@ -336,10 +336,19 @@ func (c *Client) QueryGroup(id int32) (*GroupNode, error) {
 
 // SendAllDefs sends all the synthdefs that have been registered with RegisterSynthdef.
 func (c *Client) SendAllDefs() error {
-	synthdefsMu.RLock()
-	defer synthdefsMu.RUnlock()
-	for _, def := range Synthdefs {
-		if err := c.SendDef(def); err != nil {
+	// If you add to this map, please keep the keys in alphabetical order.
+	for name, f := range map[string]UgenFunc{
+		"grainbuf_mono":   defGrainBuf(1),
+		"grainbuf_stereo": defGrainBuf(2),
+		"in":              defIn,
+		"jpverb":          defJPverb,
+		"lfo":             defLFO,
+		"lfpulse":         defLFPulse,
+		"lfsaw":           defLFSaw,
+		"sine_a":          defSineA,
+		"sine_c":          defSineC,
+	} {
+		if err := c.SendDef(NewSynthdef(name, f)); err != nil {
 			return err
 		}
 	}

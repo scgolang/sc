@@ -33,5 +33,5 @@ func (fv FreeVerb) Rate(rate int8) Input {
 		panic("FreeVerb expects In to not be nil")
 	}
 	(&fv).defaults()
-	return UgenInput("FreeVerb", rate, 0, 1, fv.In, fv.Mix, fv.Room, fv.Damp)
+	return NewInput("FreeVerb", rate, 0, 1, fv.In, fv.Mix, fv.Room, fv.Damp)
 }

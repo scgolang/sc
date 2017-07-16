@@ -28,5 +28,5 @@ func (xline *XLine) defaults() {
 func (xline XLine) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&xline).defaults()
-	return UgenInput("XLine", rate, 0, 1, xline.Start, xline.End, xline.Dur, C(float32(xline.Done)))
+	return NewInput("XLine", rate, 0, 1, xline.Start, xline.End, xline.Dur, C(float32(xline.Done)))
 }

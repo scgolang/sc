@@ -1,19 +1,25 @@
 package sc
 
-// UgenInput creates a ugen suitable for use as an input to other ugens.
+import (
+	"encoding/binary"
+	"io"
+)
+
+// NewInput creates a ugen suitable for use as an input to other ugens.
 // It will return either a single-channel ugen or a multi-channel ugen.
-func UgenInput(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) Input {
-	expanded := expandInputs(inputs...)
-	l := len(expanded)
+func NewInput(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) Input {
+	var (
+		expanded = expandInputs(inputs...)
+		l        = len(expanded)
+	)
 	if l == 1 {
-		return NewUgenNode(name, rate, specialIndex, numOutputs, inputs...)
+		return NewUgen(name, rate, specialIndex, numOutputs, inputs...)
 	}
-	// return MultiNode
-	a := make([]*UgenNode, len(expanded))
+	a := make([]Input, l)
 	for i := range a {
-		a[i] = NewUgenNode(name, rate, specialIndex, numOutputs, expanded[i]...)
+		a[i] = NewUgen(name, rate, specialIndex, numOutputs, expanded[i]...)
 	}
-	return NewMultiNode(a...)
+	return Multi(a...)
 }
 
 // expandInputs turns an array of inputs into a 2-dimensional array
@@ -56,4 +62,29 @@ func expandInputs(inputs ...Input) [][]Input {
 	}
 
 	return arr
+}
+
+// UgenInput defines a ugen input as it appears in the synthdef file format.
+type UgenInput struct {
+	UgenIndex   int32 `json:"ugenIndex"   xml:"ugenIndex,attr"`
+	OutputIndex int32 `json:"outputIndex" xml:"outputIndex,attr"`
+}
+
+// Write writes an input to an io.Writer
+func (ui UgenInput) Write(w io.Writer) error {
+	if we := binary.Write(w, byteOrder, ui.UgenIndex); we != nil {
+		return we
+	}
+	return binary.Write(w, byteOrder, ui.OutputIndex)
+}
+
+func readUgenInput(r io.Reader) (UgenInput, error) {
+	var ui UgenInput
+	if err := binary.Read(r, byteOrder, &ui.UgenIndex); err != nil {
+		return ui, err
+	}
+	if err := binary.Read(r, byteOrder, &ui.OutputIndex); err != nil {
+		return ui, err
+	}
+	return ui, nil
 }

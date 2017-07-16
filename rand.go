@@ -21,5 +21,5 @@ func (rand *Rand) defaults() {
 func (rand Rand) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&rand).defaults()
-	return UgenInput("Rand", rate, 0, 1, rand.Lo, rand.Hi)
+	return NewInput("Rand", rate, 0, 1, rand.Lo, rand.Hi)
 }

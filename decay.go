@@ -23,5 +23,5 @@ func (decay Decay) Rate(rate int8) Input {
 		panic("Decay expects In to not be nil")
 	}
 	(&decay).defaults()
-	return UgenInput("Decay", rate, 0, 1, decay.In, decay.Decay)
+	return NewInput("Decay", rate, 0, 1, decay.In, decay.Decay)
 }

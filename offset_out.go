@@ -12,7 +12,7 @@ type OffsetOut struct {
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause
 // a runtime panic.
-func (out OffsetOut) Rate(rate int8) *UgenNode {
+func (out OffsetOut) Rate(rate int8) Input {
 	CheckRate(rate)
-	return NewUgenNode("OffsetOut", rate, 0, 1, out.Bus, out.Channels)
+	return NewInput("OffsetOut", rate, 0, 1, out.Bus, out.Channels)
 }

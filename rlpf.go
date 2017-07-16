@@ -28,5 +28,5 @@ func (rlpf RLPF) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&rlpf).defaults()
-	return UgenInput("RLPF", rate, 0, 1, rlpf.In, rlpf.Freq, rlpf.RQ)
+	return NewInput("RLPF", rate, 0, 1, rlpf.In, rlpf.Freq, rlpf.RQ)
 }

@@ -5,45 +5,113 @@ import (
 	"io"
 )
 
-// Ugen defines the interface between synthdefs and ugens.
-type Ugen interface {
-	// Name returns the name of the ugen node
-	Name() string
-	// Rate returns the rate of the ugen node
-	Rate() int8
-	// SpecialIndex returns the special index of the ugen node
-	SpecialIndex() int16
-	// Inputs returns the inputs of the ugen node.
-	// Inputs can be
-	// (1) Constant (float32)
-	// (2) Control (synthdef param)
-	// (3) Ugen
-	Inputs() []Input
-	// Outputs returns the outputs of the ugen node
-	Outputs() []Output
+// UGen done actions, see http://doc.sccode.org/Reference/UGen-doneActions.html
+const (
+	DoNothing = iota
+	Pause
+	FreeEnclosing
+	FreePreceding
+	FreeFollowing
+	FreePrecedingGroup
+	FreeFollowingGroup
+	FreeAllPreceding
+	FreeAllFollowing
+	FreeAndPausePreceding
+	FreeAndPauseFollowing
+	DeepFreePreceding
+	DeepFreeFollowing
+	FreeAllInGroup
+	// I do not understand the difference between the last and
+	// next-to-last options [bps]
+)
+
+// Ugen is a unit generator.
+type Ugen struct {
+	Name         string      `json:"name"              xml:"name,attr"`
+	Rate         int8        `json:"rate"              xml:"rate,attr"`
+	SpecialIndex int16       `json:"specialIndex"      xml:"specialIndex,attr"`
+	Inputs       []UgenInput `json:"inputs,omitempty"  xml:"Inputs>Input"`
+	Outputs      []Output    `json:"outputs,omitempty" xml:"Outputs>Output"`
+	NumOutputs   int         `json:"-"                 xml:"-"`
+
+	inputs []Input
 }
 
-// ugen
-type ugen struct {
-	Name         string   `json:"name" xml:"name,attr"`
-	Rate         int8     `json:"rate" xml:"rate,attr"`
-	SpecialIndex int16    `json:"specialIndex" xml:"specialIndex,attr"`
-	Inputs       []input  `json:"inputs" xml:"Inputs>Input"`
-	Outputs      []Output `json:"outputs" xml:"Outputs>Output"`
+// NewUgen is a factory function for creating new Ugen instances.
+// Panics if rate is not AR, KR, or IR.
+// Panics if numOutputs <= 0.
+func NewUgen(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) *Ugen {
+	CheckRate(rate)
+
+	if numOutputs <= 0 {
+		panic("numOutputs must be a positive int")
+	}
+	// TODO: validate specialIndex
+	u := &Ugen{
+		Name:         name,
+		Rate:         rate,
+		SpecialIndex: specialIndex,
+		NumOutputs:   numOutputs,
+		inputs:       inputs,
+	}
+	// If any inputs are multi inputs, then this node should get promoted to a multi node.
+	for i, input := range inputs {
+		switch v := input.(type) {
+		case *Ugen:
+			// Initialize the Outputs slice.
+			input = asOutput(v)
+		case MultiInput:
+			ins := make(Inputs, len(v.InputArray()))
+
+			// Add outputs to any nodes in a MultiInput.
+			for i, in := range v.InputArray() {
+				if u, ok := in.(*Ugen); ok {
+					ins[i] = asOutput(u)
+				}
+			}
+		}
+		u.inputs[i] = input
+	}
+	return u
 }
 
-func (u *ugen) AppendInput(i input) {
-	u.Inputs = append(u.Inputs, i)
+// Add adds an input to a ugen node.
+func (u *Ugen) Add(val Input) Input {
+	return binOpAdd(u.Rate, u, val, u.NumOutputs)
 }
 
-// AddOutput ensures that a ugen has an output at u.Rate
-// How do you create a ugen with multiple outputs? -bps
-func (u *ugen) AddOutput(o Output) {
-	u.Outputs = append(u.Outputs, o)
+// Max computes the maximum of one Input and another.
+func (u *Ugen) Max(other Input) Input {
+	return binOpMax(u.Rate, u, other, u.NumOutputs)
+}
+
+// Midicps converts MIDI note number to cycles per second.
+func (u *Ugen) Midicps() Input {
+	return unaryOpMidicps(u.Rate, u, u.NumOutputs)
+}
+
+// Mul multiplies the ugen node by an input.
+func (u *Ugen) Mul(val Input) Input {
+	return binOpMul(u.Rate, u, val, u.NumOutputs)
+}
+
+// MulAdd multiplies and adds inputs to a ugen node.
+func (u *Ugen) MulAdd(mul, add Input) Input {
+	return mulAdd(u.Rate, u, mul, add, u.NumOutputs)
+}
+
+// Neg is a convenience operator that multiplies a signal by -1.
+func (u *Ugen) Neg() Input {
+	return unaryOpNeg(u.Rate, u, u.NumOutputs)
+}
+
+// SoftClip adds distortion to a ugen.
+func (u *Ugen) SoftClip() Input {
+	return unaryOpSoftClip(u.Rate, u, u.NumOutputs)
 }
 
 // Write writes a Ugen
-func (u *ugen) Write(w io.Writer) error {
+func (u *Ugen) Write(w io.Writer) error {
 	// write the synthdef name
 	err := newPstring(u.Name).Write(w)
 	if err != nil {
@@ -82,15 +150,14 @@ func (u *ugen) Write(w io.Writer) error {
 	return nil
 }
 
-// readugen reads a ugen from an io.Reader
-func readugen(r io.Reader) (*ugen, error) {
+// readUgen reads a ugen from an io.Reader
+func readUgen(r io.Reader) (*Ugen, error) {
 	var (
-		rate         int8
 		numInputs    int32
 		numOutputs   int32
 		specialIndex int16
+		rate         int8
 	)
-
 	// read name
 	name, err := readPstring(r)
 	if err != nil {
@@ -118,13 +185,12 @@ func readugen(r io.Reader) (*ugen, error) {
 	}
 
 	var (
-		inputs  = make([]input, numInputs)
+		inputs  = make([]UgenInput, numInputs)
 		outputs = make([]Output, numOutputs)
 	)
-
 	// read inputs
 	for i := 0; int32(i) < numInputs; i++ {
-		in, err := readinput(r)
+		in, err := readInput(r)
 		if err != nil {
 			return nil, err
 		}
@@ -138,40 +204,30 @@ func readugen(r io.Reader) (*ugen, error) {
 		}
 		outputs[i] = out
 	}
-
-	u := ugen{
-		name.String(),
-		rate,
-		specialIndex,
-		inputs,
-		outputs,
-	}
-	return &u, nil
+	return &Ugen{
+		Name:         name.String(),
+		Rate:         rate,
+		SpecialIndex: specialIndex,
+		Inputs:       inputs,
+		Outputs:      outputs,
+	}, nil
 }
 
-func newUgen(name string, rate int8) *ugen {
-	u := ugen{
-		name,
-		rate,
-		0, // special index
-		make([]input, 0),
-		make([]Output, 0),
+// asOutput initializes the outputs array of the ugen node.
+func asOutput(u *Ugen) *Ugen {
+	if u.Outputs == nil {
+		u.Outputs = make([]Output, u.NumOutputs)
+		for i := range u.Outputs {
+			u.Outputs[i] = Output(u.Rate)
+		}
 	}
-	return &u
+	return u
 }
 
-func cloneUgen(n Ugen) *ugen {
-	u := ugen{
-		n.Name(),
-		n.Rate(),
-		n.SpecialIndex(),
-		// inputs get added at synthdef-creation time
-		make([]input, 0),
-		make([]Output, 0),
-	}
-	// add outputs
-	for _, out := range n.Outputs() {
-		u.AddOutput(out)
-	}
+func cloneUgen(v *Ugen) *Ugen {
+	u := *v
+	// for _, out := range v.Outputs {
+	// 	u.Outputs = append(u.Outputs, out)
+	// }
 	return &u
 }

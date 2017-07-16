@@ -46,16 +46,14 @@ func ReadSynthdef(r io.Reader) (*Synthdef, error) {
 	if err != nil {
 		return nil, err
 	}
-	synthDef := Synthdef{
+	return &Synthdef{
 		Name:               defName.String(),
 		Constants:          constants,
 		InitialParamValues: initialValues,
 		ParamNames:         paramNames,
 		Ugens:              ugens,
 		Variants:           variants,
-		seen:               []Ugen{},
-	}
-	return &synthDef, nil
+	}, nil
 }
 
 // readSynthdefType reads the first 4 bytes of a synthdef file
@@ -156,16 +154,16 @@ func readSynthdefParams(r io.Reader) ([]float32, []ParamName, error) {
 }
 
 // readSynthdefUgens reads the ugens of a synthdef.
-func readSynthdefUgens(r io.Reader) ([]*ugen, error) {
+func readSynthdefUgens(r io.Reader) ([]*Ugen, error) {
 	// read number of ugens
 	var numUgens int32
 	if err := binary.Read(r, byteOrder, &numUgens); err != nil {
 		return nil, err
 	}
 	// read ugens
-	ugens := make([]*ugen, numUgens)
+	ugens := make([]*Ugen, numUgens)
 	for i := 0; int32(i) < numUgens; i++ {
-		ugen, err := readugen(r)
+		ugen, err := readUgen(r)
 		if err != nil {
 			return nil, err
 		}

@@ -16,5 +16,5 @@ func (hasher Hasher) Rate(rate int8) Input {
 	if hasher.In == nil {
 		panic("Hasher requires an input signal")
 	}
-	return UgenInput("Hasher", rate, 0, 1, hasher.In)
+	return NewInput("Hasher", rate, 0, 1, hasher.In)
 }

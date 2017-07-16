@@ -49,5 +49,5 @@ func (envgen EnvGen) Rate(rate int8) Input {
 		C(float32(envgen.Done)),
 	}
 	ins = append(ins, envgen.Env.Inputs()...)
-	return UgenInput("EnvGen", rate, 0, 1, ins...)
+	return NewInput("EnvGen", rate, 0, 1, ins...)
 }

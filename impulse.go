@@ -23,5 +23,5 @@ func (impulse *Impulse) defaults() {
 func (impulse Impulse) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&impulse).defaults()
-	return UgenInput("Impulse", rate, 0, 1, impulse.Freq, impulse.Phase)
+	return NewInput("Impulse", rate, 0, 1, impulse.Freq, impulse.Phase)
 }

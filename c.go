@@ -3,6 +3,14 @@ package sc
 // C wraps a float32 and implements the Input interface.
 type C float32
 
+// Add adds another input to the constant.
+func (c C) Add(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(float32(v) + float32(c))
+	}
+	return val.Add(c)
+}
+
 // Max returns the maximum of one input and another.
 func (c C) Max(other Input) Input {
 	if v, ok := other.(C); ok {
@@ -11,20 +19,17 @@ func (c C) Max(other Input) Input {
 	return other.Max(c)
 }
 
+// Midicps converts MIDI note number to cycles per second.
+func (c C) Midicps() Input {
+	return C(Midicps(float32(c)))
+}
+
 // Mul multiplies the constant by another input.
 func (c C) Mul(val Input) Input {
 	if v, ok := val.(C); ok {
 		return C(float32(v) * float32(c))
 	}
 	return val.Mul(c)
-}
-
-// Add adds another input to the constant.
-func (c C) Add(val Input) Input {
-	if v, ok := val.(C); ok {
-		return C(float32(v) + float32(c))
-	}
-	return val.Add(c)
 }
 
 // MulAdd multiplies and adds at the same time.
@@ -36,11 +41,6 @@ func (c C) MulAdd(mul, add Input) Input {
 		return add.MulAdd(c, mul)
 	}
 	return mul.MulAdd(c, add)
-}
-
-// Midicps converts MIDI note number to cycles per second.
-func (c C) Midicps() Input {
-	return C(Midicps(float32(c)))
 }
 
 // Neg is a convenience operator that multiplies a signal by -1.

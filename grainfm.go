@@ -71,5 +71,5 @@ func (gfm *GrainFM) defaults() {
 func (gfm GrainFM) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&gfm).defaults()
-	return UgenInput("GrainFM", rate, 0, gfm.NumChannels, gfm.Trigger, gfm.Dur, gfm.CarFreq, gfm.ModFreq, gfm.ModIndex, gfm.Pan, gfm.EnvBuf, gfm.MaxGrains)
+	return NewInput("GrainFM", rate, 0, gfm.NumChannels, gfm.Trigger, gfm.Dur, gfm.CarFreq, gfm.ModFreq, gfm.ModIndex, gfm.Pan, gfm.EnvBuf, gfm.MaxGrains)
 }

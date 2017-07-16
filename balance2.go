@@ -30,5 +30,5 @@ func (bal Balance2) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&bal).defaults()
-	return UgenInput("Balance2", rate, 0, 2, bal.L, bal.R, bal.Pos, bal.Level)
+	return NewInput("Balance2", rate, 0, 2, bal.L, bal.R, bal.Pos, bal.Level)
 }

@@ -23,5 +23,5 @@ func (lpf LPF) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&lpf).defaults()
-	return UgenInput("LPF", rate, 0, 1, lpf.In, lpf.Freq)
+	return NewInput("LPF", rate, 0, 1, lpf.In, lpf.Freq)
 }

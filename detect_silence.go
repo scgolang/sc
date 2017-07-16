@@ -25,5 +25,5 @@ func (ds DetectSilence) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&ds).defaults()
-	return UgenInput("DetectSilence", rate, 0, 1, ds.In, ds.Amp, ds.Time, C(float32(ds.Done)))
+	return NewInput("DetectSilence", rate, 0, 1, ds.In, ds.Amp, ds.Time, C(float32(ds.Done)))
 }

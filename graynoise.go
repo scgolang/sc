@@ -12,5 +12,5 @@ type GrayNoise struct {
 // a runtime panic.
 func (gn GrayNoise) Rate(rate int8) Input {
 	CheckRate(rate)
-	return UgenInput("GrayNoise", rate, 0, 1)
+	return NewInput("GrayNoise", rate, 0, 1)
 }

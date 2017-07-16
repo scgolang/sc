@@ -19,10 +19,10 @@ func (s SoundIn) Rate(rate int8) Input {
 	// TODO: simplify this.
 	switch x := s.Bus.(type) {
 	case C:
-		first := UgenInput("In", rate, 0, 1, nobs)
+		first := NewUgen("In", rate, 0, 1, nobs)
 
 		if x > 0 {
-			result = UgenInput("In", rate, 0, 1, nobs.Add(x))
+			result = NewUgen("In", rate, 0, 1, nobs.Add(x))
 		} else if x == 0 {
 			result = first
 		} else {
@@ -67,9 +67,9 @@ func (s SoundIn) Rate(rate int8) Input {
 
 		for i, params := range params {
 			if params.startBus == 0 {
-				arr[i] = UgenInput("In", rate, 0, params.numOutputs, nobs)
+				arr[i] = NewUgen("In", rate, 0, params.numOutputs, nobs)
 			} else {
-				arr[i] = UgenInput("In", rate, 0, params.numOutputs, nobs.Add(params.startBus))
+				arr[i] = NewUgen("In", rate, 0, params.numOutputs, nobs.Add(params.startBus))
 			}
 		}
 		result = arr

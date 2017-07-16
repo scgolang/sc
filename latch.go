@@ -24,5 +24,5 @@ func (l Latch) Rate(rate int8) Input {
 	if l.Trig == nil {
 		panic("Latch requires an trig signal")
 	}
-	return UgenInput("Latch", rate, 0, 1, l.In, l.Trig)
+	return NewInput("Latch", rate, 0, 1, l.In, l.Trig)
 }

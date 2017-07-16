@@ -71,12 +71,6 @@ SynthDef(\SimpleMulti, {
     Out.ar(0, sine);
 }).writeDefFile(File.getcwd);
 
-SynthDef(\Cascade, {
-    var mod1 = SinOsc.ar([440, 441]);
-    var mod2 = SinOsc.ar(mod1);
-    Out.ar(0, SinOsc.ar(mod2));
-}).writeDefFile(File.getcwd);
-
 SynthDef(\AllpassExample, {
     Out.ar(0, AllpassC.ar(Decay.ar(Dust.ar(1,0.5), 0.2, WhiteNoise.ar), 0.2, 0.2, 3));
 }).writeDefFile(File.getcwd);
@@ -440,6 +434,14 @@ SynthDef(\SweepTest, {
 
 SynthDef(\HasherTest, {
 	Out.ar(0, SinOsc.ar(Hasher.kr(MouseX.kr(0, 10), 300, 500)));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\PulseDividerTest, { arg out = 0;
+    var p, a, b;
+    p = Impulse.ar(8);
+    a = SinOsc.ar(1200, 0, Decay2.ar(p, 0.005, 0.1));
+    b = SinOsc.ar(600,  0, Decay2.ar(PulseDivider.ar(p, 4), 0.005, 0.5));
+    Out.ar(out, (a + b) * 0.4)
 }).writeDefFile(File.getcwd);
 
 0.exit;

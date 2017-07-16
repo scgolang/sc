@@ -8,11 +8,6 @@ import (
 // Output is a ugen output.
 type Output int8
 
-// Rate returns the rate of the output.
-func (o Output) Rate() int8 {
-	return int8(o)
-}
-
 // Write writes the output to an io.Writer.
 func (o Output) Write(w io.Writer) error {
 	return binary.Write(w, byteOrder, int8(o))

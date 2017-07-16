@@ -3,12 +3,8 @@ package sc
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
-
-	"github.com/awalterschulze/gographviz"
 )
 
 const (
@@ -26,20 +22,20 @@ type Synthdef struct {
 	Name string `json:"name" xml:"Name,attr"`
 
 	// Constants is a list of constants that appear in the synth def
-	Constants []float32 `json:"constants" xml:"Constants>Constant"`
+	Constants []float32 `json:"constants,omitempty" xml:"Constants>Constant"`
 
 	// InitialParamValues is an array of initial values for synth params
-	InitialParamValues []float32 `json:"initialParamValues" xml:"InitialParamValues>initialParamValue"`
+	InitialParamValues []float32 `json:"initialParamValues,omitempty" xml:"InitialParamValues>initialParamValue"`
 
 	// ParamNames contains the names of the synth parameters
-	ParamNames []ParamName `json:"paramNames" xml:"ParamNames>ParamName"`
+	ParamNames []ParamName `json:"paramNames,omitempty" xml:"ParamNames>ParamName"`
 
 	// Ugens is the list of ugens that appear in the synth def.
 	// The root of the ugen graph will always be last.
-	Ugens []*ugen `json:"ugens" xml:"Ugens>Ugen"`
+	Ugens []*Ugen `json:"ugens,omitempty" xml:"Ugens>Ugen"`
 
 	// Variants is the list of variants contained in the synth def
-	Variants []*Variant `json:"variants" xml:"Variants>Variant"`
+	Variants []*Variant `json:"variants,omitempty" xml:"Variants>Variant"`
 
 	// inidx helps us track which outputs we have consumed from the In ugen.
 	// In triggers multichannel expansion when it has > 1 outputs,
@@ -52,12 +48,31 @@ type Synthdef struct {
 
 	// seen is an array of ugen nodes that have been added
 	// to the synthdef
-	seen []Ugen
+	seen []*Ugen
 
 	// root is the root of the ugen tree that defines this synthdef
 	// this is used, for example, when drawing an svg representation
 	// of the synthdef
 	root Ugen
+}
+
+// NewSynthdef creates a synthdef by traversing a ugen graph
+func NewSynthdef(name string, graphFunc UgenFunc) *Synthdef {
+	// It would be nice to parse synthdef params from function arguments
+	// with the reflect package.
+	// See https://groups.google.com/forum/#!topic/golang-nuts/nM_ZhL7fuGc
+	// for discussion of the (im)possibility of getting function argument
+	// names at runtime.
+	// Since this is not possible, what we need to do is let users add
+	// synthdef params anywhere in their UgenFunc using Params.
+	// Then in order to correctly map the values passed when creating
+	// a synth node they have to be passed in the same order
+	// they were created in the UgenFunc.
+	var (
+		params = newParams()
+		def    = &Synthdef{Name: name, root: graphFunc(params)}
+	)
+	return def.flatten(params)
 }
 
 // Bytes writes a synthdef to a byte array
@@ -71,121 +86,47 @@ func (def *Synthdef) Bytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// compareBytes returns true if two byte arrays
-// are identical, false if they are not
-func compareBytes(a, b []byte) bool {
-	la, lb := len(a), len(b)
-	if la != lb {
-		return false
-	}
-	for i, octet := range a {
-		if octet != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
 // CompareToFile compares this synthdef to another one stored on disk.
 func (def *Synthdef) CompareToFile(path string) (bool, error) {
 	f, err := os.Open(path)
-	defer f.Close()
 	if err != nil {
 		return false, err
 	}
 	fromDisk, err := ioutil.ReadAll(f)
+	_ = f.Close() // Best effort.
 	if err != nil {
 		return false, err
 	}
-	buf := bytes.NewBuffer(make([]byte, 0))
-	err = def.Write(buf)
-	if err != nil {
+	buf := &bytes.Buffer{}
+	if err := def.Write(buf); err != nil {
 		return false, err
 	}
-	bufBytes := buf.Bytes()
-	return compareBytes(bufBytes, fromDisk), nil
+	return compareBytes(buf.Bytes(), fromDisk), nil
 }
 
 // CompareToDef compare this synthdef to another.
 func (def *Synthdef) CompareToDef(other *Synthdef) (bool, error) {
-	var err error
-	buf1 := bytes.NewBuffer(make([]byte, 0))
-	buf2 := bytes.NewBuffer(make([]byte, 0))
-	err = def.Write(buf1)
-	if err != nil {
+	var (
+		buf1 = bytes.NewBuffer(make([]byte, 0))
+		buf2 = bytes.NewBuffer(make([]byte, 0))
+	)
+	if err := def.Write(buf1); err != nil {
 		return false, err
 	}
-	err = other.Write(buf2)
-	if err != nil {
+	if err := other.Write(buf2); err != nil {
 		return false, err
 	}
 	return compareBytes(buf1.Bytes(), buf2.Bytes()), nil
 }
 
-func newGraph(name string) *gographviz.Graph {
-	g := gographviz.NewGraph()
-	g.SetName(name)
-	g.SetDir(true)
-	g.AddAttr(name, "rankdir", "BT")
-	// g.AddAttr(name, "ordering", "in")
-	return g
-}
-
 var constAttrs = map[string]string{"shape": "record"}
 
-// WriteGraph writes a dot-formatted representation of
-// a synthdef's ugen graph to an io.Writer. See
-// http://www.graphviz.org/content/dot-language.
-func (def *Synthdef) WriteGraph(w io.Writer) error {
-	graph := newGraph(def.Name)
-	for i, ugen := range def.Ugens {
-		ustr := fmt.Sprintf("%s_%d", ugen.Name, i)
-		graph.AddNode(def.Name, ustr, nil)
-		for j := len(ugen.Inputs) - 1; j >= 0; j-- {
-			input := ugen.Inputs[j]
-			if input.UgenIndex == -1 {
-				c := def.Constants[input.OutputIndex]
-				cstr := fmt.Sprintf("%f", c)
-				graph.AddNode(ustr, cstr, constAttrs)
-				graph.AddEdge(cstr, ustr, true, nil)
-			} else {
-				subgraph := def.addsub(input.UgenIndex, def.Ugens[input.UgenIndex])
-				graph.AddSubGraph(ustr, subgraph.Name, nil)
-				graph.AddEdge(subgraph.Name, ustr, true, nil)
-			}
-		}
-	}
-	gstr := graph.String()
-	_, writeErr := w.Write(bytes.NewBufferString(gstr).Bytes())
-	return writeErr
-}
-
-// addsub creates a subgraph rooted at a particular ugen
-func (def *Synthdef) addsub(idx int32, ugen *ugen) *gographviz.Graph {
-	ustr := fmt.Sprintf("%s_%d", ugen.Name, idx)
-	graph := newGraph(ustr)
-	for j := len(ugen.Inputs) - 1; j >= 0; j-- {
-		input := ugen.Inputs[j]
-		if input.UgenIndex == -1 {
-			c := def.Constants[input.OutputIndex]
-			cstr := fmt.Sprintf("%f", c)
-			graph.AddNode(ustr, cstr, constAttrs)
-			graph.AddEdge(cstr, ustr, true, nil)
-		} else {
-			subgraph := def.addsub(input.UgenIndex, def.Ugens[input.UgenIndex])
-			graph.AddSubGraph(ustr, subgraph.Name, nil)
-			graph.AddEdge(subgraph.Name, ustr, true, nil)
-		}
-	}
-	return graph
-}
-
-// flatten converts a ugen graph into a format more
-// suitable for sending /d_recv
+// flatten converts a ugen graph into a format more suitable for sending /d_recv
 func (def *Synthdef) flatten(params Params) *Synthdef {
 	def.addParams(params)
-	// get a topologically sorted ugens list
-	ugenNodes := def.topsort(def.root)
+
+	// Get a topologically sorted ugens list.
+	ugenNodes := def.topsort(&def.root)
 
 	for _, ugenNode := range ugenNodes {
 		// add ugen to synthdef
@@ -193,79 +134,102 @@ func (def *Synthdef) flatten(params Params) *Synthdef {
 		if seen {
 			continue
 		}
-		// add inputs to synthdef and to ugen
-		for _, input := range ugenNode.Inputs() {
+		// Add inputs to synthdef and to ugen.
+		for _, input := range ugenNode.inputs {
 			def.flattenInput(params, ugen, input)
 		}
 	}
 	return def
 }
 
-// flattenInput flattens a ugen graph starting from
-// a particular ugen's input
-func (def *Synthdef) flattenInput(params Params, ugen *ugen, input Input) {
+// flattenInput flattens a ugen graph starting from a particular ugen's input.
+func (def *Synthdef) flattenInput(params Params, ugen *Ugen, input Input) {
 	switch v := input.(type) {
-	case Ugen:
+	case *Ugen:
 		_, idx, _ := def.addUgen(v)
 
 		// In has different behavior than other ugens when it is multichannel expanded.
 		// Each channel of its output gets mapped to a single channel of the expression
 		// tree above it. [briansorahan]
-		if v.Name() == "In" {
-			ugen.AppendInput(newInput(int32(idx), int32(def.inidx)))
+		if v.Name == "In" {
+			ugen.Inputs = append(ugen.Inputs, UgenInput{
+				UgenIndex:   int32(idx),
+				OutputIndex: int32(def.inidx),
+			})
 			def.inidx++
 			break
 		}
-		for outputIndex := range v.Outputs() {
-			ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
+		for outputIndex := range v.Outputs {
+			ugen.Inputs = append(ugen.Inputs, UgenInput{
+				UgenIndex:   int32(idx),
+				OutputIndex: int32(outputIndex),
+			})
 		}
 	case C:
 		idx := def.addConstant(v)
-		ugen.AppendInput(newInput(-1, int32(idx)))
+		ugen.Inputs = append(ugen.Inputs, UgenInput{
+			UgenIndex:   -1,
+			OutputIndex: int32(idx),
+		})
 	case *param:
 		idx := v.Index()
-		ugen.AppendInput(newInput(0, idx))
+		ugen.Inputs = append(ugen.Inputs, UgenInput{
+			UgenIndex:   0,
+			OutputIndex: idx,
+		})
 	case MultiInput:
-		mins := v.InputArray()
-		for _, min := range mins {
+		for _, min := range v.InputArray() {
 			switch x := min.(type) {
-			case Ugen:
+			case *Ugen:
 				_, idx, _ := def.addUgen(x)
 				// will we ever need to use a different output index? [bps]
-				for outputIndex := range x.Outputs() {
-					ugen.AppendInput(newInput(int32(idx), int32(outputIndex)))
+				for outputIndex := range x.Outputs {
+					ugen.Inputs = append(ugen.Inputs, UgenInput{
+						UgenIndex:   int32(idx),
+						OutputIndex: int32(outputIndex),
+					})
 				}
 			case C:
-				idx := def.addConstant(x)
-				ugen.AppendInput(newInput(-1, int32(idx)))
+				ugen.Inputs = append(ugen.Inputs, UgenInput{
+					UgenIndex:   -1,
+					OutputIndex: int32(def.addConstant(x)),
+				})
 			case *param:
-				idx := x.Index()
-				ugen.AppendInput(newInput(0, idx))
+				ugen.Inputs = append(ugen.Inputs, UgenInput{
+					UgenIndex:   0,
+					OutputIndex: x.Index(),
+				})
 			}
 		}
 	}
 }
 
 // topsort performs a depth-first-search of a ugen tree
-func (def *Synthdef) topsort(root Ugen) []Ugen {
+func (def *Synthdef) topsort(root *Ugen) []*Ugen {
 	stack := newStack()
+
 	def.topsortr(root, stack, 0)
-	n := stack.Size()
-	ugens := make([]Ugen, n)
-	i := 0
+
+	var (
+		i     = 0
+		n     = stack.Size()
+		ugens = make([]*Ugen, n)
+	)
 	for v := stack.Pop(); v != nil; v = stack.Pop() {
-		ugens[i] = v.(Ugen)
+		ugens[i] = v.(*Ugen)
 		i = i + 1
 	}
 	return ugens
 }
 
-// topsortr performs a depth-first-search of a ugen tree
-// starting at a given depth
-func (def *Synthdef) topsortr(root Ugen, stack *stack, depth int) {
+// topsortr performs a depth-first-search of a ugen tree starting at a given depth.
+func (def *Synthdef) topsortr(root *Ugen, stack *stack, depth int) {
 	stack.Push(root)
-	inputs := root.Inputs()
-	numInputs := len(inputs)
+
+	var (
+		inputs    = root.inputs
+		numInputs = len(inputs)
+	)
 	for i := numInputs - 1; i >= 0; i-- {
 		def.processUgenInput(inputs[i], stack, depth)
 	}
@@ -274,16 +238,15 @@ func (def *Synthdef) topsortr(root Ugen, stack *stack, depth int) {
 // processUgenInput processes a single ugen input
 func (def *Synthdef) processUgenInput(input Input, stack *stack, depth int) {
 	switch v := input.(type) {
-	case Ugen:
+	case *Ugen:
 		def.topsortr(v, stack, depth+1)
 		break
 	case MultiInput:
 		// multi input
 		mins := v.InputArray()
 		for j := len(mins) - 1; j >= 0; j-- {
-			min := mins[j]
-			switch w := min.(type) {
-			case Ugen:
+			switch w := mins[j].(type) {
+			case *Ugen:
 				def.topsortr(w, stack, depth+1)
 				break
 			}
@@ -312,7 +275,7 @@ func (def *Synthdef) addParams(p Params) {
 		// create a list with the single Control ugen,
 		// then append any existing ugens in the synthdef
 		// to that list
-		control := []*ugen{cloneUgen(ctl)}
+		control := []*Ugen{cloneUgen(ctl)}
 		def.Ugens = append(control, def.Ugens...)
 	}
 }
@@ -320,8 +283,8 @@ func (def *Synthdef) addParams(p Params) {
 // addUgen adds a Ugen to a synthdef and returns
 // the ugen that was added, the position in the ugens array, and
 // a flag indicating whether this is a new ugen or one that
-// has already been visited
-func (def *Synthdef) addUgen(u Ugen) (*ugen, int, bool) {
+// has already been visited.
+func (def *Synthdef) addUgen(u *Ugen) (*Ugen, int, bool) {
 	for i, un := range def.seen {
 		if un == u {
 			return def.Ugens[i], i, true
@@ -351,35 +314,17 @@ func (def *Synthdef) addConstant(c C) int {
 	return l
 }
 
-func newsynthdef(name string, root Ugen) *Synthdef {
-	return &Synthdef{
-		Name:               name,
-		Constants:          make([]float32, 0),
-		InitialParamValues: make([]float32, 0),
-		ParamNames:         make([]ParamName, 0),
-		Ugens:              make([]*ugen, 0),
-		Variants:           make([]*Variant, 0),
-		seen:               make([]Ugen, 0), // seen
-		root:               root,
+// compareBytes returns true if two byte arrays
+// are identical, false if they are not
+func compareBytes(a, b []byte) bool {
+	la, lb := len(a), len(b)
+	if la != lb {
+		return false
 	}
-}
-
-// NewSynthdef creates a synthdef by traversing a ugen graph
-func NewSynthdef(name string, graphFunc UgenFunc) *Synthdef {
-	// It would be nice to parse synthdef params from function arguments
-	// with the reflect package, but see
-	// https://groups.google.com/forum/#!topic/golang-nuts/nM_ZhL7fuGc
-	// for discussion of the (im)possibility of getting function argument
-	// names at runtime.
-	// Since this is not possible, what we need to do is let users add
-	// synthdef params anywhere in their UgenFunc using Params.
-	// Then in order to correctly map the values passed when creating
-	// a synth node they have to be passed in the same order
-	// they were created in the UgenFunc.
-	var (
-		params = newParams()
-		root   = graphFunc(params)
-		def    = newsynthdef(name, root)
-	)
-	return def.flatten(params)
+	for i, octet := range a {
+		if octet != b[i] {
+			return false
+		}
+	}
+	return true
 }

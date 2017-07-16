@@ -36,5 +36,5 @@ func (k Klank) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&k).defaults()
-	return UgenInput("Klank", rate, 0, 1, k.In, k.FreqScale, k.FreqOffset, k.DecayScale)
+	return NewInput("Klank", rate, 0, 1, k.In, k.FreqScale, k.FreqOffset, k.DecayScale)
 }

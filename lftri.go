@@ -25,5 +25,5 @@ func (lftri *LFTri) defaults() {
 func (lftri LFTri) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&lftri).defaults()
-	return UgenInput("LFTri", rate, 0, 1, lftri.Freq, lftri.Iphase)
+	return NewInput("LFTri", rate, 0, 1, lftri.Freq, lftri.Iphase)
 }

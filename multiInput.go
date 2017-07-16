@@ -1,5 +1,13 @@
 package sc
 
+// MultiInput is the interface of an input that causes
+// cascading multi-channel expansion.
+// See http://doc.sccode.org/Guides/Multichannel-Expansion.html
+type MultiInput interface {
+	Input
+	InputArray() []Input
+}
+
 // Inputs is a slice of Input.
 type Inputs []Input
 
@@ -12,6 +20,11 @@ func (ins Inputs) Add(val Input) Input {
 	return Inputs(ia)
 }
 
+// InputArray provides access to the list of inputs.
+func (ins Inputs) InputArray() []Input {
+	return ins
+}
+
 // Max returns Inputs that contain the max of all the inputs and the provided Input.
 func (ins Inputs) Max(other Input) Input {
 	im := make([]Input, len(ins))
@@ -19,6 +32,15 @@ func (ins Inputs) Max(other Input) Input {
 		im[i] = in.Max(other)
 	}
 	return Inputs(im)
+}
+
+// Midicps converts MIDI note number to cycles per second.
+func (ins Inputs) Midicps() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Midicps()
+	}
+	return Inputs(converted)
 }
 
 // Mul multiplies all the inputs by another input.
@@ -39,15 +61,6 @@ func (ins Inputs) MulAdd(mul, add Input) Input {
 	return Inputs(ia)
 }
 
-// Midicps converts MIDI note number to cycles per second.
-func (ins Inputs) Midicps() Input {
-	converted := make([]Input, len(ins))
-	for i, in := range ins {
-		converted[i] = in.Midicps()
-	}
-	return Inputs(converted)
-}
-
 // Neg is a convenience operator that multiplies a signal by -1.
 func (ins Inputs) Neg() Input {
 	converted := make([]Input, len(ins))
@@ -64,11 +77,6 @@ func (ins Inputs) SoftClip() Input {
 		clipped[i] = in.SoftClip()
 	}
 	return Inputs(clipped)
-}
-
-// InputArray provides access to the list of inputs.
-func (ins Inputs) InputArray() []Input {
-	return ins
 }
 
 // Multi does multichannel expansion.

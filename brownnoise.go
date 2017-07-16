@@ -7,5 +7,5 @@ type BrownNoise struct{}
 // If rate is an unsupported value this method will cause a runtime panic.
 func (brown BrownNoise) Rate(rate int8) Input {
 	CheckRate(rate)
-	return UgenInput("BrownNoise", rate, 0, 1)
+	return NewInput("BrownNoise", rate, 0, 1)
 }

@@ -29,5 +29,5 @@ func (limiter *Limiter) defaults() {
 func (limiter Limiter) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&limiter).defaults()
-	return UgenInput("Limiter", rate, 0, 1, limiter.In, limiter.Level, limiter.Dur)
+	return NewInput("Limiter", rate, 0, 1, limiter.In, limiter.Level, limiter.Dur)
 }

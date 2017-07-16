@@ -17,5 +17,5 @@ func (crackle *Crackle) defaults() {
 func (crackle Crackle) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&crackle).defaults()
-	return UgenInput("Crackle", rate, 0, 1, crackle.Chaos)
+	return NewInput("Crackle", rate, 0, 1, crackle.Chaos)
 }

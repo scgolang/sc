@@ -37,5 +37,5 @@ func (formlet Formlet) Rate(rate int8) Input {
 		panic("Formlet expects In to not be nil")
 	}
 	(&formlet).defaults()
-	return UgenInput("Formlet", rate, 0, 1, formlet.In, formlet.Freq, formlet.AttackTime, formlet.DecayTime)
+	return NewInput("Formlet", rate, 0, 1, formlet.In, formlet.Freq, formlet.AttackTime, formlet.DecayTime)
 }

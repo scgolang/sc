@@ -39,6 +39,6 @@ func (b BAllPass) Rate(rate int8) Input {
 	}
 	(&b).defaults()
 
-	return UgenInput("BAllPass", rate, 0, 1, b.In, b.Freq, b.RQ)
+	return NewInput("BAllPass", rate, 0, 1, b.In, b.Freq, b.RQ)
 
 }

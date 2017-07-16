@@ -69,7 +69,7 @@ Unit Generators for sc.
 | Osc                         | No        |
 | Out                         | Yes       |
 | PMOsc                       | Yes       |
-| Pan2                        | No        |
+| Pan2                        | Yes       |
 | Pan4                        | No        |
 | PanAz                       | No        |
 | PanB2                       | No        |

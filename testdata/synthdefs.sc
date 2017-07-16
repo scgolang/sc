@@ -448,6 +448,10 @@ SynthDef(\XLineTest, {
 	Out.ar(0, SinOsc.ar(XLine.kr(200, 17000, 10), 0, 0.1));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Pan2Test, {
+	Out.ar(0, Pan2.ar(PinkNoise.ar(0.4), FSinOsc.kr(2), 0.3));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\PulseDividerTest, { arg out = 0;
     var p, a, b;
     p = Impulse.ar(8);

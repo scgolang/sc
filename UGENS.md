@@ -46,11 +46,11 @@ Unit Generators for sc.
 | Integrator                  | Yes       |
 | Klang                       | No        |
 | Klank                       | No        |
-| Latch                       | No        |
+| Latch                       | Yes       |
 | LFCub                       | Yes       |
-| LFNoise0                    | No        |
+| LFNoise0                    | Yes       |
 | LFNoise1                    | Yes       |
-| LFNoise2                    | No        |
+| LFNoise2                    | Yes       |
 | LFNoiseClipNoise            | No        |
 | LFPar                       | No        |
 | LFPulse                     | Yes       |

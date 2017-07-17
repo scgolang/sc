@@ -23,7 +23,7 @@ func TestReadSynthdef(t *testing.T) {
 }
 
 func ExampleNewSynthdef() {
-	NewSynthdef("SineTone", func(p Params) Ugen {
+	_ = NewSynthdef("SineTone", func(p Params) Ugen {
 		var (
 			bus = C(0)
 			sig = SinOsc{}.Rate(AR)

@@ -456,6 +456,20 @@ SynthDef(\FormantTest, {
 	Out.ar(0, Formant.ar(XLine.kr(400,1000, 8), 2000, 800, 0.125));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\GrainInTest, {
+        arg gate = 1, amp = 1, envbuf;
+        var pan, env;
+        // use mouse x to control panning
+        pan = MouseX.kr(-1, 1);
+        env = EnvGen.kr(
+            Env([0, 1, 0], [1, 1], \sin, 1),
+            gate,
+            levelScale: amp,
+            doneAction: 2);
+        Out.ar(0,
+            GrainIn.ar(2, Impulse.kr(32), 1, PinkNoise.ar * 0.05, pan, envbuf) * env)
+}).writeDefFile(File.getcwd);
+
 SynthDef(\FFTTest, {
         var in, chain;
         in = WhiteNoise.ar(0.2);

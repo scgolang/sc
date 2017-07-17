@@ -20,34 +20,43 @@ type GrainBuf struct {
 	// NumChannels is the number of channels to output.
 	// If 1, mono is returned and pan is ignored.
 	NumChannels int
+
 	// Trigger is a KR or AR trigger to start a new grain.
 	// If AR, grains after the start of the synth are
 	// sample-accurate.
 	Trigger Input
-	// Dur is the size of the grain (in seconds)
+
+	// Dur is the size of the grain in seconds.
 	Dur Input
-	// BufNum is the buffer holding a mono audio signal
+
+	// BufNum is the buffer holding a mono audio signal.
 	BufNum Input
-	// Speed is the playback speed of the grain
+
+	// Speed is the playback speed of the grain.
 	Speed Input
+
 	// Pos is the position in the audio buffer where
 	// the grain will start. This is in the range [0, 1].
 	Pos Input
+
 	// Interp is the interpolation method used for
 	// pitch-shifting grains.
 	// GrainBufNoInterp is no interpolation,
 	// GrainBufLinearInterp is linear,
 	// and GrainBufCubicInterp is cubic.
 	Interp Input
+
 	// Pan determines where to position the output in a stereo
 	// field. If NumChannels = 1, no panning is done. If
 	// NumChannels = 2, behavior is similar to Pan2. If
 	// NumChannels > 2, behavior is the same as PanAz.
 	Pan Input
+
 	// EnvBuf is the buffer number containing a signal to use
 	// for each grain's amplitude envelope. If set to
 	// GrainBufHanningEnv, a built-in Hanning envelope is used.
 	EnvBuf Input
+
 	// MaxGrains is the maximum number of overlapping grains
 	// that can be used at a given time. This value is set
 	// when you initialize GrainBuf and can't be modified.

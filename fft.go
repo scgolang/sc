@@ -34,7 +34,7 @@ func (fft *FFT) defaults() {
 		fft.Hop = C(0.5)
 	}
 	if fft.WinType == nil {
-		fft.In = C(0)
+		fft.WinType = C(0)
 	}
 	if fft.Active == nil {
 		fft.Active = C(1)

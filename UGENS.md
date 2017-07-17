@@ -29,9 +29,9 @@ Unit Generators for sc.
 | Dust2                       | Yes       |
 | Env                         | Yes       |
 | EnvGen                      | Yes       |
-| FFT                         | No        |
+| FFT                         | Yes       |
 | FSinOsc                     | Yes       |
-| Formant                     | No        |
+| Formant                     | Yes       |
 | Formlet                     | Yes       |
 | FreeVerb                    | Yes       |
 | GVerb                       | Yes       |
@@ -42,7 +42,7 @@ Unit Generators for sc.
 | GrainIn                     | No        |
 | GrainSin                    | No        |
 | HPF                         | Yes       |
-| IFFT                        | No        |
+| IFFT                        | Yes       |
 | Impulse                     | Yes       |
 | Integrator                  | Yes       |
 | Klang                       | No        |
@@ -61,6 +61,7 @@ Unit Generators for sc.
 | Lag                         | No        |
 | LinPan2                     | No        |
 | Line                        | Yes       |
+| LocalBuf                    | Yes       |
 | Median                      | No        |
 | MouseX                      | Yes       |
 | MouseY                      | Yes       |

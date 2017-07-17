@@ -456,6 +456,14 @@ SynthDef(\FormantTest, {
 	Out.ar(0, Formant.ar(XLine.kr(400,1000, 8), 2000, 800, 0.125));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\FFTTest, {
+        var in, chain;
+        in = WhiteNoise.ar(0.2);
+        chain = FFT(LocalBuf(2048), in);
+        chain = PV_BrickWall(chain, SinOsc.kr(0.1));
+        Out.ar(0, IFFT(chain));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\PulseDividerTest, { arg out = 0;
     var p, a, b;
     p = Impulse.ar(8);

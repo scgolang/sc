@@ -22,3 +22,7 @@ Writing a test for a new ugen should involve:
    read the synthdef file created by sclang in step 1, create a synthdef
    file for your Go synthdef called `NAME.gosyndef`, compare the
    two files byte-for-byte, and fail your test if the two files differ.
+
+Linting
+-------
+Please run [golint](https://github.com/golang/lint) and `go vet` on any code you wish to submit in a Pull Request.

@@ -39,7 +39,7 @@ Unit Generators for sc.
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
 | GrainFM                     | Yes       |
-| GrainIn                     | No        |
+| GrainIn                     | Yes       |
 | GrainSin                    | No        |
 | HPF                         | Yes       |
 | IFFT                        | Yes       |

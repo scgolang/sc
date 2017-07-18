@@ -470,6 +470,21 @@ SynthDef(\GrainInTest, {
             GrainIn.ar(2, Impulse.kr(32), 1, PinkNoise.ar * 0.05, pan, envbuf) * env)
 }).writeDefFile(File.getcwd);
 
+SynthDef(\GrainSinTest, {
+        arg gate = 1, amp = 1, envbuf;
+        var freqdev, pan, env;
+        // use mouse x to control panning
+	freqdev = WhiteNoise.kr(MouseY.kr(0, 400));
+        pan = MouseX.kr(-1, 1);
+        env = EnvGen.kr(
+                Env([0, 1, 0], [1, 1], \sin, 1),
+                gate,
+                levelScale: amp,
+                doneAction: 2
+        );
+	Out.ar(0, GrainSin.ar(2, Impulse.kr(10), 0.1, 440 + freqdev, pan, envbuf) * env);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\FFTTest, {
         var in, chain;
         in = WhiteNoise.ar(0.2);

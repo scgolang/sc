@@ -40,7 +40,7 @@ Unit Generators for sc.
 | GrainBuf                    | Yes       |
 | GrainFM                     | Yes       |
 | GrainIn                     | Yes       |
-| GrainSin                    | No        |
+| GrainSin                    | Yes       |
 | HPF                         | Yes       |
 | IFFT                        | Yes       |
 | Impulse                     | Yes       |

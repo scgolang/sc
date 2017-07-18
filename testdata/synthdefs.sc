@@ -456,6 +456,27 @@ SynthDef(\FormantTest, {
 	Out.ar(0, Formant.ar(XLine.kr(400,1000, 8), 2000, 800, 0.125));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\KlangTest, {
+        var sig = Pan2.ar(
+	        Klang.ar(`[[
+                        561.384644,
+                        1043.168701,
+                        237.107315,
+                        303.264008,
+                        927.150208,
+                        833.526123,
+                        509.927826,
+                        946.380005,
+                        752.409973,
+                        525.558716,
+                        1111.182129,
+                        715.820068
+		], nil, nil], 1, 0),
+		0.307131
+	);
+        Out.ar(0, sig * EnvGen.kr(Env.sine(4), 1, 0.02, doneAction: 2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\GrainInTest, {
         arg gate = 1, amp = 1, envbuf;
         var pan, env;

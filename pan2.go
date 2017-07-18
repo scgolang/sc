@@ -36,5 +36,7 @@ func (pan *Pan2) defaults() {
 func (pan Pan2) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&pan).defaults()
-	return NewInput("Pan2", rate, 0, 2, pan.In, pan.Pos, pan.Level)
+	in := NewInput("Pan2", rate, 0, 1, pan.In, pan.Pos, pan.Level)
+	return Multi(in, in)
+
 }

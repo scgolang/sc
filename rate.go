@@ -19,3 +19,18 @@ func CheckRate(rate int8) {
 		panic(fmt.Errorf("Unsupported rate %d", rate))
 	}
 }
+
+// Rater is the interface of a Ugen that can compute its output at different rates.
+type Rater interface {
+	Rate(int8) Input
+}
+
+// A returns a ugen input at audio rate.
+func A(r Rater) Input {
+	return r.Rate(AR)
+}
+
+// K returns a ugen input at control rate.
+func K(r Rater) Input {
+	return r.Rate(KR)
+}

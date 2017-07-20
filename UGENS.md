@@ -22,6 +22,7 @@ Unit Generators for sc.
 | Crackle                     | Yes       |
 | Decay                       | Yes       |
 | Decay2                      | Yes       |
+| DecodeB2                    | Yes       |
 | DelayC                      | Yes       |
 | DelayL                      | Yes       |
 | DelayN                      | Yes       |
@@ -70,9 +71,9 @@ Unit Generators for sc.
 | Out                         | Yes       |
 | PMOsc                       | Yes       |
 | Pan2                        | Yes       |
-| Pan4                        | No        |
-| PanAz                       | No        |
-| PanB2                       | No        |
+| Pan4                        | Yes       |
+| PanAz                       | Yes       |
+| PanB2                       | Yes       |
 | PinkNoise                   | Yes       |
 | PlayBuf                     | Yes       |
 | Pulse                       | Yes       |

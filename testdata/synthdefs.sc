@@ -480,6 +480,24 @@ SynthDef(\Pan2Test, {
 	Out.ar(0, Pan2.ar(PinkNoise.ar(0.4), FSinOsc.kr(2), 0.3));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\PanAzTest, {
+	Out.ar(0, PanAz.ar(2, DC.ar(1), Line.ar(0, 1/2, 0.1)));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\PanB2Test, {
+	var w, x, y, p, a, b, c, d;
+        p = PinkNoise.ar; // source
+        // B-format encode
+        #w, x, y = PanB2.ar(p, MouseX.kr(-1,1), 0.1);
+        // B-format decode to quad
+        #a, b, c, d = DecodeB2.ar(4, w, x, y);
+        Out.ar(0, [a, b, d, c]); // reorder to my speaker arrangement: Lf Rf Lr Rr
+}).writeDefFile(File.getcwd);
+
+SynthDef(\Pan4Test, {
+	Out.ar(0, Pan4.ar(PinkNoise.ar, FSinOsc.kr(2), FSinOsc.kr(1.2), 0.3))
+}).writeDefFile(File.getcwd);
+
 SynthDef(\FormantTest, {
 	Out.ar(0, Formant.ar(XLine.kr(400,1000, 8), 2000, 800, 0.125));
 }).writeDefFile(File.getcwd);
@@ -560,6 +578,10 @@ SynthDef(\PulseDividerTest, { arg out = 0;
     a = SinOsc.ar(1200, 0, Decay2.ar(p, 0.005, 0.1));
     b = SinOsc.ar(600,  0, Decay2.ar(PulseDivider.ar(p, 4), 0.005, 0.5));
     Out.ar(out, (a + b) * 0.4)
+}).writeDefFile(File.getcwd);
+
+SynthDef(\PulseCountTest, {
+        Out.ar(0, SinOsc.ar(PulseCount.ar(Impulse.ar(10), Impulse.ar(0.4)) * 200, 0, 0.05));
 }).writeDefFile(File.getcwd);
 
 0.exit;

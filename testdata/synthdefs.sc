@@ -188,6 +188,14 @@ SynthDef(\VOscTest, {
     Out.ar(0, VOsc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\VOsc3Test, {
+    arg bufnum = 0;
+    var line1 = XLine.kr(2000, 200, 0.5);
+    var line2 = XLine.kr(2000, 200, 1.5);
+    var line3 = XLine.kr(2000, 200, 4.5);
+    Out.ar(0, VOsc3.ar(bufnum, line1, line2, line3));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ShaperTest, {
     arg bufnum = 0;
     Out.ar(0, Shaper.ar(bufnum, SinOsc.ar(440, 0.5, Line.kr(0,0.9,6))));

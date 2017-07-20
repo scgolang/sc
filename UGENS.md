@@ -95,7 +95,7 @@ Unit Generators for sc.
 | Trig                        | Yes       |
 | Trig1                       | Yes       |
 | VarSaw                      | Yes       |
-| VOsc                        | No        |
+| VOsc                        | Yes       |
 | VOsc3                       | No        |
 | Warp1                       | Yes       |
 | WhiteNoise                  | Yes       |

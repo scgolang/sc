@@ -88,9 +88,10 @@ Unit Generators for sc.
 | Shaper                      | Yes       |
 | SinOsc                      | Yes       |
 | Slew                        | Yes       |
-| SyncSaw                     | No        |
-| TDelay                      | No        |
+| SyncSaw                     | Yes       |
+| TDelay                      | Yes       |
 | TGrains                     | Yes       |
+| ToggleFF                    | Yes       |
 | Trig                        | No        |
 | Trig1                       | No        |
 | VarSaw                      | No        |

@@ -442,6 +442,11 @@ SynthDef(\GrainFMExample, {
 	Out.ar(0, GrainFM.ar());
 }).writeDefFile(File.getcwd);
 
+SynthDef(\TDelayTest, {
+        z = Impulse.ar(2);
+        Out.ar(0, [z * 0.1, ToggleFF.ar(TDelay.ar(z, 0.5)) * SinOsc.ar(mul: 0.1)]);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\DCTest, {
 	Out.ar(0, DC.ar());
 }).writeDefFile(File.getcwd);

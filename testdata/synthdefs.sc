@@ -463,6 +463,14 @@ SynthDef(\XLineTest, {
 	Out.ar(0, SinOsc.ar(XLine.kr(200, 17000, 10), 0, 0.1));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\OnePoleTest, {
+	Out.ar(0, OnePole.ar(WhiteNoise.ar(0.5), Line.kr(-0.99, 0.99, 10)));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\OneZeroTest, {
+	Out.ar(0, OneZero.ar(WhiteNoise.ar(0.5), Line.kr(-0.5, 0.5, 10)));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\Pan2Test, {
 	Out.ar(0, Pan2.ar(PinkNoise.ar(0.4), FSinOsc.kr(2), 0.3));
 }).writeDefFile(File.getcwd);

@@ -64,8 +64,8 @@ Unit Generators for sc.
 | Median                      | Yes       |
 | MouseX                      | Yes       |
 | MouseY                      | Yes       |
-| OnePole                     | No        |
-| OneZero                     | No        |
+| OnePole                     | Yes       |
+| OneZero                     | Yes       |
 | Osc                         | No        |
 | Out                         | Yes       |
 | PMOsc                       | Yes       |

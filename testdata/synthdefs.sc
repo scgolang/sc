@@ -183,6 +183,11 @@ SynthDef(\OscTest, {
     Out.ar(0, Osc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\VOscTest, {
+    arg bufnum = 0;
+    Out.ar(0, VOsc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ShaperTest, {
     arg bufnum = 0;
     Out.ar(0, Shaper.ar(bufnum, SinOsc.ar(440, 0.5, Line.kr(0,0.9,6))));

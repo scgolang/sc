@@ -85,7 +85,7 @@ Unit Generators for sc.
 | Rotate2                     | No        |
 | Saw                         | Yes       |
 | Select                      | Yes       |
-| Shaper                      | No        |
+| Shaper                      | Yes       |
 | SinOsc                      | Yes       |
 | Slew                        | No        |
 | SyncSaw                     | No        |

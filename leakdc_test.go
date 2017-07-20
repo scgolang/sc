@@ -13,7 +13,7 @@ func TestLeakDC(t *testing.T) {
 			Channels: LeakDC{
 				In: LFPulse{
 					Freq:   C(800),
-					Iphase: C(0.5),
+					IPhase: C(0.5),
 					Width:  C(0.5),
 				}.Rate(AR).Mul(C(0.5)),
 				Coeff: C(0.995),

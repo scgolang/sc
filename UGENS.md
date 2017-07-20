@@ -57,7 +57,7 @@ Unit Generators for sc.
 | LFSaw                       | Yes       |
 | LFTri                       | Yes       |
 | LPF                         | Yes       |
-| Lag                         | No        |
+| Lag                         | Yes       |
 | LinPan2                     | No        |
 | Line                        | Yes       |
 | LocalBuf                    | Yes       |

@@ -4,8 +4,8 @@ package sc
 type LFPulse struct {
 	// Freq in Hz
 	Freq Input
-	// Iphase initial phase offset in cycles (0..1)
-	Iphase Input
+	// IPhase initial phase offset in cycles (0..1)
+	IPhase Input
 	// Width pulse width duty cycle from 0 to 1
 	Width Input
 }
@@ -14,8 +14,8 @@ func (lfpulse *LFPulse) defaults() {
 	if lfpulse.Freq == nil {
 		lfpulse.Freq = C(440)
 	}
-	if lfpulse.Iphase == nil {
-		lfpulse.Iphase = C(0)
+	if lfpulse.IPhase == nil {
+		lfpulse.IPhase = C(0)
 	}
 	if lfpulse.Width == nil {
 		lfpulse.Width = C(0.5)
@@ -28,7 +28,7 @@ func (lfpulse *LFPulse) defaults() {
 func (lfpulse LFPulse) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&lfpulse).defaults()
-	return NewInput("LFPulse", rate, 0, 1, lfpulse.Freq, lfpulse.Iphase, lfpulse.Width)
+	return NewInput("LFPulse", rate, 0, 1, lfpulse.Freq, lfpulse.IPhase, lfpulse.Width)
 }
 
 func defLFPulse(params Params) Ugen {
@@ -44,7 +44,7 @@ func defLFPulse(params Params) Ugen {
 		Bus: out,
 		Channels: LFPulse{
 			Freq:   freq,
-			Iphase: iphase,
+			IPhase: iphase,
 			Width:  width,
 		}.Rate(AR).MulAdd(mul, add),
 	}.Rate(AR)

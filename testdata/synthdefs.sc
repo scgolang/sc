@@ -436,6 +436,17 @@ SynthDef(\HasherTest, {
 	Out.ar(0, SinOsc.ar(Hasher.kr(MouseX.kr(0, 10), 300, 500)));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LagTest, {
+	Out.ar(0, SinOsc.ar(
+                Lag.kr(
+                        LFPulse.kr(4, 0, 0.5, 50, 400),
+                        Line.kr(0, 1, 15)
+                ),
+                0,
+                0.3
+        ));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\LatchTest, {
 	Out.ar(0, Blip.ar(Latch.ar(WhiteNoise.ar, Impulse.ar(9)) * 400 + 500, 4, 0.2));
 }).writeDefFile(File.getcwd);

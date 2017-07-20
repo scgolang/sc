@@ -29,7 +29,7 @@ func TestKlang(t *testing.T) {
 		}
 		sig := A(Pan2{
 			In: A(Klang{
-				Spec: [3][]Input{freqs, nil, nil},
+				Spec: ArraySpec{freqs, nil, nil},
 			}),
 			Pos: C(0.307131),
 		})

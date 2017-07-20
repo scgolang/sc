@@ -45,8 +45,8 @@ Unit Generators for sc.
 | IFFT                        | Yes       |
 | Impulse                     | Yes       |
 | Integrator                  | Yes       |
-| Klang                       | No        |
-| Klank                       | No        |
+| Klang                       | Yes       |
+| Klank                       | Yes       |
 | Latch                       | Yes       |
 | LFCub                       | Yes       |
 | LFNoise0                    | Yes       |

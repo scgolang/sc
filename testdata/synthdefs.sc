@@ -477,6 +477,10 @@ SynthDef(\KlangTest, {
         Out.ar(0, sig * EnvGen.kr(Env.sine(4), 1, 0.02, doneAction: 2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\KlankTest1, {
+        Out.ar(0, Klank.ar(`[[800, 1071, 1353, 1723], nil, [1, 1, 1, 1]], PinkNoise.ar(0.007)));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\GrainInTest, {
         arg gate = 1, amp = 1, envbuf;
         var pan, env;

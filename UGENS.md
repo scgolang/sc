@@ -66,7 +66,7 @@ Unit Generators for sc.
 | MouseY                      | Yes       |
 | OnePole                     | Yes       |
 | OneZero                     | Yes       |
-| Osc                         | No        |
+| Osc                         | Yes       |
 | Out                         | Yes       |
 | PMOsc                       | Yes       |
 | Pan2                        | Yes       |
@@ -77,7 +77,7 @@ Unit Generators for sc.
 | PlayBuf                     | Yes       |
 | Pulse                       | Yes       |
 | PulseCount                  | No        |
-| PulseDivider                | No        |
+| PulseDivider                | Yes       |
 | RLPF                        | Yes       |
 | Resonz                      | No        |
 | Ringz                       | No        |

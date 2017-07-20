@@ -166,6 +166,11 @@ SynthDef(\PlayBufExample, {
     Out.ar(0, PlayBuf.ar(1, bufnum, 1.0, 1.0, 0, 0, 2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\OscTest, {
+    arg bufnum = 0;
+    Out.ar(0, Osc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\CrackleTest, {
     var crack = Crackle.ar(Line.kr(1.0, 2.0, 3), 0.5, 0.5);
     Out.ar(0, crack);

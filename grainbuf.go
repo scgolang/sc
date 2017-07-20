@@ -1,9 +1,5 @@
 package sc
 
-import (
-	"fmt"
-)
-
 // Envelope shapes for grain amp envelope.
 const (
 	GrainBufHanningEnv   = -1
@@ -101,7 +97,7 @@ func (gb *GrainBuf) defaults() {
 func (gb GrainBuf) Rate(rate int8) Input {
 	CheckRate(rate)
 	if gb.BufNum == nil {
-		panic(fmt.Errorf("BufNum can not be nil"))
+		panic("GrainBuf requires a buffer number")
 	}
 	(&gb).defaults()
 	return NewInput("GrainBuf", rate, 0, gb.NumChannels, gb.Trigger, gb.Dur, gb.BufNum, gb.Speed, gb.Pos, gb.Interp, gb.Pan, gb.EnvBuf, gb.MaxGrains)

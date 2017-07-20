@@ -92,8 +92,8 @@ Unit Generators for sc.
 | TDelay                      | Yes       |
 | TGrains                     | Yes       |
 | ToggleFF                    | Yes       |
-| Trig                        | No        |
-| Trig1                       | No        |
+| Trig                        | Yes       |
+| Trig1                       | Yes       |
 | VarSaw                      | No        |
 | VOsc                        | No        |
 | VOsc3                       | No        |

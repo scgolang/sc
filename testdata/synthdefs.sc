@@ -166,6 +166,14 @@ SynthDef(\PlayBufExample, {
     Out.ar(0, PlayBuf.ar(1, bufnum, 1.0, 1.0, 0, 0, 2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\TrigTest, {
+        Out.ar(0, Trig.ar(Dust.ar(1), 0.2) * FSinOsc.ar(800, 0.5));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\Trig1Test, {
+        Out.ar(0, Trig1.ar(Dust.ar(1), 0.2) * FSinOsc.ar(800, 0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\OscTest, {
     arg bufnum = 0;
     Out.ar(0, Osc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));

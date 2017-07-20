@@ -28,8 +28,7 @@ func (o *Osc) defaults() {
 
 // Rate creates a new ugen at a specific rate.
 // If rate is an unsupported value this method will cause a runtime panic.
-// If the input signal is nil this method will panic.
-// If the trig signal is nil this method will panic.
+// If BufNum is nil this method will panic.
 func (o Osc) Rate(rate int8) Input {
 	CheckRate(rate)
 	if o.BufNum == nil {

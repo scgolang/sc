@@ -171,6 +171,11 @@ SynthDef(\OscTest, {
     Out.ar(0, Osc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ShaperTest, {
+    arg bufnum = 0;
+    Out.ar(0, Shaper.ar(bufnum, SinOsc.ar(440, 0.5, Line.kr(0,0.9,6))));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\CrackleTest, {
     var crack = Crackle.ar(Line.kr(1.0, 2.0, 3), 0.5, 0.5);
     Out.ar(0, crack);
@@ -508,6 +513,14 @@ SynthDef(\LFParTest, {
 
 SynthDef(\MedianTest, {
 	Out.ar(0, LeakDC.ar(Median.ar(31, WhiteNoise.ar(0.1) + SinOsc.ar(800,0,0.1)), 0.9));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\ResonzTest, {
+	Out.ar(0, Resonz.ar(WhiteNoise.ar(0.5), XLine.kr(1000,8000,10), 0.05));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\RingzTest, {
+	Out.ar(0, Ringz.ar(Impulse.ar(6, 0, 0.3), 2000, XLine.kr(4, 0.04, 8)));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\KlangTest, {

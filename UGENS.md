@@ -77,11 +77,11 @@ Unit Generators for sc.
 | PinkNoise                   | Yes       |
 | PlayBuf                     | Yes       |
 | Pulse                       | Yes       |
-| PulseCount                  | No        |
+| PulseCount                  | Yes       |
 | PulseDivider                | Yes       |
 | RLPF                        | Yes       |
-| Resonz                      | No        |
-| Ringz                       | No        |
+| Resonz                      | Yes       |
+| Ringz                       | Yes       |
 | Rotate2                     | No        |
 | Saw                         | Yes       |
 | Select                      | Yes       |

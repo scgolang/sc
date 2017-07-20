@@ -180,6 +180,10 @@ SynthDef(\RLPFTest, {
     Out.ar(0, RLPF.ar(Saw.ar(200, 0.1), FSinOsc.kr(XLine.kr(0.7, 300, 20), 0, 3600, 4000), 0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\SlewTest, {
+    Out.ar(0, Slew.ar(Saw.ar(800, mul: 0.2), 400, 400));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\CrackleTest, {
     var crack = Crackle.ar(Line.kr(1.0, 2.0, 3), 0.5, 0.5);
     Out.ar(0, crack);

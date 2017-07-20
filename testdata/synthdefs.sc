@@ -436,6 +436,10 @@ SynthDef(\HasherTest, {
 	Out.ar(0, SinOsc.ar(Hasher.kr(MouseX.kr(0, 10), 300, 500)));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LinPan2Test, {
+	Out.ar(0, LinPan2.ar(FSinOsc.ar(800, 0, 0.1), FSinOsc.kr(3)))
+}).writeDefFile(File.getcwd);
+
 SynthDef(\LagTest, {
 	Out.ar(0, SinOsc.ar(
                 Lag.kr(

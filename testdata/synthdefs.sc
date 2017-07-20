@@ -174,6 +174,10 @@ SynthDef(\Trig1Test, {
         Out.ar(0, Trig1.ar(Dust.ar(1), 0.2) * FSinOsc.ar(800, 0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\VarSawTest, {
+        Out.ar(0, VarSaw.ar(LFPulse.kr(3, 0, 0.3, 200, 200), 0, 0.2, 0.1));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\OscTest, {
     arg bufnum = 0;
     Out.ar(0, Osc.ar(bufnum, XLine.kr(2000,200), 0, 0.5));

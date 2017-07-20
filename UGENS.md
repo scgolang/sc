@@ -94,7 +94,7 @@ Unit Generators for sc.
 | ToggleFF                    | Yes       |
 | Trig                        | Yes       |
 | Trig1                       | Yes       |
-| VarSaw                      | No        |
+| VarSaw                      | Yes       |
 | VOsc                        | No        |
 | VOsc3                       | No        |
 | Warp1                       | Yes       |

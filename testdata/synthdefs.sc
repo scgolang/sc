@@ -475,6 +475,10 @@ SynthDef(\LFParTest, {
 	Out.ar(0, LFPar.ar(XLine.kr(100,8000,30),0,0.1));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\MedianTest, {
+	Out.ar(0, LeakDC.ar(Median.ar(31, WhiteNoise.ar(0.1) + SinOsc.ar(800,0,0.1)), 0.9));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\KlangTest, {
         var sig = Pan2.ar(
 	        Klang.ar(`[[

@@ -61,7 +61,7 @@ Unit Generators for sc.
 | LinPan2                     | Yes       |
 | Line                        | Yes       |
 | LocalBuf                    | Yes       |
-| Median                      | No        |
+| Median                      | Yes       |
 | MouseX                      | Yes       |
 | MouseY                      | Yes       |
 | OnePole                     | No        |

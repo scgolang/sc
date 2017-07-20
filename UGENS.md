@@ -52,8 +52,7 @@ Unit Generators for sc.
 | LFNoise0                    | Yes       |
 | LFNoise1                    | Yes       |
 | LFNoise2                    | Yes       |
-| LFNoiseClipNoise            | No        |
-| LFPar                       | No        |
+| LFPar                       | Yes       |
 | LFPulse                     | Yes       |
 | LFSaw                       | Yes       |
 | LFTri                       | Yes       |

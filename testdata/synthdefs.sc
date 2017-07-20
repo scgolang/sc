@@ -456,6 +456,10 @@ SynthDef(\FormantTest, {
 	Out.ar(0, Formant.ar(XLine.kr(400,1000, 8), 2000, 800, 0.125));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LFParTest, {
+	Out.ar(0, LFPar.ar(XLine.kr(100,8000,30),0,0.1));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\KlangTest, {
         var sig = Pan2.ar(
 	        Klang.ar(`[[

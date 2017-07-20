@@ -1,6 +1,6 @@
 package sc
 
-// Returns the median of the last length input points.
+// Median returns the median of the last length input points.
 // This non-linear filter is good at reducing impulse noise from a signal.
 type Median struct {
 	In     Input

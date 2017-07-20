@@ -252,6 +252,10 @@ SynthDef(\PulseTest, {
     Out.ar(0, Pulse.ar(XLine.kr(40,4000,6),0.1, 0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\SyncSawTest, {
+    Out.ar(0, SyncSaw.ar(800, Line.kr(800, 1600, 0.01)));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\FormletTest, {
     var in = Blip.ar(SinOsc.kr(5, 0, 20, 300), 1000, 0.1);
     Out.ar(0, Formlet.ar(in, XLine.kr(1500, 700, 8), 0.005, 0.4));

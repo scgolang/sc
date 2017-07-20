@@ -1,6 +1,6 @@
 package sc
 
-// This is the same as Ringz , except that it has a constant gain at 0 dB
+// Resonz is the same as Ringz, except that it has a constant gain at 0 dB
 // instead of being constant skirt.
 // It is a two pole resonant filter with zeroes at z = +-1.
 type Resonz struct {

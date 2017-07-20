@@ -4,8 +4,10 @@ import (
 	"fmt"
 )
 
+// ArraySpec is a convenience type for Klang and Klank.
 type ArraySpec [3][]Input
 
+// Add adds one input to another.
 func (as ArraySpec) Add(val Input) Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
@@ -16,6 +18,7 @@ func (as ArraySpec) Add(val Input) Input {
 	return nas
 }
 
+// Max returns the maximum of one input and another.
 func (as ArraySpec) Max(val Input) Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
@@ -26,6 +29,7 @@ func (as ArraySpec) Max(val Input) Input {
 	return nas
 }
 
+// Midicps converts from MIDI note values to cycles per second.
 func (as ArraySpec) Midicps() Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
@@ -36,6 +40,7 @@ func (as ArraySpec) Midicps() Input {
 	return nas
 }
 
+// Mul multiplies one input and another.
 func (as ArraySpec) Mul(val Input) Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
@@ -46,6 +51,7 @@ func (as ArraySpec) Mul(val Input) Input {
 	return nas
 }
 
+// MulAdd computes (as * m) + a.
 func (as ArraySpec) MulAdd(m, a Input) Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
@@ -56,6 +62,7 @@ func (as ArraySpec) MulAdd(m, a Input) Input {
 	return nas
 }
 
+// Neg negates an input.
 func (as ArraySpec) Neg() Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
@@ -66,6 +73,7 @@ func (as ArraySpec) Neg() Input {
 	return nas
 }
 
+// SoftClip computes nonlinear distortion of an input.
 func (as ArraySpec) SoftClip() Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {

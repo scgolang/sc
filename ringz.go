@@ -1,8 +1,10 @@
 package sc
 
-// This is the same as Ringz , except that it has a constant gain at 0 dB
-// instead of being constant skirt.
-// It is a two pole resonant filter with zeroes at z = +-1.
+// Ringz is the same as Resonz, except that it is a constant skirt gain filter,
+// meaning that the peak gain depends on the value of Q.
+// Also, instead of the resonance parameter in Resonz,
+// the bandwidth is specified in a 60dB ring decay time.
+// One Ringz is equivalent to one component of the Klank UGen.
 type Ringz struct {
 	// In is the input signal.
 	In Input

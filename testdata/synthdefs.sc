@@ -213,6 +213,10 @@ SynthDef(\XFade2Test, {
     Out.ar(0, XFade2.ar( Saw.ar, SinOsc.ar , LFTri.kr(0.1) ));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LinXFade2Test, {
+    Out.ar(0, LinXFade2.ar( Saw.ar, SinOsc.ar , LFTri.kr(0.1), 1 ));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\CrackleTest, {
     var crack = Crackle.ar(Line.kr(1.0, 2.0, 3), 0.5, 0.5);
     Out.ar(0, crack);

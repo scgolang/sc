@@ -60,6 +60,7 @@ Unit Generators for sc.
 | LPF                         | Yes       |
 | Lag                         | Yes       |
 | LinPan2                     | Yes       |
+| LinXFade2                   | Yes       |
 | Line                        | Yes       |
 | LocalBuf                    | Yes       |
 | Median                      | Yes       |

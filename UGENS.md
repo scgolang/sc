@@ -99,5 +99,5 @@ Unit Generators for sc.
 | VOsc3                       | Yes       |
 | Warp1                       | Yes       |
 | WhiteNoise                  | Yes       |
-| XFade2                      | No        |
+| XFade2                      | Yes       |
 | XLine                       | Yes       |

@@ -220,6 +220,10 @@ SynthDef(\Gendy2Test, {
     Out.ar(0, Pan2.ar(Gendy2.ar));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Gendy3Test, {
+    Out.ar(0, Pan2.ar(Gendy3.ar));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\PSinGrainTest, {
     Out.ar(0, PSinGrain.ar(880, 0.1, 0.7));
 }).writeDefFile(File.getcwd);

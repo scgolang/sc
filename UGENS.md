@@ -42,7 +42,7 @@ Unit Generators for sc.
 | Gate                        | Yes       |
 | Gendy1                      | Yes       |
 | Gendy2                      | Yes       |
-| Gendy3                      | No        |
+| Gendy3                      | Yes       |
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
 | GrainFM                     | Yes       |

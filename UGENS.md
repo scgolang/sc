@@ -150,9 +150,10 @@ Unit Generators for sc.
 | Trig1                       | Yes       |
 | Unpack1FFT                  | No        |
 | UnpackFFT                   | No        |
-| VarSaw                      | Yes       |
 | VOsc                        | Yes       |
 | VOsc3                       | Yes       |
+| VarSaw                      | Yes       |
+| Vibrato                     | Yes       |
 | Warp1                       | Yes       |
 | WhiteNoise                  | Yes       |
 | XFade2                      | Yes       |

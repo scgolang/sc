@@ -251,6 +251,13 @@ SynthDef(\SinOscFBTest, {
 	Out.ar(0, SinOscFB.ar(100*SinOscFB.ar(MouseY.kr(1,1000,'exponential'))+200,MouseX.kr(0.5pi,pi))*0.1);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\VibratoTest, {
+	var freq    = DC.ar(400.0);
+	var rate    = MouseX.kr(2.0, 100.0);
+	var ratevar = MouseY.kr(0.0, 1.0);
+	Out.ar(0, SinOsc.ar(Vibrato.ar(freq, rate, 0.1, 1.0, 1.0, ratevar, 0.1)));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\RLPFTest, {
     Out.ar(0, RLPF.ar(Saw.ar(200, 0.1), FSinOsc.kr(XLine.kr(0.7, 300, 20), 0, 3600, 4000), 0.2));
 }).writeDefFile(File.getcwd);

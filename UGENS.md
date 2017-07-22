@@ -41,6 +41,8 @@ Unit Generators for sc.
 | GVerb                       | Yes       |
 | Gate                        | Yes       |
 | Gendy1                      | Yes       |
+| Gendy2                      | Yes       |
+| Gendy3                      | No        |
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
 | GrainFM                     | Yes       |

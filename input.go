@@ -27,6 +27,9 @@ type Input interface {
 	// Neg is a convenience operator that multiplies a signal by -1.
 	Neg() Input
 
+	// Reciprocal computes the reciprocal of a signal.
+	Reciprocal() Input
+
 	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
 	SoftClip() Input
 }

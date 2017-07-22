@@ -70,6 +70,15 @@ func (ins Inputs) Neg() Input {
 	return Inputs(converted)
 }
 
+// Reciprocal computes the reciprocal of a signal.
+func (ins Inputs) Reciprocal() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Reciprocal()
+	}
+	return Inputs(converted)
+}
+
 // SoftClip adds distortion to the inputs.
 func (ins Inputs) SoftClip() Input {
 	clipped := make([]Input, len(ins))

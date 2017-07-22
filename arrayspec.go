@@ -73,6 +73,17 @@ func (as ArraySpec) Neg() Input {
 	return nas
 }
 
+// Reciprocal computes the reciprocal of a signal.
+func (as ArraySpec) Reciprocal() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Reciprocal()
+		}
+	}
+	return nas
+}
+
 // SoftClip computes nonlinear distortion of an input.
 func (as ArraySpec) SoftClip() Input {
 	var nas ArraySpec

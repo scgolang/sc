@@ -23,6 +23,10 @@ SynthDef(\negExample, {
     Out.ar(0, LFNoise1.ar(1500).neg);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\reciprocalExample, {
+    Out.ar(0, LFNoise1.ar(1500).reciprocal);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\Envgen1, {
     Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
 }).writeDefFile(File.getcwd);
@@ -264,6 +268,11 @@ SynthDef(\RLPFTest, {
 
 SynthDef(\SilentTest, {
     Out.ar(0, Silent.ar(2));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\RunningSumTest, {
+	var x = 100;
+	Out.ar(0, RunningSum.ar(LFSaw.ar, x) * (x.reciprocal));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\BallTest, {

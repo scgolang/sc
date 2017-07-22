@@ -92,6 +92,10 @@ func (p *param) Neg() Input {
 	return unaryOpNeg(KR, p, 1)
 }
 
+func (p *param) Reciprocal() Input {
+	return unaryOpReciprocal(KR, p, 1) // TODO
+}
+
 func (p *param) SoftClip() Input {
 	return unaryOpSoftClip(KR, p, 1)
 }

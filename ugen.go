@@ -105,6 +105,11 @@ func (u *Ugen) Neg() Input {
 	return unaryOpNeg(u.Rate, u, u.NumOutputs)
 }
 
+// Reciprocal computes the reciprocal of a signal.
+func (u *Ugen) Reciprocal() Input {
+	return unaryOpReciprocal(u.Rate, u, u.NumOutputs) // TODO
+}
+
 // SoftClip adds distortion to a ugen.
 func (u *Ugen) SoftClip() Input {
 	return unaryOpSoftClip(u.Rate, u, u.NumOutputs)

@@ -48,6 +48,11 @@ func (c C) Neg() Input {
 	return C(float32(c) * -1)
 }
 
+// Reciprocal computes the reciprocal of a signal.
+func (c C) Reciprocal() Input {
+	return C(1 / float32(c))
+}
+
 // SoftClip clips the constant to the range [-0.5, 0.5]
 func (c C) SoftClip() Input {
 	if float32(c) < -0.5 {

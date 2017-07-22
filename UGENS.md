@@ -131,6 +131,7 @@ Unit Generators for sc.
 | Resonz                      | Yes       |
 | Ringz                       | Yes       |
 | Rotate2                     | No        |
+| RunningSum                  | Yes       |
 | SampleDur                   | Yes       |
 | SampleRate                  | Yes       |
 | Saw                         | Yes       |

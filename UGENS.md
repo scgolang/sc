@@ -134,7 +134,7 @@ Unit Generators for sc.
 | SpecCentroid                | No        |
 | SpecFlatness                | No        |
 | SpecPcile                   | No        |
-| Spring                      | No        |
+| Spring                      | Yes       |
 | StereoConvolution2L         | No        |
 | SyncSaw                     | Yes       |
 | TBall                       | No        |

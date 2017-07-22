@@ -226,6 +226,14 @@ SynthDef(\BallTest, {
 	Out.ar(0, SinOsc.ar(f, 0, 0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\SpringTest, {
+	var sf = LFNoise0.ar(MouseX.kr(1, 100, 1));
+	var g  = MouseY.kr(0.1, 10, 1);
+	var f  = Spring.ar(sf, g, 0.01, 0.01);
+	f = f * 140 + 500;
+	Out.ar(0, SinOsc.ar(f, 0, 0.2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\SlewTest, {
     Out.ar(0, Slew.ar(Saw.ar(800, mul: 0.2), 400, 400));
 }).writeDefFile(File.getcwd);

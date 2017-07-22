@@ -1,7 +1,6 @@
 package sc
 
 // Ball models the path of a bouncing object that is reflected by a vibrating surface.
-// in: 0, g: 1, damp: 0, friction: 0.01
 type Ball struct {
 	In       Input
 	Gravity  Input

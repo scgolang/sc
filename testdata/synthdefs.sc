@@ -311,6 +311,10 @@ SynthDef(\LFCubTest, {
     Out.ar(0, sig);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LFGaussTest, {
+    Out.ar(0, LFGauss.ar(0.01, SampleDur.ir * MouseX.kr(10, 3000, 1)) * 0.2);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\GateTest, {
     var noise = WhiteNoise.kr(1, 0);
     var pulse = LFPulse.kr(1.333, 0.5);

@@ -282,6 +282,10 @@ SynthDef(\SpringTest, {
 	Out.ar(0, SinOsc.ar(f, 0, 0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\SlopeTest, {
+	Out.ar(0, SinOsc.ar(Slope.ar(LFNoise2.ar(10))));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\SlewTest, {
     Out.ar(0, Slew.ar(Saw.ar(800, mul: 0.2), 400, 400));
 }).writeDefFile(File.getcwd);

@@ -13,6 +13,8 @@ Unit Generators for sc.
 | BRF                         | Yes       |
 | Balance2                    | Yes       |
 | Ball                        | Yes       |
+| BeatTrack                   | No        |
+| BeatTrack2                  | No        |
 | Blip                        | Yes       |
 | BrownNoise                  | Yes       |
 | COsc                        | Yes       |
@@ -137,6 +139,7 @@ Unit Generators for sc.
 | SinOsc                      | Yes       |
 | SinOscFB                    | Yes       |
 | Slew                        | Yes       |
+| Slope                       | Yes       |
 | SpecCentroid                | No        |
 | SpecFlatness                | No        |
 | SpecPcile                   | No        |

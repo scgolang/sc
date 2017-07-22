@@ -40,6 +40,7 @@ Unit Generators for sc.
 | FreeVerb                    | Yes       |
 | GVerb                       | Yes       |
 | Gate                        | Yes       |
+| Gendy1                      | Yes       |
 | GrayNoise                   | Yes       |
 | GrainBuf                    | Yes       |
 | GrainFM                     | Yes       |

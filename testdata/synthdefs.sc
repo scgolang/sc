@@ -212,6 +212,10 @@ SynthDef(\VOsc3Test, {
     Out.ar(0, VOsc3.ar(bufnum, line1, line2, line3));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\Gendy1Test, {
+    Out.ar(0, Pan2.ar(Gendy1.ar));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\PSinGrainTest, {
     Out.ar(0, PSinGrain.ar(880, 0.1, 0.7));
 }).writeDefFile(File.getcwd);

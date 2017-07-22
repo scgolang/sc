@@ -55,6 +55,7 @@ Unit Generators for sc.
 | Klang                       | Yes       |
 | Klank                       | Yes       |
 | Latch                       | Yes       |
+| LFClipNoise                 | Yes       |
 | LFCub                       | Yes       |
 | LFGauss                     | Yes       |
 | LFNoise0                    | Yes       |

@@ -228,6 +228,13 @@ SynthDef(\PSinGrainTest, {
     Out.ar(0, PSinGrain.ar(880, 0.1, 0.7));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LFClipNoiseTest, {
+	Out.ar(0, SinOsc.ar(
+	     LFClipNoise.ar(4, 200, 600),
+	     0, 0.2
+	));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ShaperTest, {
     arg bufnum = 0;
     Out.ar(0, Shaper.ar(bufnum, SinOsc.ar(440, 0.5, Line.kr(0,0.9,6))));

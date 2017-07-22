@@ -20,6 +20,7 @@ Unit Generators for sc.
 | CombC                       | Yes       |
 | CombL                       | Yes       |
 | CombN                       | Yes       |
+| CoinGate                    | Yes       |
 | ControlRate                 | Yes       |
 | Crackle                     | Yes       |
 | Decay                       | Yes       |

@@ -170,6 +170,17 @@ SynthDef(\TrigTest, {
         Out.ar(0, Trig.ar(Dust.ar(1), 0.2) * FSinOsc.ar(800, 0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\CoinGateTest, {
+	arg out=0, prob=0.5;
+	var trig;
+	trig = CoinGate.kr(prob, Impulse.kr(10));
+	Out.ar(out,
+	    SinOsc.ar(
+	        TRand.kr(300.0, 400.0, trig), 0, 0.2
+	    )
+	);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\Trig1Test, {
         Out.ar(0, Trig1.ar(Dust.ar(1), 0.2) * FSinOsc.ar(800, 0.5));
 }).writeDefFile(File.getcwd);

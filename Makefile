@@ -31,7 +31,7 @@ coverage:
 	@go test -coverprofile cover.out && go tool cover -html cover.out -o cover.html
 
 clean:
-	@rm -rf *~ *.gosyndef *.svg *.dot *.json *.xml testdata/*.scsyndef .fixtures
+	@rm -rf *~ *.gosyndef *.svg *.dot *.json *.xml .fixtures
 
 test: .fixtures
 	@go test

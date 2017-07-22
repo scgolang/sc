@@ -56,6 +56,7 @@ Unit Generators for sc.
 | Klank                       | Yes       |
 | Latch                       | Yes       |
 | LFClipNoise                 | Yes       |
+| LFDClipNoise                | Yes       |
 | LFCub                       | Yes       |
 | LFGauss                     | Yes       |
 | LFNoise0                    | Yes       |

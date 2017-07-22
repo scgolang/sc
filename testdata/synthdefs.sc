@@ -235,6 +235,13 @@ SynthDef(\LFClipNoiseTest, {
 	));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\LFDClipNoiseTest, {
+	Out.ar(0, SinOsc.ar(
+	     LFDClipNoise.ar(4, 200, 600),
+	     0, 0.2
+	));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ShaperTest, {
     arg bufnum = 0;
     Out.ar(0, Shaper.ar(bufnum, SinOsc.ar(440, 0.5, Line.kr(0,0.9,6))));

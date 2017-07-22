@@ -137,7 +137,6 @@ Unit Generators for sc.
 | Spring                      | Yes       |
 | StereoConvolution2L         | No        |
 | SyncSaw                     | Yes       |
-| TBall                       | No        |
 | TDelay                      | Yes       |
 | TGrains                     | Yes       |
 | ToggleFF                    | Yes       |

@@ -218,6 +218,10 @@ SynthDef(\RLPFTest, {
     Out.ar(0, RLPF.ar(Saw.ar(200, 0.1), FSinOsc.kr(XLine.kr(0.7, 300, 20), 0, 3600, 4000), 0.2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\SilentTest, {
+    Out.ar(0, Silent.ar(2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\BallTest, {
 	var sf = LFNoise0.ar(MouseX.kr(1, 100, 1));
 	var g  = MouseY.kr(0.1, 10, 1);

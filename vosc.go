@@ -1,6 +1,6 @@
 package sc
 
-// A wavetable lookup oscillator which can be swept smoothly across wavetables.
+// VOsc is a wavetable lookup oscillator which can be swept smoothly across wavetables.
 // All the wavetables must be allocated to the same size.
 // Fractional values of table will interpolate between two adjacent tables.
 // This oscillator requires at least two buffers to be filled with a wavetable format signal.

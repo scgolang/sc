@@ -4,7 +4,7 @@ package sc
 // This oscillator requires a buffer to be filled with a wavetable format signal.
 // This preprocesses the Signal into a form which can be used efficiently by the Oscillator.
 // The buffer size must be a power of 2.
-// This can be acheived by creating a Buffer object and sending it
+// This can be achieved by creating a Buffer object and sending it
 // one of the "b_gen" messages ( Buffer: -sine1, Buffer: -sine2, Buffer: -sine3 )
 // with the wavetable flag set to true.
 // This can also be achieved by creating a Signal object and sending it the 'asWavetable' message,

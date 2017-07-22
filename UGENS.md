@@ -12,6 +12,7 @@ Unit Generators for sc.
 | BPF                         | Yes       |
 | BRF                         | Yes       |
 | Balance2                    | Yes       |
+| Ball                        | Yes       |
 | Blip                        | Yes       |
 | BrownNoise                  | Yes       |
 | COsc                        | Yes       |
@@ -133,8 +134,10 @@ Unit Generators for sc.
 | SpecCentroid                | No        |
 | SpecFlatness                | No        |
 | SpecPcile                   | No        |
+| Spring                      | No        |
 | StereoConvolution2L         | No        |
 | SyncSaw                     | Yes       |
+| TBall                       | No        |
 | TDelay                      | Yes       |
 | TGrains                     | Yes       |
 | ToggleFF                    | Yes       |

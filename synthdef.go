@@ -442,5 +442,5 @@ func (d differ) do() [][2]string {
 }
 
 var commutative = map[string]struct{}{
-	"BinaryOpUgen": struct{}{},
+	"BinaryOpUgen": {},
 }

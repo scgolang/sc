@@ -19,6 +19,7 @@ Unit Generators for sc.
 | CombC                       | Yes       |
 | CombL                       | Yes       |
 | CombN                       | Yes       |
+| ControlRate                 | Yes       |
 | Crackle                     | Yes       |
 | Decay                       | Yes       |
 | Decay2                      | Yes       |
@@ -50,7 +51,7 @@ Unit Generators for sc.
 | Klank                       | Yes       |
 | Latch                       | Yes       |
 | LFCub                       | Yes       |
-| LFGauss                     | No        |
+| LFGauss                     | Yes       |
 | LFNoise0                    | Yes       |
 | LFNoise1                    | Yes       |
 | LFNoise2                    | Yes       |
@@ -72,6 +73,7 @@ Unit Generators for sc.
 | Osc                         | Yes       |
 | Out                         | Yes       |
 | PMOsc                       | Yes       |
+| PSinGrain                   | Yes       |
 | PV_Add                      | No        |
 | PV_BrickWall                | Yes       |
 | PV_BinScramble              | No        |
@@ -120,6 +122,8 @@ Unit Generators for sc.
 | Resonz                      | Yes       |
 | Ringz                       | Yes       |
 | Rotate2                     | No        |
+| SampleDur                   | Yes       |
+| SampleRate                  | Yes       |
 | Saw                         | Yes       |
 | Select                      | Yes       |
 | Shaper                      | Yes       |

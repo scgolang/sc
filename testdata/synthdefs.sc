@@ -201,6 +201,10 @@ SynthDef(\VOsc3Test, {
     Out.ar(0, VOsc3.ar(bufnum, line1, line2, line3));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\PSinGrainTest, {
+    Out.ar(0, PSinGrain.ar(880, 0.1, 0.7));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ShaperTest, {
     arg bufnum = 0;
     Out.ar(0, Shaper.ar(bufnum, SinOsc.ar(440, 0.5, Line.kr(0,0.9,6))));

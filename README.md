@@ -29,7 +29,7 @@ go get github.com/scgolang/sc
 ## Usage
 
 Find godocs at http://godoc.org/github.com/scgolang/sc.
-Also, look at the [example programs]https://github.com/scgolang/sc-examples.
+Also, look at the [example programs](https://github.com/scgolang/sc-examples).
 
 The list of supported ugens is here: https://github.com/scgolang/sc/blob/master/UGENS.md
 

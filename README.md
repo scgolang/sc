@@ -20,7 +20,7 @@ See [AUTHORS](AUTHORS).
 
 [Install SuperCollider](http://supercollider.github.io/download.html).
 
-[Install Go](see https://golang.org/dl).
+[Install Go](https://golang.org/dl).
 
 ```
 go get github.com/scgolang/sc

@@ -20,6 +20,8 @@ const (
 	UnaryOpNeg        = 0
 	UnaryOpOctcps     = 23
 	UnaryOpRatiomidi  = 20
+	UnaryOpRand       = 37
+	UnaryOpRand2      = 38
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
 	UnaryOpSign       = 11
@@ -140,16 +142,28 @@ func unaryOpOctcps(rate int8, in Input, numOutputs int) Input {
 	return NewInput(unaryOpUgenName, rate, UnaryOpOctcps, numOutputs, in)
 }
 
-// unaryOpReciprocal returns the reciprocal of an input signal.
-func unaryOpReciprocal(rate int8, in Input, numOutputs int) Input {
+// unaryOpRand returns an evenly distributed random value between in and zero.
+func unaryOpRand(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
-	return NewInput(unaryOpUgenName, rate, UnaryOpReciprocal, numOutputs, in)
+	return NewInput(unaryOpUgenName, rate, UnaryOpRand, numOutputs, in)
+}
+
+// unaryOpRand2 returns an evenly distributed random value between [+in ... -in].
+func unaryOpRand2(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpRand2, numOutputs, in)
 }
 
 // unaryOpRatiomidi converts a frequency ratio to an interval in MIDI notes.
 func unaryOpRatiomidi(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpRatiomidi, numOutputs, in)
+}
+
+// unaryOpReciprocal returns the reciprocal of an input signal.
+func unaryOpReciprocal(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpReciprocal, numOutputs, in)
 }
 
 // unaryOpSign computes the sign of a signal.

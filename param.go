@@ -139,6 +139,14 @@ func (p *param) Octcps() Input {
 	return unaryOpOctcps(KR, p, 1)
 }
 
+func (p *param) Rand() Input {
+	return unaryOpRand(KR, p, 1)
+}
+
+func (p *param) Rand2() Input {
+	return unaryOpRand2(KR, p, 1)
+}
+
 func (p *param) Ratiomidi() Input {
 	return unaryOpRatiomidi(KR, p, 1)
 }

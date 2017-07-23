@@ -63,6 +63,12 @@ type Input interface {
 	// Octcps converts decimal octaves to cycles per second.
 	Octcps() Input
 
+	// Rand returns an evenly distributed random value between this and zero.
+	Rand() Input
+
+	// Rand2 returns an evenly distributed random value between [+this ... - this].
+	Rand2() Input
+
 	// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
 	Ratiomidi() Input
 

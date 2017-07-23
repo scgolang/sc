@@ -184,6 +184,36 @@ func TestOctcps(t *testing.T) {
 	}))
 }
 
+func TestRand(t *testing.T) {
+	const defName = "randExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Rand(),
+		}.Rate(AR)
+	}))
+}
+
+func TestRand2(t *testing.T) {
+	const defName = "rand2Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Rand2(),
+		}.Rate(AR)
+	}))
+}
+
 func TestRatiomidi(t *testing.T) {
 	const defName = "ratiomidiExample"
 

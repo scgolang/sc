@@ -2,6 +2,7 @@ package sc
 
 import (
 	"math"
+	"math/rand"
 )
 
 // C wraps a float32 and implements the Input interface.
@@ -110,6 +111,17 @@ func (c C) Neg() Input {
 // Octcps converts decimal octaves to cycles per second.
 func (c C) Octcps() Input {
 	return C(Octcps(float32(c)))
+}
+
+// Rand returns an evenly distributed random value between this and zero.
+func (c C) Rand() Input {
+	return C(float32(math.Trunc(float64(rand.Float32() * float32(c)))))
+}
+
+// Rand2 returns an evenly distributed random value between [+this ... - this].
+func (c C) Rand2() Input {
+	v := (rand.Float32() * 2 * float32(c)) - float32(c)
+	return C(float32(math.Trunc(float64(v))))
 }
 
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.

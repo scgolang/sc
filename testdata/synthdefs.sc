@@ -75,6 +75,14 @@ SynthDef(\negExample, {
     Out.ar(0, LFNoise1.ar(1500).neg);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\randExample, {
+    Out.ar(0, LFNoise1.ar(1500).rand);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\rand2Example, {
+    Out.ar(0, LFNoise1.ar(1500).rand2);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\reciprocalExample, {
     Out.ar(0, LFNoise1.ar(1500).reciprocal);
 }).writeDefFile(File.getcwd);

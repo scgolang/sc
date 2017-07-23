@@ -165,14 +165,24 @@ func (u *Ugen) Octcps() Input {
 	return unaryOpOctcps(u.Rate, u, u.NumOutputs)
 }
 
+// Rand returns an evenly distributed random value between this and zero.
+func (u *Ugen) Rand() Input {
+	return unaryOpRand(u.Rate, u, u.NumOutputs)
+}
+
+// Rand2 returns an evenly distributed random value between [+this ... - this].
+func (u *Ugen) Rand2() Input {
+	return unaryOpRand2(u.Rate, u, u.NumOutputs)
+}
+
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.
 func (u *Ugen) Ratiomidi() Input {
-	return unaryOpRatiomidi(u.Rate, u, u.NumOutputs) // TODO
+	return unaryOpRatiomidi(u.Rate, u, u.NumOutputs)
 }
 
 // Reciprocal computes the reciprocal of a signal.
 func (u *Ugen) Reciprocal() Input {
-	return unaryOpReciprocal(u.Rate, u, u.NumOutputs) // TODO
+	return unaryOpReciprocal(u.Rate, u, u.NumOutputs)
 }
 
 // Sign computes the sign of a signal.

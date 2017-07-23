@@ -205,6 +205,28 @@ func (as ArraySpec) Octcps() Input {
 	return nas
 }
 
+// Rand returns an evenly distributed random value between this and zero.
+func (as ArraySpec) Rand() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Rand()
+		}
+	}
+	return nas
+}
+
+// Rand2 returns an evenly distributed random value between [+this ... - this].
+func (as ArraySpec) Rand2() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Rand2()
+		}
+	}
+	return nas
+}
+
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.
 func (as ArraySpec) Ratiomidi() Input {
 	var nas ArraySpec

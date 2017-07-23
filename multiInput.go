@@ -178,6 +178,24 @@ func (ins Inputs) Octcps() Input {
 	return Inputs(ia)
 }
 
+// Rand returns an evenly distributed random value between this and zero.
+func (ins Inputs) Rand() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Rand()
+	}
+	return Inputs(converted)
+}
+
+// Rand2 returns an evenly distributed random value between [+this ... - this].
+func (ins Inputs) Rand2() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Rand2()
+	}
+	return Inputs(converted)
+}
+
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.
 func (ins Inputs) Ratiomidi() Input {
 	converted := make([]Input, len(ins))

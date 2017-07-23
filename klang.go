@@ -2,7 +2,6 @@ package sc
 
 import (
 	"math/rand"
-	"time"
 )
 
 // Klang is a bank of fixed frequency sine oscillators.
@@ -73,8 +72,4 @@ func RandArray(n int, min, max float64) []Input {
 		ins[i] = C((rand.Float64() * (max - min)) + min)
 	}
 	return ins
-}
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
 }

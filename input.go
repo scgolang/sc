@@ -51,6 +51,9 @@ type Input interface {
 	// Neg is a convenience operator that multiplies a signal by -1.
 	Neg() Input
 
+	// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
+	Ratiomidi() Input
+
 	// Reciprocal computes the reciprocal of a signal.
 	Reciprocal() Input
 

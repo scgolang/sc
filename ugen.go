@@ -145,6 +145,11 @@ func (u *Ugen) Neg() Input {
 	return unaryOpNeg(u.Rate, u, u.NumOutputs)
 }
 
+// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
+func (u *Ugen) Ratiomidi() Input {
+	return unaryOpRatiomidi(u.Rate, u, u.NumOutputs) // TODO
+}
+
 // Reciprocal computes the reciprocal of a signal.
 func (u *Ugen) Reciprocal() Input {
 	return unaryOpReciprocal(u.Rate, u, u.NumOutputs) // TODO

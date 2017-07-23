@@ -161,6 +161,17 @@ func (as ArraySpec) Neg() Input {
 	return nas
 }
 
+// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
+func (as ArraySpec) Ratiomidi() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Ratiomidi()
+		}
+	}
+	return nas
+}
+
 // Reciprocal computes the reciprocal of a signal.
 func (as ArraySpec) Reciprocal() Input {
 	var nas ArraySpec

@@ -92,6 +92,11 @@ func (c C) Neg() Input {
 	return C(float32(c) * -1)
 }
 
+// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
+func (c C) Ratiomidi() Input {
+	return C(float32(12 * math.Log2(float64(c))))
+}
+
 // Reciprocal computes the reciprocal of a signal.
 func (c C) Reciprocal() Input {
 	return C(1 / float32(c))

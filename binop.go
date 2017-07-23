@@ -15,6 +15,7 @@ const (
 	UnaryOpMidicps    = 17
 	UnaryOpMidiratio  = 19
 	UnaryOpNeg        = 0
+	UnaryOpRatiomidi  = 20
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
 	UnaryOpSign       = 11
@@ -110,6 +111,12 @@ func unaryOpNeg(rate int8, in Input, numOutputs int) Input {
 func unaryOpReciprocal(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpReciprocal, numOutputs, in)
+}
+
+// unaryOpRatiomidi converts a frequency ratio to an interval in MIDI notes.
+func unaryOpRatiomidi(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpRatiomidi, numOutputs, in)
 }
 
 // unaryOpSign computes the sign of a signal.

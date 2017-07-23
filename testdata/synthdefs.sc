@@ -51,6 +51,10 @@ SynthDef(\midiratioExample, {
     Out.ar(0, LFNoise1.ar(1500).midiratio);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ratiomidiExample, {
+    Out.ar(0, LFNoise1.ar(1500).ratiomidi);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\negExample, {
     Out.ar(0, LFNoise1.ar(1500).neg);
 }).writeDefFile(File.getcwd);

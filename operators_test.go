@@ -124,6 +124,21 @@ func TestMidiratio(t *testing.T) {
 	}))
 }
 
+func TestRatiomidi(t *testing.T) {
+	const defName = "ratiomidiExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Ratiomidi(),
+		}.Rate(AR)
+	}))
+}
+
 func TestReciprocal(t *testing.T) {
 	const defName = "reciprocalExample"
 

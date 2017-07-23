@@ -123,6 +123,10 @@ func (p *param) Neg() Input {
 	return unaryOpNeg(KR, p, 1)
 }
 
+func (p *param) Ratiomidi() Input {
+	return unaryOpRatiomidi(KR, p, 1)
+}
+
 func (p *param) Reciprocal() Input {
 	return unaryOpReciprocal(KR, p, 1) // TODO
 }

@@ -142,6 +142,15 @@ func (ins Inputs) Neg() Input {
 	return Inputs(converted)
 }
 
+// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
+func (ins Inputs) Ratiomidi() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Ratiomidi()
+	}
+	return Inputs(converted)
+}
+
 // Reciprocal computes the reciprocal of a signal.
 func (ins Inputs) Reciprocal() Input {
 	converted := make([]Input, len(ins))

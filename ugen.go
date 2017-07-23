@@ -90,6 +90,11 @@ func (u *Ugen) AmpDb() Input {
 	return unaryOpAmpDb(u.Rate, u, u.NumOutputs)
 }
 
+// Bilinrand returns a linearly distributed random value between [+in ... -in].
+func (u *Ugen) Bilinrand() Input {
+	return unaryOpBilinrand(u.Rate, u, u.NumOutputs)
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (u *Ugen) Ceil() Input {
 	return unaryOpCeil(u.Rate, u, u.NumOutputs)
@@ -128,6 +133,11 @@ func (u *Ugen) Floor() Input {
 // Frac computes the fractional part of a signal.
 func (u *Ugen) Frac() Input {
 	return unaryOpFrac(u.Rate, u, u.NumOutputs)
+}
+
+// Linrand returns a linearly distributed random value between in and zero.
+func (u *Ugen) Linrand() Input {
+	return unaryOpLinrand(u.Rate, u, u.NumOutputs)
 }
 
 // Max computes the maximum of one Input and another.

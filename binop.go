@@ -7,6 +7,7 @@ const (
 	BinOpMul          = 2
 	UnaryOpAbs        = 5
 	UnaryOpAmpDb      = 22
+	UnaryOpBilinrand  = 40
 	UnaryOpCeil       = 8
 	UnaryOpCpsmidi    = 18
 	UnaryOpCpsoct     = 24
@@ -15,6 +16,7 @@ const (
 	UnaryOpExp        = 15
 	UnaryOpFloor      = 9
 	UnaryOpFrac       = 10
+	UnaryOpLinrand    = 39
 	UnaryOpMidicps    = 17
 	UnaryOpMidiratio  = 19
 	UnaryOpNeg        = 0
@@ -70,6 +72,12 @@ func unaryOpAmpDb(rate int8, in Input, numOutputs int) Input {
 	return NewInput(unaryOpUgenName, rate, UnaryOpAmpDb, numOutputs, in)
 }
 
+// unaryOpBilinrand returns a linearly distributed random value between [+in ... -in].
+func unaryOpBilinrand(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpBilinrand, numOutputs, in)
+}
+
 // unaryOpCeil computes the ceiling of a signal.
 func unaryOpCeil(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -116,6 +124,12 @@ func unaryOpFloor(rate int8, in Input, numOutputs int) Input {
 func unaryOpFrac(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpFrac, numOutputs, in)
+}
+
+// unaryOpLinrand returns a linearly distributed random value between in and zero.
+func unaryOpLinrand(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpLinrand, numOutputs, in)
 }
 
 // unaryOpMidicps converts MIDI note numbers to cycles per second.

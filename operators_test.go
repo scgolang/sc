@@ -34,6 +34,21 @@ func TestAmpDb(t *testing.T) {
 	}))
 }
 
+func TestBilinrand(t *testing.T) {
+	const defName = "bilinrandExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Bilinrand(),
+		}.Rate(AR)
+	}))
+}
+
 func TestCeil(t *testing.T) {
 	const defName = "ceilExample"
 
@@ -150,6 +165,21 @@ func TestFrac(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Frac(),
+		}.Rate(AR)
+	}))
+}
+
+func TestLinrand(t *testing.T) {
+	const defName = "linrandExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Linrand(),
 		}.Rate(AR)
 	}))
 }

@@ -26,6 +26,11 @@ func (c C) AmpDb() Input {
 	return C(float32(20 * math.Log10(float64(c))))
 }
 
+// Bilinrand returns a linearly distributed random value between [+in ... -in].
+func (c C) Bilinrand() Input {
+	return c.Rand2()
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (c C) Ceil() Input {
 	return C(float32(math.Ceil(float64(c))))
@@ -64,6 +69,11 @@ func (c C) Floor() Input {
 // Frac returns the fractional part of a constant.
 func (c C) Frac() Input {
 	return C(float32(float64(c) - math.Trunc(float64(c))))
+}
+
+// Linrand returns a linearly distributed random value between in and zero.
+func (c C) Linrand() Input {
+	return c.Rand()
 }
 
 // Max returns the maximum of one input and another.

@@ -38,6 +38,15 @@ func (ins Inputs) AmpDb() Input {
 	return Inputs(ia)
 }
 
+// Bilinrand returns a linearly distributed random value between [+in ... -in].
+func (ins Inputs) Bilinrand() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Bilinrand()
+	}
+	return Inputs(ia)
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (ins Inputs) Ceil() Input {
 	ia := make([]Input, len(ins))
@@ -113,6 +122,15 @@ func (ins Inputs) Frac() Input {
 // InputArray provides access to the list of inputs.
 func (ins Inputs) InputArray() []Input {
 	return ins
+}
+
+// Linrand returns a linearly distributed random value between in and zero.
+func (ins Inputs) Linrand() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Linrand()
+	}
+	return Inputs(ia)
 }
 
 // Max returns Inputs that contain the max of all the inputs and the provided Input.

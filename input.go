@@ -18,6 +18,9 @@ type Input interface {
 	// AmpDb converts linear amplitude to decibels.
 	AmpDb() Input
 
+	// Bilinrand returns a linearly distributed random value between [+in ... -in].
+	Bilinrand() Input
+
 	// Ceil computes the ceiling (next lowest integer) of a signal.
 	Ceil() Input
 
@@ -41,6 +44,9 @@ type Input interface {
 
 	// Frac returns the fractional part of a signal.
 	Frac() Input
+
+	// Linrand returns a linearly distributed random value between in and zero.
+	Linrand() Input
 
 	// Max returns the max of one signal and another.
 	Max(other Input) Input

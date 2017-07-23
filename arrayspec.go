@@ -40,6 +40,17 @@ func (as ArraySpec) AmpDb() Input {
 	return nas
 }
 
+// Bilinrand returns a linearly distributed random value between [+in ... -in].
+func (as ArraySpec) Bilinrand() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Bilinrand()
+		}
+	}
+	return nas
+}
+
 // Ceil computes the ceiling of a signal.
 func (as ArraySpec) Ceil() Input {
 	var nas ArraySpec
@@ -123,6 +134,17 @@ func (as ArraySpec) Frac() Input {
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].Frac()
+		}
+	}
+	return nas
+}
+
+// Linrand returns a linearly distributed random value between in and zero.
+func (as ArraySpec) Linrand() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Linrand()
 		}
 	}
 	return nas

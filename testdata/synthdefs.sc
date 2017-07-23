@@ -27,6 +27,10 @@ SynthDef(\ampdbExample, {
     Out.ar(0, LFNoise1.ar(1500).ampdb);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\bilinrandExample, {
+    Out.ar(0, LFNoise1.ar(1500).bilinrand);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ceilExample, {
     Out.ar(0, LFNoise1.ar(1500).ceil);
 }).writeDefFile(File.getcwd);
@@ -57,6 +61,10 @@ SynthDef(\floorExample, {
 
 SynthDef(\fracExample, {
     Out.ar(0, LFNoise1.ar(1500).frac);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\linrandExample, {
+    Out.ar(0, LFNoise1.ar(1500).linrand);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\midiratioExample, {

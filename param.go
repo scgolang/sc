@@ -67,6 +67,10 @@ func (p *param) AmpDb() Input {
 	return unaryOpAmpDb(KR, p, 1)
 }
 
+func (p *param) Bilinrand() Input {
+	return unaryOpBilinrand(KR, p, 1)
+}
+
 func (p *param) Ceil() Input {
 	return unaryOpCeil(KR, p, 1)
 }
@@ -105,6 +109,10 @@ func (p *param) Index() int32 {
 
 func (p *param) InitialValue() float32 {
 	return p.val
+}
+
+func (p *param) Linrand() Input {
+	return unaryOpLinrand(KR, p, 1)
 }
 
 func (p *param) Max(other Input) Input {

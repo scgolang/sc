@@ -64,6 +64,21 @@ func TestCpsmidi(t *testing.T) {
 	}))
 }
 
+func TestCpsoct(t *testing.T) {
+	const defName = "cpsoctExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Cpsoct(),
+		}.Rate(AR)
+	}))
+}
+
 func TestCubed(t *testing.T) {
 	const defName = "cubedExample"
 
@@ -150,6 +165,21 @@ func TestMidiratio(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Midiratio(),
+		}.Rate(AR)
+	}))
+}
+
+func TestOctcps(t *testing.T) {
+	const defName = "octcpsExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Octcps(),
 		}.Rate(AR)
 	}))
 }

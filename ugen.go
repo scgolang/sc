@@ -100,6 +100,11 @@ func (u *Ugen) Cpsmidi() Input {
 	return unaryOpCpsmidi(u.Rate, u, u.NumOutputs)
 }
 
+// Cpsoct converts cycles per second to decimal octaves.
+func (u *Ugen) Cpsoct() Input {
+	return unaryOpCpsoct(u.Rate, u, u.NumOutputs)
+}
+
 // Cubed computes the cube of a signal.
 func (u *Ugen) Cubed() Input {
 	return unaryOpCubed(u.Rate, u, u.NumOutputs)
@@ -153,6 +158,11 @@ func (u *Ugen) MulAdd(mul, add Input) Input {
 // Neg is a convenience operator that multiplies a signal by -1.
 func (u *Ugen) Neg() Input {
 	return unaryOpNeg(u.Rate, u, u.NumOutputs)
+}
+
+// Octcps converts decimal octaves to cycles per second.
+func (u *Ugen) Octcps() Input {
+	return unaryOpOctcps(u.Rate, u, u.NumOutputs)
 }
 
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.

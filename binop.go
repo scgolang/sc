@@ -9,6 +9,7 @@ const (
 	UnaryOpAmpDb      = 22
 	UnaryOpCeil       = 8
 	UnaryOpCpsmidi    = 18
+	UnaryOpCpsoct     = 24
 	UnaryOpCubed      = 13
 	UnaryOpDbAmp      = 21
 	UnaryOpExp        = 15
@@ -17,6 +18,7 @@ const (
 	UnaryOpMidicps    = 17
 	UnaryOpMidiratio  = 19
 	UnaryOpNeg        = 0
+	UnaryOpOctcps     = 23
 	UnaryOpRatiomidi  = 20
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
@@ -78,6 +80,12 @@ func unaryOpCpsmidi(rate int8, in Input, numOutputs int) Input {
 	return NewInput(unaryOpUgenName, rate, UnaryOpCpsmidi, numOutputs, in)
 }
 
+// unaryOpCpsoct converts cycles per second to decimal octaves.
+func unaryOpCpsoct(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpCpsoct, numOutputs, in)
+}
+
 // unaryOpCubed computes the cube of a signal.
 func unaryOpCubed(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -124,6 +132,12 @@ func unaryOpMidiratio(rate int8, in Input, numOutputs int) Input {
 func unaryOpNeg(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpNeg, numOutputs, in)
+}
+
+// unaryOpOctcps converts decimal octaves to cycles per second.
+func unaryOpOctcps(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpOctcps, numOutputs, in)
 }
 
 // unaryOpReciprocal returns the reciprocal of an input signal.

@@ -75,6 +75,10 @@ func (p *param) Cpsmidi() Input {
 	return unaryOpCpsmidi(KR, p, 1)
 }
 
+func (p *param) Cpsoct() Input {
+	return unaryOpCpsoct(KR, p, 1)
+}
+
 func (p *param) Cubed() Input {
 	return unaryOpCubed(KR, p, 1)
 }
@@ -129,6 +133,10 @@ func (p *param) Name() string {
 
 func (p *param) Neg() Input {
 	return unaryOpNeg(KR, p, 1)
+}
+
+func (p *param) Octcps() Input {
+	return unaryOpOctcps(KR, p, 1)
 }
 
 func (p *param) Ratiomidi() Input {

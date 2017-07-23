@@ -13,3 +13,13 @@ func Midicps(note float32) float32 {
 func Cpsmidi(cps float32) float32 {
 	return float32((12 * math.Log2(float64(cps)/440)) + 69)
 }
+
+// Octcps converts decimal octaves to cycles per second.
+func Octcps(oct float32) float32 {
+	return Midicps((oct + 1) * 12)
+}
+
+// Cpsoct converts cycles per second to decimal octaves.
+func Cpsoct(cps float32) float32 {
+	return Cpsmidi((cps / 12) - 1)
+}

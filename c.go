@@ -35,6 +35,11 @@ func (c C) Cpsmidi() Input {
 	return C(Cpsmidi(float32(c)))
 }
 
+// Cpsoct converts cycles per second to decimal octaves.
+func (c C) Cpsoct() Input {
+	return C(Cpsoct(float32(c)))
+}
+
 // Cubed computes the cube of a signal.
 func (c C) Cubed() Input {
 	return C(float32(c * c * c))
@@ -100,6 +105,11 @@ func (c C) MulAdd(mul, add Input) Input {
 // Neg is a convenience operator that multiplies a signal by -1.
 func (c C) Neg() Input {
 	return C(float32(c) * -1)
+}
+
+// Octcps converts decimal octaves to cycles per second.
+func (c C) Octcps() Input {
+	return C(Octcps(float32(c)))
 }
 
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.

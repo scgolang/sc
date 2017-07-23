@@ -62,6 +62,17 @@ func (as ArraySpec) Cpsmidi() Input {
 	return nas
 }
 
+// Cpsoct converts cycles per second to decimal octaves.
+func (as ArraySpec) Cpsoct() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Cpsoct()
+		}
+	}
+	return nas
+}
+
 // Cubed computes the cube of a signal.
 func (as ArraySpec) Cubed() Input {
 	var nas ArraySpec
@@ -178,6 +189,17 @@ func (as ArraySpec) Neg() Input {
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].Neg()
+		}
+	}
+	return nas
+}
+
+// Octcps converts decimal octaves to cycles per second.
+func (as ArraySpec) Octcps() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Octcps()
 		}
 	}
 	return nas

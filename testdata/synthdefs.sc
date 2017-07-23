@@ -35,6 +35,10 @@ SynthDef(\cpsmidiExample, {
     Out.ar(0, LFNoise1.ar(1500).cpsmidi);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\cpsoctExample, {
+    Out.ar(0, LFNoise1.ar(1500).cpsoct);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\cubedExample, {
     Out.ar(0, LFNoise1.ar(1500).cubed);
 }).writeDefFile(File.getcwd);
@@ -57,6 +61,10 @@ SynthDef(\fracExample, {
 
 SynthDef(\midiratioExample, {
     Out.ar(0, LFNoise1.ar(1500).midiratio);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\octcpsExample, {
+    Out.ar(0, LFNoise1.ar(1500).octcps);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\ratiomidiExample, {

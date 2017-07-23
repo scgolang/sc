@@ -24,6 +24,9 @@ type Input interface {
 	// Cpsmidi converts frequency in Hz to midi note values.
 	Cpsmidi() Input
 
+	// Cpsoct converts cycles per second to decimal octaves.
+	Cpsoct() Input
+
 	// Cubed raises a signal to the power of 3.
 	Cubed() Input
 
@@ -56,6 +59,9 @@ type Input interface {
 
 	// Neg is a convenience operator that multiplies a signal by -1.
 	Neg() Input
+
+	// Octcps converts decimal octaves to cycles per second.
+	Octcps() Input
 
 	// Ratiomidi converts a frequency ratio to an interval in MIDI notes.
 	Ratiomidi() Input

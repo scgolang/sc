@@ -56,6 +56,15 @@ func (ins Inputs) Cpsmidi() Input {
 	return Inputs(ia)
 }
 
+// Cpsoct converts cycles per second to decimal octaves.
+func (ins Inputs) Cpsoct() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Cpsoct()
+	}
+	return Inputs(ia)
+}
+
 // Cubed computes the cube of a signal.
 func (ins Inputs) Cubed() Input {
 	ia := make([]Input, len(ins))
@@ -158,6 +167,15 @@ func (ins Inputs) Neg() Input {
 		converted[i] = in.Neg()
 	}
 	return Inputs(converted)
+}
+
+// Octcps converts decimal octaves to cycles per second.
+func (ins Inputs) Octcps() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Octcps()
+	}
+	return Inputs(ia)
 }
 
 // Ratiomidi converts a frequency ratio to an interval in MIDI notes.

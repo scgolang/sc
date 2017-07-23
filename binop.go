@@ -7,6 +7,7 @@ const (
 	BinOpMax          = 13
 	UnaryOpAbs        = 5
 	UnaryOpCeil       = 8
+	UnaryOpCpsmidi    = 18
 	UnaryOpCubed      = 13
 	UnaryOpExp        = 15
 	UnaryOpFloor      = 9
@@ -54,6 +55,12 @@ func unaryOpAbs(rate int8, in Input, numOutputs int) Input {
 func unaryOpCeil(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpCeil, numOutputs, in)
+}
+
+// unaryOpCpsmidi converts frequency in Hz to midi note values.
+func unaryOpCpsmidi(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpCpsmidi, numOutputs, in)
 }
 
 // unaryOpCubed computes the cube of a signal.

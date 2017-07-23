@@ -34,6 +34,21 @@ func TestCeil(t *testing.T) {
 	}))
 }
 
+func TestCpsmidi(t *testing.T) {
+	const defName = "cpsmidiExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Cpsmidi(),
+		}.Rate(AR)
+	}))
+}
+
 func TestCubed(t *testing.T) {
 	const defName = "cubedExample"
 

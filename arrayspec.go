@@ -40,6 +40,17 @@ func (as ArraySpec) Ceil() Input {
 	return nas
 }
 
+// Cpsmidi converts frequency in Hz to midi note values.
+func (as ArraySpec) Cpsmidi() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Cpsmidi()
+		}
+	}
+	return nas
+}
+
 // Cubed computes the cube of a signal.
 func (as ArraySpec) Cubed() Input {
 	var nas ArraySpec

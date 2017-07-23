@@ -38,6 +38,15 @@ func (ins Inputs) Ceil() Input {
 	return Inputs(ia)
 }
 
+// Cpsmidi converts frequency in Hz to midi note values.
+func (ins Inputs) Cpsmidi() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Cpsmidi()
+	}
+	return Inputs(ia)
+}
+
 // Cubed computes the cube of a signal.
 func (ins Inputs) Cubed() Input {
 	ia := make([]Input, len(ins))

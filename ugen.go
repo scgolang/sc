@@ -80,9 +80,19 @@ func (u *Ugen) Abs() Input {
 	return unaryOpAbs(u.Rate, u, u.NumOutputs)
 }
 
+// Add adds an input to a ugen node.
+func (u *Ugen) Add(val Input) Input {
+	return binOpAdd(u.Rate, u, val, u.NumOutputs)
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (u *Ugen) Ceil() Input {
 	return unaryOpCeil(u.Rate, u, u.NumOutputs)
+}
+
+// Cpsmidi converts frequency in Hz to midi note values.
+func (u *Ugen) Cpsmidi() Input {
+	return unaryOpCpsmidi(u.Rate, u, u.NumOutputs)
 }
 
 // Cubed computes the cube of a signal.
@@ -103,11 +113,6 @@ func (u *Ugen) Floor() Input {
 // Frac computes the fractional part of a signal.
 func (u *Ugen) Frac() Input {
 	return unaryOpFrac(u.Rate, u, u.NumOutputs)
-}
-
-// Add adds an input to a ugen node.
-func (u *Ugen) Add(val Input) Input {
-	return binOpAdd(u.Rate, u, val, u.NumOutputs)
 }
 
 // Max computes the maximum of one Input and another.

@@ -27,6 +27,10 @@ SynthDef(\ceilExample, {
     Out.ar(0, LFNoise1.ar(1500).ceil);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\cpsmidiExample, {
+    Out.ar(0, LFNoise1.ar(1500).cpsmidi);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\cubedExample, {
     Out.ar(0, LFNoise1.ar(1500).cubed);
 }).writeDefFile(File.getcwd);

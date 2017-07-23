@@ -18,6 +18,9 @@ type Input interface {
 	// Ceil computes the ceiling (next lowest integer) of a signal.
 	Ceil() Input
 
+	// Cpsmidi converts frequency in Hz to midi note values.
+	Cpsmidi() Input
+
 	// Cubed raises a signal to the power of 3.
 	Cubed() Input
 

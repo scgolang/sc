@@ -25,6 +25,11 @@ func (c C) Ceil() Input {
 	return C(float32(math.Ceil(float64(c))))
 }
 
+// Cpsmidi converts frequency in Hz to midi note values.
+func (c C) Cpsmidi() Input {
+	return C(Cpsmidi(float32(c)))
+}
+
 // Cubed computes the cube of a signal.
 func (c C) Cubed() Input {
 	return C(float32(c * c * c))

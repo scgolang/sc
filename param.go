@@ -67,6 +67,10 @@ func (p *param) Ceil() Input {
 	return unaryOpCeil(KR, p, 1)
 }
 
+func (p *param) Cpsmidi() Input {
+	return unaryOpCpsmidi(KR, p, 1)
+}
+
 func (p *param) Cubed() Input {
 	return unaryOpCubed(KR, p, 1)
 }

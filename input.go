@@ -9,6 +9,12 @@ import (
 // ugen input. This includes synthdef parameters,
 // constants, and other ugens.
 type Input interface {
+	// Abs computes the absolute value of a signal.
+	Abs() Input
+
+	// Floor computes the floor (next lowest integer) of a signal.
+	Floor() Input
+
 	// Add adds one Input to another.
 	Add(val Input) Input
 

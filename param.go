@@ -56,8 +56,16 @@ type param struct {
 	val   float32
 }
 
+func (p *param) Abs() Input {
+	return unaryOpAbs(KR, p, 1)
+}
+
 func (p *param) Add(in Input) Input {
 	return binOpAdd(KR, p, in, 1)
+}
+
+func (p *param) Floor() Input {
+	return unaryOpFloor(KR, p, 1)
 }
 
 func (p *param) Index() int32 {

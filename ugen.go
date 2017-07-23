@@ -75,6 +75,16 @@ func NewUgen(name string, rate int8, specialIndex int16, numOutputs int, inputs 
 	return u
 }
 
+// Abs computes the absolute value of a signal.
+func (u *Ugen) Abs() Input {
+	return unaryOpAbs(u.Rate, u, u.NumOutputs)
+}
+
+// Floor computes the floor (next lowest integer) of a signal.
+func (u *Ugen) Floor() Input {
+	return unaryOpFloor(u.Rate, u, u.NumOutputs)
+}
+
 // Add adds an input to a ugen node.
 func (u *Ugen) Add(val Input) Input {
 	return binOpAdd(u.Rate, u, val, u.NumOutputs)

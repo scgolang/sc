@@ -11,6 +11,24 @@ type MultiInput interface {
 // Inputs is a slice of Input.
 type Inputs []Input
 
+// Abs computes the absolute value of a signal.
+func (ins Inputs) Abs() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Abs()
+	}
+	return Inputs(ia)
+}
+
+// Floor computes the floor (next lowest integer) of a signal.
+func (ins Inputs) Floor() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Floor()
+	}
+	return Inputs(ia)
+}
+
 // Add adds an input to all the inputs.
 func (ins Inputs) Add(val Input) Input {
 	ia := make([]Input, len(ins))

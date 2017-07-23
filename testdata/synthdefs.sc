@@ -19,6 +19,14 @@ SynthDef(\sub, {
     Out.ar(0, SinOsc.ar() - Blip.ar());
 }).writeDefFile(File.getcwd);
 
+SynthDef(\absExample, {
+    Out.ar(0, LFNoise1.ar(1500).abs);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\floorExample, {
+    Out.ar(0, LFNoise1.ar(1500).floor);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\negExample, {
     Out.ar(0, LFNoise1.ar(1500).neg);
 }).writeDefFile(File.getcwd);

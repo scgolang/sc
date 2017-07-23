@@ -7,12 +7,34 @@ import (
 // ArraySpec is a convenience type for Klang and Klank.
 type ArraySpec [3][]Input
 
+// Abs computes the absolute value of a signal.
+func (as ArraySpec) Abs() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Abs()
+		}
+	}
+	return nas
+}
+
 // Add adds one input to another.
 func (as ArraySpec) Add(val Input) Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].Add(val)
+		}
+	}
+	return nas
+}
+
+// Floor computes the floor of a signal.
+func (as ArraySpec) Floor() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Floor()
 		}
 	}
 	return nas

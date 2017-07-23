@@ -1,7 +1,16 @@
 package sc
 
+import (
+	"math"
+)
+
 // C wraps a float32 and implements the Input interface.
 type C float32
+
+// Abs computes the absolute value of a signal.
+func (c C) Abs() Input {
+	return C(Midicps(float32(math.Abs(float64(c)))))
+}
 
 // Add adds another input to the constant.
 func (c C) Add(val Input) Input {
@@ -9,6 +18,11 @@ func (c C) Add(val Input) Input {
 		return C(float32(v) + float32(c))
 	}
 	return val.Add(c)
+}
+
+// Floor computes the floor of a signal.
+func (c C) Floor() Input {
+	return C(Midicps(float32(math.Floor(float64(c)))))
 }
 
 // Max returns the maximum of one input and another.

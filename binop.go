@@ -3,10 +3,12 @@ package sc
 // Operator constants.
 const (
 	BinOpAdd          = 0
-	UnaryOpNeg        = 0
 	BinOpMul          = 2
 	BinOpMax          = 13
+	UnaryOpAbs        = 5
+	UnaryOpFloor      = 9
 	UnaryOpMidicps    = 17
+	UnaryOpNeg        = 0
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
 )
@@ -33,6 +35,18 @@ func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
 func mulAdd(rate int8, in, mul, add Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("MulAdd", rate, 0, numOutputs, in, mul, add)
+}
+
+// unaryOpAbs computes the absolute value of a signal.
+func unaryOpAbs(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpAbs, numOutputs, in)
+}
+
+// unaryOpFloor computes the floor (next lowest integer) of a signal.
+func unaryOpFloor(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpFloor, numOutputs, in)
 }
 
 // unaryOpMidicps converts MIDI note numbers to cycles per second.

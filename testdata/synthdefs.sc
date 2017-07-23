@@ -47,6 +47,10 @@ SynthDef(\fracExample, {
     Out.ar(0, LFNoise1.ar(1500).frac);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\midiratioExample, {
+    Out.ar(0, LFNoise1.ar(1500).midiratio);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\negExample, {
     Out.ar(0, LFNoise1.ar(1500).neg);
 }).writeDefFile(File.getcwd);

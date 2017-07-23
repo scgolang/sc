@@ -125,6 +125,11 @@ func (u *Ugen) Midicps() Input {
 	return unaryOpMidicps(u.Rate, u, u.NumOutputs)
 }
 
+// Midiratio converts an interval in MIDI notes into a frequency ratio.
+func (u *Ugen) Midiratio() Input {
+	return unaryOpMidiratio(u.Rate, u, u.NumOutputs)
+}
+
 // Mul multiplies the ugen node by an input.
 func (u *Ugen) Mul(val Input) Input {
 	return binOpMul(u.Rate, u, val, u.NumOutputs)

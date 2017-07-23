@@ -63,6 +63,11 @@ func (c C) Midicps() Input {
 	return C(Midicps(float32(c)))
 }
 
+// Midiratio converts an interval in MIDI notes into a frequency ratio.
+func (c C) Midiratio() Input {
+	return C(float32(math.Pow(2, float64(c)/12)))
+}
+
 // Mul multiplies the constant by another input.
 func (c C) Mul(val Input) Input {
 	if v, ok := val.(C); ok {

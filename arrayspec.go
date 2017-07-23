@@ -106,6 +106,17 @@ func (as ArraySpec) Max(val Input) Input {
 	return nas
 }
 
+// Midiratio converts an interval in MIDI notes into a frequency ratio.
+func (as ArraySpec) Midiratio() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Midiratio()
+		}
+	}
+	return nas
+}
+
 // Midicps converts from MIDI note values to cycles per second.
 func (as ArraySpec) Midicps() Input {
 	var nas ArraySpec

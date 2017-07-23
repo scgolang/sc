@@ -103,6 +103,10 @@ func (p *param) Midicps() Input {
 	return unaryOpMidicps(KR, p, 1)
 }
 
+func (p *param) Midiratio() Input {
+	return unaryOpMidiratio(KR, p, 1)
+}
+
 func (p *param) Mul(in Input) Input {
 	return binOpMul(KR, p, in, 1)
 }

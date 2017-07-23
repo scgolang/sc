@@ -39,6 +39,9 @@ type Input interface {
 	// Midicps converts MIDI note number to cycles per second.
 	Midicps() Input
 
+	// Midiratio converts an interval in MIDI notes into a frequency ratio.
+	Midiratio() Input
+
 	// Mul multiplies one Input by another.
 	Mul(val Input) Input
 

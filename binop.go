@@ -3,8 +3,8 @@ package sc
 // Operator constants.
 const (
 	BinOpAdd          = 0
-	BinOpMul          = 2
 	BinOpMax          = 13
+	BinOpMul          = 2
 	UnaryOpAbs        = 5
 	UnaryOpCeil       = 8
 	UnaryOpCpsmidi    = 18
@@ -13,6 +13,7 @@ const (
 	UnaryOpFloor      = 9
 	UnaryOpFrac       = 10
 	UnaryOpMidicps    = 17
+	UnaryOpMidiratio  = 19
 	UnaryOpNeg        = 0
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
@@ -91,6 +92,12 @@ func unaryOpFrac(rate int8, in Input, numOutputs int) Input {
 func unaryOpMidicps(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpMidicps, numOutputs, in)
+}
+
+// unaryOpMidiratio converts an interval in MIDI note numbers to a frequency ratio. TODO
+func unaryOpMidiratio(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpMidiratio, numOutputs, in)
 }
 
 // unaryOpNeg multiplies a signal by -1.

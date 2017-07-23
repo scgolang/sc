@@ -106,6 +106,15 @@ func (ins Inputs) Midicps() Input {
 	return Inputs(converted)
 }
 
+// Midiratio converts an interval in MIDI notes into a frequency ratio.
+func (ins Inputs) Midiratio() Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Midiratio()
+	}
+	return Inputs(converted)
+}
+
 // Mul multiplies all the inputs by another input.
 func (ins Inputs) Mul(val Input) Input {
 	ia := make([]Input, len(ins))

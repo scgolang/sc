@@ -12,17 +12,23 @@ type Input interface {
 	// Abs computes the absolute value of a signal.
 	Abs() Input
 
+	// Add adds one Input to another.
+	Add(val Input) Input
+
 	// Ceil computes the ceiling (next lowest integer) of a signal.
 	Ceil() Input
 
 	// Cubed raises a signal to the power of 3.
 	Cubed() Input
 
+	// Exp computes the exponential of a signal.
+	Exp() Input
+
 	// Floor computes the floor (next lowest integer) of a signal.
 	Floor() Input
 
-	// Add adds one Input to another.
-	Add(val Input) Input
+	// Frac returns the fractional part of a signal.
+	Frac() Input
 
 	// Max returns the max of one signal and another.
 	Max(other Input) Input
@@ -42,8 +48,17 @@ type Input interface {
 	// Reciprocal computes the reciprocal of a signal.
 	Reciprocal() Input
 
+	// Sign computes the sign of a signal.
+	// This returns -1 when a < 0, +1 when a > 0, 0 when a is 0.
+	Sign() Input
+
 	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
 	SoftClip() Input
+
+	// Sqrt computes the square root of a signal.
+	// The definition of square root is extended for signals so that sqrt(a)
+	// when a < 0 returns -sqrt(-a).
+	Sqrt() Input
 
 	// Squared raises a signal to the power of 2.
 	Squared() Input

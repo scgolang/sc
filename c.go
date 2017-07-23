@@ -9,7 +9,7 @@ type C float32
 
 // Abs computes the absolute value of a signal.
 func (c C) Abs() Input {
-	return C(Midicps(float32(math.Abs(float64(c)))))
+	return C(float32(math.Abs(float64(c))))
 }
 
 // Add adds another input to the constant.
@@ -22,17 +22,27 @@ func (c C) Add(val Input) Input {
 
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (c C) Ceil() Input {
-	return C(Midicps(float32(math.Ceil(float64(c)))))
+	return C(float32(math.Ceil(float64(c))))
 }
 
 // Cubed computes the cube of a signal.
 func (c C) Cubed() Input {
-	return C(Midicps(float32(c * c * c)))
+	return C(float32(c * c * c))
 }
 
-// Floor computes the floor of a signal.
+// Exp computes the exponential of a signal.
+func (c C) Exp() Input {
+	return C(float32(math.Exp(float64(c))))
+}
+
+// Floor computes the floor of a constant.
 func (c C) Floor() Input {
-	return C(Midicps(float32(math.Floor(float64(c)))))
+	return C(float32(math.Floor(float64(c))))
+}
+
+// Frac returns the fractional part of a constant.
+func (c C) Frac() Input {
+	return C(float32(float64(c) - math.Trunc(float64(c))))
 }
 
 // Max returns the maximum of one input and another.
@@ -77,6 +87,16 @@ func (c C) Reciprocal() Input {
 	return C(1 / float32(c))
 }
 
+// Sign computes the sign of the constant.
+func (c C) Sign() Input {
+	if c > 0 {
+		return C(1)
+	} else if c < 0 {
+		return C(-1)
+	}
+	return C(0)
+}
+
 // SoftClip clips the constant to the range [-0.5, 0.5]
 func (c C) SoftClip() Input {
 	if float32(c) < -0.5 {
@@ -87,9 +107,14 @@ func (c C) SoftClip() Input {
 	return c
 }
 
+// Sqrt computes the square root of a constant.
+func (c C) Sqrt() Input {
+	return C(math.Sqrt(float64(c)))
+}
+
 // Squared computes the square of a signal.
 func (c C) Squared() Input {
-	return C(Midicps(float32(c * c)))
+	return C(float32(c * c))
 }
 
 func maxFloat32(f1, f2 float32) float32 {

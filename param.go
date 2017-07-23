@@ -71,6 +71,14 @@ func (p *param) Cubed() Input {
 	return unaryOpCubed(KR, p, 1)
 }
 
+func (p *param) Exp() Input {
+	return unaryOpExp(KR, p, 1)
+}
+
+func (p *param) Frac() Input {
+	return unaryOpFrac(KR, p, 1)
+}
+
 func (p *param) Floor() Input {
 	return unaryOpFloor(KR, p, 1)
 }
@@ -111,8 +119,16 @@ func (p *param) Reciprocal() Input {
 	return unaryOpReciprocal(KR, p, 1) // TODO
 }
 
+func (p *param) Sign() Input {
+	return unaryOpSign(KR, p, 1)
+}
+
 func (p *param) SoftClip() Input {
 	return unaryOpSoftClip(KR, p, 1)
+}
+
+func (p *param) Sqrt() Input {
+	return unaryOpSqrt(KR, p, 1)
 }
 
 func (p *param) Squared() Input {

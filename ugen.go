@@ -90,9 +90,19 @@ func (u *Ugen) Cubed() Input {
 	return unaryOpCubed(u.Rate, u, u.NumOutputs)
 }
 
+// Exp computes the exponential of a signal.
+func (u *Ugen) Exp() Input {
+	return unaryOpExp(u.Rate, u, u.NumOutputs)
+}
+
 // Floor computes the floor (next lowest integer) of a signal.
 func (u *Ugen) Floor() Input {
 	return unaryOpFloor(u.Rate, u, u.NumOutputs)
+}
+
+// Frac computes the fractional part of a signal.
+func (u *Ugen) Frac() Input {
+	return unaryOpFrac(u.Rate, u, u.NumOutputs)
 }
 
 // Add adds an input to a ugen node.
@@ -130,9 +140,19 @@ func (u *Ugen) Reciprocal() Input {
 	return unaryOpReciprocal(u.Rate, u, u.NumOutputs) // TODO
 }
 
+// Sign computes the sign of a signal.
+func (u *Ugen) Sign() Input {
+	return unaryOpSign(u.Rate, u, u.NumOutputs)
+}
+
 // SoftClip adds distortion to a ugen.
 func (u *Ugen) SoftClip() Input {
 	return unaryOpSoftClip(u.Rate, u, u.NumOutputs)
+}
+
+// Sqrt computes the square root of a signal.
+func (u *Ugen) Sqrt() Input {
+	return unaryOpSqrt(u.Rate, u, u.NumOutputs)
 }
 
 // Squared computes the square of a signal.

@@ -31,8 +31,16 @@ SynthDef(\cubedExample, {
     Out.ar(0, LFNoise1.ar(1500).cubed);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\expExample, {
+    Out.ar(0, LFNoise1.ar(1500).exp);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\floorExample, {
     Out.ar(0, LFNoise1.ar(1500).floor);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\fracExample, {
+    Out.ar(0, LFNoise1.ar(1500).frac);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\negExample, {
@@ -41,6 +49,14 @@ SynthDef(\negExample, {
 
 SynthDef(\reciprocalExample, {
     Out.ar(0, LFNoise1.ar(1500).reciprocal);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\signExample, {
+    Out.ar(0, LFNoise1.ar(1500).sign);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\sqrtExample, {
+    Out.ar(0, LFNoise1.ar(1500).sqrt);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\squaredExample, {

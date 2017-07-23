@@ -51,12 +51,34 @@ func (as ArraySpec) Cubed() Input {
 	return nas
 }
 
+// Exp computes the exponential of a signal.
+func (as ArraySpec) Exp() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Exp()
+		}
+	}
+	return nas
+}
+
 // Floor computes the floor of a signal.
 func (as ArraySpec) Floor() Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].Floor()
+		}
+	}
+	return nas
+}
+
+// Frac returns the fractional part of a signal.
+func (as ArraySpec) Frac() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Frac()
 		}
 	}
 	return nas
@@ -128,12 +150,34 @@ func (as ArraySpec) Reciprocal() Input {
 	return nas
 }
 
+// Sign returns the sign of a signal.
+func (as ArraySpec) Sign() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Sign()
+		}
+	}
+	return nas
+}
+
 // SoftClip computes nonlinear distortion of an input.
 func (as ArraySpec) SoftClip() Input {
 	var nas ArraySpec
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].SoftClip()
+		}
+	}
+	return nas
+}
+
+// Sqrt returns the square root of a signal.
+func (as ArraySpec) Sqrt() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Sqrt()
 		}
 	}
 	return nas

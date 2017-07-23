@@ -47,11 +47,29 @@ func (ins Inputs) Cubed() Input {
 	return Inputs(ia)
 }
 
+// Exp computes the exponential of a signal.
+func (ins Inputs) Exp() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Exp()
+	}
+	return Inputs(ia)
+}
+
 // Floor computes the floor (next lowest integer) of a signal.
 func (ins Inputs) Floor() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Floor()
+	}
+	return Inputs(ia)
+}
+
+// Frac computes the fractional part of a signal.
+func (ins Inputs) Frac() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Frac()
 	}
 	return Inputs(ia)
 }
@@ -115,6 +133,15 @@ func (ins Inputs) Reciprocal() Input {
 	return Inputs(converted)
 }
 
+// Sign computes the sign of a signal.
+func (ins Inputs) Sign() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sign()
+	}
+	return Inputs(ia)
+}
+
 // SoftClip adds distortion to the inputs.
 func (ins Inputs) SoftClip() Input {
 	clipped := make([]Input, len(ins))
@@ -122,6 +149,15 @@ func (ins Inputs) SoftClip() Input {
 		clipped[i] = in.SoftClip()
 	}
 	return Inputs(clipped)
+}
+
+// Sqrt computes the square root of a signal.
+func (ins Inputs) Sqrt() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sqrt()
+	}
+	return Inputs(ia)
 }
 
 // Squared computes the square of a signal.

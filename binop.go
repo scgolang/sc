@@ -8,12 +8,16 @@ const (
 	UnaryOpAbs        = 5
 	UnaryOpCeil       = 8
 	UnaryOpCubed      = 13
+	UnaryOpExp        = 15
 	UnaryOpFloor      = 9
+	UnaryOpFrac       = 10
 	UnaryOpMidicps    = 17
 	UnaryOpNeg        = 0
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
+	UnaryOpSign       = 11
 	UnaryOpSquared    = 12
+	UnaryOpSqrt       = 14
 )
 
 // binOpMax creates a BinaryOpUgen that represents the maximum of two signals.
@@ -46,22 +50,34 @@ func unaryOpAbs(rate int8, in Input, numOutputs int) Input {
 	return NewInput("UnaryOpUGen", rate, UnaryOpAbs, numOutputs, in)
 }
 
-// unaryOpCeil computes the ceiling of a signal. TODO
+// unaryOpCeil computes the ceiling of a signal.
 func unaryOpCeil(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpCeil, numOutputs, in)
 }
 
-// unaryOpCubed computes the cube of a signal. TODO
+// unaryOpCubed computes the cube of a signal.
 func unaryOpCubed(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpCubed, numOutputs, in)
+}
+
+// unaryOpExp computes the exponential of a signal.
+func unaryOpExp(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpExp, numOutputs, in)
 }
 
 // unaryOpFloor computes the floor (next lowest integer) of a signal.
 func unaryOpFloor(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpFloor, numOutputs, in)
+}
+
+// unaryOpFrac returns the fractional part of a signal.
+func unaryOpFrac(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpFrac, numOutputs, in)
 }
 
 // unaryOpMidicps converts MIDI note numbers to cycles per second.
@@ -82,13 +98,26 @@ func unaryOpReciprocal(rate int8, in Input, numOutputs int) Input {
 	return NewInput("UnaryOpUGen", rate, UnaryOpReciprocal, numOutputs, in)
 }
 
+// unaryOpSign computes the sign of a signal.
+// This returns -1 when a < 0, +1 when a > 0, 0 when a is 0.
+func unaryOpSign(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpSign, numOutputs, in)
+}
+
 // unaryOpSoftClip adds distortion to a ugen.
 func unaryOpSoftClip(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpSoftClip, numOutputs, in)
 }
 
-// unaryOpSquared computes the square of a signal. TODO
+// unaryOpSqrt computes the square root of a signal.
+func unaryOpSqrt(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpSqrt, numOutputs, in)
+}
+
+// unaryOpSquared computes the square of a signal.
 func unaryOpSquared(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpSquared, numOutputs, in)

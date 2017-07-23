@@ -49,6 +49,21 @@ func TestCubed(t *testing.T) {
 	}))
 }
 
+func TestExp(t *testing.T) {
+	const defName = "expExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Exp(),
+		}.Rate(AR)
+	}))
+}
+
 func TestFloor(t *testing.T) {
 	const defName = "floorExample"
 
@@ -60,6 +75,21 @@ func TestFloor(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Floor(),
+		}.Rate(AR)
+	}))
+}
+
+func TestFrac(t *testing.T) {
+	const defName = "fracExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Frac(),
 		}.Rate(AR)
 	}))
 }
@@ -79,6 +109,21 @@ func TestReciprocal(t *testing.T) {
 	}))
 }
 
+func TestSign(t *testing.T) {
+	const defName = "signExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sign(),
+		}.Rate(AR)
+	}))
+}
+
 func TestSquared(t *testing.T) {
 	const defName = "squaredExample"
 
@@ -90,6 +135,21 @@ func TestSquared(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Squared(),
+		}.Rate(AR)
+	}))
+}
+
+func TestSqrt(t *testing.T) {
+	const defName = "sqrtExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sqrt(),
 		}.Rate(AR)
 	}))
 }

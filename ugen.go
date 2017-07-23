@@ -80,6 +80,16 @@ func (u *Ugen) Abs() Input {
 	return unaryOpAbs(u.Rate, u, u.NumOutputs)
 }
 
+// Ceil computes the ceiling (next highest integer) of a signal.
+func (u *Ugen) Ceil() Input {
+	return unaryOpCeil(u.Rate, u, u.NumOutputs)
+}
+
+// Cubed computes the cube of a signal.
+func (u *Ugen) Cubed() Input {
+	return unaryOpCubed(u.Rate, u, u.NumOutputs)
+}
+
 // Floor computes the floor (next lowest integer) of a signal.
 func (u *Ugen) Floor() Input {
 	return unaryOpFloor(u.Rate, u, u.NumOutputs)
@@ -123,6 +133,11 @@ func (u *Ugen) Reciprocal() Input {
 // SoftClip adds distortion to a ugen.
 func (u *Ugen) SoftClip() Input {
 	return unaryOpSoftClip(u.Rate, u, u.NumOutputs)
+}
+
+// Squared computes the square of a signal.
+func (u *Ugen) Squared() Input {
+	return unaryOpSquared(u.Rate, u, u.NumOutputs)
 }
 
 // Write writes a Ugen

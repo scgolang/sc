@@ -6,11 +6,14 @@ const (
 	BinOpMul          = 2
 	BinOpMax          = 13
 	UnaryOpAbs        = 5
+	UnaryOpCeil       = 8
+	UnaryOpCubed      = 13
 	UnaryOpFloor      = 9
 	UnaryOpMidicps    = 17
 	UnaryOpNeg        = 0
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
+	UnaryOpSquared    = 12
 )
 
 // binOpMax creates a BinaryOpUgen that represents the maximum of two signals.
@@ -43,6 +46,18 @@ func unaryOpAbs(rate int8, in Input, numOutputs int) Input {
 	return NewInput("UnaryOpUGen", rate, UnaryOpAbs, numOutputs, in)
 }
 
+// unaryOpCeil computes the ceiling of a signal. TODO
+func unaryOpCeil(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpCeil, numOutputs, in)
+}
+
+// unaryOpCubed computes the cube of a signal. TODO
+func unaryOpCubed(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpCubed, numOutputs, in)
+}
+
 // unaryOpFloor computes the floor (next lowest integer) of a signal.
 func unaryOpFloor(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -71,4 +86,10 @@ func unaryOpReciprocal(rate int8, in Input, numOutputs int) Input {
 func unaryOpSoftClip(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput("UnaryOpUGen", rate, UnaryOpSoftClip, numOutputs, in)
+}
+
+// unaryOpSquared computes the square of a signal. TODO
+func unaryOpSquared(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput("UnaryOpUGen", rate, UnaryOpSquared, numOutputs, in)
 }

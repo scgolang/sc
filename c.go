@@ -20,6 +20,16 @@ func (c C) Add(val Input) Input {
 	return val.Add(c)
 }
 
+// Ceil computes the ceiling (next highest integer) of a signal.
+func (c C) Ceil() Input {
+	return C(Midicps(float32(math.Ceil(float64(c)))))
+}
+
+// Cubed computes the cube of a signal.
+func (c C) Cubed() Input {
+	return C(Midicps(float32(c * c * c)))
+}
+
 // Floor computes the floor of a signal.
 func (c C) Floor() Input {
 	return C(Midicps(float32(math.Floor(float64(c)))))
@@ -75,6 +85,11 @@ func (c C) SoftClip() Input {
 		return C(0.5)
 	}
 	return c
+}
+
+// Squared computes the square of a signal.
+func (c C) Squared() Input {
+	return C(Midicps(float32(c * c)))
 }
 
 func maxFloat32(f1, f2 float32) float32 {

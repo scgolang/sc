@@ -19,6 +19,36 @@ func TestAbs(t *testing.T) {
 	}))
 }
 
+func TestCeil(t *testing.T) {
+	const defName = "ceilExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Ceil(),
+		}.Rate(AR)
+	}))
+}
+
+func TestCubed(t *testing.T) {
+	const defName = "cubedExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Cubed(),
+		}.Rate(AR)
+	}))
+}
+
 func TestFloor(t *testing.T) {
 	const defName = "floorExample"
 
@@ -45,6 +75,21 @@ func TestReciprocal(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Reciprocal(),
+		}.Rate(AR)
+	}))
+}
+
+func TestSquared(t *testing.T) {
+	const defName = "squaredExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Squared(),
 		}.Rate(AR)
 	}))
 }

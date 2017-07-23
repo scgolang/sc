@@ -12,6 +12,12 @@ type Input interface {
 	// Abs computes the absolute value of a signal.
 	Abs() Input
 
+	// Ceil computes the ceiling (next lowest integer) of a signal.
+	Ceil() Input
+
+	// Cubed raises a signal to the power of 3.
+	Cubed() Input
+
 	// Floor computes the floor (next lowest integer) of a signal.
 	Floor() Input
 
@@ -38,6 +44,9 @@ type Input interface {
 
 	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
 	SoftClip() Input
+
+	// Squared raises a signal to the power of 2.
+	Squared() Input
 }
 
 func readInput(r io.Reader) (UgenInput, error) {

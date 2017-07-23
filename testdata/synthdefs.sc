@@ -23,6 +23,14 @@ SynthDef(\absExample, {
     Out.ar(0, LFNoise1.ar(1500).abs);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ceilExample, {
+    Out.ar(0, LFNoise1.ar(1500).ceil);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\cubedExample, {
+    Out.ar(0, LFNoise1.ar(1500).cubed);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\floorExample, {
     Out.ar(0, LFNoise1.ar(1500).floor);
 }).writeDefFile(File.getcwd);
@@ -33,6 +41,10 @@ SynthDef(\negExample, {
 
 SynthDef(\reciprocalExample, {
     Out.ar(0, LFNoise1.ar(1500).reciprocal);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\squaredExample, {
+    Out.ar(0, LFNoise1.ar(1500).squared);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\Envgen1, {

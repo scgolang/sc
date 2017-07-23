@@ -20,20 +20,38 @@ func (ins Inputs) Abs() Input {
 	return Inputs(ia)
 }
 
-// Floor computes the floor (next lowest integer) of a signal.
-func (ins Inputs) Floor() Input {
-	ia := make([]Input, len(ins))
-	for i, in := range ins {
-		ia[i] = in.Floor()
-	}
-	return Inputs(ia)
-}
-
 // Add adds an input to all the inputs.
 func (ins Inputs) Add(val Input) Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Add(val)
+	}
+	return Inputs(ia)
+}
+
+// Ceil computes the ceiling (next highest integer) of a signal.
+func (ins Inputs) Ceil() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Ceil()
+	}
+	return Inputs(ia)
+}
+
+// Cubed computes the cube of a signal.
+func (ins Inputs) Cubed() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Cubed()
+	}
+	return Inputs(ia)
+}
+
+// Floor computes the floor (next lowest integer) of a signal.
+func (ins Inputs) Floor() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Floor()
 	}
 	return Inputs(ia)
 }
@@ -104,6 +122,15 @@ func (ins Inputs) SoftClip() Input {
 		clipped[i] = in.SoftClip()
 	}
 	return Inputs(clipped)
+}
+
+// Squared computes the square of a signal.
+func (ins Inputs) Squared() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Squared()
+	}
+	return Inputs(ia)
 }
 
 // Multi does multichannel expansion.

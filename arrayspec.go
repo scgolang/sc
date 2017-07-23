@@ -29,6 +29,28 @@ func (as ArraySpec) Add(val Input) Input {
 	return nas
 }
 
+// Ceil computes the ceiling of a signal.
+func (as ArraySpec) Ceil() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Ceil()
+		}
+	}
+	return nas
+}
+
+// Cubed computes the cube of a signal.
+func (as ArraySpec) Cubed() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Cubed()
+		}
+	}
+	return nas
+}
+
 // Floor computes the floor of a signal.
 func (as ArraySpec) Floor() Input {
 	var nas ArraySpec
@@ -112,6 +134,17 @@ func (as ArraySpec) SoftClip() Input {
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].SoftClip()
+		}
+	}
+	return nas
+}
+
+// Squared computes the square of a signal.
+func (as ArraySpec) Squared() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Squared()
 		}
 	}
 	return nas

@@ -1,7 +1,6 @@
 package sc
 
-// Params is an interface that allows you to add parameters to
-// a synthdef.
+// Params is an interface that allows you to add parameters to a synthdef.
 type Params interface {
 	// Add adds a named parameter to a synthdef, with an initial value
 	Add(name string, initialValue float32) Input
@@ -64,6 +63,14 @@ func (p *param) Add(in Input) Input {
 	return binOpAdd(KR, p, in, 1)
 }
 
+func (p *param) Ceil() Input {
+	return unaryOpCeil(KR, p, 1)
+}
+
+func (p *param) Cubed() Input {
+	return unaryOpCubed(KR, p, 1)
+}
+
 func (p *param) Floor() Input {
 	return unaryOpFloor(KR, p, 1)
 }
@@ -106,6 +113,10 @@ func (p *param) Reciprocal() Input {
 
 func (p *param) SoftClip() Input {
 	return unaryOpSoftClip(KR, p, 1)
+}
+
+func (p *param) Squared() Input {
+	return unaryOpSquared(KR, p, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

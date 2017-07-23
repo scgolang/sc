@@ -15,6 +15,9 @@ type Input interface {
 	// Add adds one Input to another.
 	Add(val Input) Input
 
+	// AmpDb converts linear amplitude to decibels.
+	AmpDb() Input
+
 	// Ceil computes the ceiling (next lowest integer) of a signal.
 	Ceil() Input
 
@@ -23,6 +26,9 @@ type Input interface {
 
 	// Cubed raises a signal to the power of 3.
 	Cubed() Input
+
+	// DbAmp converts decibels to linear amplitude.
+	DbAmp() Input
 
 	// Exp computes the exponential of a signal.
 	Exp() Input

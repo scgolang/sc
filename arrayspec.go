@@ -29,6 +29,17 @@ func (as ArraySpec) Add(val Input) Input {
 	return nas
 }
 
+// AmpDb converts linear amplitude to decibels.
+func (as ArraySpec) AmpDb() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].AmpDb()
+		}
+	}
+	return nas
+}
+
 // Ceil computes the ceiling of a signal.
 func (as ArraySpec) Ceil() Input {
 	var nas ArraySpec
@@ -57,6 +68,17 @@ func (as ArraySpec) Cubed() Input {
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].Cubed()
+		}
+	}
+	return nas
+}
+
+// DbAmp converts decibels tolinear amplitude.
+func (as ArraySpec) DbAmp() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].DbAmp()
 		}
 	}
 	return nas

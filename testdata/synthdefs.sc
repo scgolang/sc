@@ -23,6 +23,10 @@ SynthDef(\absExample, {
     Out.ar(0, LFNoise1.ar(1500).abs);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ampdbExample, {
+    Out.ar(0, LFNoise1.ar(1500).ampdb);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ceilExample, {
     Out.ar(0, LFNoise1.ar(1500).ceil);
 }).writeDefFile(File.getcwd);
@@ -33,6 +37,10 @@ SynthDef(\cpsmidiExample, {
 
 SynthDef(\cubedExample, {
     Out.ar(0, LFNoise1.ar(1500).cubed);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\dbampExample, {
+    Out.ar(0, LFNoise1.ar(1500).dbamp);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\expExample, {

@@ -63,6 +63,10 @@ func (p *param) Add(in Input) Input {
 	return binOpAdd(KR, p, in, 1)
 }
 
+func (p *param) AmpDb() Input {
+	return unaryOpAmpDb(KR, p, 1)
+}
+
 func (p *param) Ceil() Input {
 	return unaryOpCeil(KR, p, 1)
 }
@@ -73,6 +77,10 @@ func (p *param) Cpsmidi() Input {
 
 func (p *param) Cubed() Input {
 	return unaryOpCubed(KR, p, 1)
+}
+
+func (p *param) DbAmp() Input {
+	return unaryOpDbAmp(KR, p, 1)
 }
 
 func (p *param) Exp() Input {

@@ -85,6 +85,11 @@ func (u *Ugen) Add(val Input) Input {
 	return binOpAdd(u.Rate, u, val, u.NumOutputs)
 }
 
+// AmpDb converts linear amplitude to decibels.
+func (u *Ugen) AmpDb() Input {
+	return unaryOpAmpDb(u.Rate, u, u.NumOutputs)
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (u *Ugen) Ceil() Input {
 	return unaryOpCeil(u.Rate, u, u.NumOutputs)
@@ -98,6 +103,11 @@ func (u *Ugen) Cpsmidi() Input {
 // Cubed computes the cube of a signal.
 func (u *Ugen) Cubed() Input {
 	return unaryOpCubed(u.Rate, u, u.NumOutputs)
+}
+
+// DbAmp converts linear amplitude to decibels.
+func (u *Ugen) DbAmp() Input {
+	return unaryOpDbAmp(u.Rate, u, u.NumOutputs)
 }
 
 // Exp computes the exponential of a signal.

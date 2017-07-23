@@ -19,6 +19,21 @@ func TestAbs(t *testing.T) {
 	}))
 }
 
+func TestAmpDb(t *testing.T) {
+	const defName = "ampdbExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.AmpDb(),
+		}.Rate(AR)
+	}))
+}
+
 func TestCeil(t *testing.T) {
 	const defName = "ceilExample"
 
@@ -60,6 +75,21 @@ func TestCubed(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Cubed(),
+		}.Rate(AR)
+	}))
+}
+
+func TestDbAmp(t *testing.T) {
+	const defName = "dbampExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.DbAmp(),
 		}.Rate(AR)
 	}))
 }

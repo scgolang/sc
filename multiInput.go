@@ -29,6 +29,15 @@ func (ins Inputs) Add(val Input) Input {
 	return Inputs(ia)
 }
 
+// AmpDb converts linear amplitude to decibels.
+func (ins Inputs) AmpDb() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.AmpDb()
+	}
+	return Inputs(ia)
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (ins Inputs) Ceil() Input {
 	ia := make([]Input, len(ins))
@@ -52,6 +61,15 @@ func (ins Inputs) Cubed() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Cubed()
+	}
+	return Inputs(ia)
+}
+
+// DbAmp converts decibels to linear amplitude.
+func (ins Inputs) DbAmp() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.DbAmp()
 	}
 	return Inputs(ia)
 }

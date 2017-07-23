@@ -20,6 +20,11 @@ func (c C) Add(val Input) Input {
 	return val.Add(c)
 }
 
+// AmpDb converts linear amplitude to decibels.
+func (c C) AmpDb() Input {
+	return C(float32(20 * math.Log10(float64(c))))
+}
+
 // Ceil computes the ceiling (next highest integer) of a signal.
 func (c C) Ceil() Input {
 	return C(float32(math.Ceil(float64(c))))
@@ -33,6 +38,11 @@ func (c C) Cpsmidi() Input {
 // Cubed computes the cube of a signal.
 func (c C) Cubed() Input {
 	return C(float32(c * c * c))
+}
+
+// DbAmp converts decibels to linear amplitude.
+func (c C) DbAmp() Input {
+	return C(float32(math.Pow(10, float64(c)/20)))
 }
 
 // Exp computes the exponential of a signal.

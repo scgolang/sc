@@ -9,6 +9,7 @@ const (
 	UnaryOpAmpDb      = 22
 	UnaryOpBilinrand  = 40
 	UnaryOpCeil       = 8
+	UnaryOpCoin       = 44
 	UnaryOpCpsmidi    = 18
 	UnaryOpCpsoct     = 24
 	UnaryOpCubed      = 13
@@ -82,6 +83,12 @@ func unaryOpBilinrand(rate int8, in Input, numOutputs int) Input {
 func unaryOpCeil(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpCeil, numOutputs, in)
+}
+
+// unaryOpCoin returns one or zero with the probability given by the argument.
+func unaryOpCoin(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpCoin, numOutputs, in)
 }
 
 // unaryOpCpsmidi converts frequency in Hz to midi note values.

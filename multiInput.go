@@ -56,6 +56,15 @@ func (ins Inputs) Ceil() Input {
 	return Inputs(ia)
 }
 
+// Coin returns one or zero with the probability given by the input.
+func (ins Inputs) Coin() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Coin()
+	}
+	return Inputs(ia)
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (ins Inputs) Cpsmidi() Input {
 	ia := make([]Input, len(ins))

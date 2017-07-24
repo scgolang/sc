@@ -62,6 +62,17 @@ func (as ArraySpec) Ceil() Input {
 	return nas
 }
 
+// Coin returns one or zero with the probability given by the input.
+func (as ArraySpec) Coin() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Coin()
+		}
+	}
+	return nas
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (as ArraySpec) Cpsmidi() Input {
 	var nas ArraySpec

@@ -100,6 +100,11 @@ func (u *Ugen) Ceil() Input {
 	return unaryOpCeil(u.Rate, u, u.NumOutputs)
 }
 
+// Coin returns one or zero with the probability given by the input.
+func (u *Ugen) Coin() Input {
+	return unaryOpCoin(u.Rate, u, u.NumOutputs)
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (u *Ugen) Cpsmidi() Input {
 	return unaryOpCpsmidi(u.Rate, u, u.NumOutputs)

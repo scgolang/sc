@@ -64,6 +64,21 @@ func TestCeil(t *testing.T) {
 	}))
 }
 
+func TestCoin(t *testing.T) {
+	const defName = "coinExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Coin(),
+		}.Rate(AR)
+	}))
+}
+
 func TestCpsmidi(t *testing.T) {
 	const defName = "cpsmidiExample"
 

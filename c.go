@@ -36,6 +36,14 @@ func (c C) Ceil() Input {
 	return C(float32(math.Ceil(float64(c))))
 }
 
+// Coin returns one or zero with the probability given by the input.
+func (c C) Coin() Input {
+	if rand.Float64() < float64(c) {
+		return C(1)
+	}
+	return C(0)
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (c C) Cpsmidi() Input {
 	return C(Cpsmidi(float32(c)))

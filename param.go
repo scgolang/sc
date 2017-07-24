@@ -75,6 +75,10 @@ func (p *param) Ceil() Input {
 	return unaryOpCeil(KR, p, 1)
 }
 
+func (p *param) Coin() Input {
+	return unaryOpCoin(KR, p, 1)
+}
+
 func (p *param) Cpsmidi() Input {
 	return unaryOpCpsmidi(KR, p, 1)
 }

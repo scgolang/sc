@@ -24,6 +24,9 @@ type Input interface {
 	// Ceil computes the ceiling (next lowest integer) of a signal.
 	Ceil() Input
 
+	// Coin returns one or zero with the probability given by the input.
+	Coin() Input
+
 	// Cpsmidi converts frequency in Hz to midi note values.
 	Cpsmidi() Input
 

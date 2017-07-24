@@ -98,6 +98,9 @@ type Input interface {
 
 	// Squared raises a signal to the power of 2.
 	Squared() Input
+
+	// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
+	Sum3rand() Input
 }
 
 func readInput(r io.Reader) (UgenInput, error) {

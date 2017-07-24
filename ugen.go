@@ -220,6 +220,11 @@ func (u *Ugen) Squared() Input {
 	return unaryOpSquared(u.Rate, u, u.NumOutputs)
 }
 
+// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
+func (u *Ugen) Sum3rand() Input {
+	return unaryOpSum3rand(u.Rate, u, u.NumOutputs)
+}
+
 // Write writes a Ugen
 func (u *Ugen) Write(w io.Writer) error {
 	// write the synthdef name

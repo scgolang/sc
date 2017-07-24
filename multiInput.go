@@ -277,6 +277,15 @@ func (ins Inputs) Squared() Input {
 	return Inputs(ia)
 }
 
+// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
+func (ins Inputs) Sum3rand() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sum3rand()
+	}
+	return Inputs(ia)
+}
+
 // Multi does multichannel expansion.
 // See http://doc.sccode.org/Guides/Multichannel-Expansion.html.
 func Multi(inputs ...Input) Inputs {

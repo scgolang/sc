@@ -333,3 +333,18 @@ func TestSqrt(t *testing.T) {
 		}.Rate(AR)
 	}))
 }
+
+func TestSum3rand(t *testing.T) {
+	const defName = "sum3randExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sum3rand(),
+		}.Rate(AR)
+	}))
+}

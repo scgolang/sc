@@ -182,6 +182,11 @@ func (c C) Squared() Input {
 	return C(float32(c * c))
 }
 
+// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
+func (c C) Sum3rand() Input {
+	return C(rand.NormFloat64())
+}
+
 func maxFloat32(f1, f2 float32) float32 {
 	if f1 > f2 {
 		return f1

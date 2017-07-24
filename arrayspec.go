@@ -326,6 +326,17 @@ func (as ArraySpec) Squared() Input {
 	return nas
 }
 
+// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
+func (as ArraySpec) Sum3rand() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Sum3rand()
+		}
+	}
+	return nas
+}
+
 func (as ArraySpec) inputs(freqfirst bool) []Input {
 	var ins []Input
 

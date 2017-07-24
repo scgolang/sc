@@ -111,6 +111,10 @@ SynthDef(\squaredExample, {
     Out.ar(0, LFNoise1.ar(1500).squared);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\sum3randExample, {
+    Out.ar(0, LFNoise1.ar(1500).sum3rand);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\Envgen1, {
     Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
 }).writeDefFile(File.getcwd);

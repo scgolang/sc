@@ -183,6 +183,10 @@ func (p *param) Squared() Input {
 	return unaryOpSquared(KR, p, 1)
 }
 
+func (p *param) Sum3rand() Input {
+	return unaryOpSum3rand(KR, p, 1)
+}
+
 func newParam(name string, index int32, initialValue float32) *param {
 	p := param{name, index, initialValue}
 	return &p

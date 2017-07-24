@@ -30,6 +30,7 @@ const (
 	UnaryOpSign       = 11
 	UnaryOpSquared    = 12
 	UnaryOpSqrt       = 14
+	UnaryOpSum3rand   = 41
 )
 
 const (
@@ -210,4 +211,10 @@ func unaryOpSqrt(rate int8, in Input, numOutputs int) Input {
 func unaryOpSquared(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpSquared, numOutputs, in)
+}
+
+// unaryOpSum3rand
+func unaryOpSum3rand(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpSum3rand, numOutputs, in)
 }

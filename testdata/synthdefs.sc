@@ -71,6 +71,18 @@ SynthDef(\linrandExample, {
     Out.ar(0, LFNoise1.ar(1500).linrand);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\logExample, {
+    Out.ar(0, LFNoise1.ar(1500).log);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\log10Example, {
+    Out.ar(0, LFNoise1.ar(1500).log10);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\log2Example, {
+    Out.ar(0, LFNoise1.ar(1500).log2);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\midiratioExample, {
     Out.ar(0, LFNoise1.ar(1500).midiratio);
 }).writeDefFile(File.getcwd);

@@ -145,6 +145,21 @@ func (u *Ugen) Linrand() Input {
 	return unaryOpLinrand(u.Rate, u, u.NumOutputs)
 }
 
+// Log computes a natural logarithm.
+func (u *Ugen) Log() Input {
+	return unaryOpLog(u.Rate, u, u.NumOutputs)
+}
+
+// Log10 computes a base 10 logarithm.
+func (u *Ugen) Log10() Input {
+	return unaryOpLog10(u.Rate, u, u.NumOutputs)
+}
+
+// Log2 computes a base 2 logarithm.
+func (u *Ugen) Log2() Input {
+	return unaryOpLog2(u.Rate, u, u.NumOutputs)
+}
+
 // Max computes the maximum of one Input and another.
 func (u *Ugen) Max(other Input) Input {
 	return binOpMax(u.Rate, u, other, u.NumOutputs)

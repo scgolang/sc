@@ -51,6 +51,15 @@ type Input interface {
 	// Linrand returns a linearly distributed random value between in and zero.
 	Linrand() Input
 
+	// Log computes a natural logarithm.
+	Log() Input
+
+	// Log10 computes a base 10 logarithm.
+	Log10() Input
+
+	// Log2 computes a base 2 logarithm.
+	Log2() Input
+
 	// Max returns the max of one signal and another.
 	Max(other Input) Input
 

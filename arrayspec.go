@@ -161,6 +161,39 @@ func (as ArraySpec) Linrand() Input {
 	return nas
 }
 
+// Log computes a natural logarithm.
+func (as ArraySpec) Log() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Log()
+		}
+	}
+	return nas
+}
+
+// Log10 computes a base 10 logarithm.
+func (as ArraySpec) Log10() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Log10()
+		}
+	}
+	return nas
+}
+
+// Log2 computes a base 2 logarithm.
+func (as ArraySpec) Log2() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Log2()
+		}
+	}
+	return nas
+}
+
 // Max returns the maximum of one input and another.
 func (as ArraySpec) Max(val Input) Input {
 	var nas ArraySpec

@@ -142,6 +142,33 @@ func (ins Inputs) Linrand() Input {
 	return Inputs(ia)
 }
 
+// Log computes a natural logarithm.
+func (ins Inputs) Log() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Log()
+	}
+	return Inputs(ia)
+}
+
+// Log10 computes a base 10 logarithm.
+func (ins Inputs) Log10() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Log10()
+	}
+	return Inputs(ia)
+}
+
+// Log2 computes a base 2 logarithm.
+func (ins Inputs) Log2() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Log2()
+	}
+	return Inputs(ia)
+}
+
 // Max returns Inputs that contain the max of all the inputs and the provided Input.
 func (ins Inputs) Max(other Input) Input {
 	im := make([]Input, len(ins))

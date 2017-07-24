@@ -119,6 +119,18 @@ func (p *param) Linrand() Input {
 	return unaryOpLinrand(KR, p, 1)
 }
 
+func (p *param) Log() Input {
+	return unaryOpLog(KR, p, 1)
+}
+
+func (p *param) Log10() Input {
+	return unaryOpLog10(KR, p, 1)
+}
+
+func (p *param) Log2() Input {
+	return unaryOpLog2(KR, p, 1)
+}
+
 func (p *param) Max(other Input) Input {
 	return binOpMax(KR, p, other, 1)
 }

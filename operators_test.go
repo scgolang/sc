@@ -199,6 +199,51 @@ func TestLinrand(t *testing.T) {
 	}))
 }
 
+func TestLog(t *testing.T) {
+	const defName = "logExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Log(),
+		}.Rate(AR)
+	}))
+}
+
+func TestLog10(t *testing.T) {
+	const defName = "log10Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Log10(),
+		}.Rate(AR)
+	}))
+}
+
+func TestLog2(t *testing.T) {
+	const defName = "log2Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Log2(),
+		}.Rate(AR)
+	}))
+}
+
 func TestMidiratio(t *testing.T) {
 	const defName = "midiratioExample"
 

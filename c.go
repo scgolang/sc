@@ -84,6 +84,21 @@ func (c C) Linrand() Input {
 	return c.Rand()
 }
 
+// Log computes a natural logarithm.
+func (c C) Log() Input {
+	return C(math.Log(float64(c)))
+}
+
+// Log10 computes a natural logarithm.
+func (c C) Log10() Input {
+	return C(math.Log10(float64(c)))
+}
+
+// Log2 computes a natural logarithm.
+func (c C) Log2() Input {
+	return C(math.Log2(float64(c)))
+}
+
 // Max returns the maximum of one input and another.
 func (c C) Max(other Input) Input {
 	if v, ok := other.(C); ok {

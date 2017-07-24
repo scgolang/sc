@@ -18,6 +18,9 @@ const (
 	UnaryOpFloor      = 9
 	UnaryOpFrac       = 10
 	UnaryOpLinrand    = 39
+	UnaryOpLog        = 25
+	UnaryOpLog10      = 27
+	UnaryOpLog2       = 26
 	UnaryOpMidicps    = 17
 	UnaryOpMidiratio  = 19
 	UnaryOpNeg        = 0
@@ -138,6 +141,24 @@ func unaryOpFrac(rate int8, in Input, numOutputs int) Input {
 func unaryOpLinrand(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpLinrand, numOutputs, in)
+}
+
+// unaryOpLog computes a natural logarithm.
+func unaryOpLog(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpLog, numOutputs, in)
+}
+
+// unaryOpLog10 computes a base 10 logarithm.
+func unaryOpLog10(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpLog10, numOutputs, in)
+}
+
+// unaryOpLog2 computes a base 2 logarithm.
+func unaryOpLog2(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpLog2, numOutputs, in)
 }
 
 // unaryOpMidicps converts MIDI note numbers to cycles per second.

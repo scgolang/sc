@@ -39,6 +39,9 @@ type Input interface {
 	// Cos computes the cosine of an Input.
 	Cos() Input
 
+	// Cosh computes the hyperbolic cosine of an Input.
+	Cosh() Input
+
 	// Cpsmidi converts frequency in Hz to midi note values.
 	Cpsmidi() Input
 
@@ -112,6 +115,9 @@ type Input interface {
 	// Sin computes the sine of an Input.
 	Sin() Input
 
+	// Sinh computes the hyperbolic sine of an Input.
+	Sinh() Input
+
 	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
 	SoftClip() Input
 
@@ -128,6 +134,9 @@ type Input interface {
 
 	// Tan computes the tangent of an Input.
 	Tan() Input
+
+	// Tanh computes the hyperbolic tangent of an Input.
+	Tanh() Input
 }
 
 func readInput(r io.Reader) (UgenInput, error) {

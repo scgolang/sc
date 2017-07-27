@@ -101,6 +101,15 @@ func (ins Inputs) Cos() Input {
 	return Inputs(ia)
 }
 
+// Cosh returns the hyperbolic cosine of an Inputs.
+func (ins Inputs) Cosh() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Cosh()
+	}
+	return Inputs(ia)
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (ins Inputs) Cpsmidi() Input {
 	ia := make([]Input, len(ins))
@@ -322,6 +331,15 @@ func (ins Inputs) Sin() Input {
 	return Inputs(ia)
 }
 
+// Sinh returns the hyperbolic sine of an Inputs.
+func (ins Inputs) Sinh() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sinh()
+	}
+	return Inputs(ia)
+}
+
 // SoftClip adds distortion to the inputs.
 func (ins Inputs) SoftClip() Input {
 	clipped := make([]Input, len(ins))
@@ -363,6 +381,15 @@ func (ins Inputs) Tan() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Tan()
+	}
+	return Inputs(ia)
+}
+
+// Tanh returns the hyperbolic tangent of an Inputs.
+func (ins Inputs) Tanh() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Tanh()
 	}
 	return Inputs(ia)
 }

@@ -95,6 +95,10 @@ func (p *param) Cos() Input {
 	return unaryOpCos(KR, p, 1)
 }
 
+func (p *param) Cosh() Input {
+	return unaryOpCosh(KR, p, 1)
+}
+
 func (p *param) Cpsmidi() Input {
 	return unaryOpCpsmidi(KR, p, 1)
 }
@@ -203,6 +207,10 @@ func (p *param) Sin() Input {
 	return unaryOpSin(KR, p, 1)
 }
 
+func (p *param) Sinh() Input {
+	return unaryOpSinh(KR, p, 1)
+}
+
 func (p *param) SoftClip() Input {
 	return unaryOpSoftClip(KR, p, 1)
 }
@@ -221,6 +229,10 @@ func (p *param) Sum3rand() Input {
 
 func (p *param) Tan() Input {
 	return unaryOpTan(KR, p, 1)
+}
+
+func (p *param) Tanh() Input {
+	return unaryOpTanh(KR, p, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

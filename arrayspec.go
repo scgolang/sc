@@ -63,6 +63,13 @@ func (as ArraySpec) Ceil() Input {
 	})
 }
 
+// Coin returns one or zero with the probability given by the input.
+func (as ArraySpec) Coin() Input {
+	return as.proc(func(i Input) Input {
+		return i.Coin()
+	})
+}
+
 // Cos computes the cosine of a signal.
 func (as ArraySpec) Cos() Input {
 	return as.proc(func(i Input) Input {
@@ -70,10 +77,10 @@ func (as ArraySpec) Cos() Input {
 	})
 }
 
-// Coin returns one or zero with the probability given by the input.
-func (as ArraySpec) Coin() Input {
+// Cosh computes the hyperbolic cosine of a signal.
+func (as ArraySpec) Cosh() Input {
 	return as.proc(func(i Input) Input {
-		return i.Coin()
+		return i.Cosh()
 	})
 }
 
@@ -245,6 +252,13 @@ func (as ArraySpec) Sin() Input {
 	})
 }
 
+// Sinh computes the hyperbolic sine of a signal.
+func (as ArraySpec) Sinh() Input {
+	return as.proc(func(i Input) Input {
+		return i.Sinh()
+	})
+}
+
 // SoftClip computes nonlinear distortion of an input.
 func (as ArraySpec) SoftClip() Input {
 	return as.proc(func(i Input) Input {
@@ -277,6 +291,13 @@ func (as ArraySpec) Sum3rand() Input {
 func (as ArraySpec) Tan() Input {
 	return as.proc(func(i Input) Input {
 		return i.Tan()
+	})
+}
+
+// Tanh computes the hyperbolic tangent of a signal.
+func (as ArraySpec) Tanh() Input {
+	return as.proc(func(i Input) Input {
+		return i.Tanh()
 	})
 }
 

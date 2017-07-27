@@ -125,6 +125,11 @@ func (u *Ugen) Cos() Input {
 	return unaryOpCos(u.Rate, u, u.NumOutputs)
 }
 
+// Cosh returns the hyperbolic cosine of a ugen.
+func (u *Ugen) Cosh() Input {
+	return unaryOpCosh(u.Rate, u, u.NumOutputs)
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (u *Ugen) Cpsmidi() Input {
 	return unaryOpCpsmidi(u.Rate, u, u.NumOutputs)
@@ -245,6 +250,11 @@ func (u *Ugen) Sin() Input {
 	return unaryOpSin(u.Rate, u, u.NumOutputs)
 }
 
+// Sinh returns the hyperbolic sine of a ugen.
+func (u *Ugen) Sinh() Input {
+	return unaryOpSinh(u.Rate, u, u.NumOutputs)
+}
+
 // SoftClip adds distortion to a ugen.
 func (u *Ugen) SoftClip() Input {
 	return unaryOpSoftClip(u.Rate, u, u.NumOutputs)
@@ -268,6 +278,11 @@ func (u *Ugen) Sum3rand() Input {
 // Tan returns the tangent of a ugen.
 func (u *Ugen) Tan() Input {
 	return unaryOpTan(u.Rate, u, u.NumOutputs)
+}
+
+// Tanh returns the hyperbolic tangent of a ugen.
+func (u *Ugen) Tanh() Input {
+	return unaryOpTanh(u.Rate, u, u.NumOutputs)
 }
 
 // Write writes a Ugen

@@ -64,6 +64,11 @@ func (c C) Cos() Input {
 	return C(float32(math.Cos(float64(c))))
 }
 
+// Cosh computes the hyperboliccosine of an Input.
+func (c C) Cosh() Input {
+	return C(float32(math.Cosh(float64(c))))
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (c C) Cpsmidi() Input {
 	return C(Cpsmidi(float32(c)))
@@ -202,6 +207,11 @@ func (c C) Sin() Input {
 	return C(float32(math.Sin(float64(c))))
 }
 
+// Sinh computes the hyperbolic sine of an Input.
+func (c C) Sinh() Input {
+	return C(float32(math.Sinh(float64(c))))
+}
+
 // SoftClip clips the constant to the range [-0.5, 0.5]
 func (c C) SoftClip() Input {
 	if float32(c) < -0.5 {
@@ -230,6 +240,11 @@ func (c C) Sum3rand() Input {
 // Tan computes the tangent of an Input.
 func (c C) Tan() Input {
 	return C(float32(math.Tan(float64(c))))
+}
+
+// Tanh computes the hyperbolic tangent of an Input.
+func (c C) Tanh() Input {
+	return C(float32(math.Tanh(float64(c))))
 }
 
 func maxFloat32(f1, f2 float32) float32 {

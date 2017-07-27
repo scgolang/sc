@@ -23,8 +23,20 @@ SynthDef(\absExample, {
     Out.ar(0, LFNoise1.ar(1500).abs);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\acosExample, {
+    Out.ar(0, LFNoise1.ar(1500).acos);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ampdbExample, {
     Out.ar(0, LFNoise1.ar(1500).ampdb);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\asinExample, {
+    Out.ar(0, LFNoise1.ar(1500).asin);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\atanExample, {
+    Out.ar(0, LFNoise1.ar(1500).atan);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\bilinrandExample, {

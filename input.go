@@ -12,6 +12,15 @@ type Input interface {
 	// Abs computes the absolute value of a signal.
 	Abs() Input
 
+	// Acos computes the arccosine of a signal.
+	Acos() Input
+
+	// Asin computes the arcsine of a signal.
+	Asin() Input
+
+	// Atan computes the arctangent of a signal.
+	Atan() Input
+
 	// Add adds one Input to another.
 	Add(val Input) Input
 

@@ -6,7 +6,10 @@ const (
 	BinOpMax          = 13
 	BinOpMul          = 2
 	UnaryOpAbs        = 5
+	UnaryOpAcos       = 32
 	UnaryOpAmpDb      = 22
+	UnaryOpAsin       = 31
+	UnaryOpAtan       = 33
 	UnaryOpBilinrand  = 40
 	UnaryOpCeil       = 8
 	UnaryOpCoin       = 44
@@ -74,10 +77,28 @@ func unaryOpAbs(rate int8, in Input, numOutputs int) Input {
 	return NewInput(unaryOpUgenName, rate, UnaryOpAbs, numOutputs, in)
 }
 
+// unaryOpAcos computes the arccosine of a signal.
+func unaryOpAcos(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpAcos, numOutputs, in)
+}
+
 // unaryOpAmpDb converts linear amplitude to decibels.
 func unaryOpAmpDb(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpAmpDb, numOutputs, in)
+}
+
+// unaryOpAsin computes the arcsine of a signal.
+func unaryOpAsin(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpAsin, numOutputs, in)
+}
+
+// unaryOpAtan computes the arctangent of a signal.
+func unaryOpAtan(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpAtan, numOutputs, in)
 }
 
 // unaryOpBilinrand returns a linearly distributed random value between [+in ... -in].

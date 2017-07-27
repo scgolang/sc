@@ -20,6 +20,15 @@ func (ins Inputs) Abs() Input {
 	return Inputs(ia)
 }
 
+// Acos computes the arccosine of a signal.
+func (ins Inputs) Acos() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Acos()
+	}
+	return Inputs(ia)
+}
+
 // Add adds an input to all the inputs.
 func (ins Inputs) Add(val Input) Input {
 	ia := make([]Input, len(ins))
@@ -34,6 +43,24 @@ func (ins Inputs) AmpDb() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.AmpDb()
+	}
+	return Inputs(ia)
+}
+
+// Asin computes the arcsine of a signal.
+func (ins Inputs) Asin() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Asin()
+	}
+	return Inputs(ia)
+}
+
+// Atan computes the arctangent of a signal.
+func (ins Inputs) Atan() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Atan()
 	}
 	return Inputs(ia)
 }

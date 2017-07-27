@@ -59,12 +59,24 @@ func (p *param) Abs() Input {
 	return unaryOpAbs(KR, p, 1)
 }
 
+func (p *param) Acos() Input {
+	return unaryOpAcos(KR, p, 1)
+}
+
 func (p *param) Add(in Input) Input {
 	return binOpAdd(KR, p, in, 1)
 }
 
 func (p *param) AmpDb() Input {
 	return unaryOpAmpDb(KR, p, 1)
+}
+
+func (p *param) Asin() Input {
+	return unaryOpAsin(KR, p, 1)
+}
+
+func (p *param) Atan() Input {
+	return unaryOpAtan(KR, p, 1)
 }
 
 func (p *param) Bilinrand() Input {

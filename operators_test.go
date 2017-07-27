@@ -19,6 +19,51 @@ func TestAbs(t *testing.T) {
 	}))
 }
 
+func TestAcos(t *testing.T) {
+	const defName = "acosExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Acos(),
+		}.Rate(AR)
+	}))
+}
+
+func TestAsin(t *testing.T) {
+	const defName = "asinExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Asin(),
+		}.Rate(AR)
+	}))
+}
+
+func TestAtan(t *testing.T) {
+	const defName = "atanExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Atan(),
+		}.Rate(AR)
+	}))
+}
+
 func TestAmpDb(t *testing.T) {
 	const defName = "ampdbExample"
 

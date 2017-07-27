@@ -80,6 +80,11 @@ func (u *Ugen) Abs() Input {
 	return unaryOpAbs(u.Rate, u, u.NumOutputs)
 }
 
+// Acos computes the arccosine of a signal.
+func (u *Ugen) Acos() Input {
+	return unaryOpAcos(u.Rate, u, u.NumOutputs)
+}
+
 // Add adds an input to a ugen node.
 func (u *Ugen) Add(val Input) Input {
 	return binOpAdd(u.Rate, u, val, u.NumOutputs)
@@ -88,6 +93,16 @@ func (u *Ugen) Add(val Input) Input {
 // AmpDb converts linear amplitude to decibels.
 func (u *Ugen) AmpDb() Input {
 	return unaryOpAmpDb(u.Rate, u, u.NumOutputs)
+}
+
+// Asin computes the arcsine of a signal.
+func (u *Ugen) Asin() Input {
+	return unaryOpAsin(u.Rate, u, u.NumOutputs)
+}
+
+// Atan computes the arctangent of a signal.
+func (u *Ugen) Atan() Input {
+	return unaryOpAtan(u.Rate, u, u.NumOutputs)
 }
 
 // Bilinrand returns a linearly distributed random value between [+in ... -in].

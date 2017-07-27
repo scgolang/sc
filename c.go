@@ -13,6 +13,11 @@ func (c C) Abs() Input {
 	return C(float32(math.Abs(float64(c))))
 }
 
+// Acos computes the arccosine of a signal.
+func (c C) Acos() Input {
+	return C(float32(math.Acos(float64(c))))
+}
+
 // Add adds another input to the constant.
 func (c C) Add(val Input) Input {
 	if v, ok := val.(C); ok {
@@ -24,6 +29,16 @@ func (c C) Add(val Input) Input {
 // AmpDb converts linear amplitude to decibels.
 func (c C) AmpDb() Input {
 	return C(float32(20 * math.Log10(float64(c))))
+}
+
+// Asin computes the arcsine of a signal.
+func (c C) Asin() Input {
+	return C(float32(math.Asin(float64(c))))
+}
+
+// Atan computes the arctangent of a signal.
+func (c C) Atan() Input {
+	return C(float32(math.Atan(float64(c))))
 }
 
 // Bilinrand returns a linearly distributed random value between [+in ... -in].

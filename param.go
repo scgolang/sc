@@ -79,6 +79,10 @@ func (p *param) Coin() Input {
 	return unaryOpCoin(KR, p, 1)
 }
 
+func (p *param) Cos() Input {
+	return unaryOpCos(KR, p, 1)
+}
+
 func (p *param) Cpsmidi() Input {
 	return unaryOpCpsmidi(KR, p, 1)
 }
@@ -183,6 +187,10 @@ func (p *param) Sign() Input {
 	return unaryOpSign(KR, p, 1)
 }
 
+func (p *param) Sin() Input {
+	return unaryOpSin(KR, p, 1)
+}
+
 func (p *param) SoftClip() Input {
 	return unaryOpSoftClip(KR, p, 1)
 }
@@ -197,6 +205,10 @@ func (p *param) Squared() Input {
 
 func (p *param) Sum3rand() Input {
 	return unaryOpSum3rand(KR, p, 1)
+}
+
+func (p *param) Tan() Input {
+	return unaryOpTan(KR, p, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

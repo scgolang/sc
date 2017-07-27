@@ -44,6 +44,11 @@ func (c C) Coin() Input {
 	return C(0)
 }
 
+// Cos computes the cosine of an Input.
+func (c C) Cos() Input {
+	return C(float32(math.Cos(float64(c))))
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (c C) Cpsmidi() Input {
 	return C(Cpsmidi(float32(c)))
@@ -177,6 +182,11 @@ func (c C) Sign() Input {
 	return C(0)
 }
 
+// Sin computes the sine of an Input.
+func (c C) Sin() Input {
+	return C(float32(math.Sin(float64(c))))
+}
+
 // SoftClip clips the constant to the range [-0.5, 0.5]
 func (c C) SoftClip() Input {
 	if float32(c) < -0.5 {
@@ -200,6 +210,11 @@ func (c C) Squared() Input {
 // Sum3rand returns a value from a gaussian-like random distribution between in and zero.
 func (c C) Sum3rand() Input {
 	return C(rand.NormFloat64())
+}
+
+// Tan computes the tangent of an Input.
+func (c C) Tan() Input {
+	return C(float32(math.Tan(float64(c))))
 }
 
 func maxFloat32(f1, f2 float32) float32 {

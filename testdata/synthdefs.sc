@@ -39,6 +39,10 @@ SynthDef(\coinExample, {
     Out.ar(0, LFNoise1.ar(1500).coin);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\cosExample, {
+    Out.ar(0, LFNoise1.ar(1500).cos);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\cpsmidiExample, {
     Out.ar(0, LFNoise1.ar(1500).cpsmidi);
 }).writeDefFile(File.getcwd);
@@ -115,6 +119,10 @@ SynthDef(\signExample, {
     Out.ar(0, LFNoise1.ar(1500).sign);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\sinExample, {
+    Out.ar(0, LFNoise1.ar(1500).sin);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\sqrtExample, {
     Out.ar(0, LFNoise1.ar(1500).sqrt);
 }).writeDefFile(File.getcwd);
@@ -125,6 +133,10 @@ SynthDef(\squaredExample, {
 
 SynthDef(\sum3randExample, {
     Out.ar(0, LFNoise1.ar(1500).sum3rand);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\tanExample, {
+    Out.ar(0, LFNoise1.ar(1500).tan);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\Envgen1, {

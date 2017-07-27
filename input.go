@@ -27,6 +27,9 @@ type Input interface {
 	// Coin returns one or zero with the probability given by the input.
 	Coin() Input
 
+	// Cos computes the cosine of an Input.
+	Cos() Input
+
 	// Cpsmidi converts frequency in Hz to midi note values.
 	Cpsmidi() Input
 
@@ -97,6 +100,9 @@ type Input interface {
 	// This returns -1 when a < 0, +1 when a > 0, 0 when a is 0.
 	Sign() Input
 
+	// Sin computes the sine of an Input.
+	Sin() Input
+
 	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
 	SoftClip() Input
 
@@ -110,6 +116,9 @@ type Input interface {
 
 	// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
 	Sum3rand() Input
+
+	// Tan computes the tangent of an Input.
+	Tan() Input
 }
 
 func readInput(r io.Reader) (UgenInput, error) {

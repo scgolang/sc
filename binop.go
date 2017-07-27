@@ -10,6 +10,7 @@ const (
 	UnaryOpBilinrand  = 40
 	UnaryOpCeil       = 8
 	UnaryOpCoin       = 44
+	UnaryOpCos        = 29
 	UnaryOpCpsmidi    = 18
 	UnaryOpCpsoct     = 24
 	UnaryOpCubed      = 13
@@ -31,9 +32,11 @@ const (
 	UnaryOpReciprocal = 16
 	UnaryOpSoftClip   = 43
 	UnaryOpSign       = 11
+	UnaryOpSin        = 28
 	UnaryOpSquared    = 12
 	UnaryOpSqrt       = 14
 	UnaryOpSum3rand   = 41
+	UnaryOpTan        = 30
 )
 
 const (
@@ -93,6 +96,12 @@ func unaryOpCeil(rate int8, in Input, numOutputs int) Input {
 func unaryOpCoin(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpCoin, numOutputs, in)
+}
+
+// unaryOpCos returns the cosine of an input.
+func unaryOpCos(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpCos, numOutputs, in)
 }
 
 // unaryOpCpsmidi converts frequency in Hz to midi note values.
@@ -216,6 +225,12 @@ func unaryOpSign(rate int8, in Input, numOutputs int) Input {
 	return NewInput(unaryOpUgenName, rate, UnaryOpSign, numOutputs, in)
 }
 
+// unaryOpSin returns the sine of an input.
+func unaryOpSin(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpSin, numOutputs, in)
+}
+
 // unaryOpSoftClip adds distortion to a ugen.
 func unaryOpSoftClip(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -238,4 +253,10 @@ func unaryOpSquared(rate int8, in Input, numOutputs int) Input {
 func unaryOpSum3rand(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpSum3rand, numOutputs, in)
+}
+
+// unaryOpTan returns the tangent of an input.
+func unaryOpTan(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpTan, numOutputs, in)
 }

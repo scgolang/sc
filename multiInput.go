@@ -65,6 +65,15 @@ func (ins Inputs) Coin() Input {
 	return Inputs(ia)
 }
 
+// Cos returns the cosine of an Inputs.
+func (ins Inputs) Cos() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Cos()
+	}
+	return Inputs(ia)
+}
+
 // Cpsmidi converts frequency in Hz to midi note values.
 func (ins Inputs) Cpsmidi() Input {
 	ia := make([]Input, len(ins))
@@ -277,6 +286,15 @@ func (ins Inputs) Sign() Input {
 	return Inputs(ia)
 }
 
+// Sin returns the sine of an Inputs.
+func (ins Inputs) Sin() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sin()
+	}
+	return Inputs(ia)
+}
+
 // SoftClip adds distortion to the inputs.
 func (ins Inputs) SoftClip() Input {
 	clipped := make([]Input, len(ins))
@@ -309,6 +327,15 @@ func (ins Inputs) Sum3rand() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Sum3rand()
+	}
+	return Inputs(ia)
+}
+
+// Tan returns the tangent of an Inputs.
+func (ins Inputs) Tan() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Tan()
 	}
 	return Inputs(ia)
 }

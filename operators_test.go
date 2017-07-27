@@ -79,6 +79,21 @@ func TestCoin(t *testing.T) {
 	}))
 }
 
+func TestCos(t *testing.T) {
+	const defName = "cosExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Cos(),
+		}.Rate(AR)
+	}))
+}
+
 func TestCpsmidi(t *testing.T) {
 	const defName = "cpsmidiExample"
 
@@ -349,6 +364,21 @@ func TestSign(t *testing.T) {
 	}))
 }
 
+func TestSin(t *testing.T) {
+	const defName = "sinExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sin(),
+		}.Rate(AR)
+	}))
+}
+
 func TestSquared(t *testing.T) {
 	const defName = "squaredExample"
 
@@ -390,6 +420,21 @@ func TestSum3rand(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Sum3rand(),
+		}.Rate(AR)
+	}))
+}
+
+func TestTan(t *testing.T) {
+	const defName = "tanExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Tan(),
 		}.Rate(AR)
 	}))
 }

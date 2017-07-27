@@ -62,6 +62,17 @@ func (as ArraySpec) Ceil() Input {
 	return nas
 }
 
+// Cos computes the cosine of a signal.
+func (as ArraySpec) Cos() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Cos()
+		}
+	}
+	return nas
+}
+
 // Coin returns one or zero with the probability given by the input.
 func (as ArraySpec) Coin() Input {
 	var nas ArraySpec
@@ -326,6 +337,17 @@ func (as ArraySpec) Sign() Input {
 	return nas
 }
 
+// Sin computes the sine of a signal.
+func (as ArraySpec) Sin() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Sin()
+		}
+	}
+	return nas
+}
+
 // SoftClip computes nonlinear distortion of an input.
 func (as ArraySpec) SoftClip() Input {
 	var nas ArraySpec
@@ -365,6 +387,17 @@ func (as ArraySpec) Sum3rand() Input {
 	for i := range []int{0, 1, 2} {
 		for j := range nas[i] {
 			nas[i][j] = as[i][j].Sum3rand()
+		}
+	}
+	return nas
+}
+
+// Tan computes the tangent of a signal.
+func (as ArraySpec) Tan() Input {
+	var nas ArraySpec
+	for i := range []int{0, 1, 2} {
+		for j := range nas[i] {
+			nas[i][j] = as[i][j].Tan()
 		}
 	}
 	return nas

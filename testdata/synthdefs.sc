@@ -99,6 +99,14 @@ SynthDef(\fracExample, {
     Out.ar(0, LFNoise1.ar(1500).frac);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\gcdExample, {
+    Out.ar(0, LFNoise1.ar(1500).gcd(2));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\lcmExample, {
+    Out.ar(0, LFNoise1.ar(1500).lcm(2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\linrandExample, {
     Out.ar(0, LFNoise1.ar(1500).linrand);
 }).writeDefFile(File.getcwd);

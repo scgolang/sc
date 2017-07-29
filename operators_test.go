@@ -304,6 +304,36 @@ func TestFrac(t *testing.T) {
 	}))
 }
 
+func TestGCD(t *testing.T) {
+	const defName = "gcdExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.GCD(C(2)),
+		}.Rate(AR)
+	}))
+}
+
+func TestLCM(t *testing.T) {
+	const defName = "lcmExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.LCM(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestLinrand(t *testing.T) {
 	const defName = "linrandExample"
 

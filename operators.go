@@ -5,6 +5,8 @@ const (
 	BinOpAdd          = 0
 	BinOpDiv          = 4
 	BinOpExpon        = 25
+	BinOpGCD          = 18
+	BinOpLCM          = 17
 	BinOpMax          = 13
 	BinOpModulo       = 5
 	BinOpMul          = 2
@@ -71,6 +73,18 @@ func binOpDiv(rate int8, x, y Input, numOutputs int) Input {
 func binOpExpon(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpExpon, numOutputs, x, y)
+}
+
+// binOpGCD computes the gcd of one Input and another.
+func binOpGCD(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpGCD, numOutputs, x, y)
+}
+
+// binOpLCM computes the lcm of one Input and another.
+func binOpLCM(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpLCM, numOutputs, x, y)
 }
 
 // binOpMax creates a BinaryOpUgen that represents the maximum of two signals.

@@ -200,9 +200,27 @@ func (ins Inputs) Frac() Input {
 	return Inputs(ia)
 }
 
+// GCD computes the gcd of one Input and another.
+func (ins Inputs) GCD(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.GCD(val)
+	}
+	return Inputs(ia)
+}
+
 // InputArray provides access to the list of inputs.
 func (ins Inputs) InputArray() []Input {
 	return ins
+}
+
+// LCM computes the lcm of one Input and another.
+func (ins Inputs) LCM(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.LCM(val)
+	}
+	return Inputs(ia)
 }
 
 // Linrand returns a linearly distributed random value between in and zero.

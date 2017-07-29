@@ -128,6 +128,22 @@ func (c C) Frac() Input {
 	return C(float32(float64(c) - math.Trunc(float64(c))))
 }
 
+// GCD computes the gcd of one Input and another.
+func (c C) GCD(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(gcd(float32(c), float32(v)))
+	}
+	return val.GCD(c)
+}
+
+// LCM computes the least common multiple of one Input and another.
+func (c C) LCM(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(lcm(float32(c), float32(v)))
+	}
+	return val.LCM(c)
+}
+
 // Linrand returns a linearly distributed random value between in and zero.
 func (c C) Linrand() Input {
 	return c.Rand()
@@ -290,6 +306,21 @@ func (c C) Tan() Input {
 // Tanh computes the hyperbolic tangent of an Input.
 func (c C) Tanh() Input {
 	return C(float32(math.Tanh(float64(c))))
+}
+
+func gcd(x, y float32) float32 {
+	a, b := int(x), int(y)
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return float32(a)
+}
+
+func lcm(x, y float32) float32 {
+	a, b := int(x), int(y)
+	return float32(a*b) / gcd(x, y)
 }
 
 func maxFloat32(f1, f2 float32) float32 {

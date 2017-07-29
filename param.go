@@ -139,12 +139,20 @@ func (p *param) Floor() Input {
 	return unaryOpFloor(KR, p, 1)
 }
 
+func (p *param) GCD(val Input) Input {
+	return binOpGCD(KR, p, val, 1)
+}
+
 func (p *param) Index() int32 {
 	return p.index
 }
 
 func (p *param) InitialValue() float32 {
 	return p.val
+}
+
+func (p *param) LCM(val Input) Input {
+	return binOpLCM(KR, p, val, 1)
 }
 
 func (p *param) Linrand() Input {

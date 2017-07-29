@@ -76,6 +76,12 @@ type Input interface {
 	// Frac returns the fractional part of a signal.
 	Frac() Input
 
+	// GCD computes the gcd of one Input and another.
+	GCD(Input) Input
+
+	// LCM computes the least common multiple of one Input and another.
+	LCM(Input) Input
+
 	// Linrand returns a linearly distributed random value between in and zero.
 	Linrand() Input
 

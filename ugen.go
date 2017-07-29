@@ -180,6 +180,16 @@ func (u *Ugen) Frac() Input {
 	return unaryOpFrac(u.Rate, u, u.NumOutputs)
 }
 
+// GCD computes the gcd of one Input and another.
+func (u *Ugen) GCD(val Input) Input {
+	return binOpGCD(u.Rate, u, val, u.NumOutputs)
+}
+
+// LCM computes the lcm of one Input and another.
+func (u *Ugen) LCM(val Input) Input {
+	return binOpLCM(u.Rate, u, val, u.NumOutputs)
+}
+
 // Linrand returns a linearly distributed random value between in and zero.
 func (u *Ugen) Linrand() Input {
 	return unaryOpLinrand(u.Rate, u, u.NumOutputs)

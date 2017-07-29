@@ -154,6 +154,20 @@ func (as ArraySpec) Frac() Input {
 	})
 }
 
+// GCD computes the gcd of one Input and another.
+func (as ArraySpec) GCD(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.GCD(val)
+	})
+}
+
+// LCM computes the least common multiple of one Input and another.
+func (as ArraySpec) LCM(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.LCM(val)
+	})
+}
+
 // Linrand returns a linearly distributed random value between in and zero.
 func (as ArraySpec) Linrand() Input {
 	return as.proc(func(i Input) Input {

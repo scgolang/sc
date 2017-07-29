@@ -89,11 +89,9 @@ func (c C) DbAmp() Input {
 	return C(float32(math.Pow(10, float64(c)/20)))
 }
 
-// Distort is the same as softclip for a constant since I have no idea what
-// mathematical formulat to use here.
-// TODO: fix this
+// Distort performs non-linear distortion on a signal.
 func (c C) Distort() Input {
-	return c.SoftClip()
+	return C(float32(c) / (1 + math.Abs(float64(c))))
 }
 
 // Exp computes the exponential of a signal.

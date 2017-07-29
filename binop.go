@@ -4,6 +4,7 @@ package sc
 const (
 	BinOpAdd          = 0
 	BinOpMax          = 13
+	BinOpModulo       = 5
 	BinOpMul          = 2
 	UnaryOpAbs        = 5
 	UnaryOpAcos       = 32
@@ -51,22 +52,28 @@ const (
 	unaryOpUgenName = "UnaryOpUGen"
 )
 
+// binOpAdd creates a BinaryOpUGen that represents addition.
+func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpAdd, numOutputs, x, y)
+}
+
 // binOpMax creates a BinaryOpUgen that represents the maximum of two signals.
 func binOpMax(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpMax, numOutputs, x, y)
 }
 
+// binOpModulo computes the modulo of one Input and another.
+func binOpModulo(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpModulo, numOutputs, x, y)
+}
+
 // binOpMul creates a BinaryOpUGen that represents multiplication.
 func binOpMul(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpMul, numOutputs, x, y)
-}
-
-// binOpAdd creates a BinaryOpUGen that represents addition.
-func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
-	CheckRate(rate)
-	return NewInput(binopUgenName, rate, BinOpAdd, numOutputs, x, y)
 }
 
 // mulAdd creates a MulAdd ugen.

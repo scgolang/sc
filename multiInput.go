@@ -250,6 +250,15 @@ func (ins Inputs) Midiratio() Input {
 	return Inputs(converted)
 }
 
+// Modulo computes the modulo of one signal and another.
+func (ins Inputs) Modulo(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Modulo(val)
+	}
+	return Inputs(converted)
+}
+
 // Mul multiplies all the inputs by another input.
 func (ins Inputs) Mul(val Input) Input {
 	ia := make([]Input, len(ins))

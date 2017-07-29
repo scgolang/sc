@@ -205,6 +205,11 @@ func (u *Ugen) Midiratio() Input {
 	return unaryOpMidiratio(u.Rate, u, u.NumOutputs)
 }
 
+// Modulo computes the modulo of one signal and another.
+func (u *Ugen) Modulo(val Input) Input {
+	return binOpModulo(u.Rate, u, val, u.NumOutputs)
+}
+
 // Mul multiplies the ugen node by an input.
 func (u *Ugen) Mul(val Input) Input {
 	return binOpMul(u.Rate, u, val, u.NumOutputs)

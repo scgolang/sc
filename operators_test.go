@@ -349,6 +349,21 @@ func TestMidiratio(t *testing.T) {
 	}))
 }
 
+func TestModulo(t *testing.T) {
+	const defName = "moduloExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Modulo(C(0.5)),
+		}.Rate(AR)
+	}))
+}
+
 func TestOctcps(t *testing.T) {
 	const defName = "octcpsExample"
 

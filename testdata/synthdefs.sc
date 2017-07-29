@@ -111,6 +111,10 @@ SynthDef(\midiratioExample, {
     Out.ar(0, LFNoise1.ar(1500).midiratio);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\moduloExample, {
+    Out.ar(0, LFNoise1.ar(1500) % 0.5);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\octcpsExample, {
     Out.ar(0, LFNoise1.ar(1500).octcps);
 }).writeDefFile(File.getcwd);

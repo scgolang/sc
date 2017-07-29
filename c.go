@@ -149,6 +149,17 @@ func (c C) Midiratio() Input {
 	return C(float32(math.Pow(2, float64(c)/12)))
 }
 
+// Modulo computes the modulo of one signal and another.
+// If val is not a C, then this method just returns the receiver.
+// I'm not sure what a constant modulo a ugen should be.
+// Note that Go only supports integers for the modulo operator.
+func (c C) Modulo(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(float32(int(c) % int(v)))
+	}
+	return c
+}
+
 // Mul multiplies the constant by another input.
 func (c C) Mul(val Input) Input {
 	if v, ok := val.(C); ok {

@@ -189,6 +189,13 @@ func (as ArraySpec) Midicps() Input {
 	})
 }
 
+// Modulo computes the modulo of one signal and another.
+func (as ArraySpec) Modulo(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Modulo(val)
+	})
+}
+
 // Mul multiplies one input and another.
 func (as ArraySpec) Mul(val Input) Input {
 	return as.proc(func(i Input) Input {

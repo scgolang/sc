@@ -87,6 +87,9 @@ type Input interface {
 	// Midiratio converts an interval in MIDI notes into a frequency ratio.
 	Midiratio() Input
 
+	// Modulo computes the modulo of one signal and another.
+	Modulo(Input) Input
+
 	// Mul multiplies one Input by another.
 	Mul(val Input) Input
 

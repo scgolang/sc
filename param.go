@@ -123,6 +123,10 @@ func (p *param) Exp() Input {
 	return unaryOpExp(KR, p, 1)
 }
 
+func (p *param) Expon(val Input) Input {
+	return binOpExpon(KR, p, val, 1)
+}
+
 func (p *param) Frac() Input {
 	return unaryOpFrac(KR, p, 1)
 }
@@ -189,6 +193,10 @@ func (p *param) Neg() Input {
 
 func (p *param) Octcps() Input {
 	return unaryOpOctcps(KR, p, 1)
+}
+
+func (p *param) Pow(val Input) Input {
+	return binOpPow(KR, p, val, 1)
 }
 
 func (p *param) Rand() Input {

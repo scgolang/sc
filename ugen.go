@@ -160,6 +160,11 @@ func (u *Ugen) Exp() Input {
 	return unaryOpExp(u.Rate, u, u.NumOutputs)
 }
 
+// Expon raises this input to the power of another.
+func (u *Ugen) Expon(val Input) Input {
+	return binOpExpon(u.Rate, u, val, u.NumOutputs)
+}
+
 // Floor computes the floor (next lowest integer) of a signal.
 func (u *Ugen) Floor() Input {
 	return unaryOpFloor(u.Rate, u, u.NumOutputs)
@@ -228,6 +233,11 @@ func (u *Ugen) Neg() Input {
 // Octcps converts decimal octaves to cycles per second.
 func (u *Ugen) Octcps() Input {
 	return unaryOpOctcps(u.Rate, u, u.NumOutputs)
+}
+
+// Pow raises this input to the power of another.
+func (u *Ugen) Pow(val Input) Input {
+	return binOpPow(u.Rate, u, val, u.NumOutputs)
 }
 
 // Rand returns an evenly distributed random value between this and zero.

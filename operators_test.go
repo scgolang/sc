@@ -244,6 +244,21 @@ func TestExp(t *testing.T) {
 	}))
 }
 
+func TestExpon(t *testing.T) {
+	const defName = "exponExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Expon(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestFloor(t *testing.T) {
 	const defName = "floorExample"
 
@@ -375,6 +390,21 @@ func TestOctcps(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Octcps(),
+		}.Rate(AR)
+	}))
+}
+
+func TestPow(t *testing.T) {
+	const defName = "powExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Pow(C(2)),
 		}.Rate(AR)
 	}))
 }

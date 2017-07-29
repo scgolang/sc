@@ -79,8 +79,16 @@ SynthDef(\distortExample, {
     Out.ar(0, LFNoise1.ar(1500).distort);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\divExample, {
+    Out.ar(0, LFNoise1.ar(1500) / 2);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\expExample, {
     Out.ar(0, LFNoise1.ar(1500).exp);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\exponExample, {
+    Out.ar(0, LFNoise1.ar(1500) ** 2);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\floorExample, {
@@ -115,16 +123,20 @@ SynthDef(\moduloExample, {
     Out.ar(0, LFNoise1.ar(1500) % 0.5);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\negExample, {
+    Out.ar(0, LFNoise1.ar(1500).neg);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\octcpsExample, {
     Out.ar(0, LFNoise1.ar(1500).octcps);
 }).writeDefFile(File.getcwd);
 
-SynthDef(\ratiomidiExample, {
-    Out.ar(0, LFNoise1.ar(1500).ratiomidi);
+SynthDef(\powExample, {
+    Out.ar(0, LFNoise1.ar(1500).pow(2));
 }).writeDefFile(File.getcwd);
 
-SynthDef(\negExample, {
-    Out.ar(0, LFNoise1.ar(1500).neg);
+SynthDef(\ratiomidiExample, {
+    Out.ar(0, LFNoise1.ar(1500).ratiomidi);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\randExample, {

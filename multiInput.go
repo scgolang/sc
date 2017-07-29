@@ -164,6 +164,15 @@ func (ins Inputs) Exp() Input {
 	return Inputs(ia)
 }
 
+// Expon raises this input to the power of another.
+func (ins Inputs) Expon(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Expon(val)
+	}
+	return Inputs(ia)
+}
+
 // Floor computes the floor (next lowest integer) of a signal.
 func (ins Inputs) Floor() Input {
 	ia := make([]Input, len(ins))
@@ -291,6 +300,15 @@ func (ins Inputs) Octcps() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Octcps()
+	}
+	return Inputs(ia)
+}
+
+// Pow raises this input to the power of another.
+func (ins Inputs) Pow(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Pow(val)
 	}
 	return Inputs(ia)
 }

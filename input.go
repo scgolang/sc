@@ -60,6 +60,13 @@ type Input interface {
 	// Exp computes the exponential of a signal.
 	Exp() Input
 
+	// Expon raises this input to the power of another.
+	// When used with UGens which produce a negative signal this function extends
+	// the usual definition of exponentiation and returns neg(neg(a) ** b).
+	// This allows exponentiation of negative signal values by noninteger exponents.
+	// For the normal behaviour use Pow (see below).
+	Expon(Input) Input
+
 	// Floor computes the floor (next lowest integer) of a signal.
 	Floor() Input
 
@@ -101,6 +108,9 @@ type Input interface {
 
 	// Octcps converts decimal octaves to cycles per second.
 	Octcps() Input
+
+	// Pow raises an Input to the power of another.
+	Pow(Input) Input
 
 	// Rand returns an evenly distributed random value between this and zero.
 	Rand() Input

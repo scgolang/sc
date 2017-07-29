@@ -91,12 +91,22 @@ func (c C) DbAmp() Input {
 
 // Distort performs non-linear distortion on a signal.
 func (c C) Distort() Input {
-	return C(float32(c) / (1 + math.Abs(float64(c))))
+	return C(float32(c) / float32(1+math.Abs(float64(c))))
 }
 
 // Exp computes the exponential of a signal.
 func (c C) Exp() Input {
 	return C(float32(math.Exp(float64(c))))
+}
+
+// Expon raises a constant to the power of another input.
+// If val is not a C the this method just returns c.
+// TODO: fix this
+func (c C) Expon(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(float32(math.Pow(float64(c), float64(v))))
+	}
+	return c
 }
 
 // Floor computes the floor of a constant.
@@ -185,6 +195,16 @@ func (c C) Neg() Input {
 // Octcps converts decimal octaves to cycles per second.
 func (c C) Octcps() Input {
 	return C(Octcps(float32(c)))
+}
+
+// Pow raises a constant to the power of another input.
+// If val is not a C the this method just returns c.
+// TODO: fix this
+func (c C) Pow(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(float32(math.Pow(float64(c), float64(v))))
+	}
+	return c
 }
 
 // Rand returns an evenly distributed random value between this and zero.

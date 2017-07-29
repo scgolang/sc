@@ -126,6 +126,13 @@ func (as ArraySpec) Exp() Input {
 	})
 }
 
+// Expon raises an Input to the power of another.
+func (as ArraySpec) Expon(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Expon(val)
+	})
+}
+
 // Floor computes the floor of a signal.
 func (as ArraySpec) Floor() Input {
 	return as.proc(func(i Input) Input {
@@ -221,6 +228,13 @@ func (as ArraySpec) Neg() Input {
 func (as ArraySpec) Octcps() Input {
 	return as.proc(func(i Input) Input {
 		return i.Octcps()
+	})
+}
+
+// Pow raises an Input to the power of another.
+func (as ArraySpec) Pow(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Pow(val)
 	})
 }
 

@@ -3,9 +3,11 @@ package sc
 // Operator constants.
 const (
 	BinOpAdd          = 0
+	BinOpExpon        = 25
 	BinOpMax          = 13
 	BinOpModulo       = 5
 	BinOpMul          = 2
+	BinOpPow          = 25
 	UnaryOpAbs        = 5
 	UnaryOpAcos       = 32
 	UnaryOpAmpDb      = 22
@@ -58,6 +60,12 @@ func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
 	return NewInput(binopUgenName, rate, BinOpAdd, numOutputs, x, y)
 }
 
+// binOpExpon creates a BinaryOpUgen that raises one Input to the power of another.
+func binOpExpon(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpExpon, numOutputs, x, y)
+}
+
 // binOpMax creates a BinaryOpUgen that represents the maximum of two signals.
 func binOpMax(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -74,6 +82,12 @@ func binOpModulo(rate int8, x, y Input, numOutputs int) Input {
 func binOpMul(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpMul, numOutputs, x, y)
+}
+
+// binOpPow creates a BinaryOpUgen that raises one Input to the power of another.
+func binOpPow(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpPow, numOutputs, x, y)
 }
 
 // mulAdd creates a MulAdd ugen.

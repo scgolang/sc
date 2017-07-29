@@ -155,6 +155,11 @@ func (u *Ugen) Distort() Input {
 	return unaryOpDistort(u.Rate, u, u.NumOutputs)
 }
 
+// Div divides one input by another.
+func (u *Ugen) Div(val Input) Input {
+	return binOpDiv(u.Rate, u, val, u.NumOutputs)
+}
+
 // Exp computes the exponential of a signal.
 func (u *Ugen) Exp() Input {
 	return unaryOpExp(u.Rate, u, u.NumOutputs)

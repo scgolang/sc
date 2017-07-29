@@ -155,6 +155,15 @@ func (ins Inputs) Distort() Input {
 	return Inputs(ia)
 }
 
+// Div divides one input by another.
+func (ins Inputs) Div(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Div(val)
+	}
+	return Inputs(ia)
+}
+
 // Exp computes the exponential of a signal.
 func (ins Inputs) Exp() Input {
 	ia := make([]Input, len(ins))

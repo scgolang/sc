@@ -3,6 +3,7 @@ package sc
 // Operator constants.
 const (
 	BinOpAdd          = 0
+	BinOpDiv          = 4
 	BinOpExpon        = 25
 	BinOpMax          = 13
 	BinOpModulo       = 5
@@ -58,6 +59,12 @@ const (
 func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpAdd, numOutputs, x, y)
+}
+
+// binOpDiv divides one input by another.
+func binOpDiv(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpDiv, numOutputs, x, y)
 }
 
 // binOpExpon creates a BinaryOpUgen that raises one Input to the power of another.

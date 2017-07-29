@@ -57,6 +57,9 @@ type Input interface {
 	// Distort performs non-linear distortion on a signal.
 	Distort() Input
 
+	// Div divides one input by another.
+	Div(Input) Input
+
 	// Exp computes the exponential of a signal.
 	Exp() Input
 

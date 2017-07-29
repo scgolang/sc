@@ -119,6 +119,13 @@ func (as ArraySpec) Distort() Input {
 	})
 }
 
+// Div divides one input by another.
+func (as ArraySpec) Div(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Div(val)
+	})
+}
+
 // Exp computes the exponential of a signal.
 func (as ArraySpec) Exp() Input {
 	return as.proc(func(i Input) Input {

@@ -94,6 +94,15 @@ func (c C) Distort() Input {
 	return C(float32(c) / float32(1+math.Abs(float64(c))))
 }
 
+// Div divides one input by another.
+// This will panic if val is C(0)
+func (c C) Div(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(c / v)
+	}
+	return val.Reciprocal().Mul(c)
+}
+
 // Exp computes the exponential of a signal.
 func (c C) Exp() Input {
 	return C(float32(math.Exp(float64(c))))

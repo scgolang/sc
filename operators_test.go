@@ -229,6 +229,21 @@ func TestDistort(t *testing.T) {
 	}))
 }
 
+func TestDiv(t *testing.T) {
+	const defName = "divExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Div(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestExp(t *testing.T) {
 	const defName = "expExample"
 

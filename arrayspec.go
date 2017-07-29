@@ -112,6 +112,13 @@ func (as ArraySpec) DbAmp() Input {
 	})
 }
 
+// Distort performs non-linear distortion on a signal.
+func (as ArraySpec) Distort() Input {
+	return as.proc(func(i Input) Input {
+		return i.Distort()
+	})
+}
+
 // Exp computes the exponential of a signal.
 func (as ArraySpec) Exp() Input {
 	return as.proc(func(i Input) Input {

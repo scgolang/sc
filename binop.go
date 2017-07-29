@@ -19,6 +19,7 @@ const (
 	UnaryOpCpsoct     = 24
 	UnaryOpCubed      = 13
 	UnaryOpDbAmp      = 21
+	UnaryOpDistort    = 42
 	UnaryOpExp        = 15
 	UnaryOpFloor      = 9
 	UnaryOpFrac       = 10
@@ -156,6 +157,12 @@ func unaryOpCubed(rate int8, in Input, numOutputs int) Input {
 func unaryOpDbAmp(rate int8, in Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(unaryOpUgenName, rate, UnaryOpDbAmp, numOutputs, in)
+}
+
+// unaryOpDistort performs non-linear distortion on a signal.
+func unaryOpDistort(rate int8, in Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(unaryOpUgenName, rate, UnaryOpDistort, numOutputs, in)
 }
 
 // unaryOpExp computes the exponential of a signal.

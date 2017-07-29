@@ -54,6 +54,9 @@ type Input interface {
 	// DbAmp converts decibels to linear amplitude.
 	DbAmp() Input
 
+	// Distort performs non-linear distortion on a signal.
+	Distort() Input
+
 	// Exp computes the exponential of a signal.
 	Exp() Input
 

@@ -115,6 +115,10 @@ func (p *param) DbAmp() Input {
 	return unaryOpDbAmp(KR, p, 1)
 }
 
+func (p *param) Distort() Input {
+	return unaryOpDistort(KR, p, 1)
+}
+
 func (p *param) Exp() Input {
 	return unaryOpExp(KR, p, 1)
 }

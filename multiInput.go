@@ -146,6 +146,15 @@ func (ins Inputs) DbAmp() Input {
 	return Inputs(ia)
 }
 
+// Distort performs non-linear distortion on a signal.
+func (ins Inputs) Distort() Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Distort()
+	}
+	return Inputs(ia)
+}
+
 // Exp computes the exponential of a signal.
 func (ins Inputs) Exp() Input {
 	ia := make([]Input, len(ins))

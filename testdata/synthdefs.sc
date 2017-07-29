@@ -75,6 +75,10 @@ SynthDef(\dbampExample, {
     Out.ar(0, LFNoise1.ar(1500).dbamp);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\distortExample, {
+    Out.ar(0, LFNoise1.ar(1500).distort);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\expExample, {
     Out.ar(0, LFNoise1.ar(1500).exp);
 }).writeDefFile(File.getcwd);

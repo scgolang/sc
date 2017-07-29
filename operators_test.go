@@ -214,6 +214,21 @@ func TestDbAmp(t *testing.T) {
 	}))
 }
 
+func TestDistort(t *testing.T) {
+	const defName = "distortExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Distort(),
+		}.Rate(AR)
+	}))
+}
+
 func TestExp(t *testing.T) {
 	const defName = "expExample"
 

@@ -150,6 +150,11 @@ func (u *Ugen) DbAmp() Input {
 	return unaryOpDbAmp(u.Rate, u, u.NumOutputs)
 }
 
+// Distort performs non-linear distortion on a signal.
+func (u *Ugen) Distort() Input {
+	return unaryOpDistort(u.Rate, u, u.NumOutputs)
+}
+
 // Exp computes the exponential of a signal.
 func (u *Ugen) Exp() Input {
 	return unaryOpExp(u.Rate, u, u.NumOutputs)

@@ -6,7 +6,11 @@ const (
 	BinOpDiv          = 4
 	BinOpExpon        = 25
 	BinOpGCD          = 18
+	BinOpGT           = 9
+	BinOpGTE          = 11
 	BinOpLCM          = 17
+	BinOpLT           = 8
+	BinOpLTE          = 10
 	BinOpMax          = 13
 	BinOpModulo       = 5
 	BinOpMul          = 2
@@ -81,10 +85,34 @@ func binOpGCD(rate int8, x, y Input, numOutputs int) Input {
 	return NewInput(binopUgenName, rate, BinOpGCD, numOutputs, x, y)
 }
 
+// binOpGT computes x > y.
+func binOpGT(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpGT, numOutputs, x, y)
+}
+
+// binOpGTE computes x >= y.
+func binOpGTE(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpGTE, numOutputs, x, y)
+}
+
 // binOpLCM computes the lcm of one Input and another.
 func binOpLCM(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpLCM, numOutputs, x, y)
+}
+
+// binOpLT computes x < y.
+func binOpLT(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpLT, numOutputs, x, y)
+}
+
+// binOpLTE computes x <= y.
+func binOpLTE(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpLTE, numOutputs, x, y)
 }
 
 // binOpMax creates a BinaryOpUgen that represents the maximum of two signals.

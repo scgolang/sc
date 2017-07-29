@@ -319,6 +319,36 @@ func TestGCD(t *testing.T) {
 	}))
 }
 
+func TestGT(t *testing.T) {
+	const defName = "gtExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.GT(C(2)),
+		}.Rate(AR)
+	}))
+}
+
+func TestGTE(t *testing.T) {
+	const defName = "gteExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.GTE(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestLCM(t *testing.T) {
 	const defName = "lcmExample"
 
@@ -330,6 +360,36 @@ func TestLCM(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.LCM(C(2)),
+		}.Rate(AR)
+	}))
+}
+
+func TestLT(t *testing.T) {
+	const defName = "ltExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.LT(C(2)),
+		}.Rate(AR)
+	}))
+}
+
+func TestLTE(t *testing.T) {
+	const defName = "lteExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.LTE(C(2)),
 		}.Rate(AR)
 	}))
 }

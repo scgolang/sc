@@ -185,9 +185,29 @@ func (u *Ugen) GCD(val Input) Input {
 	return binOpGCD(u.Rate, u, val, u.NumOutputs)
 }
 
+// GT computes x > y.
+func (u *Ugen) GT(val Input) Input {
+	return binOpGT(u.Rate, u, val, u.NumOutputs)
+}
+
+// GTE computes x >= y.
+func (u *Ugen) GTE(val Input) Input {
+	return binOpGTE(u.Rate, u, val, u.NumOutputs)
+}
+
 // LCM computes the lcm of one Input and another.
 func (u *Ugen) LCM(val Input) Input {
 	return binOpLCM(u.Rate, u, val, u.NumOutputs)
+}
+
+// LT computes x < y.
+func (u *Ugen) LT(val Input) Input {
+	return binOpLT(u.Rate, u, val, u.NumOutputs)
+}
+
+// LTE computes x <= y.
+func (u *Ugen) LTE(val Input) Input {
+	return binOpLTE(u.Rate, u, val, u.NumOutputs)
 }
 
 // Linrand returns a linearly distributed random value between in and zero.

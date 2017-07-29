@@ -161,10 +161,38 @@ func (as ArraySpec) GCD(val Input) Input {
 	})
 }
 
+// GT computes x > y.
+func (as ArraySpec) GT(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.GT(val)
+	})
+}
+
+// GTE computes x >= y.
+func (as ArraySpec) GTE(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.GTE(val)
+	})
+}
+
 // LCM computes the least common multiple of one Input and another.
 func (as ArraySpec) LCM(val Input) Input {
 	return as.proc(func(i Input) Input {
 		return i.LCM(val)
+	})
+}
+
+// LT computes x < y.
+func (as ArraySpec) LT(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.LT(val)
+	})
+}
+
+// LTE computes x <= y.
+func (as ArraySpec) LTE(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.LTE(val)
 	})
 }
 

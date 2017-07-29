@@ -83,6 +83,10 @@ SynthDef(\divExample, {
     Out.ar(0, LFNoise1.ar(1500) / 2);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\gtExample, {
+    Out.ar(0, LFNoise1.ar(1500) > 2);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\expExample, {
     Out.ar(0, LFNoise1.ar(1500).exp);
 }).writeDefFile(File.getcwd);
@@ -103,6 +107,14 @@ SynthDef(\gcdExample, {
     Out.ar(0, LFNoise1.ar(1500).gcd(2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\gtExample, {
+    Out.ar(0, LFNoise1.ar(1500) > 2);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\gteExample, {
+    Out.ar(0, LFNoise1.ar(1500) >= 2);
+}).writeDefFile(File.getcwd);
+
 SynthDef(\lcmExample, {
     Out.ar(0, LFNoise1.ar(1500).lcm(2));
 }).writeDefFile(File.getcwd);
@@ -121,6 +133,14 @@ SynthDef(\log10Example, {
 
 SynthDef(\log2Example, {
     Out.ar(0, LFNoise1.ar(1500).log2);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\ltExample, {
+    Out.ar(0, LFNoise1.ar(1500) < 2);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\lteExample, {
+    Out.ar(0, LFNoise1.ar(1500) <= 2);
 }).writeDefFile(File.getcwd);
 
 SynthDef(\midiratioExample, {

@@ -209,6 +209,24 @@ func (ins Inputs) GCD(val Input) Input {
 	return Inputs(ia)
 }
 
+// GT computes x > y.
+func (ins Inputs) GT(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.GT(val)
+	}
+	return Inputs(ia)
+}
+
+// GTE computes x >= y.
+func (ins Inputs) GTE(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.GTE(val)
+	}
+	return Inputs(ia)
+}
+
 // InputArray provides access to the list of inputs.
 func (ins Inputs) InputArray() []Input {
 	return ins
@@ -219,6 +237,24 @@ func (ins Inputs) LCM(val Input) Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.LCM(val)
+	}
+	return Inputs(ia)
+}
+
+// LT computes x < y.
+func (ins Inputs) LT(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.LT(val)
+	}
+	return Inputs(ia)
+}
+
+// LTE computes x <= y.
+func (ins Inputs) LTE(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.LTE(val)
 	}
 	return Inputs(ia)
 }

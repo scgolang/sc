@@ -79,8 +79,20 @@ type Input interface {
 	// GCD computes the gcd of one Input and another.
 	GCD(Input) Input
 
+	// GT computes x > y.
+	GT(Input) Input
+
+	// GT computes x >= y.
+	GTE(Input) Input
+
 	// LCM computes the least common multiple of one Input and another.
 	LCM(Input) Input
+
+	// LT computes x < y.
+	LT(Input) Input
+
+	// LT computes x <= y.
+	LTE(Input) Input
 
 	// Linrand returns a linearly distributed random value between in and zero.
 	Linrand() Input

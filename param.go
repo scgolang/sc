@@ -143,6 +143,14 @@ func (p *param) GCD(val Input) Input {
 	return binOpGCD(KR, p, val, 1)
 }
 
+func (p *param) GT(val Input) Input {
+	return binOpGT(KR, p, val, 1)
+}
+
+func (p *param) GTE(val Input) Input {
+	return binOpGTE(KR, p, val, 1)
+}
+
 func (p *param) Index() int32 {
 	return p.index
 }
@@ -153,6 +161,14 @@ func (p *param) InitialValue() float32 {
 
 func (p *param) LCM(val Input) Input {
 	return binOpLCM(KR, p, val, 1)
+}
+
+func (p *param) LT(val Input) Input {
+	return binOpLT(KR, p, val, 1)
+}
+
+func (p *param) LTE(val Input) Input {
+	return binOpLTE(KR, p, val, 1)
 }
 
 func (p *param) Linrand() Input {

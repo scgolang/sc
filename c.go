@@ -136,12 +136,56 @@ func (c C) GCD(val Input) Input {
 	return val.GCD(c)
 }
 
+// GT computes x > y.
+func (c C) GT(val Input) Input {
+	if v, ok := val.(C); ok {
+		if c > v {
+			return C(1)
+		}
+		return C(0)
+	}
+	return val.LT(c)
+}
+
+// GTE computes x >= y.
+func (c C) GTE(val Input) Input {
+	if v, ok := val.(C); ok {
+		if c >= v {
+			return C(1)
+		}
+		return C(0)
+	}
+	return val.LTE(c)
+}
+
 // LCM computes the least common multiple of one Input and another.
 func (c C) LCM(val Input) Input {
 	if v, ok := val.(C); ok {
 		return C(lcm(float32(c), float32(v)))
 	}
 	return val.LCM(c)
+}
+
+// LT computes x < y.
+func (c C) LT(val Input) Input {
+	if v, ok := val.(C); ok {
+		if c < v {
+			return C(1)
+		}
+		return C(0)
+	}
+	return val.GT(c)
+}
+
+// LTE computes x <= y.
+func (c C) LTE(val Input) Input {
+	if v, ok := val.(C); ok {
+		if c <= v {
+			return C(1)
+		}
+		return C(0)
+	}
+	return val.GTE(c)
 }
 
 // Linrand returns a linearly distributed random value between in and zero.

@@ -227,6 +227,16 @@ func (ins Inputs) GTE(val Input) Input {
 	return Inputs(ia)
 }
 
+// Hypot returns the square root of the sum of the squares of a and b.
+// Or equivalently, the distance from the origin to the point (x, y).
+func (ins Inputs) Hypot(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Hypot(val)
+	}
+	return Inputs(ia)
+}
+
 // InputArray provides access to the list of inputs.
 func (ins Inputs) InputArray() []Input {
 	return ins
@@ -412,6 +422,15 @@ func (ins Inputs) Reciprocal() Input {
 	return Inputs(converted)
 }
 
+// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
+func (ins Inputs) Round(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Round(val)
+	}
+	return Inputs(converted)
+}
+
 // Sign computes the sign of a signal.
 func (ins Inputs) Sign() Input {
 	ia := make([]Input, len(ins))
@@ -491,6 +510,15 @@ func (ins Inputs) Tanh() Input {
 		ia[i] = in.Tanh()
 	}
 	return Inputs(ia)
+}
+
+// Trunc performs quantization by truncation. Truncate a to a multiple of b.
+func (ins Inputs) Trunc(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Trunc(val)
+	}
+	return Inputs(converted)
 }
 
 // Multi does multichannel expansion.

@@ -115,6 +115,10 @@ SynthDef(\gteExample, {
     Out.ar(0, LFNoise1.ar(1500) >= 2);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\hypotExample, {
+    Out.ar(0, LFNoise1.ar(1500).hypot(2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\lcmExample, {
     Out.ar(0, LFNoise1.ar(1500).lcm(2));
 }).writeDefFile(File.getcwd);
@@ -179,6 +183,10 @@ SynthDef(\reciprocalExample, {
     Out.ar(0, LFNoise1.ar(1500).reciprocal);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\roundExample, {
+    Out.ar(0, LFNoise1.ar(1500).round(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\signExample, {
     Out.ar(0, LFNoise1.ar(1500).sign);
 }).writeDefFile(File.getcwd);
@@ -209,6 +217,10 @@ SynthDef(\tanExample, {
 
 SynthDef(\tanhExample, {
     Out.ar(0, LFNoise1.ar(1500).tanh);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\truncExample, {
+    Out.ar(0, LFNoise1.ar(1500).trunc(0.5));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\Envgen1, {

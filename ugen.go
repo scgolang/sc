@@ -195,6 +195,12 @@ func (u *Ugen) GTE(val Input) Input {
 	return binOpGTE(u.Rate, u, val, u.NumOutputs)
 }
 
+// Hypot returns the square root of the sum of the squares of a and b.
+// Or equivalently, the distance from the origin to the point (x, y).
+func (u *Ugen) Hypot(val Input) Input {
+	return binOpHypot(u.Rate, u, val, u.NumOutputs)
+}
+
 // LCM computes the lcm of one Input and another.
 func (u *Ugen) LCM(val Input) Input {
 	return binOpLCM(u.Rate, u, val, u.NumOutputs)
@@ -295,6 +301,11 @@ func (u *Ugen) Reciprocal() Input {
 	return unaryOpReciprocal(u.Rate, u, u.NumOutputs)
 }
 
+// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
+func (u *Ugen) Round(val Input) Input {
+	return binOpRound(u.Rate, u, val, u.NumOutputs)
+}
+
 // Sign computes the sign of a signal.
 func (u *Ugen) Sign() Input {
 	return unaryOpSign(u.Rate, u, u.NumOutputs)
@@ -338,6 +349,11 @@ func (u *Ugen) Tan() Input {
 // Tanh returns the hyperbolic tangent of a ugen.
 func (u *Ugen) Tanh() Input {
 	return unaryOpTanh(u.Rate, u, u.NumOutputs)
+}
+
+// Trunc performs quantization by truncation. Truncate a to a multiple of b.
+func (u *Ugen) Trunc(val Input) Input {
+	return binOpTrunc(u.Rate, u, val, u.NumOutputs)
 }
 
 // Write writes a Ugen

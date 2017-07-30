@@ -175,6 +175,14 @@ func (as ArraySpec) GTE(val Input) Input {
 	})
 }
 
+// Hypot returns the square root of the sum of the squares of a and b.
+// Or equivalently, the distance from the origin to the point (x, y).
+func (as ArraySpec) Hypot(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Hypot(val)
+	})
+}
+
 // LCM computes the least common multiple of one Input and another.
 func (as ArraySpec) LCM(val Input) Input {
 	return as.proc(func(i Input) Input {
@@ -315,6 +323,13 @@ func (as ArraySpec) Reciprocal() Input {
 	})
 }
 
+// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
+func (as ArraySpec) Round(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Round(val)
+	})
+}
+
 // Sign returns the sign of a signal.
 func (as ArraySpec) Sign() Input {
 	return as.proc(func(i Input) Input {
@@ -375,6 +390,13 @@ func (as ArraySpec) Tan() Input {
 func (as ArraySpec) Tanh() Input {
 	return as.proc(func(i Input) Input {
 		return i.Tanh()
+	})
+}
+
+// Trunc performs quantization by truncation. Truncate a to a multiple of b.
+func (as ArraySpec) Trunc(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Trunc(val)
 	})
 }
 

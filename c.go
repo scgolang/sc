@@ -158,6 +158,15 @@ func (c C) GTE(val Input) Input {
 	return val.LTE(c)
 }
 
+// Hypot returns the square root of the sum of the squares of a and b.
+// Or equivalently, the distance from the origin to the point (x, y).
+func (c C) Hypot(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(float32(math.Hypot(float64(c), float64(v))))
+	}
+	return val.Hypot(c)
+}
+
 // LCM computes the least common multiple of one Input and another.
 func (c C) LCM(val Input) Input {
 	if v, ok := val.(C); ok {
@@ -297,6 +306,14 @@ func (c C) Reciprocal() Input {
 	return C(1 / float32(c))
 }
 
+// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
+func (c C) Round(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(Roundf(float32(c), float32(v)))
+	}
+	return c
+}
+
 // Sign computes the sign of the constant.
 func (c C) Sign() Input {
 	if c > 0 {
@@ -352,6 +369,15 @@ func (c C) Tanh() Input {
 	return C(float32(math.Tanh(float64(c))))
 }
 
+// Trunc performs quantization by truncation. Truncate c to a multiple of val.
+// If val is not a constant, c is returned.
+func (c C) Trunc(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(Truncf(float32(c), float32(v)))
+	}
+	return c
+}
+
 func gcd(x, y float32) float32 {
 	a, b := int(x), int(y)
 	for b != 0 {
@@ -372,4 +398,62 @@ func maxFloat32(f1, f2 float32) float32 {
 		return f1
 	}
 	return f2
+}
+
+// Roundf rounds a to the nearest multiple of b.
+func Roundf(a, b float32) float32 {
+	if b == 0 {
+		return 0
+	}
+	var m, v float32
+
+	for {
+		if b*m <= a {
+			if b*(m+1) > a {
+				if math.Abs(float64(a-b*m)) < math.Abs(float64(a-b*(m+1))) {
+					v = b * m
+				} else {
+					v = b * (m + 1)
+				}
+				break
+			}
+			m++
+			continue
+		}
+		m--
+		if b*m <= a {
+			if math.Abs(float64(a-b*m)) < math.Abs(float64(a-b*(m+1))) {
+				v = b * m
+			} else {
+				v = b * (m + 1)
+			}
+			break
+		}
+	}
+	return v
+}
+
+// Truncf returns the next highest multiple of b that is < a.
+func Truncf(a, b float32) float32 {
+	if b == 0 {
+		return 0
+	}
+	var m, v float32
+
+	for {
+		if b*m <= a {
+			if b*(m+1) > a {
+				v = b * m
+				break
+			}
+			m++
+			continue
+		}
+		m--
+		if b*m <= a {
+			v = b * m
+			break
+		}
+	}
+	return v
 }

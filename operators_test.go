@@ -349,6 +349,21 @@ func TestGTE(t *testing.T) {
 	}))
 }
 
+func TestHypot(t *testing.T) {
+	const defName = "hypotExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Hypot(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestLCM(t *testing.T) {
 	const defName = "lcmExample"
 
@@ -574,6 +589,21 @@ func TestReciprocal(t *testing.T) {
 	}))
 }
 
+func TestRound(t *testing.T) {
+	const defName = "roundExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Round(C(0.5)),
+		}.Rate(AR)
+	}))
+}
+
 func TestSign(t *testing.T) {
 	const defName = "signExample"
 
@@ -690,6 +720,21 @@ func TestTanh(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Tanh(),
+		}.Rate(AR)
+	}))
+}
+
+func TestTrunc(t *testing.T) {
+	const defName = "truncExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Trunc(C(0.5)),
 		}.Rate(AR)
 	}))
 }

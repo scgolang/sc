@@ -8,6 +8,7 @@ const (
 	BinOpGCD          = 18
 	BinOpGT           = 9
 	BinOpGTE          = 11
+	BinOpHypot        = 23
 	BinOpLCM          = 17
 	BinOpLT           = 8
 	BinOpLTE          = 10
@@ -15,6 +16,8 @@ const (
 	BinOpModulo       = 5
 	BinOpMul          = 2
 	BinOpPow          = 25
+	BinOpRound        = 19
+	BinOpTrunc        = 21
 	UnaryOpAbs        = 5
 	UnaryOpAcos       = 32
 	UnaryOpAmpDb      = 22
@@ -97,6 +100,13 @@ func binOpGTE(rate int8, x, y Input, numOutputs int) Input {
 	return NewInput(binopUgenName, rate, BinOpGTE, numOutputs, x, y)
 }
 
+// binOpHypot returns the square root of the sum of the squares of x and y.
+// Or equivalently, the distance from the origin to the point (x, y).
+func binOpHypot(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpHypot, numOutputs, x, y)
+}
+
 // binOpLCM computes the lcm of one Input and another.
 func binOpLCM(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -137,6 +147,18 @@ func binOpMul(rate int8, x, y Input, numOutputs int) Input {
 func binOpPow(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpPow, numOutputs, x, y)
+}
+
+// binOpRound performs quantization by rounding. Rounds a to the nearest multiple of b.
+func binOpRound(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpRound, numOutputs, x, y)
+}
+
+// binOpTrunc performs quantization by truncation. Truncate a to a multiple of b.
+func binOpTrunc(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpTrunc, numOutputs, x, y)
 }
 
 // mulAdd creates a MulAdd ugen.

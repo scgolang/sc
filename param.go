@@ -151,6 +151,10 @@ func (p *param) GTE(val Input) Input {
 	return binOpGTE(KR, p, val, 1)
 }
 
+func (p *param) Hypot(val Input) Input {
+	return binOpHypot(KR, p, val, 1)
+}
+
 func (p *param) Index() int32 {
 	return p.index
 }
@@ -240,7 +244,11 @@ func (p *param) Ratiomidi() Input {
 }
 
 func (p *param) Reciprocal() Input {
-	return unaryOpReciprocal(KR, p, 1) // TODO
+	return unaryOpReciprocal(KR, p, 1)
+}
+
+func (p *param) Round(val Input) Input {
+	return binOpRound(KR, p, val, 1)
 }
 
 func (p *param) Sign() Input {
@@ -277,6 +285,10 @@ func (p *param) Tan() Input {
 
 func (p *param) Tanh() Input {
 	return unaryOpTanh(KR, p, 1)
+}
+
+func (p *param) Trunc(val Input) Input {
+	return binOpTrunc(KR, p, val, 1)
 }
 
 func newParam(name string, index int32, initialValue float32) *param {

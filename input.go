@@ -85,6 +85,10 @@ type Input interface {
 	// GT computes x >= y.
 	GTE(Input) Input
 
+	// Hypot returns the square root of the sum of the squares of a and b.
+	// Or equivalently, the distance from the origin to the point (x, y).
+	Hypot(Input) Input
+
 	// LCM computes the least common multiple of one Input and another.
 	LCM(Input) Input
 
@@ -145,6 +149,9 @@ type Input interface {
 	// Reciprocal computes the reciprocal of a signal.
 	Reciprocal() Input
 
+	// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
+	Round(Input) Input
+
 	// Sign computes the sign of a signal.
 	// This returns -1 when a < 0, +1 when a > 0, 0 when a is 0.
 	Sign() Input
@@ -174,6 +181,9 @@ type Input interface {
 
 	// Tanh computes the hyperbolic tangent of an Input.
 	Tanh() Input
+
+	// Trunc performs quantization by truncation. Truncate a to a multiple of b.
+	Trunc(Input) Input
 }
 
 func readInput(r io.Reader) (UgenInput, error) {

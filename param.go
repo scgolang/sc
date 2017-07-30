@@ -155,6 +155,10 @@ func (p *param) Hypot(val Input) Input {
 	return binOpHypot(KR, p, val, 1)
 }
 
+func (p *param) HypotApx(val Input) Input {
+	return binOpHypotApx(KR, p, val, 1)
+}
+
 func (p *param) Index() int32 {
 	return p.index
 }

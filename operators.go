@@ -9,6 +9,7 @@ const (
 	BinOpGT           = 9
 	BinOpGTE          = 11
 	BinOpHypot        = 23
+	BinOpHypotApx     = 24
 	BinOpLCM          = 17
 	BinOpLT           = 8
 	BinOpLTE          = 10
@@ -105,6 +106,12 @@ func binOpGTE(rate int8, x, y Input, numOutputs int) Input {
 func binOpHypot(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpHypot, numOutputs, x, y)
+}
+
+// binOpHypotApx returns an approximation of the square root of the sum of the squares of x and y.
+func binOpHypotApx(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpHypotApx, numOutputs, x, y)
 }
 
 // binOpLCM computes the lcm of one Input and another.

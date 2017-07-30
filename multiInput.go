@@ -237,6 +237,15 @@ func (ins Inputs) Hypot(val Input) Input {
 	return Inputs(ia)
 }
 
+// HypotApx returns an approximation of the square root of the sum of the squares of x and y.
+func (ins Inputs) HypotApx(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.HypotApx(val)
+	}
+	return Inputs(ia)
+}
+
 // InputArray provides access to the list of inputs.
 func (ins Inputs) InputArray() []Input {
 	return ins

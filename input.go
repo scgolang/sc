@@ -89,6 +89,9 @@ type Input interface {
 	// Or equivalently, the distance from the origin to the point (x, y).
 	Hypot(Input) Input
 
+	// HypotApx returns an approximation of the square root of the sum of the squares of x and y.
+	HypotApx(Input) Input
+
 	// LCM computes the least common multiple of one Input and another.
 	LCM(Input) Input
 

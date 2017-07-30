@@ -364,6 +364,21 @@ func TestHypot(t *testing.T) {
 	}))
 }
 
+func TestHypotApx(t *testing.T) {
+	const defName = "hypotapxExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.HypotApx(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestLCM(t *testing.T) {
 	const defName = "lcmExample"
 

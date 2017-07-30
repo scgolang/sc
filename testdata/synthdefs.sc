@@ -119,6 +119,10 @@ SynthDef(\hypotExample, {
     Out.ar(0, LFNoise1.ar(1500).hypot(2));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\hypotapxExample, {
+    Out.ar(0, LFNoise1.ar(1500).hypotApx(2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\lcmExample, {
     Out.ar(0, LFNoise1.ar(1500).lcm(2));
 }).writeDefFile(File.getcwd);

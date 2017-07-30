@@ -167,6 +167,20 @@ func (c C) Hypot(val Input) Input {
 	return val.Hypot(c)
 }
 
+// HypotApx returns an approximation of the square root of the sum of the squares of x and y.
+// This uses the formula:
+//     abs(x) + abs(y) - ((sqrt(2) - 1) * min(abs(x), abs(y)))
+func (c C) HypotApx(val Input) Input {
+	if v, ok := val.(C); ok {
+		var (
+			x = float32(math.Abs(float64(c))) + float32(math.Abs(float64(v)))
+			y = float32(math.Min(math.Abs(float64(c)), math.Abs(float64(v))))
+		)
+		return C(x - ((float32(math.Sqrt(2)) - 1) * y))
+	}
+	return val.HypotApx(c)
+}
+
 // LCM computes the least common multiple of one Input and another.
 func (c C) LCM(val Input) Input {
 	if v, ok := val.(C); ok {

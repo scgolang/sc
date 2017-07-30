@@ -183,6 +183,13 @@ func (as ArraySpec) Hypot(val Input) Input {
 	})
 }
 
+// HypotApx returns an approximation of the square root of the sum of the squares of x and y.
+func (as ArraySpec) HypotApx(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.HypotApx(val)
+	})
+}
+
 // LCM computes the least common multiple of one Input and another.
 func (as ArraySpec) LCM(val Input) Input {
 	return as.proc(func(i Input) Input {

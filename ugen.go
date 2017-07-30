@@ -201,6 +201,11 @@ func (u *Ugen) Hypot(val Input) Input {
 	return binOpHypot(u.Rate, u, val, u.NumOutputs)
 }
 
+// HypotApx returns an approximation of the square root of the sum of the squares of x and y.
+func (u *Ugen) HypotApx(val Input) Input {
+	return binOpHypotApx(u.Rate, u, val, u.NumOutputs)
+}
+
 // LCM computes the lcm of one Input and another.
 func (u *Ugen) LCM(val Input) Input {
 	return binOpLCM(u.Rate, u, val, u.NumOutputs)

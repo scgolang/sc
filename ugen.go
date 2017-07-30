@@ -311,6 +311,26 @@ func (u *Ugen) Reciprocal() Input {
 	return unaryOpReciprocal(u.Rate, u, u.NumOutputs)
 }
 
+// Ring1 is ring modulation plus first source.
+func (u *Ugen) Ring1(val Input) Input {
+	return binOpRing1(u.Rate, u, val, u.NumOutputs)
+}
+
+// Ring2 is ring modulation plus both sources.
+func (u *Ugen) Ring2(val Input) Input {
+	return binOpRing2(u.Rate, u, val, u.NumOutputs)
+}
+
+// Ring3 returns the value of (a*a *b)
+func (u *Ugen) Ring3(val Input) Input {
+	return binOpRing3(u.Rate, u, val, u.NumOutputs)
+}
+
+// Ring4 returns the value of ((a*a *b) - (a*b*b)).
+func (u *Ugen) Ring4(val Input) Input {
+	return binOpRing4(u.Rate, u, val, u.NumOutputs)
+}
+
 // Round performs quantization by rounding. Rounds a to the nearest multiple of b.
 func (u *Ugen) Round(val Input) Input {
 	return binOpRound(u.Rate, u, val, u.NumOutputs)

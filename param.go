@@ -255,6 +255,22 @@ func (p *param) Reciprocal() Input {
 	return unaryOpReciprocal(KR, p, 1)
 }
 
+func (p *param) Ring1(val Input) Input {
+	return binOpRing1(KR, p, val, 1)
+}
+
+func (p *param) Ring2(val Input) Input {
+	return binOpRing2(KR, p, val, 1)
+}
+
+func (p *param) Ring3(val Input) Input {
+	return binOpRing3(KR, p, val, 1)
+}
+
+func (p *param) Ring4(val Input) Input {
+	return binOpRing4(KR, p, val, 1)
+}
+
 func (p *param) Round(val Input) Input {
 	return binOpRound(KR, p, val, 1)
 }

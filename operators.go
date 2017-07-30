@@ -18,6 +18,10 @@ const (
 	BinOpModulo       = 5
 	BinOpMul          = 2
 	BinOpPow          = 25
+	BinOpRing1        = 30
+	BinOpRing2        = 31
+	BinOpRing3        = 32
+	BinOpRing4        = 33
 	BinOpRound        = 19
 	BinOpTrunc        = 21
 	UnaryOpAbs        = 5
@@ -161,6 +165,30 @@ func binOpMul(rate int8, x, y Input, numOutputs int) Input {
 func binOpPow(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpPow, numOutputs, x, y)
+}
+
+// binOpRing1 creates a BinaryOpUgen that is ring modulation plus first source.
+func binOpRing1(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpRing1, numOutputs, x, y)
+}
+
+// binOpRing2 creates a BinaryOpUgen that is ring modulation plus both sources.
+func binOpRing2(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpRing2, numOutputs, x, y)
+}
+
+// binOpRing3 creates a BinaryOpUgen that returns the value of (a*a *b).
+func binOpRing3(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpRing3, numOutputs, x, y)
+}
+
+// binOpRing4 creates a BinaryOpUgen that returns the value of ((a*a *b) - (a*b*b)).
+func binOpRing4(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpRing4, numOutputs, x, y)
 }
 
 // binOpRound performs quantization by rounding. Rounds a to the nearest multiple of b.

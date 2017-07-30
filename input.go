@@ -155,6 +155,18 @@ type Input interface {
 	// Reciprocal computes the reciprocal of a signal.
 	Reciprocal() Input
 
+	// Ring1 is ring modulation plus first source.
+	Ring1(val Input) Input
+
+	// Ring2 is ring modulation plus both sources.
+	Ring2(val Input) Input
+
+	// Ring3 returns the value of (a*a *b)
+	Ring3(val Input) Input
+
+	// Ring4 returns the value of ((a*a *b) - (a*b*b)).
+	Ring4(val Input) Input
+
 	// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
 	Round(Input) Input
 

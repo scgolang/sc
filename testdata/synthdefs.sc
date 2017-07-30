@@ -191,6 +191,22 @@ SynthDef(\reciprocalExample, {
     Out.ar(0, LFNoise1.ar(1500).reciprocal);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\ring1Example, {
+    Out.ar(0, LFNoise1.ar(1500).ring1(SinOsc.ar()));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\ring2Example, {
+    Out.ar(0, LFNoise1.ar(1500).ring2(SinOsc.ar()));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\ring3Example, {
+    Out.ar(0, LFNoise1.ar(1500).ring3(SinOsc.ar()));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\ring4Example, {
+    Out.ar(0, LFNoise1.ar(1500).ring4(SinOsc.ar()));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\roundExample, {
     Out.ar(0, LFNoise1.ar(1500).round(0.5));
 }).writeDefFile(File.getcwd);

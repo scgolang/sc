@@ -328,6 +328,38 @@ func (c C) Reciprocal() Input {
 	return C(1 / float32(c))
 }
 
+// Ring1 returns the value of ((a*b) + a).
+func (c C) Ring1(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C((c * v) + c)
+	}
+	return val.Ring1(c)
+}
+
+// Ring2 returns the value of ((a*b) + a + b).
+func (c C) Ring2(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C((c * v) + c + v)
+	}
+	return val.Ring2(c)
+}
+
+// Ring3 returns the value of (a*a*b).
+func (c C) Ring3(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C((c * v) * v)
+	}
+	return val.Ring3(c)
+}
+
+// Ring4 returns the value of ((a*a *b) - (a*b*b)).
+func (c C) Ring4(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(((c * v) * v) - (c * v * v))
+	}
+	return val.Ring4(c)
+}
+
 // Round performs quantization by rounding. Rounds a to the nearest multiple of b.
 func (c C) Round(val Input) Input {
 	if v, ok := val.(C); ok {

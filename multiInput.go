@@ -440,6 +440,42 @@ func (ins Inputs) Reciprocal() Input {
 	return Inputs(converted)
 }
 
+// Ring1 is ring modulation plus first source.
+func (ins Inputs) Ring1(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Ring1(val)
+	}
+	return Inputs(converted)
+}
+
+// Ring2 is ring modulation plus both sources.
+func (ins Inputs) Ring2(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Ring2(val)
+	}
+	return Inputs(converted)
+}
+
+// Ring3 returns the value of (a*a *b)
+func (ins Inputs) Ring3(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Ring3(val)
+	}
+	return Inputs(converted)
+}
+
+// Ring4 returns the value of ((a*a *b) - (a*b*b)).
+func (ins Inputs) Ring4(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Ring4(val)
+	}
+	return Inputs(converted)
+}
+
 // Round performs quantization by rounding. Rounds a to the nearest multiple of b.
 func (ins Inputs) Round(val Input) Input {
 	converted := make([]Input, len(ins))

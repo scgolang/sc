@@ -619,6 +619,56 @@ func TestReciprocal(t *testing.T) {
 	}))
 }
 
+func TestRing1234(t *testing.T) {
+	defName := "ring1Example"
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Ring1(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+
+	defName = "ring2Example"
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Ring2(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+
+	defName = "ring3Example"
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Ring3(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+
+	defName = "ring4Example"
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Ring4(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+}
+
 func TestRound(t *testing.T) {
 	const defName = "roundExample"
 

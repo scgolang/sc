@@ -337,6 +337,34 @@ func (as ArraySpec) Reciprocal() Input {
 	})
 }
 
+// Ring1 is ring modulation plus first source.
+func (as ArraySpec) Ring1(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Ring1(val)
+	})
+}
+
+// Ring2 is ring modulation plus both sources.
+func (as ArraySpec) Ring2(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Ring2(val)
+	})
+}
+
+// Ring3 returns the value of (a*a *b)
+func (as ArraySpec) Ring3(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Ring3(val)
+	})
+}
+
+// Ring4 returns the value of ((a*a *b) - (a*b*b)).
+func (as ArraySpec) Ring4(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Ring4(val)
+	})
+}
+
 // Round performs quantization by rounding. Rounds a to the nearest multiple of b.
 func (as ArraySpec) Round(val Input) Input {
 	return as.proc(func(i Input) Input {

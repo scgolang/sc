@@ -21,6 +21,9 @@ type Input interface {
 	// Atan computes the arctangent of a signal.
 	Atan() Input
 
+	// Atan2 returns the arctangent of y/x.
+	Atan2(val Input) Input
+
 	// Add adds one Input to another.
 	Add(val Input) Input
 

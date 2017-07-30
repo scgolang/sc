@@ -65,6 +65,15 @@ func (ins Inputs) Atan() Input {
 	return Inputs(ia)
 }
 
+// Atan2 returns the arctangent of y/x.
+func (ins Inputs) Atan2(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Atan2(val)
+	}
+	return Inputs(ia)
+}
+
 // Bilinrand returns a linearly distributed random value between [+in ... -in].
 func (ins Inputs) Bilinrand() Input {
 	ia := make([]Input, len(ins))

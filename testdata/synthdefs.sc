@@ -39,6 +39,10 @@ SynthDef(\atanExample, {
     Out.ar(0, LFNoise1.ar(1500).atan);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\atan2Example, {
+    Out.ar(0, LFNoise1.ar(1500).atan2(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\bilinrandExample, {
     Out.ar(0, LFNoise1.ar(1500).bilinrand);
 }).writeDefFile(File.getcwd);

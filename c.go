@@ -41,6 +41,14 @@ func (c C) Atan() Input {
 	return C(float32(math.Atan(float64(c))))
 }
 
+// Atan2 returns the arctangent of y/x.
+func (c C) Atan2(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(float32(math.Atan2(float64(c), float64(v))))
+	}
+	return val.Reciprocal().Atan2(c.Reciprocal())
+}
+
 // Bilinrand returns a linearly distributed random value between [+in ... -in].
 func (c C) Bilinrand() Input {
 	return c.Rand2()

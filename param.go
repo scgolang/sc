@@ -79,6 +79,10 @@ func (p *param) Atan() Input {
 	return unaryOpAtan(KR, p, 1)
 }
 
+func (p *param) Atan2(val Input) Input {
+	return binOpAtan2(KR, p, val, 1)
+}
+
 func (p *param) Bilinrand() Input {
 	return unaryOpBilinrand(KR, p, 1)
 }

@@ -64,6 +64,21 @@ func TestAtan(t *testing.T) {
 	}))
 }
 
+func TestAtan2(t *testing.T) {
+	const defName = "atan2Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Atan2(C(0.5)),
+		}.Rate(AR)
+	}))
+}
+
 func TestAmpDb(t *testing.T) {
 	const defName = "ampdbExample"
 

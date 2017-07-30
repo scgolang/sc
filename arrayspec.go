@@ -49,6 +49,13 @@ func (as ArraySpec) Atan() Input {
 	})
 }
 
+// Atan2 returns the arctangent of y/x.
+func (as ArraySpec) Atan2(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Atan2(val)
+	})
+}
+
 // Bilinrand returns a linearly distributed random value between [+in ... -in].
 func (as ArraySpec) Bilinrand() Input {
 	return as.proc(func(i Input) Input {

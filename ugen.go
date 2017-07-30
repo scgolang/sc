@@ -105,6 +105,11 @@ func (u *Ugen) Atan() Input {
 	return unaryOpAtan(u.Rate, u, u.NumOutputs)
 }
 
+// Atan2 returns the arctangent of y/x.
+func (u *Ugen) Atan2(val Input) Input {
+	return binOpAtan2(u.Rate, u, val, u.NumOutputs)
+}
+
 // Bilinrand returns a linearly distributed random value between [+in ... -in].
 func (u *Ugen) Bilinrand() Input {
 	return unaryOpBilinrand(u.Rate, u, u.NumOutputs)

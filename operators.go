@@ -3,6 +3,7 @@ package sc
 // Operator constants.
 const (
 	BinOpAdd          = 0
+	BinOpAtan2        = 22
 	BinOpDiv          = 4
 	BinOpExpon        = 25
 	BinOpGCD          = 18
@@ -69,6 +70,12 @@ const (
 func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpAdd, numOutputs, x, y)
+}
+
+// binOpAtan2 returns the arctangent of y/x.
+func binOpAtan2(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpAtan2, numOutputs, x, y)
 }
 
 // binOpDiv divides one input by another.

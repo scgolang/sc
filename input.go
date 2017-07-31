@@ -186,6 +186,12 @@ type Input interface {
 	// SoftClip distorts a signal with a perfectly linear range from -0.5 to 0.5
 	SoftClip() Input
 
+	// Sqrdif computes the square of the difference between the two inputs.
+	Sqrdif(Input) Input
+
+	// Sqrsum computes the square of the sum of the two inputs.
+	Sqrsum(Input) Input
+
 	// Sqrt computes the square root of a signal.
 	// The definition of square root is extended for signals so that sqrt(a)
 	// when a < 0 returns -sqrt(-a).

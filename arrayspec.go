@@ -407,6 +407,20 @@ func (as ArraySpec) SoftClip() Input {
 	})
 }
 
+// Sqrdif computes the square of the difference between the two inputs.
+func (as ArraySpec) Sqrdif(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Sqrdif(val)
+	})
+}
+
+// Sqrsum computes the square of the sum of the two inputs.
+func (as ArraySpec) Sqrsum(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Sqrsum(val)
+	})
+}
+
 // Sqrt returns the square root of a signal.
 func (as ArraySpec) Sqrt() Input {
 	return as.proc(func(i Input) Input {

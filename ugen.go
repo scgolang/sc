@@ -361,6 +361,16 @@ func (u *Ugen) SoftClip() Input {
 	return unaryOpSoftClip(u.Rate, u, u.NumOutputs)
 }
 
+// Sqrdif computes the square of the difference between the two inputs.
+func (u *Ugen) Sqrdif(val Input) Input {
+	return binOpSqrdif(u.Rate, u, val, u.NumOutputs)
+}
+
+// Sqrsum computes the square of the sum of the two inputs.
+func (u *Ugen) Sqrsum(val Input) Input {
+	return binOpSqrsum(u.Rate, u, val, u.NumOutputs)
+}
+
 // Sqrt computes the square root of a signal.
 func (u *Ugen) Sqrt() Input {
 	return unaryOpSqrt(u.Rate, u, u.NumOutputs)

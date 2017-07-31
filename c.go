@@ -408,6 +408,16 @@ func (c C) Sqrt() Input {
 	return C(math.Sqrt(float64(c)))
 }
 
+// Sqrdif computes the square of the difference between the two inputs.
+func (c C) Sqrdif(val Input) Input {
+	return c.Add(val.Neg()).Squared()
+}
+
+// Sqrsum computes the square of the sum of the two inputs.
+func (c C) Sqrsum(val Input) Input {
+	return c.Add(val).Squared()
+}
+
 // Squared computes the square of a signal.
 func (c C) Squared() Input {
 	return C(float32(c * c))

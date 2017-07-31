@@ -759,6 +759,36 @@ func TestSquared(t *testing.T) {
 	}))
 }
 
+func TestSqrdif(t *testing.T) {
+	const defName = "sqrdifExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sqrdif(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+}
+
+func TestSqrsum(t *testing.T) {
+	const defName = "sqrsumExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sqrsum(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+}
+
 func TestSqrt(t *testing.T) {
 	const defName = "sqrtExample"
 

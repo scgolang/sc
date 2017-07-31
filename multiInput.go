@@ -530,6 +530,24 @@ func (ins Inputs) SoftClip() Input {
 	return Inputs(clipped)
 }
 
+// Sqrdif computes the square of the difference between the two inputs.
+func (ins Inputs) Sqrdif(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sqrdif(val)
+	}
+	return Inputs(ia)
+}
+
+// Sqrsum computes the square of the sum of the two inputs.
+func (ins Inputs) Sqrsum(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sqrsum(val)
+	}
+	return Inputs(ia)
+}
+
 // Sqrt computes the square root of a signal.
 func (ins Inputs) Sqrt() Input {
 	ia := make([]Input, len(ins))

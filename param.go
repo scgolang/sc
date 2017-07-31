@@ -295,6 +295,14 @@ func (p *param) SoftClip() Input {
 	return unaryOpSoftClip(KR, p, 1)
 }
 
+func (p *param) Sqrdif(val Input) Input {
+	return binOpSqrdif(KR, p, val, 1)
+}
+
+func (p *param) Sqrsum(val Input) Input {
+	return binOpSqrsum(KR, p, val, 1)
+}
+
 func (p *param) Sqrt() Input {
 	return unaryOpSqrt(KR, p, 1)
 }

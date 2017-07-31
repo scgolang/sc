@@ -227,6 +227,14 @@ SynthDef(\sinhExample, {
     Out.ar(0, LFNoise1.ar(1500).sinh);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\sqrdifExample, {
+    Out.ar(0, LFNoise1.ar(1500).sqrdif(SinOsc.ar));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\sqrsumExample, {
+    Out.ar(0, LFNoise1.ar(1500).sqrsum(SinOsc.ar));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\sqrtExample, {
     Out.ar(0, LFNoise1.ar(1500).sqrt);
 }).writeDefFile(File.getcwd);

@@ -1,6 +1,7 @@
 package sc
 
 // Operator constants.
+// These are used as the "special index" for BinaryOpUGen and UnaryOpUGen in synthdef files.
 const (
 	BinOpAdd          = 0
 	BinOpAtan2        = 22
@@ -24,6 +25,8 @@ const (
 	BinOpRing3        = 32
 	BinOpRing4        = 33
 	BinOpRound        = 19
+	BinOpSqrdif       = 37
+	BinOpSqrsum       = 36
 	BinOpSumsqr       = 35
 	BinOpTrunc        = 21
 	UnaryOpAbs        = 5
@@ -203,6 +206,18 @@ func binOpRing4(rate int8, x, y Input, numOutputs int) Input {
 func binOpRound(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpRound, numOutputs, x, y)
+}
+
+// binOpSqrdif computes the square of the difference of two inputs.
+func binOpSqrdif(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpSqrdif, numOutputs, x, y)
+}
+
+// binOpSqrsum computes the square of the sum of two inputs.
+func binOpSqrsum(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpSqrsum, numOutputs, x, y)
 }
 
 // binOpSumsqr computes a sum of squares.

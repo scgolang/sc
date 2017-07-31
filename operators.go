@@ -4,6 +4,7 @@ package sc
 const (
 	BinOpAdd          = 0
 	BinOpAtan2        = 22
+	BinOpDifsqr       = 34
 	BinOpDiv          = 4
 	BinOpExpon        = 25
 	BinOpGCD          = 18
@@ -23,6 +24,7 @@ const (
 	BinOpRing3        = 32
 	BinOpRing4        = 33
 	BinOpRound        = 19
+	BinOpSumsqr       = 35
 	BinOpTrunc        = 21
 	UnaryOpAbs        = 5
 	UnaryOpAcos       = 32
@@ -80,6 +82,12 @@ func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
 func binOpAtan2(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpAtan2, numOutputs, x, y)
+}
+
+// binOpDifsqr computes a difference of squares.
+func binOpDifsqr(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpDifsqr, numOutputs, x, y)
 }
 
 // binOpDiv divides one input by another.
@@ -195,6 +203,12 @@ func binOpRing4(rate int8, x, y Input, numOutputs int) Input {
 func binOpRound(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(binopUgenName, rate, BinOpRound, numOutputs, x, y)
+}
+
+// binOpSumsqr computes a sum of squares.
+func binOpSumsqr(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(binopUgenName, rate, BinOpSumsqr, numOutputs, x, y)
 }
 
 // binOpTrunc performs quantization by truncation. Truncate a to a multiple of b.

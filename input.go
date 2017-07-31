@@ -57,6 +57,9 @@ type Input interface {
 	// DbAmp converts decibels to linear amplitude.
 	DbAmp() Input
 
+	// Difsqr returns the value of (a*a) - (b*b).
+	Difsqr(Input) Input
+
 	// Distort performs non-linear distortion on a signal.
 	Distort() Input
 
@@ -193,6 +196,9 @@ type Input interface {
 
 	// Sum3rand returns a value from a gaussian-like random distribution between in and zero.
 	Sum3rand() Input
+
+	// Sumsqr returns the value of (a*a) + (b*b).
+	Sumsqr(Input) Input
 
 	// Tan computes the tangent of an Input.
 	Tan() Input

@@ -155,6 +155,11 @@ func (u *Ugen) DbAmp() Input {
 	return unaryOpDbAmp(u.Rate, u, u.NumOutputs)
 }
 
+// Difsqr returns the value of (a*a) - (b*b).
+func (u *Ugen) Difsqr(val Input) Input {
+	return binOpDifsqr(u.Rate, u, val, u.NumOutputs)
+}
+
 // Distort performs non-linear distortion on a signal.
 func (u *Ugen) Distort() Input {
 	return unaryOpDistort(u.Rate, u, u.NumOutputs)
@@ -369,6 +374,11 @@ func (u *Ugen) Squared() Input {
 // Sum3rand returns a value from a gaussian-like random distribution between in and zero.
 func (u *Ugen) Sum3rand() Input {
 	return unaryOpSum3rand(u.Rate, u, u.NumOutputs)
+}
+
+// Sumsqr returns the value of (a*a) + (b*b).
+func (u *Ugen) Sumsqr(val Input) Input {
+	return binOpSumsqr(u.Rate, u, val, u.NumOutputs)
 }
 
 // Tan returns the tangent of a ugen.

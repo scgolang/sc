@@ -97,6 +97,11 @@ func (c C) DbAmp() Input {
 	return C(float32(math.Pow(10, float64(c)/20)))
 }
 
+// Difsqr returns the value of (a*a) - (b*b).
+func (c C) Difsqr(val Input) Input {
+	return c.Squared().Add(val.Squared().Neg())
+}
+
 // Distort performs non-linear distortion on a signal.
 func (c C) Distort() Input {
 	return C(float32(c) / float32(1+math.Abs(float64(c))))
@@ -411,6 +416,11 @@ func (c C) Squared() Input {
 // Sum3rand returns a value from a gaussian-like random distribution between in and zero.
 func (c C) Sum3rand() Input {
 	return C(rand.NormFloat64())
+}
+
+// Sumsqr returns the value of (a*a) + (b*b).
+func (c C) Sumsqr(val Input) Input {
+	return c.Squared().Add(val.Squared())
 }
 
 // Tan computes the tangent of an Input.

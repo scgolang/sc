@@ -119,6 +119,10 @@ func (p *param) DbAmp() Input {
 	return unaryOpDbAmp(KR, p, 1)
 }
 
+func (p *param) Difsqr(val Input) Input {
+	return binOpDifsqr(KR, p, val, 1)
+}
+
 func (p *param) Distort() Input {
 	return unaryOpDistort(KR, p, 1)
 }
@@ -301,6 +305,10 @@ func (p *param) Squared() Input {
 
 func (p *param) Sum3rand() Input {
 	return unaryOpSum3rand(KR, p, 1)
+}
+
+func (p *param) Sumsqr(val Input) Input {
+	return binOpSumsqr(KR, p, val, 1)
 }
 
 func (p *param) Tan() Input {

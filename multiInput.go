@@ -155,6 +155,15 @@ func (ins Inputs) DbAmp() Input {
 	return Inputs(ia)
 }
 
+// Difsqr returns the value of (a*a) - (b*b).
+func (ins Inputs) Difsqr(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Difsqr(val)
+	}
+	return Inputs(ia)
+}
+
 // Distort performs non-linear distortion on a signal.
 func (ins Inputs) Distort() Input {
 	ia := make([]Input, len(ins))
@@ -544,6 +553,15 @@ func (ins Inputs) Sum3rand() Input {
 	ia := make([]Input, len(ins))
 	for i, in := range ins {
 		ia[i] = in.Sum3rand()
+	}
+	return Inputs(ia)
+}
+
+// Sumsqr returns the value of (a*a) + (b*b).
+func (ins Inputs) Sumsqr(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Sumsqr(val)
 	}
 	return Inputs(ia)
 }

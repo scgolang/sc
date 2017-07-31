@@ -119,6 +119,13 @@ func (as ArraySpec) DbAmp() Input {
 	})
 }
 
+// Difsqr returns the value of (a*a) - (b*b).
+func (as ArraySpec) Difsqr(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Difsqr(val)
+	})
+}
+
 // Distort performs non-linear distortion on a signal.
 func (as ArraySpec) Distort() Input {
 	return as.proc(func(i Input) Input {
@@ -418,6 +425,13 @@ func (as ArraySpec) Squared() Input {
 func (as ArraySpec) Sum3rand() Input {
 	return as.proc(func(i Input) Input {
 		return i.Sum3rand()
+	})
+}
+
+// Sumsqr returns the value of (a*a) + (b*b).
+func (as ArraySpec) Sumsqr(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Sumsqr(val)
 	})
 }
 

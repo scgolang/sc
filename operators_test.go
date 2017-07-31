@@ -229,6 +229,21 @@ func TestDbAmp(t *testing.T) {
 	}))
 }
 
+func TestDifsqr(t *testing.T) {
+	const defName = "difsqrExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Difsqr(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+}
+
 func TestDistort(t *testing.T) {
 	const defName = "distortExample"
 
@@ -770,6 +785,21 @@ func TestSum3rand(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Sum3rand(),
+		}.Rate(AR)
+	}))
+}
+
+func TestSumsqr(t *testing.T) {
+	const defName = "sumsqrExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Sumsqr(A(SinOsc{})),
 		}.Rate(AR)
 	}))
 }

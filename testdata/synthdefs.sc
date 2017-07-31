@@ -83,6 +83,10 @@ SynthDef(\distortExample, {
     Out.ar(0, LFNoise1.ar(1500).distort);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\difsqrExample, {
+    Out.ar(0, LFNoise1.ar(1500).difsqr(SinOsc.ar));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\divExample, {
     Out.ar(0, LFNoise1.ar(1500) / 2);
 }).writeDefFile(File.getcwd);
@@ -233,6 +237,10 @@ SynthDef(\squaredExample, {
 
 SynthDef(\sum3randExample, {
     Out.ar(0, LFNoise1.ar(1500).sum3rand);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\sumsqrExample, {
+    Out.ar(0, LFNoise1.ar(1500).sumsqr(SinOsc.ar));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\tanExample, {

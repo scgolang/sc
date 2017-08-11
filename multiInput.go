@@ -209,6 +209,15 @@ func (ins Inputs) Div(val Input) Input {
 	return Inputs(ia)
 }
 
+// Excess returns the difference of the original signal and its clipped form: (a - clip2(a,b)).
+func (ins Inputs) Excess(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Excess(val)
+	}
+	return Inputs(ia)
+}
+
 // Exp computes the exponential of a signal.
 func (ins Inputs) Exp() Input {
 	ia := make([]Input, len(ins))

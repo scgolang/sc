@@ -161,6 +161,13 @@ func (as ArraySpec) Div(val Input) Input {
 	})
 }
 
+// Excess returns the difference of the original signal and its clipped form: (a - clip2(a,b)).
+func (as ArraySpec) Excess(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Excess(val)
+	})
+}
+
 // Exp computes the exponential of a signal.
 func (as ArraySpec) Exp() Input {
 	return as.proc(func(i Input) Input {

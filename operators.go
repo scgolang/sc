@@ -10,6 +10,7 @@ const (
 	BinOpClip2        = 42
 	BinOpDifsqr       = 34
 	BinOpDiv          = 4
+	BinOpExcess       = 43
 	BinOpExpon        = 25
 	BinOpFold2        = 44
 	BinOpGCD          = 18
@@ -124,6 +125,12 @@ func binOpDifsqr(rate int8, x, y Input, numOutputs int) Input {
 func binOpDiv(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpDiv, numOutputs, x, y)
+}
+
+// binOpExcess returns the difference of the original signal and its clipped form: (a - clip2(a,b)).
+func binOpExcess(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpExcess, numOutputs, x, y)
 }
 
 // binOpExpon creates a BinaryOpUgen that raises one Input to the power of another.

@@ -131,6 +131,11 @@ func (c C) Div(val Input) Input {
 	return val.Reciprocal().Mul(c)
 }
 
+// Excess returns the difference of the original signal and its clipped form: (a - clip2(a,b)).
+func (c C) Excess(val Input) Input {
+	return c.Add(c.Clip2(val).Neg())
+}
+
 // Exp computes the exponential of a signal.
 func (c C) Exp() Input {
 	return C(float32(math.Exp(float64(c))))

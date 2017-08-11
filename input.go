@@ -85,6 +85,9 @@ type Input interface {
 	// For the normal behaviour use Pow (see below).
 	Expon(Input) Input
 
+	// Excess returns the difference of the original signal and its clipped form: (a - clip2(a,b)).
+	Excess(Input) Input
+
 	// Floor computes the floor (next lowest integer) of a signal.
 	Floor() Input
 

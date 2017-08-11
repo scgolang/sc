@@ -185,6 +185,11 @@ func (u *Ugen) Div(val Input) Input {
 	return binOpDiv(u.Rate, u, val, u.NumOutputs)
 }
 
+// Excess returns the difference of the original signal and its clipped form: (a - clip2(a,b)).
+func (u *Ugen) Excess(val Input) Input {
+	return binOpExcess(u.Rate, u, val, u.NumOutputs)
+}
+
 // Exp computes the exponential of a signal.
 func (u *Ugen) Exp() Input {
 	return unaryOpExp(u.Rate, u, u.NumOutputs)

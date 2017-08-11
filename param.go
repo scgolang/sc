@@ -143,6 +143,10 @@ func (p *param) Div(val Input) Input {
 	return binOpDiv(KR, p, val, 1)
 }
 
+func (p *param) Excess(val Input) Input {
+	return binOpExcess(KR, p, val, 1)
+}
+
 func (p *param) Exp() Input {
 	return unaryOpExp(KR, p, 1)
 }

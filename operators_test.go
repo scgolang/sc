@@ -319,6 +319,21 @@ func TestDiv(t *testing.T) {
 	}))
 }
 
+func TestExcess(t *testing.T) {
+	const defName = "excessExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Excess(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestExp(t *testing.T) {
 	const defName = "expExample"
 

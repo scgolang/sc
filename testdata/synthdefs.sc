@@ -103,6 +103,10 @@ SynthDef(\divExample, {
     Out.ar(0, LFNoise1.ar(1500) / 2);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\excessExample, {
+    Out.ar(0, LFNoise1.ar(1500).excess(2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\gtExample, {
     Out.ar(0, LFNoise1.ar(1500) > 2);
 }).writeDefFile(File.getcwd);

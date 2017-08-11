@@ -13,6 +13,11 @@ func (c C) Abs() Input {
 	return C(float32(math.Abs(float64(c))))
 }
 
+// Absdif returns the absolute value of the difference of two inputs.
+func (c C) Absdif(val Input) Input {
+	return c.Add(val.Neg()).Abs()
+}
+
 // Acos computes the arccosine of a signal.
 func (c C) Acos() Input {
 	return C(float32(math.Acos(float64(c))))
@@ -260,6 +265,15 @@ func (c C) Midicps() Input {
 // Midiratio converts an interval in MIDI notes into a frequency ratio.
 func (c C) Midiratio() Input {
 	return C(float32(math.Pow(2, float64(c)/12)))
+}
+
+// Moddif returns the smaller of the great circle distances between the two points.
+func (c C) Moddif(y, mod Input) Input {
+	var (
+		diff    = c.Absdif(y).Modulo(mod)
+		modhalf = mod.Mul(C(0.5))
+	)
+	return modhalf.Add(diff.Absdif(modhalf).Neg())
 }
 
 // Modulo computes the modulo of one signal and another.

@@ -59,6 +59,10 @@ func (p *param) Abs() Input {
 	return unaryOpAbs(KR, p, 1)
 }
 
+func (p *param) Absdif(val Input) Input {
+	return binOpAbsdif(KR, p, val, 1)
+}
+
 func (p *param) Acos() Input {
 	return unaryOpAcos(KR, p, 1)
 }
@@ -213,6 +217,10 @@ func (p *param) Midicps() Input {
 
 func (p *param) Midiratio() Input {
 	return unaryOpMidiratio(KR, p, 1)
+}
+
+func (p *param) Moddif(y, mod Input) Input {
+	return moddif(KR, p, y, mod, 1)
 }
 
 func (p *param) Modulo(val Input) Input {

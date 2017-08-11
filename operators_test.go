@@ -19,6 +19,21 @@ func TestAbs(t *testing.T) {
 	}))
 }
 
+func TestAbsdif(t *testing.T) {
+	const defName = "absdifExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Absdif(A(SinOsc{})),
+		}.Rate(AR)
+	}))
+}
+
 func TestAcos(t *testing.T) {
 	const defName = "acosExample"
 
@@ -525,6 +540,21 @@ func TestMidiratio(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Midiratio(),
+		}.Rate(AR)
+	}))
+}
+
+func TestModdif(t *testing.T) {
+	const defName = "moddifExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Moddif(A(SinOsc{}), nil),
 		}.Rate(AR)
 	}))
 }

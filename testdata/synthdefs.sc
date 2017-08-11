@@ -23,6 +23,10 @@ SynthDef(\absExample, {
     Out.ar(0, LFNoise1.ar(1500).abs);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\absdifExample, {
+    Out.ar(0, LFNoise1.ar(1500).absdif(SinOsc.ar));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\acosExample, {
     Out.ar(0, LFNoise1.ar(1500).acos);
 }).writeDefFile(File.getcwd);
@@ -161,6 +165,10 @@ SynthDef(\lteExample, {
 
 SynthDef(\midiratioExample, {
     Out.ar(0, LFNoise1.ar(1500).midiratio);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\moddifExample, {
+    Out.ar(0, LFNoise1.ar(1500).moddif(SinOsc.ar));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\moduloExample, {

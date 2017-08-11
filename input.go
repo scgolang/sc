@@ -12,6 +12,9 @@ type Input interface {
 	// Abs computes the absolute value of a signal.
 	Abs() Input
 
+	// Absdif returns the absolute value of the difference of two inputs.
+	Absdif(Input) Input
+
 	// Acos computes the arccosine of a signal.
 	Acos() Input
 
@@ -127,6 +130,9 @@ type Input interface {
 
 	// Midiratio converts an interval in MIDI notes into a frequency ratio.
 	Midiratio() Input
+
+	// Moddif returns the smaller of the great circle distances between the two points.
+	Moddif(Input, Input) Input
 
 	// Modulo computes the modulo of one signal and another.
 	Modulo(Input) Input

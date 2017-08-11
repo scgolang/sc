@@ -14,6 +14,13 @@ func (as ArraySpec) Abs() Input {
 	})
 }
 
+// Absdif returns the absolute value of the difference of two inputs.
+func (as ArraySpec) Absdif(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Absdif(val)
+	})
+}
+
 // Acos computes the arccosine of a signal.
 func (as ArraySpec) Acos() Input {
 	return as.proc(func(i Input) Input {
@@ -271,6 +278,13 @@ func (as ArraySpec) Midiratio() Input {
 func (as ArraySpec) Midicps() Input {
 	return as.proc(func(i Input) Input {
 		return i.Midicps()
+	})
+}
+
+// Moddif returns the smaller of the great circle distances between the two points.
+func (as ArraySpec) Moddif(y, mod Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Moddif(y, mod)
 	})
 }
 

@@ -20,6 +20,15 @@ func (ins Inputs) Abs() Input {
 	return Inputs(ia)
 }
 
+// Absdif returns the absolute value of the difference of two inputs.
+func (ins Inputs) Absdif(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Absdif(val)
+	}
+	return Inputs(ia)
+}
+
 // Acos computes the arccosine of a signal.
 func (ins Inputs) Acos() Input {
 	ia := make([]Input, len(ins))
@@ -357,6 +366,15 @@ func (ins Inputs) Midiratio() Input {
 		converted[i] = in.Midiratio()
 	}
 	return Inputs(converted)
+}
+
+// Moddif returns the smaller of the great circle distances between the two points.
+func (ins Inputs) Moddif(y, mod Input) Input {
+	im := make([]Input, len(ins))
+	for i, in := range ins {
+		im[i] = in.Moddif(y, mod)
+	}
+	return Inputs(im)
 }
 
 // Modulo computes the modulo of one signal and another.

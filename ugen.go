@@ -80,6 +80,11 @@ func (u *Ugen) Abs() Input {
 	return unaryOpAbs(u.Rate, u, u.NumOutputs)
 }
 
+// Absdif returns the absolute value of the difference of two inputs.
+func (u *Ugen) Absdif(val Input) Input {
+	return binOpAbsdif(u.Rate, u, val, u.NumOutputs)
+}
+
 // Acos computes the arccosine of a signal.
 func (u *Ugen) Acos() Input {
 	return unaryOpAcos(u.Rate, u, u.NumOutputs)
@@ -264,6 +269,11 @@ func (u *Ugen) Midicps() Input {
 // Midiratio converts an interval in MIDI notes into a frequency ratio.
 func (u *Ugen) Midiratio() Input {
 	return unaryOpMidiratio(u.Rate, u, u.NumOutputs)
+}
+
+// Moddif returns the smaller of the great circle distances between the two points.
+func (u *Ugen) Moddif(y, mod Input) Input {
+	return moddif(u.Rate, u, y, mod, u.NumOutputs)
 }
 
 // Modulo computes the modulo of one signal and another.

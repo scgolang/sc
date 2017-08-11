@@ -769,6 +769,10 @@ SynthDef(\THX, {
     Out.ar(0, sig);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\BLowPassTest, {
+    Out.ar(0, BLowPass.ar(Blip.ar(400, 4), 300, 0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\DetectSilence, { arg out;
     var z;
     z = SinOsc.ar(Rand(400, 700), 0, LFDNoise3.kr(8).max(0)).softclip * 0.3;

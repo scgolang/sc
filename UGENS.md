@@ -9,6 +9,16 @@ Unit Generators for sc.
 | AllpassC                    | Yes       |
 | AllpassL                    | Yes       |
 | AllpassN                    | Yes       |
+| BAllPass                    | Yes       |
+| BBandPass                   | No        |
+| BBandStop                   | No        |
+| BHiPass                     | No        |
+| BHiPass4                    | No        |
+| BHiShelf                    | No        |
+| BLowPass                    | No        |
+| BLowPass4                   | No        |
+| BLowShelf                   | No        |
+| BPeakEQ                     | No        |
 | BPF                         | Yes       |
 | BRF                         | Yes       |
 | Balance2                    | Yes       |
@@ -36,6 +46,7 @@ Unit Generators for sc.
 | Env                         | Yes       |
 | EnvGen                      | Yes       |
 | FFT                         | Yes       |
+| FOS                         | No        |
 | FSinOsc                     | Yes       |
 | Formant                     | Yes       |
 | Formlet                     | Yes       |
@@ -132,6 +143,7 @@ Unit Generators for sc.
 | Ringz                       | Yes       |
 | Rotate2                     | No        |
 | RunningSum                  | Yes       |
+| SOS                         | No        |
 | SampleDur                   | Yes       |
 | SampleRate                  | Yes       |
 | Saw                         | Yes       |

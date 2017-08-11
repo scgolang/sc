@@ -59,6 +59,10 @@ SynthDef(\ceilExample, {
     Out.ar(0, LFNoise1.ar(1500).ceil);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\clip2Example, {
+    Out.ar(0, LFNoise1.ar(1500).clip2(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\coinExample, {
     Out.ar(0, LFNoise1.ar(1500).coin);
 }).writeDefFile(File.getcwd);
@@ -169,6 +173,10 @@ SynthDef(\lteExample, {
 
 SynthDef(\midiratioExample, {
     Out.ar(0, LFNoise1.ar(1500).midiratio);
+}).writeDefFile(File.getcwd);
+
+SynthDef(\minExample, {
+    Out.ar(0, LFNoise1.ar(1500).min(0.5));
 }).writeDefFile(File.getcwd);
 
 SynthDef(\moddifExample, {

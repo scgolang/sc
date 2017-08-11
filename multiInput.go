@@ -110,6 +110,15 @@ func (ins Inputs) Ceil() Input {
 	return Inputs(ia)
 }
 
+// Clip2 clips input wave a to +/- b
+func (ins Inputs) Clip2(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Clip2(val)
+	}
+	return Inputs(ia)
+}
+
 // Coin returns one or zero with the probability given by the input.
 func (ins Inputs) Coin() Input {
 	ia := make([]Input, len(ins))
@@ -375,6 +384,15 @@ func (ins Inputs) Midiratio() Input {
 		converted[i] = in.Midiratio()
 	}
 	return Inputs(converted)
+}
+
+// Min returns the minimum of one signal and another.
+func (ins Inputs) Min(other Input) Input {
+	im := make([]Input, len(ins))
+	for i, in := range ins {
+		im[i] = in.Min(other)
+	}
+	return Inputs(im)
 }
 
 // Moddif returns the smaller of the great circle distances between the two points.

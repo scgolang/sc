@@ -42,6 +42,9 @@ type Input interface {
 	// Ceil computes the ceiling (next lowest integer) of a signal.
 	Ceil() Input
 
+	// Clip2 clips input wave a to +/- b
+	Clip2(Input) Input
+
 	// Coin returns one or zero with the probability given by the input.
 	Coin() Input
 
@@ -133,6 +136,9 @@ type Input interface {
 
 	// Midiratio converts an interval in MIDI notes into a frequency ratio.
 	Midiratio() Input
+
+	// Min returns the minimum of one signal and another.
+	Min(Input) Input
 
 	// Moddif returns the smaller of the great circle distances between the two points.
 	Moddif(Input, Input) Input

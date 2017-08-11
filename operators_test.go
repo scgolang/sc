@@ -154,6 +154,21 @@ func TestCeil(t *testing.T) {
 	}))
 }
 
+func TestClip2(t *testing.T) {
+	const defName = "clip2Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Clip2(C(0.5)),
+		}.Rate(AR)
+	}))
+}
+
 func TestCoin(t *testing.T) {
 	const defName = "coinExample"
 
@@ -555,6 +570,21 @@ func TestMidiratio(t *testing.T) {
 		return Out{
 			Bus:      C(0),
 			Channels: noise.Midiratio(),
+		}.Rate(AR)
+	}))
+}
+
+func TestMin(t *testing.T) {
+	const defName = "minExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Min(C(0.5)),
 		}.Rate(AR)
 	}))
 }

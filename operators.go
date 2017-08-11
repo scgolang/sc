@@ -7,6 +7,7 @@ const (
 	BinOpAdd          = 0
 	BinOpAmclip       = 40
 	BinOpAtan2        = 22
+	BinOpClip2        = 42
 	BinOpDifsqr       = 34
 	BinOpDiv          = 4
 	BinOpExpon        = 25
@@ -20,6 +21,7 @@ const (
 	BinOpLTE          = 10
 	BinOpMax          = 13
 	BinOpModulo       = 5
+	BinOpMin          = 12
 	BinOpMul          = 2
 	BinOpPow          = 25
 	BinOpRing1        = 30
@@ -104,6 +106,12 @@ func binOpAtan2(rate int8, x, y Input, numOutputs int) Input {
 	return NewInput(BinOpUgenName, rate, BinOpAtan2, numOutputs, x, y)
 }
 
+// binOpClip2 clips input wave a to +/- b
+func binOpClip2(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpClip2, numOutputs, x, y)
+}
+
 // binOpDifsqr computes a difference of squares.
 func binOpDifsqr(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
@@ -175,6 +183,12 @@ func binOpLTE(rate int8, x, y Input, numOutputs int) Input {
 func binOpMax(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpMax, numOutputs, x, y)
+}
+
+// binOpMin creates a BinaryOpUgen that represents the minimum of two signals.
+func binOpMin(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpMin, numOutputs, x, y)
 }
 
 // binOpModulo computes the modulo of one Input and another.

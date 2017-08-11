@@ -91,6 +91,13 @@ func (as ArraySpec) Coin() Input {
 	})
 }
 
+// Clip2 clips input wave a to +/- b
+func (as ArraySpec) Clip2(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Clip2(val)
+	})
+}
+
 // Cos computes the cosine of a signal.
 func (as ArraySpec) Cos() Input {
 	return as.proc(func(i Input) Input {
@@ -285,6 +292,13 @@ func (as ArraySpec) Midiratio() Input {
 func (as ArraySpec) Midicps() Input {
 	return as.proc(func(i Input) Input {
 		return i.Midicps()
+	})
+}
+
+// Min returns the minimum of one signal and another.
+func (as ArraySpec) Min(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Min(val)
 	})
 }
 

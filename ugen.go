@@ -130,6 +130,11 @@ func (u *Ugen) Ceil() Input {
 	return unaryOpCeil(u.Rate, u, u.NumOutputs)
 }
 
+// Clip2 clips input wave a to +/- b
+func (u *Ugen) Clip2(val Input) Input {
+	return binOpClip2(u.Rate, u, val, u.NumOutputs)
+}
+
 // Coin returns one or zero with the probability given by the input.
 func (u *Ugen) Coin() Input {
 	return unaryOpCoin(u.Rate, u, u.NumOutputs)
@@ -274,6 +279,11 @@ func (u *Ugen) Midicps() Input {
 // Midiratio converts an interval in MIDI notes into a frequency ratio.
 func (u *Ugen) Midiratio() Input {
 	return unaryOpMidiratio(u.Rate, u, u.NumOutputs)
+}
+
+// Min returns the minimum of one signal and another.
+func (u *Ugen) Min(other Input) Input {
+	return binOpMin(u.Rate, u, other, u.NumOutputs)
 }
 
 // Moddif returns the smaller of the great circle distances between the two points.

@@ -69,6 +69,11 @@ func (c C) Ceil() Input {
 	return C(float32(math.Ceil(float64(c))))
 }
 
+// Clip2 clips input wave a to +/- b
+func (c C) Clip2(val Input) Input {
+	return c.Max(val.Neg()).Min(val)
+}
+
 // Coin returns one or zero with the probability given by the input.
 func (c C) Coin() Input {
 	if rand.Float64() < float64(c) {
@@ -270,6 +275,14 @@ func (c C) Midicps() Input {
 // Midiratio converts an interval in MIDI notes into a frequency ratio.
 func (c C) Midiratio() Input {
 	return C(float32(math.Pow(2, float64(c)/12)))
+}
+
+// Min returns the minimum of one signal and another.
+func (c C) Min(other Input) Input {
+	if v, ok := other.(C); ok {
+		return C(minFloat32(float32(c), float32(v)))
+	}
+	return other.Min(c)
 }
 
 // Moddif returns the smaller of the great circle distances between the two points.
@@ -507,6 +520,13 @@ func lcm(x, y float32) float32 {
 
 func maxFloat32(f1, f2 float32) float32 {
 	if f1 > f2 {
+		return f1
+	}
+	return f2
+}
+
+func minFloat32(f1, f2 float32) float32 {
+	if f1 < f2 {
 		return f1
 	}
 	return f2

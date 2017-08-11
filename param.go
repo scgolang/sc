@@ -99,6 +99,10 @@ func (p *param) Ceil() Input {
 	return unaryOpCeil(KR, p, 1)
 }
 
+func (p *param) Clip2(val Input) Input {
+	return binOpClip2(KR, p, val, 1)
+}
+
 func (p *param) Coin() Input {
 	return unaryOpCoin(KR, p, 1)
 }
@@ -221,6 +225,10 @@ func (p *param) Midicps() Input {
 
 func (p *param) Midiratio() Input {
 	return unaryOpMidiratio(KR, p, 1)
+}
+
+func (p *param) Min(other Input) Input {
+	return binOpMin(KR, p, other, 1)
 }
 
 func (p *param) Moddif(y, mod Input) Input {

@@ -35,6 +35,13 @@ func (as ArraySpec) Add(val Input) Input {
 	})
 }
 
+// Amclip returns 0 when b <= 0, a*b when b > 0.
+func (as ArraySpec) Amclip(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Amclip(val)
+	})
+}
+
 // AmpDb converts linear amplitude to decibels.
 func (as ArraySpec) AmpDb() Input {
 	return as.proc(func(i Input) Input {

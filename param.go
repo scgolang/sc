@@ -71,6 +71,10 @@ func (p *param) Add(in Input) Input {
 	return binOpAdd(KR, p, in, 1)
 }
 
+func (p *param) Amclip(val Input) Input {
+	return binOpAmclip(KR, p, val, 1)
+}
+
 func (p *param) AmpDb() Input {
 	return unaryOpAmpDb(KR, p, 1)
 }

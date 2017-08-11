@@ -18,6 +18,9 @@ type Input interface {
 	// Acos computes the arccosine of a signal.
 	Acos() Input
 
+	// Amclip returns 0 when b <= 0, a*b when b > 0.
+	Amclip(Input) Input
+
 	// Asin computes the arcsine of a signal.
 	Asin() Input
 

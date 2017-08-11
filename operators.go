@@ -5,6 +5,7 @@ package sc
 const (
 	BinOpAbsdif       = 38
 	BinOpAdd          = 0
+	BinOpAmclip       = 40
 	BinOpAtan2        = 22
 	BinOpDifsqr       = 34
 	BinOpDiv          = 4
@@ -88,6 +89,12 @@ func binOpAbsdif(rate int8, x, y Input, numOutputs int) Input {
 func binOpAdd(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpAdd, numOutputs, x, y)
+}
+
+// binOpAmclip returns 0 when b <= 0, a*b when b > 0.
+func binOpAmclip(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpAmclip, numOutputs, x, y)
 }
 
 // binOpAtan2 returns the arctangent of y/x.

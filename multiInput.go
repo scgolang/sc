@@ -47,6 +47,15 @@ func (ins Inputs) Add(val Input) Input {
 	return Inputs(ia)
 }
 
+// Amclip returns 0 when b <= 0, a*b when b > 0.
+func (ins Inputs) Amclip(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Amclip(val)
+	}
+	return Inputs(ia)
+}
+
 // AmpDb converts linear amplitude to decibels.
 func (ins Inputs) AmpDb() Input {
 	ia := make([]Input, len(ins))

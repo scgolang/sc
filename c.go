@@ -31,6 +31,11 @@ func (c C) Add(val Input) Input {
 	return val.Add(c)
 }
 
+// Amclip returns 0 when b <= 0, a*b when b > 0.
+func (c C) Amclip(val Input) Input {
+	return val.GT(C(0)).Mul(c.Mul(val))
+}
+
 // AmpDb converts linear amplitude to decibels.
 func (c C) AmpDb() Input {
 	return C(float32(20 * math.Log10(float64(c))))

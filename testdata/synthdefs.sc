@@ -31,6 +31,10 @@ SynthDef(\acosExample, {
     Out.ar(0, LFNoise1.ar(1500).acos);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\amclipExample, {
+    Out.ar(0, LFNoise1.ar(1500).amclip(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\ampdbExample, {
     Out.ar(0, LFNoise1.ar(1500).ampdb);
 }).writeDefFile(File.getcwd);

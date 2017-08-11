@@ -95,6 +95,11 @@ func (u *Ugen) Add(val Input) Input {
 	return binOpAdd(u.Rate, u, val, u.NumOutputs)
 }
 
+// Amclip returns 0 when b <= 0, a*b when b > 0.
+func (u *Ugen) Amclip(val Input) Input {
+	return binOpAmclip(u.Rate, u, val, u.NumOutputs)
+}
+
 // AmpDb converts linear amplitude to decibels.
 func (u *Ugen) AmpDb() Input {
 	return unaryOpAmpDb(u.Rate, u, u.NumOutputs)

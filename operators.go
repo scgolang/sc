@@ -27,6 +27,7 @@ const (
 	BinOpRing3        = 32
 	BinOpRing4        = 33
 	BinOpRound        = 19
+	BinOpScaleneg     = 41
 	BinOpSqrdif       = 37
 	BinOpSqrsum       = 36
 	BinOpSumsqr       = 35
@@ -222,6 +223,12 @@ func binOpRing4(rate int8, x, y Input, numOutputs int) Input {
 func binOpRound(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpRound, numOutputs, x, y)
+}
+
+// binOpScaleneg returns a*b when a < 0, otherwise a.
+func binOpScaleneg(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpScaleneg, numOutputs, x, y)
 }
 
 // binOpSqrdif computes the square of the difference of two inputs.

@@ -400,6 +400,13 @@ func (as ArraySpec) Round(val Input) Input {
 	})
 }
 
+// Scaleneg returns a*b when a < 0, otherwise a.
+func (as ArraySpec) Scaleneg(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Scaleneg(val)
+	})
+}
+
 // Sign returns the sign of a signal.
 func (as ArraySpec) Sign() Input {
 	return as.proc(func(i Input) Input {

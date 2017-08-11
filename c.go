@@ -392,6 +392,14 @@ func (c C) Round(val Input) Input {
 	return c
 }
 
+// Scaleneg returns a*b when a < 0, otherwise a.
+func (c C) Scaleneg(val Input) Input {
+	if c < 0 {
+		return c.Mul(val)
+	}
+	return c
+}
+
 // Sign computes the sign of the constant.
 func (c C) Sign() Input {
 	if c > 0 {

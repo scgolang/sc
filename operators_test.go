@@ -744,6 +744,21 @@ func TestRound(t *testing.T) {
 	}))
 }
 
+func TestScaleneg(t *testing.T) {
+	const defName = "scalenegExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Scaleneg(C(0.5)),
+		}.Rate(AR)
+	}))
+}
+
 func TestSign(t *testing.T) {
 	const defName = "signExample"
 

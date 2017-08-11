@@ -227,6 +227,10 @@ SynthDef(\roundExample, {
     Out.ar(0, LFNoise1.ar(1500).round(0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\scalenegExample, {
+    Out.ar(0, LFNoise1.ar(1500).scaleneg(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\signExample, {
     Out.ar(0, LFNoise1.ar(1500).sign);
 }).writeDefFile(File.getcwd);

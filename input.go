@@ -182,6 +182,9 @@ type Input interface {
 	// Round performs quantization by rounding. Rounds a to the nearest multiple of b.
 	Round(Input) Input
 
+	// Scaleneg returns a*b when a < 0, otherwise a.
+	Scaleneg(Input) Input
+
 	// Sign computes the sign of a signal.
 	// This returns -1 when a < 0, +1 when a > 0, 0 when a is 0.
 	Sign() Input

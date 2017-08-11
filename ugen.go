@@ -356,6 +356,11 @@ func (u *Ugen) Round(val Input) Input {
 	return binOpRound(u.Rate, u, val, u.NumOutputs)
 }
 
+// Scaleneg returns a*b when a < 0, otherwise a.
+func (u *Ugen) Scaleneg(val Input) Input {
+	return binOpScaleneg(u.Rate, u, val, u.NumOutputs)
+}
+
 // Sign computes the sign of a signal.
 func (u *Ugen) Sign() Input {
 	return unaryOpSign(u.Rate, u, u.NumOutputs)

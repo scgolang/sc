@@ -521,6 +521,15 @@ func (ins Inputs) Round(val Input) Input {
 	return Inputs(converted)
 }
 
+// Scaleneg returns a*b when a < 0, otherwise a.
+func (ins Inputs) Scaleneg(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Scaleneg(val)
+	}
+	return Inputs(converted)
+}
+
 // Sign computes the sign of a signal.
 func (ins Inputs) Sign() Input {
 	ia := make([]Input, len(ins))

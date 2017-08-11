@@ -291,6 +291,10 @@ func (p *param) Round(val Input) Input {
 	return binOpRound(KR, p, val, 1)
 }
 
+func (p *param) Scaleneg(val Input) Input {
+	return binOpScaleneg(KR, p, val, 1)
+}
+
 func (p *param) Sign() Input {
 	return unaryOpSign(KR, p, 1)
 }

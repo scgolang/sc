@@ -200,6 +200,11 @@ func (u *Ugen) Floor() Input {
 	return unaryOpFloor(u.Rate, u, u.NumOutputs)
 }
 
+// Fold2 folds input wave a to +/- b
+func (u *Ugen) Fold2(val Input) Input {
+	return binOpFold2(u.Rate, u, val, u.NumOutputs)
+}
+
 // Frac computes the fractional part of a signal.
 func (u *Ugen) Frac() Input {
 	return unaryOpFrac(u.Rate, u, u.NumOutputs)

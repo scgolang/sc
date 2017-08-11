@@ -151,12 +151,16 @@ func (p *param) Expon(val Input) Input {
 	return binOpExpon(KR, p, val, 1)
 }
 
-func (p *param) Frac() Input {
-	return unaryOpFrac(KR, p, 1)
-}
-
 func (p *param) Floor() Input {
 	return unaryOpFloor(KR, p, 1)
+}
+
+func (p *param) Fold2(val Input) Input {
+	return binOpFold2(KR, p, val, 1)
+}
+
+func (p *param) Frac() Input {
+	return unaryOpFrac(KR, p, 1)
 }
 
 func (p *param) GCD(val Input) Input {

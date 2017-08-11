@@ -119,6 +119,10 @@ SynthDef(\floorExample, {
     Out.ar(0, LFNoise1.ar(1500).floor);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\fold2Example, {
+    Out.ar(0, LFNoise1.ar(1500).fold2(2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\fracExample, {
     Out.ar(0, LFNoise1.ar(1500).frac);
 }).writeDefFile(File.getcwd);

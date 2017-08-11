@@ -364,6 +364,21 @@ func TestFloor(t *testing.T) {
 	}))
 }
 
+func TestFold2(t *testing.T) {
+	const defName = "fold2Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Fold2(C(2)),
+		}.Rate(AR)
+	}))
+}
+
 func TestFrac(t *testing.T) {
 	const defName = "fracExample"
 

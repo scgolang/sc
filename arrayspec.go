@@ -182,6 +182,13 @@ func (as ArraySpec) Floor() Input {
 	})
 }
 
+// Fold2 folds input wave a to +/- b
+func (as ArraySpec) Fold2(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Fold2(val)
+	})
+}
+
 // Frac returns the fractional part of a signal.
 func (as ArraySpec) Frac() Input {
 	return as.proc(func(i Input) Input {

@@ -151,6 +151,14 @@ func (c C) Floor() Input {
 	return C(float32(math.Floor(float64(c))))
 }
 
+// Fold2 folds input wave a to +/- b
+func (c C) Fold2(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(fold2(float32(c), float32(v)))
+	}
+	return c // TODO: fix this
+}
+
 // Frac returns the fractional part of a constant.
 func (c C) Frac() Input {
 	return C(float32(float64(c) - math.Trunc(float64(c))))
@@ -567,6 +575,21 @@ func Truncf(a, b float32) float32 {
 		}
 	}
 	return v
+}
+
+func fold2(x, y float32) float32 {
+	if y < 0 {
+		y *= -1
+	} else if y == 0 {
+		return 0
+	}
+	if x <= y && x >= -y {
+		return x
+	}
+	if x > y {
+		return fold2(y-(x-y), y)
+	}
+	return fold2(-y+(-y-x), y)
 }
 
 func gcd(x, y float32) float32 {

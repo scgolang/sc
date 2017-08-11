@@ -11,6 +11,7 @@ const (
 	BinOpDifsqr       = 34
 	BinOpDiv          = 4
 	BinOpExpon        = 25
+	BinOpFold2        = 44
 	BinOpGCD          = 18
 	BinOpGT           = 9
 	BinOpGTE          = 11
@@ -129,6 +130,12 @@ func binOpDiv(rate int8, x, y Input, numOutputs int) Input {
 func binOpExpon(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpExpon, numOutputs, x, y)
+}
+
+// binOpFold2 folds input wave a to +/- b
+func binOpFold2(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpFold2, numOutputs, x, y)
 }
 
 // binOpGCD computes the gcd of one Input and another.

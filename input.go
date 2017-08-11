@@ -88,6 +88,9 @@ type Input interface {
 	// Floor computes the floor (next lowest integer) of a signal.
 	Floor() Input
 
+	// Fold2 folds input wave a to +/- b
+	Fold2(Input) Input
+
 	// Frac returns the fractional part of a signal.
 	Frac() Input
 
@@ -236,7 +239,7 @@ type Input interface {
 	// Trunc performs quantization by truncation. Truncate a to a multiple of b.
 	Trunc(Input) Input
 
-	// Wrap2 wraps input wave to +/-b
+	// Wrap2 wraps input wave to +/- b
 	Wrap2(Input) Input
 }
 

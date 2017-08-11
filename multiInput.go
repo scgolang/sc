@@ -236,6 +236,15 @@ func (ins Inputs) Floor() Input {
 	return Inputs(ia)
 }
 
+// Fold2 folds input wave a to +/- b
+func (ins Inputs) Fold2(val Input) Input {
+	ia := make([]Input, len(ins))
+	for i, in := range ins {
+		ia[i] = in.Fold2(val)
+	}
+	return Inputs(ia)
+}
+
 // Frac computes the fractional part of a signal.
 func (ins Inputs) Frac() Input {
 	ia := make([]Input, len(ins))

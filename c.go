@@ -503,33 +503,12 @@ func (c C) Trunc(val Input) Input {
 	return c
 }
 
-func gcd(x, y float32) float32 {
-	a, b := int(x), int(y)
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
+// Wrap2 wraps input wave to +/-b
+func (c C) Wrap2(val Input) Input {
+	if v, ok := val.(C); ok {
+		return C(wrap2(float32(c), float32(v)))
 	}
-	return float32(a)
-}
-
-func lcm(x, y float32) float32 {
-	a, b := int(x), int(y)
-	return float32(a*b) / gcd(x, y)
-}
-
-func maxFloat32(f1, f2 float32) float32 {
-	if f1 > f2 {
-		return f1
-	}
-	return f2
-}
-
-func minFloat32(f1, f2 float32) float32 {
-	if f1 < f2 {
-		return f1
-	}
-	return f2
+	return c // TODO: fix this
 }
 
 // Roundf rounds a to the nearest multiple of b.
@@ -588,4 +567,48 @@ func Truncf(a, b float32) float32 {
 		}
 	}
 	return v
+}
+
+func gcd(x, y float32) float32 {
+	a, b := int(x), int(y)
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return float32(a)
+}
+
+func lcm(x, y float32) float32 {
+	a, b := int(x), int(y)
+	return float32(a*b) / gcd(x, y)
+}
+
+func maxFloat32(f1, f2 float32) float32 {
+	if f1 > f2 {
+		return f1
+	}
+	return f2
+}
+
+func minFloat32(f1, f2 float32) float32 {
+	if f1 < f2 {
+		return f1
+	}
+	return f2
+}
+
+func wrap2(x, y float32) float32 {
+	if y < 0 {
+		y *= -1
+	} else if y == 0 {
+		return 0
+	}
+	if x <= y && x >= -y {
+		return x
+	}
+	if x > y {
+		return wrap2(x-(2*y), y)
+	}
+	return wrap2(x+(2*y), y)
 }

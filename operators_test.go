@@ -983,3 +983,18 @@ func TestTrunc(t *testing.T) {
 		}.Rate(AR)
 	}))
 }
+
+func TestWrap2(t *testing.T) {
+	const defName = "wrap2Example"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Wrap2(C(0.5)),
+		}.Rate(AR)
+	}))
+}

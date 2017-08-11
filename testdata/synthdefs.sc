@@ -291,6 +291,10 @@ SynthDef(\truncExample, {
     Out.ar(0, LFNoise1.ar(1500).trunc(0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\wrap2Example, {
+    Out.ar(0, LFNoise1.ar(1500).wrap2(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\Envgen1, {
     Out.ar(0, PinkNoise.ar() * EnvGen.kr(Env.perc, doneAction: 2));
 }).writeDefFile(File.getcwd);

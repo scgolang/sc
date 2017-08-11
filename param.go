@@ -359,6 +359,10 @@ func (p *param) Trunc(val Input) Input {
 	return binOpTrunc(KR, p, val, 1)
 }
 
+func (p *param) Wrap2(val Input) Input {
+	return binOpWrap2(KR, p, val, 1)
+}
+
 func newParam(name string, index int32, initialValue float32) *param {
 	p := param{name, index, initialValue}
 	return &p

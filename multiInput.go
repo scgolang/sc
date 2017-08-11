@@ -674,6 +674,15 @@ func (ins Inputs) Trunc(val Input) Input {
 	return Inputs(converted)
 }
 
+// Wrap2 wraps input wave to +/-b
+func (ins Inputs) Wrap2(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Wrap2(val)
+	}
+	return Inputs(converted)
+}
+
 // Multi does multichannel expansion.
 // See http://doc.sccode.org/Guides/Multichannel-Expansion.html.
 func Multi(inputs ...Input) Inputs {

@@ -441,6 +441,11 @@ func (u *Ugen) Trunc(val Input) Input {
 	return binOpTrunc(u.Rate, u, val, u.NumOutputs)
 }
 
+// Wrap2 wraps input wave to +/-b
+func (u *Ugen) Wrap2(val Input) Input {
+	return binOpWrap2(u.Rate, u, val, u.NumOutputs)
+}
+
 // Write writes a Ugen
 func (u *Ugen) Write(w io.Writer) error {
 	// write the synthdef name

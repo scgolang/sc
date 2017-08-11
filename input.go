@@ -235,6 +235,9 @@ type Input interface {
 
 	// Trunc performs quantization by truncation. Truncate a to a multiple of b.
 	Trunc(Input) Input
+
+	// Wrap2 wraps input wave to +/-b
+	Wrap2(Input) Input
 }
 
 func readInput(r io.Reader) (UgenInput, error) {

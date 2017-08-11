@@ -35,6 +35,7 @@ const (
 	BinOpSumsqr       = 35
 	BinOpThresh       = 39
 	BinOpTrunc        = 21
+	BinOpWrap2        = 45
 	UnaryOpAbs        = 5
 	UnaryOpAcos       = 32
 	UnaryOpAmpDb      = 22
@@ -273,6 +274,12 @@ func binOpThresh(rate int8, x, y Input, numOutputs int) Input {
 func binOpTrunc(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpTrunc, numOutputs, x, y)
+}
+
+// binOpWrap2 wraps input wave to +/-b
+func binOpWrap2(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpWrap2, numOutputs, x, y)
 }
 
 // mulAdd creates a MulAdd ugen.

@@ -519,6 +519,13 @@ func (as ArraySpec) Trunc(val Input) Input {
 	})
 }
 
+// Wrap2 wraps input wave to +/-b
+func (as ArraySpec) Wrap2(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Wrap2(val)
+	})
+}
+
 func (as ArraySpec) inputs(freqfirst bool) []Input {
 	var ins []Input
 

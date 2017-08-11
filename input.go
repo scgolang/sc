@@ -218,6 +218,9 @@ type Input interface {
 	// Tanh computes the hyperbolic tangent of an Input.
 	Tanh() Input
 
+	// Thresh returns 0 when a < b, otherwise a.
+	Thresh(Input) Input
+
 	// Trunc performs quantization by truncation. Truncate a to a multiple of b.
 	Trunc(Input) Input
 }

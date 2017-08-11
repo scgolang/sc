@@ -457,6 +457,17 @@ func (c C) Tanh() Input {
 	return C(float32(math.Tanh(float64(c))))
 }
 
+// Thresh returns 0 when c < val, otherwise c.
+func (c C) Thresh(val Input) Input {
+	if v, ok := val.(C); ok {
+		if c < v {
+			return C(0)
+		}
+		return c
+	}
+	return val.GTE(c).Mul(c)
+}
+
 // Trunc performs quantization by truncation. Truncate c to a multiple of val.
 // If val is not a constant, c is returned.
 func (c C) Trunc(val Input) Input {

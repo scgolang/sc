@@ -477,6 +477,13 @@ func (as ArraySpec) Tanh() Input {
 	})
 }
 
+// Thresh returns 0 when a < b, otherwise a.
+func (as ArraySpec) Thresh(val Input) Input {
+	return as.proc(func(i Input) Input {
+		return i.Thresh(val)
+	})
+}
+
 // Trunc performs quantization by truncation. Truncate a to a multiple of b.
 func (as ArraySpec) Trunc(val Input) Input {
 	return as.proc(func(i Input) Input {

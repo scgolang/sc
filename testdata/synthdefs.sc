@@ -267,6 +267,10 @@ SynthDef(\tanhExample, {
     Out.ar(0, LFNoise1.ar(1500).tanh);
 }).writeDefFile(File.getcwd);
 
+SynthDef(\threshExample, {
+    Out.ar(0, LFNoise1.ar(1500).thresh(0.5));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\truncExample, {
     Out.ar(0, LFNoise1.ar(1500).trunc(0.5));
 }).writeDefFile(File.getcwd);

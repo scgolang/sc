@@ -620,6 +620,15 @@ func (ins Inputs) Tanh() Input {
 	return Inputs(ia)
 }
 
+// Thresh returns 0 when a < b, otherwise a.
+func (ins Inputs) Thresh(val Input) Input {
+	converted := make([]Input, len(ins))
+	for i, in := range ins {
+		converted[i] = in.Thresh(val)
+	}
+	return Inputs(converted)
+}
+
 // Trunc performs quantization by truncation. Truncate a to a multiple of b.
 func (ins Inputs) Trunc(val Input) Input {
 	converted := make([]Input, len(ins))

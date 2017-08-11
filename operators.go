@@ -29,6 +29,7 @@ const (
 	BinOpSqrdif       = 37
 	BinOpSqrsum       = 36
 	BinOpSumsqr       = 35
+	BinOpThresh       = 39
 	BinOpTrunc        = 21
 	UnaryOpAbs        = 5
 	UnaryOpAcos       = 32
@@ -232,6 +233,12 @@ func binOpSqrsum(rate int8, x, y Input, numOutputs int) Input {
 func binOpSumsqr(rate int8, x, y Input, numOutputs int) Input {
 	CheckRate(rate)
 	return NewInput(BinOpUgenName, rate, BinOpSumsqr, numOutputs, x, y)
+}
+
+// binOpThresh performs thresholding. This returns 0 when x < y, otherwise x.
+func binOpThresh(rate int8, x, y Input, numOutputs int) Input {
+	CheckRate(rate)
+	return NewInput(BinOpUgenName, rate, BinOpThresh, numOutputs, x, y)
 }
 
 // binOpTrunc performs quantization by truncation. Truncate a to a multiple of b.

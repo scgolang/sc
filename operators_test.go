@@ -894,6 +894,21 @@ func TestTanh(t *testing.T) {
 	}))
 }
 
+func TestThresh(t *testing.T) {
+	const defName = "threshExample"
+
+	compareAndWrite(t, defName, NewSynthdef(defName, func(p Params) Ugen {
+		noise := A(LFNoise{
+			Interpolation: NoiseLinear,
+			Freq:          C(1500),
+		})
+		return Out{
+			Bus:      C(0),
+			Channels: noise.Thresh(C(0.5)),
+		}.Rate(AR)
+	}))
+}
+
 func TestTrunc(t *testing.T) {
 	const defName = "truncExample"
 

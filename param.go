@@ -335,6 +335,10 @@ func (p *param) Tanh() Input {
 	return unaryOpTanh(KR, p, 1)
 }
 
+func (p *param) Thresh(val Input) Input {
+	return binOpThresh(KR, p, val, 1)
+}
+
 func (p *param) Trunc(val Input) Input {
 	return binOpTrunc(KR, p, val, 1)
 }

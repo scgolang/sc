@@ -411,6 +411,11 @@ func (u *Ugen) Tanh() Input {
 	return unaryOpTanh(u.Rate, u, u.NumOutputs)
 }
 
+// Thresh returns 0 when a < b, otherwise a.
+func (u *Ugen) Thresh(val Input) Input {
+	return binOpThresh(u.Rate, u, val, u.NumOutputs)
+}
+
 // Trunc performs quantization by truncation. Truncate a to a multiple of b.
 func (u *Ugen) Trunc(val Input) Input {
 	return binOpTrunc(u.Rate, u, val, u.NumOutputs)

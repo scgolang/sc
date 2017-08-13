@@ -5,6 +5,9 @@ import (
 	"math/rand"
 )
 
+// Pi is a wrapper around math.Pi
+const Pi = C(float32(math.Pi))
+
 // C wraps a float32 and implements the Input interface.
 type C float32
 

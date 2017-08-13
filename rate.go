@@ -30,6 +30,11 @@ func A(r Rater) Input {
 	return r.Rate(AR)
 }
 
+// I returns a ugen input at initialization rate.
+func I(r Rater) Input {
+	return r.Rate(IR)
+}
+
 // K returns a ugen input at control rate.
 func K(r Rater) Input {
 	return r.Rate(KR)

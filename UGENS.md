@@ -15,7 +15,7 @@ Unit Generators for sc.
 | BHiPass                     | No        |
 | BHiPass4                    | No        |
 | BHiShelf                    | No        |
-| BLowPass                    | No        |
+| BLowPass                    | Yes       |
 | BLowPass4                   | No        |
 | BLowShelf                   | No        |
 | BPeakEQ                     | No        |

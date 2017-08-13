@@ -32,7 +32,7 @@ type Ugen struct {
 	SpecialIndex int16       `json:"specialIndex"      xml:"specialIndex,attr"`
 	Inputs       []UgenInput `json:"inputs,omitempty"  xml:"Inputs>Input"`
 	Outputs      []Output    `json:"outputs,omitempty" xml:"Outputs>Output"`
-	NumOutputs   int         `json:"-"                 xml:"-"`
+	NumOutputs   int         `json:"numOutputs"        xml:"numOutputs,attr"`
 
 	inputs []Input
 }
@@ -495,6 +495,18 @@ func (u *Ugen) Write(w io.Writer) error {
 	return nil
 }
 
+func (u *Ugen) inputsOrdered() bool {
+	if u.Name == BinOpUgenName {
+		switch u.SpecialIndex {
+		case BinOpAdd, BinOpGCD, BinOpLCM, BinOpMax, BinOpMin, BinOpMul, BinOpSqrsum, BinOpSumsqr:
+			return false
+		default:
+			return true
+		}
+	}
+	return true
+}
+
 // readUgen reads a ugen from an io.Reader
 func readUgen(r io.Reader) (*Ugen, error) {
 	var (
@@ -550,6 +562,7 @@ func readUgen(r io.Reader) (*Ugen, error) {
 		SpecialIndex: specialIndex,
 		Inputs:       inputs,
 		Outputs:      outputs,
+		NumOutputs:   int(numOutputs),
 	}, nil
 }
 

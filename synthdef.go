@@ -372,6 +372,24 @@ func (d differ) crawl(diffs [][2]string, idx1, idx2 int32) [][2]string {
 			fmt.Sprintf("ugen %d is a(n) %s", idx2, u2.Name),
 		})
 	}
+	if u1.NumOutputs != u2.NumOutputs {
+		return append(diffs, [2]string{
+			fmt.Sprintf("ugen %d has %d output(s)", idx1, u1.NumOutputs),
+			fmt.Sprintf("ugen %d has %d output(s)", idx2, u2.NumOutputs),
+		})
+	}
+	if u1.Rate != u2.Rate {
+		return append(diffs, [2]string{
+			fmt.Sprintf("ugen %d has rate %d", idx1, u1.Rate),
+			fmt.Sprintf("ugen %d has rate %d", idx2, u2.Rate),
+		})
+	}
+	if u1.SpecialIndex != u2.SpecialIndex {
+		return append(diffs, [2]string{
+			fmt.Sprintf("ugen %d has special index %d", idx1, u1.SpecialIndex),
+			fmt.Sprintf("ugen %d has special index %d", idx2, u2.SpecialIndex),
+		})
+	}
 	if l1, l2 := len(u1.Inputs), len(u2.Inputs); l1 != l2 {
 		return append(diffs, [2]string{
 			fmt.Sprintf("%s has %d inputs", u1.Name, l1),
@@ -439,8 +457,4 @@ func (d differ) do() [][2]string {
 		}
 	}
 	return d.crawl([][2]string{}, d[0].Root(), d[1].Root())
-}
-
-var commutative = map[string]struct{}{
-	"BinaryOpUgen": {},
 }

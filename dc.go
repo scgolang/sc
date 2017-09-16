@@ -16,5 +16,5 @@ func (dc *DC) defaults() {
 func (dc DC) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&dc).defaults()
-	return NewInput("DC", rate, 0, 1, dc.In)
+	return NewUgenInput("DC", rate, 0, 1, dc.In)
 }

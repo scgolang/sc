@@ -35,5 +35,5 @@ func (r *Resonz) defaults() {
 func (r Resonz) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&r).defaults()
-	return NewInput("Resonz", rate, 0, 1, r.In, r.Freq, r.BWR)
+	return NewUgenInput("Resonz", rate, 0, 1, r.In, r.Freq, r.BWR)
 }

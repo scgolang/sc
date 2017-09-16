@@ -33,5 +33,5 @@ func (d DecodeB2) Rate(rate int8) Input {
 		panic("DecodeB2 requires an input signal")
 	}
 	(&d).defaults()
-	return NewInput("DecodeB2", rate, 0, d.NumChans, d.In, d.Orientation)
+	return NewUgenInput("DecodeB2", rate, 0, d.NumChans, d.In, d.Orientation)
 }

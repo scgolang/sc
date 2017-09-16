@@ -50,13 +50,13 @@ func (k Klank) Rate(rate int8) Input {
 	if len(specs) == 1 {
 		ins := []Input{k.In, k.FreqScale, k.FreqOffset, k.DecayScale}
 		ins = append(ins, specs[0].inputs(true)...)
-		return NewInput("Klank", rate, 0, 1, ins...)
+		return NewUgenInput("Klank", rate, 0, 1, ins...)
 	}
 	var klanks []Input
 	for _, spec := range specs {
 		ins := []Input{k.In, k.FreqScale, k.FreqOffset, k.DecayScale}
 		ins = append(ins, spec.inputs(true)...)
-		klanks = append(klanks, NewInput("Klank", rate, 0, 1, ins...))
+		klanks = append(klanks, NewUgenInput("Klank", rate, 0, 1, ins...))
 	}
 	return Multi(klanks...)
 }

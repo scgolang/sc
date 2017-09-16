@@ -21,5 +21,5 @@ func (lb LocalBuf) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&lb).defaults()
 	mlb := maxLocalBufs{}.Rate(rate)
-	return NewInput("LocalBuf", rate, 0, 1, lb.NumChannels, lb.NumFrames, mlb)
+	return NewUgenInput("LocalBuf", rate, 0, 1, lb.NumChannels, lb.NumFrames, mlb)
 }

@@ -25,7 +25,7 @@ func (lfsaw *LFSaw) defaults() {
 func (lfsaw LFSaw) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&lfsaw).defaults()
-	return NewInput("LFSaw", rate, 0, 1, lfsaw.Freq, lfsaw.Iphase)
+	return NewUgenInput("LFSaw", rate, 0, 1, lfsaw.Freq, lfsaw.Iphase)
 }
 
 func defLFSaw(params Params) Ugen {

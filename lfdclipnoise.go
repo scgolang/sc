@@ -21,5 +21,5 @@ func (l *LFDClipNoise) defaults() {
 func (l LFDClipNoise) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&l).defaults()
-	return NewInput("LFDClipNoise", rate, 0, 1, l.Freq)
+	return NewUgenInput("LFDClipNoise", rate, 0, 1, l.Freq)
 }

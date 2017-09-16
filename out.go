@@ -11,6 +11,6 @@ type Out struct {
 // a runtime panic.
 func (out Out) Rate(rate int8) Ugen {
 	CheckRate(rate)
-	u := NewUgen("Out", rate, 0, 1, out.Bus, out.Channels)
+	u := NewUgen("Out", rate, 0, 0, out.Bus, out.Channels)
 	return *u
 }

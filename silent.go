@@ -17,5 +17,5 @@ func (s *Silent) defaults() {
 func (s Silent) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&s).defaults()
-	return NewInput("DC", rate, 0, s.NumChannels, C(0))
+	return NewUgenInput("DC", rate, 0, s.NumChannels, C(0))
 }

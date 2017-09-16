@@ -31,5 +31,5 @@ func ExampleNewSynthdef() {
 		return Out{Bus: bus, Channels: sig}.Rate(AR)
 	}).WriteJSON(os.Stdout)
 	// Output:
-	// {"name":"SineTone","constants":[440,0],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[2]},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":0,"outputIndex":0}]}]}
+	// {"name":"SineTone","constants":[440,0],"ugens":[{"name":"SinOsc","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":0},{"ugenIndex":-1,"outputIndex":1}],"outputs":[2],"numOutputs":1},{"name":"Out","rate":2,"specialIndex":0,"inputs":[{"ugenIndex":-1,"outputIndex":1},{"ugenIndex":0,"outputIndex":0}],"numOutputs":1}]}
 }

@@ -33,5 +33,5 @@ func (pd *PulseDivider) defaults() {
 func (pd PulseDivider) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&pd).defaults()
-	return NewInput("PulseDivider", rate, 0, 1, pd.Trig, pd.Div, pd.Start)
+	return NewUgenInput("PulseDivider", rate, 0, 1, pd.Trig, pd.Div, pd.Start)
 }

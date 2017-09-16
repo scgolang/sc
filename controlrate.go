@@ -9,5 +9,5 @@ func (s ControlRate) Rate(rate int8) Input {
 	if rate != IR {
 		panic("ControlRate only supports IR")
 	}
-	return NewInput("ControlRate", rate, 0, 1)
+	return NewUgenInput("ControlRate", rate, 0, 1)
 }

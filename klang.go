@@ -41,12 +41,12 @@ func (k Klang) Rate(rate int8) Input {
 
 	if len(specs) == 1 {
 		ins := append(specs[0].inputs(false), k.FreqScale, k.FreqOffset)
-		return NewInput("Klang", rate, 0, 1, ins...)
+		return NewUgenInput("Klang", rate, 0, 1, ins...)
 	}
 	var klangs []Input
 	for _, spec := range specs {
 		ins := append(spec.inputs(false), k.FreqScale, k.FreqOffset)
-		klangs = append(klangs, NewInput("Klang", rate, 0, 1, ins...))
+		klangs = append(klangs, NewUgenInput("Klang", rate, 0, 1, ins...))
 	}
 	return Multi(klangs...)
 }

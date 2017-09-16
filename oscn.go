@@ -27,5 +27,5 @@ func (o OscN) Rate(rate int8) Input {
 		panic("OscN requires a buffer number")
 	}
 	(&o).defaults()
-	return NewInput("OscN", rate, 0, 1, o.BufNum, o.Freq, o.Phase)
+	return NewUgenInput("OscN", rate, 0, 1, o.BufNum, o.Freq, o.Phase)
 }

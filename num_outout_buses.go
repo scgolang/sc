@@ -9,5 +9,5 @@ func (n NumOutputBuses) Rate(rate int8) Input {
 	if rate != IR {
 		panic("NumOutputBuses must be rate IR")
 	}
-	return NewInput("NumOutputBuses", rate, 0, 1)
+	return NewUgenInput("NumOutputBuses", rate, 0, 1)
 }

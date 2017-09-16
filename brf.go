@@ -28,5 +28,5 @@ func (brf BRF) Rate(rate int8) Input {
 	}
 	CheckRate(rate)
 	(&brf).defaults()
-	return NewInput("BRF", rate, 0, 1, brf.In, brf.Freq, brf.RQ)
+	return NewUgenInput("BRF", rate, 0, 1, brf.In, brf.Freq, brf.RQ)
 }

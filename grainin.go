@@ -66,13 +66,13 @@ func (g GrainIn) Rate(rate int8) Input {
 	}
 	(&g).defaults()
 
-	in := NewInput("GrainIn", rate, 0, 1, g.Trigger, g.Dur, g.In, g.Pan, g.EnvBuf, g.MaxGrains)
-	if g.NumChannels == 1 {
-		return in
-	}
-	mult := make([]Input, g.NumChannels)
-	for i := range mult {
-		mult[i] = in
-	}
-	return Multi(mult...)
+	return NewUgenInput("GrainIn", rate, 0, g.NumChannels, g.Trigger, g.Dur, g.In, g.Pan, g.EnvBuf, g.MaxGrains)
+	// if g.NumChannels == 1 {
+	// 	return in
+	// }
+	// mult := make([]Input, g.NumChannels)
+	// for i := range mult {
+	// 	mult[i] = in
+	// }
+	// return Multi(mult...)
 }

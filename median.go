@@ -22,5 +22,5 @@ func (m Median) Rate(rate int8) Input {
 		panic("Median requires an input signal")
 	}
 	(&m).defaults()
-	return NewInput("Median", rate, 0, 1, m.Length, m.In)
+	return NewUgenInput("Median", rate, 0, 1, m.Length, m.In)
 }

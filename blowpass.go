@@ -29,5 +29,5 @@ func (blp *BLowPass) defaults() {
 func (blp BLowPass) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&blp).defaults()
-	return NewInput("BLowPass", rate, 0, 1, blp.In, blp.Freq, blp.RQ)
+	return NewUgenInput("BLowPass", rate, 0, 1, blp.In, blp.Freq, blp.RQ)
 }

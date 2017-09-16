@@ -111,7 +111,7 @@ func (jpv JPverb) Rate(rate int8) Input {
 	default:
 		in1, in2 = jpv.In, jpv.In
 	}
-	return NewInput("JPverbRaw", rate, 0, 2, in1, in2, jpv.T60, jpv.Damp, jpv.Size, jpv.EarlyDiff, jpv.ModDepth, jpv.ModFreq, jpv.Low, jpv.Mid, jpv.High, jpv.LowCut, jpv.HighCut)
+	return NewUgenInput("JPverbRaw", rate, 0, 2, in1, in2, jpv.T60, jpv.Damp, jpv.Size, jpv.EarlyDiff, jpv.ModDepth, jpv.ModFreq, jpv.Low, jpv.Mid, jpv.High, jpv.LowCut, jpv.HighCut)
 }
 
 // defJPverb is a synthdef that exposes the fields of the JPverb ugen.

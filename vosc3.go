@@ -48,5 +48,5 @@ func (o VOsc3) Rate(rate int8) Input {
 		panic("VOsc3 requires a buffer number")
 	}
 	(&o).defaults()
-	return NewInput("VOsc3", rate, 0, 1, o.BufNum, o.Freq1, o.Freq2, o.Freq3)
+	return NewUgenInput("VOsc3", rate, 0, 1, o.BufNum, o.Freq1, o.Freq2, o.Freq3)
 }

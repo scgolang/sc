@@ -37,7 +37,7 @@ func (pan Pan4) Rate(rate int8) Input {
 		panic("Pan4 requires an input")
 	}
 	(&pan).defaults()
-	in := NewInput("Pan4", rate, 0, 1, pan.In, pan.XPos, pan.YPos, pan.Level)
+	in := NewUgenInput("Pan4", rate, 0, 1, pan.In, pan.XPos, pan.YPos, pan.Level)
 	return Multi(in, in, in, in)
 
 }

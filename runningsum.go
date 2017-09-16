@@ -22,5 +22,5 @@ func (r RunningSum) Rate(rate int8) Input {
 		panic("RunningSum requires an input signal")
 	}
 	(&r).defaults()
-	return NewInput("RunningSum", rate, 0, 1, r.In, r.NumSamp)
+	return NewUgenInput("RunningSum", rate, 0, 1, r.In, r.NumSamp)
 }

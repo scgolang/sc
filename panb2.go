@@ -31,6 +31,6 @@ func (pan PanB2) Rate(rate int8) Input {
 		panic("PanB2 requires an input")
 	}
 	(&pan).defaults()
-	return NewInput("PanB2", rate, 0, 3, pan.In, pan.Azimuth, pan.Gain)
+	return NewUgenInput("PanB2", rate, 0, 3, pan.In, pan.Azimuth, pan.Gain)
 
 }

@@ -26,5 +26,5 @@ func (t *Trig1) defaults() {
 func (t Trig1) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&t).defaults()
-	return NewInput("Trig1", rate, 0, 1, t.In, t.Dur)
+	return NewUgenInput("Trig1", rate, 0, 1, t.In, t.Dur)
 }

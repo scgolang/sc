@@ -26,5 +26,5 @@ func (l *LFPar) defaults() {
 func (l LFPar) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&l).defaults()
-	return NewInput("LFPar", rate, 0, 1, l.Freq, l.IPhase)
+	return NewUgenInput("LFPar", rate, 0, 1, l.Freq, l.IPhase)
 }

@@ -222,14 +222,14 @@ func (def *Synthdef) flatten(params Params) *Synthdef {
 		}
 		// Add inputs to synthdef and to ugen.
 		for _, input := range ugenNode.inputs {
-			def.flattenInput(params, ugen, input)
+			def.flattenInput(ugen, input)
 		}
 	}
 	return def
 }
 
 // flattenInput flattens a ugen graph starting from a particular ugen's input.
-func (def *Synthdef) flattenInput(params Params, ugen *Ugen, input Input) {
+func (def *Synthdef) flattenInput(ugen *Ugen, input Input) {
 	switch v := input.(type) {
 	case *Ugen:
 		_, idx, _ := def.addUgen(v)
@@ -245,6 +245,8 @@ func (def *Synthdef) flattenInput(params Params, ugen *Ugen, input Input) {
 			def.inidx++
 			break
 		}
+		fmt.Printf("flattening %s's %s input\n", ugen.Name, v.Name)
+
 		for outputIndex := range v.Outputs {
 			ugen.Inputs = append(ugen.Inputs, UgenInput{
 				UgenIndex:   int32(idx),

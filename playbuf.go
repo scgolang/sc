@@ -55,5 +55,5 @@ func (playbuf PlayBuf) Rate(rate int8) Input {
 	}
 	(&playbuf).defaults()
 	done := C(float32(playbuf.Done))
-	return NewInput("PlayBuf", rate, 0, playbuf.NumChannels, playbuf.BufNum, playbuf.Speed, playbuf.Trigger, playbuf.Start, playbuf.Loop, done)
+	return NewUgenInput("PlayBuf", rate, 0, playbuf.NumChannels, playbuf.BufNum, playbuf.Speed, playbuf.Trigger, playbuf.Start, playbuf.Loop, done)
 }

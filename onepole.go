@@ -24,5 +24,5 @@ func (o *OnePole) defaults() {
 func (o OnePole) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&o).defaults()
-	return NewInput("OnePole", rate, 0, 1, o.In, o.Coeff)
+	return NewUgenInput("OnePole", rate, 0, 1, o.In, o.Coeff)
 }

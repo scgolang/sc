@@ -31,11 +31,11 @@ func (delay Delay) Rate(rate int8) Input {
 	}
 	switch delay.Interpolation {
 	case InterpolationNone:
-		return NewInput("DelayN", rate, 0, 1, delay.In, delay.MaxDelayTime, delay.DelayTime)
+		return NewUgenInput("DelayN", rate, 0, 1, delay.In, delay.MaxDelayTime, delay.DelayTime)
 	case InterpolationLinear:
-		return NewInput("DelayL", rate, 0, 1, delay.In, delay.MaxDelayTime, delay.DelayTime)
+		return NewUgenInput("DelayL", rate, 0, 1, delay.In, delay.MaxDelayTime, delay.DelayTime)
 	case InterpolationCubic:
-		return NewInput("DelayC", rate, 0, 1, delay.In, delay.MaxDelayTime, delay.DelayTime)
+		return NewUgenInput("DelayC", rate, 0, 1, delay.In, delay.MaxDelayTime, delay.DelayTime)
 	default:
 		panic(fmt.Errorf("invalid interpolation %d", delay.Interpolation))
 	}

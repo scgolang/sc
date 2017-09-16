@@ -116,5 +116,5 @@ func (g Gendy1) Rate(rate int8) Input {
 	CheckRate(rate)
 	g.rate = rate
 	(&g).defaults()
-	return NewInput("Gendy1", rate, 0, 1, g.AmpDist, g.DurDist, g.ADParam, g.DDParam, g.MinFreq, g.MaxFreq, g.AmpScale, g.DurScale, g.InitCPs, g.KNum)
+	return NewUgenInput("Gendy1", rate, 0, 1, g.AmpDist, g.DurDist, g.ADParam, g.DDParam, g.MinFreq, g.MaxFreq, g.AmpScale, g.DurScale, g.InitCPs, g.KNum)
 }

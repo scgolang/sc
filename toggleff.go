@@ -16,5 +16,5 @@ func (t *ToggleFF) defaults() {
 func (t ToggleFF) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&t).defaults()
-	return NewInput("ToggleFF", rate, 0, 1, t.Trig)
+	return NewUgenInput("ToggleFF", rate, 0, 1, t.Trig)
 }

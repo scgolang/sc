@@ -27,5 +27,5 @@ func (bw PVBrickWall) Rate(rate int8) Input {
 		panic("PVBrickWall requires a Buffer parameter")
 	}
 	(&bw).defaults()
-	return NewInput("PV_BrickWall", rate, 0, 1, bw.Buffer, bw.Wipe)
+	return NewUgenInput("PV_BrickWall", rate, 0, 1, bw.Buffer, bw.Wipe)
 }

@@ -54,6 +54,6 @@ func (pan PanAz) Rate(rate int8) Input {
 		panic("PanAz requires an input")
 	}
 	(&pan).defaults()
-	return NewInput("PanAz", rate, 0, pan.NumChans, pan.In, pan.Pos, pan.Level, pan.Width, pan.Orientation)
+	return NewUgenInput("PanAz", rate, 0, pan.NumChans, pan.In, pan.Pos, pan.Level, pan.Width, pan.Orientation)
 
 }

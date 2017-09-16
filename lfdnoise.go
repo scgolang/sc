@@ -20,11 +20,11 @@ func (lfdn LFDNoise) Rate(rate int8) Input {
 	(&lfdn).defaults()
 	switch lfdn.Interpolation {
 	case InterpolationNone:
-		return NewInput("LFDNoise0", rate, 0, 1, lfdn.Freq)
+		return NewUgenInput("LFDNoise0", rate, 0, 1, lfdn.Freq)
 	case InterpolationLinear:
-		return NewInput("LFDNoise1", rate, 0, 1, lfdn.Freq)
+		return NewUgenInput("LFDNoise1", rate, 0, 1, lfdn.Freq)
 	case InterpolationCubic:
-		return NewInput("LFDNoise3", rate, 0, 1, lfdn.Freq)
+		return NewUgenInput("LFDNoise3", rate, 0, 1, lfdn.Freq)
 	default:
 		panic("unknown interpolation value")
 	}

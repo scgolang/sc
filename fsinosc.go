@@ -28,5 +28,5 @@ func (fso *FSinOsc) defaults() {
 func (fso FSinOsc) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&fso).defaults()
-	return NewInput("FSinOsc", rate, 0, 1, fso.Freq, fso.Phase)
+	return NewUgenInput("FSinOsc", rate, 0, 1, fso.Freq, fso.Phase)
 }

@@ -10,5 +10,5 @@ func (s SampleDur) Rate(rate int8) Input {
 	if rate != IR {
 		panic("SampleDur only supports IR")
 	}
-	return NewInput("SampleDur", rate, 0, 1)
+	return NewUgenInput("SampleDur", rate, 0, 1)
 }

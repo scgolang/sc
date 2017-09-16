@@ -64,5 +64,5 @@ func (gv GVerb) Rate(rate int8) Input {
 		panic("GVerb expects In to not be nil")
 	}
 	(&gv).defaults()
-	return NewInput("GVerb", rate, 0, 2, gv.In, gv.RoomSize, gv.RevTime, gv.Damping, gv.InputBW, gv.Spread, gv.DryLevel, gv.EarlyRefLevel, gv.TailLevel, gv.MaxRoomSize)
+	return NewUgenInput("GVerb", rate, 0, 2, gv.In, gv.RoomSize, gv.RevTime, gv.Damping, gv.InputBW, gv.Spread, gv.DryLevel, gv.EarlyRefLevel, gv.TailLevel, gv.MaxRoomSize)
 }

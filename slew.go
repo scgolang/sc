@@ -31,5 +31,5 @@ func (s *Slew) defaults() {
 func (s Slew) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&s).defaults()
-	return NewInput("Slew", rate, 0, 1, s.In, s.Up, s.Dn)
+	return NewUgenInput("Slew", rate, 0, 1, s.In, s.Up, s.Dn)
 }

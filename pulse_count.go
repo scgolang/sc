@@ -25,5 +25,5 @@ func (pc *PulseCount) defaults() {
 func (pc PulseCount) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&pc).defaults()
-	return NewInput("PulseCount", rate, 0, 1, pc.Trig, pc.Reset)
+	return NewUgenInput("PulseCount", rate, 0, 1, pc.Trig, pc.Reset)
 }

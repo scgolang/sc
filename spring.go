@@ -29,5 +29,5 @@ func (b *Spring) defaults() {
 func (b Spring) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&b).defaults()
-	return NewInput("Spring", rate, 0, 1, b.In, b.Spring, b.Damp)
+	return NewUgenInput("Spring", rate, 0, 1, b.In, b.Spring, b.Damp)
 }

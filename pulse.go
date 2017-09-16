@@ -23,5 +23,5 @@ func (pulse *Pulse) defaults() {
 func (pulse Pulse) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&pulse).defaults()
-	return NewInput("Pulse", rate, 0, 1, pulse.Freq, pulse.Width)
+	return NewUgenInput("Pulse", rate, 0, 1, pulse.Freq, pulse.Width)
 }

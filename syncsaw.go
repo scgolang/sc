@@ -27,5 +27,5 @@ func (s *SyncSaw) defaults() {
 func (s SyncSaw) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&s).defaults()
-	return NewInput("SyncSaw", rate, 0, 1, s.SyncFreq, s.SawFreq)
+	return NewUgenInput("SyncSaw", rate, 0, 1, s.SyncFreq, s.SawFreq)
 }

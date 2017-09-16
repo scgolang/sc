@@ -58,5 +58,5 @@ func (wrp *Warp1) defaults() {
 func (wrp Warp1) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&wrp).defaults()
-	return NewInput("Warp1", rate, 0, wrp.NumChannels, wrp.BufNum, wrp.Pointer, wrp.FreqScale, wrp.WindowSize, wrp.EnvBufNum, wrp.Overlaps, wrp.WindowRandRatio, wrp.Interp)
+	return NewUgenInput("Warp1", rate, 0, wrp.NumChannels, wrp.BufNum, wrp.Pointer, wrp.FreqScale, wrp.WindowSize, wrp.EnvBufNum, wrp.Overlaps, wrp.WindowRandRatio, wrp.Interp)
 }

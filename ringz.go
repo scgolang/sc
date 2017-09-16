@@ -35,5 +35,5 @@ func (r *Ringz) defaults() {
 func (r Ringz) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&r).defaults()
-	return NewInput("Ringz", rate, 0, 1, r.In, r.Freq, r.DecayTime)
+	return NewUgenInput("Ringz", rate, 0, 1, r.In, r.Freq, r.DecayTime)
 }

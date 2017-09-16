@@ -14,5 +14,5 @@ type OffsetOut struct {
 // a runtime panic.
 func (out OffsetOut) Rate(rate int8) Input {
 	CheckRate(rate)
-	return NewInput("OffsetOut", rate, 0, 1, out.Bus, out.Channels)
+	return NewUgenInput("OffsetOut", rate, 0, 1, out.Bus, out.Channels)
 }

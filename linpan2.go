@@ -31,6 +31,6 @@ func (l LinPan2) Rate(rate int8) Input {
 		panic("LinPan2 requires an input signal")
 	}
 	(&l).defaults()
-	in := NewInput("LinPan2", rate, 0, 1, l.In, l.Pos, l.Level)
-	return Multi(in, in)
+	return NewUgenInput("LinPan2", rate, 0, 2, l.In, l.Pos, l.Level)
+	// return Multi(in, in)
 }

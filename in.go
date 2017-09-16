@@ -22,7 +22,7 @@ func (in In) Rate(rate int8) Input {
 	(&in).defaults()
 
 	var (
-		uin = NewInput("In", rate, 0, in.NumChannels, in.Bus)
+		uin = NewUgenInput("In", rate, 0, in.NumChannels, in.Bus)
 		ins = make([]Input, in.NumChannels)
 	)
 	for i := range ins {

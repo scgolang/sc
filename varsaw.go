@@ -29,5 +29,5 @@ func (vs *VarSaw) defaults() {
 func (vs VarSaw) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&vs).defaults()
-	return NewInput("VarSaw", rate, 0, 1, vs.Freq, vs.IPhase, vs.Width)
+	return NewUgenInput("VarSaw", rate, 0, 1, vs.Freq, vs.IPhase, vs.Width)
 }

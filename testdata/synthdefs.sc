@@ -773,6 +773,19 @@ SynthDef(\BLowPassTest, {
     Out.ar(0, BLowPass.ar(Blip.ar(400, 4), 300, 0.5));
 }).writeDefFile(File.getcwd);
 
+SynthDef(\BLowPass4Test, {
+    Out.ar(0, BLowPass4.ar(Blip.ar(400, 4), 300, 0.5));
+}).writeDefFile(File.getcwd);
+
+SynthDef(\SOSTest, {
+    var rho, theta, b1, b2;
+    theta = MouseX.kr(0.2pi, pi);
+    rho = MouseY.kr(0.6, 0.99);
+    b1 = 2.0 * rho * cos(theta);
+    b2 = rho.squared.neg;
+    Out.ar(0, SOS.ar(LFSaw.ar(400, 4, 0.1), 1.0, 0.0, 0.0, b1, b2));
+}).writeDefFile(File.getcwd);
+
 SynthDef(\DetectSilence, { arg out;
     var z;
     z = SinOsc.ar(Rand(400, 700), 0, LFDNoise3.kr(8).max(0)).softclip * 0.3;

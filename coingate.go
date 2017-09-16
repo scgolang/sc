@@ -24,5 +24,5 @@ func (c *CoinGate) defaults() {
 func (c CoinGate) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&c).defaults()
-	return NewInput("CoinGate", rate, 0, 1, c.Prob, c.In)
+	return NewUgenInput("CoinGate", rate, 0, 1, c.Prob, c.In)
 }

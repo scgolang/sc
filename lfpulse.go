@@ -28,7 +28,7 @@ func (lfpulse *LFPulse) defaults() {
 func (lfpulse LFPulse) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&lfpulse).defaults()
-	return NewInput("LFPulse", rate, 0, 1, lfpulse.Freq, lfpulse.IPhase, lfpulse.Width)
+	return NewUgenInput("LFPulse", rate, 0, 1, lfpulse.Freq, lfpulse.IPhase, lfpulse.Width)
 }
 
 func defLFPulse(params Params) Ugen {

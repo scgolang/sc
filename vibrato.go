@@ -56,5 +56,5 @@ func (v *Vibrato) defaults() {
 func (v Vibrato) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&v).defaults()
-	return NewInput("Vibrato", rate, 0, 1, v.Freq, v.Speed, v.Depth, v.Delay, v.Onset, v.RateVariation, v.DepthVariation, v.IPhase)
+	return NewUgenInput("Vibrato", rate, 0, 1, v.Freq, v.Speed, v.Depth, v.Delay, v.Onset, v.RateVariation, v.DepthVariation, v.IPhase)
 }

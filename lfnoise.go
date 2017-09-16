@@ -36,11 +36,11 @@ func (lfnoise LFNoise) Rate(rate int8) Input {
 	(&lfnoise).defaults()
 	switch lfnoise.Interpolation {
 	case NoiseStep:
-		return NewInput("LFNoise0", rate, 0, 1, lfnoise.Freq)
+		return NewUgenInput("LFNoise0", rate, 0, 1, lfnoise.Freq)
 	case NoiseLinear:
-		return NewInput("LFNoise1", rate, 0, 1, lfnoise.Freq)
+		return NewUgenInput("LFNoise1", rate, 0, 1, lfnoise.Freq)
 	case NoiseQuadratic:
-		return NewInput("LFNoise2", rate, 0, 1, lfnoise.Freq)
+		return NewUgenInput("LFNoise2", rate, 0, 1, lfnoise.Freq)
 	default:
 		panic(fmt.Sprintf("Unknown Interpolation value for LFNoise: %d", lfnoise.Interpolation))
 	}

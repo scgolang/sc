@@ -26,5 +26,5 @@ func (sweep *Sweep) defaults() {
 func (sweep Sweep) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&sweep).defaults()
-	return NewInput("Sweep", rate, 0, 1, sweep.Trig, sweep.RaiseRate)
+	return NewUgenInput("Sweep", rate, 0, 1, sweep.Trig, sweep.RaiseRate)
 }

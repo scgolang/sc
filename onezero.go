@@ -28,5 +28,5 @@ func (o *OneZero) defaults() {
 func (o OneZero) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&o).defaults()
-	return NewInput("OneZero", rate, 0, 1, o.In, o.Coeff)
+	return NewUgenInput("OneZero", rate, 0, 1, o.In, o.Coeff)
 }

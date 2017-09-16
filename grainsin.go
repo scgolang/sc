@@ -67,7 +67,7 @@ func (g GrainSin) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&g).defaults()
 
-	in := NewInput("GrainSin", rate, 0, 1, g.Trigger, g.Dur, g.Freq, g.Pan, g.EnvBuf, g.MaxGrains)
+	in := NewUgenInput("GrainSin", rate, 0, 1, g.Trigger, g.Dur, g.Freq, g.Pan, g.EnvBuf, g.MaxGrains)
 	if g.NumChannels == 1 {
 		return in
 	}

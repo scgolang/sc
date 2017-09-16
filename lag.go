@@ -26,5 +26,5 @@ func (l Lag) Rate(rate int8) Input {
 	if l.In == nil {
 		panic("Lag requires an input signal")
 	}
-	return NewInput("Lag", rate, 0, 1, l.In, l.LagTime)
+	return NewUgenInput("Lag", rate, 0, 1, l.In, l.LagTime)
 }

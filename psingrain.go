@@ -29,5 +29,5 @@ func (p *PSinGrain) defaults() {
 func (p PSinGrain) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&p).defaults()
-	return NewInput("PSinGrain", rate, 0, 1, p.Freq, p.Dur, p.Amp)
+	return NewUgenInput("PSinGrain", rate, 0, 1, p.Freq, p.Dur, p.Amp)
 }

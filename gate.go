@@ -24,5 +24,5 @@ func (gate Gate) Rate(rate int8) Input {
 		panic("Gate expects In to not be nil")
 	}
 	(&gate).defaults()
-	return NewInput("Gate", rate, 0, 1, gate.In, gate.Trig)
+	return NewUgenInput("Gate", rate, 0, 1, gate.In, gate.Trig)
 }

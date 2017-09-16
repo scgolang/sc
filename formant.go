@@ -35,5 +35,5 @@ func (f *Formant) defaults() {
 func (f Formant) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&f).defaults()
-	return NewInput("Formant", rate, 0, 1, f.FundFreq, f.FormantFreq, f.BWFreq)
+	return NewUgenInput("Formant", rate, 0, 1, f.FundFreq, f.FormantFreq, f.BWFreq)
 }

@@ -17,5 +17,5 @@ func (dust *Dust) defaults() {
 func (dust Dust) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&dust).defaults()
-	return NewInput("Dust", rate, 0, 1, dust.Density)
+	return NewUgenInput("Dust", rate, 0, 1, dust.Density)
 }

@@ -28,8 +28,7 @@ type params struct {
 
 // Add param implementation
 func (ps *params) Add(name string, initialValue float32) Input {
-	idx := len(ps.l)
-	p := newParam(name, int32(idx), initialValue)
+	p := newParam(name, int32(len(ps.l)), initialValue)
 	ps.l = append(ps.l, p)
 	return p
 }

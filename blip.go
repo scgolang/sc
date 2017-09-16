@@ -23,5 +23,5 @@ func (blip *Blip) defaults() {
 func (blip Blip) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&blip).defaults()
-	return NewInput("Blip", rate, 0, 1, blip.Freq, blip.Harm)
+	return NewUgenInput("Blip", rate, 0, 1, blip.Freq, blip.Harm)
 }

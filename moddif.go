@@ -14,5 +14,5 @@ func moddif(rate int8, x, y, mod Input, numOutputs int) Input {
 	if mod == nil {
 		mod = C(1)
 	}
-	return NewInput("ModDif", rate, 0, numOutputs, x, y, mod)
+	return NewUgenInput("ModDif", rate, 0, numOutputs, x, y, mod)
 }

@@ -28,5 +28,5 @@ func (x *XFade2) defaults() {
 func (x XFade2) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&x).defaults()
-	return NewInput("XFade2", rate, 0, 1, x.A, x.B, x.Pan, x.Level)
+	return NewUgenInput("XFade2", rate, 0, 1, x.A, x.B, x.Pan, x.Level)
 }

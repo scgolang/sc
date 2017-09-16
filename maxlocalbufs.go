@@ -9,5 +9,5 @@ type maxLocalBufs struct {
 // If rate is an unsupported value this method will cause a runtime panic.
 func (maxLocalBufs) Rate(rate int8) Input {
 	CheckRate(rate)
-	return NewInput("MaxLocalBufs", rate, 0, 1, C(1))
+	return NewUgenInput("MaxLocalBufs", rate, 0, 1, C(1))
 }

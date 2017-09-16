@@ -25,5 +25,5 @@ func (s Shaper) Rate(rate int8) Input {
 		panic("Shaper requires a buffer number")
 	}
 	(&s).defaults()
-	return NewInput("Shaper", rate, 0, 1, s.BufNum, s.In)
+	return NewUgenInput("Shaper", rate, 0, 1, s.BufNum, s.In)
 }

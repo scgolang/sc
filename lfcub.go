@@ -24,5 +24,5 @@ func (lfcub *LFCub) defaults() {
 func (lfcub LFCub) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&lfcub).defaults()
-	return NewInput("LFCub", rate, 0, 1, lfcub.Freq, lfcub.Iphase)
+	return NewUgenInput("LFCub", rate, 0, 1, lfcub.Freq, lfcub.Iphase)
 }

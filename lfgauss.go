@@ -35,5 +35,5 @@ func (l LFGauss) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&l).defaults()
 	done := C(float32(l.Done))
-	return NewInput("LFGauss", rate, 0, 1, l.Duration, l.Width, l.IPhase, l.Loop, done)
+	return NewUgenInput("LFGauss", rate, 0, 1, l.Duration, l.Width, l.IPhase, l.Loop, done)
 }

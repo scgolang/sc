@@ -19,5 +19,5 @@ func (s *Slope) defaults() {
 func (s Slope) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&s).defaults()
-	return NewInput("Slope", rate, 0, 1, s.In)
+	return NewUgenInput("Slope", rate, 0, 1, s.In)
 }

@@ -43,8 +43,8 @@ type Ugen struct {
 func NewUgen(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) *Ugen {
 	CheckRate(rate)
 
-	if numOutputs <= 0 {
-		panic("numOutputs must be a positive int")
+	if numOutputs < 0 {
+		panic("numOutputs must be non-negative")
 	}
 	// TODO: validate specialIndex
 	u := &Ugen{

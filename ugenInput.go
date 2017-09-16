@@ -5,21 +5,23 @@ import (
 	"io"
 )
 
-// NewInput creates a ugen suitable for use as an input to other ugens.
+// NewUgenInput creates a ugen suitable for use as an input to other ugens.
 // It will return either a single-channel ugen or a multi-channel ugen.
-func NewInput(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) Input {
+func NewUgenInput(name string, rate int8, specialIndex int16, numOutputs int, inputs ...Input) Input {
 	var (
-		expanded = expandInputs(inputs...)
-		l        = len(expanded)
+		expanded    = expandInputs(inputs...)
+		numExpanded = len(expanded)
 	)
-	if l == 1 {
+	if numExpanded == 1 {
 		return NewUgen(name, rate, specialIndex, numOutputs, inputs...)
 	}
-	a := make([]Input, l)
+	a := make([]Input, numExpanded)
+
 	for i := range a {
 		a[i] = NewUgen(name, rate, specialIndex, numOutputs, expanded[i]...)
 	}
 	return Multi(a...)
+
 }
 
 // expandInputs turns an array of inputs into a 2-dimensional array
@@ -30,12 +32,15 @@ func expandInputs(inputs ...Input) [][]Input {
 	// this could probably be more efficient
 	sz := 0
 	for _, in := range inputs {
-		if multi, isMulti := in.(MultiInput); isMulti {
-			ins := multi.InputArray()
+		switch v := in.(type) {
+		case MultiInput:
+			ins := v.InputArray()
 			l := len(ins)
 			if l > sz {
 				sz = l
 			}
+		case *Ugen:
+			// Expand based on number of output channels.
 		}
 	}
 	if sz == 0 {

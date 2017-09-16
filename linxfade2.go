@@ -29,5 +29,5 @@ func (x LinXFade2) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&x).defaults()
 	// Not sure why Level doesn't show up in sclang's synthdefs that use LinXFade2
-	return NewInput("LinXFade2", rate, 0, 1, x.A, x.B, x.Pan)
+	return NewUgenInput("LinXFade2", rate, 0, 1, x.A, x.B, x.Pan)
 }

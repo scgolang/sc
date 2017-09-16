@@ -8,5 +8,5 @@ type ClipNoise struct{}
 // If rate is an unsupported value this method will cause
 // a runtime panic.
 func (cn ClipNoise) Rate(rate int8) Input {
-	return NewInput("ClipNoise", rate, 0, 1)
+	return NewUgenInput("ClipNoise", rate, 0, 1)
 }

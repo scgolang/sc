@@ -9,5 +9,5 @@ type WhiteNoise struct {
 // a runtime panic.
 func (white WhiteNoise) Rate(rate int8) Input {
 	CheckRate(rate)
-	return NewInput("WhiteNoise", rate, 0, 1)
+	return NewUgenInput("WhiteNoise", rate, 0, 1)
 }

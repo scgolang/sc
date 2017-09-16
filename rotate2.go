@@ -34,5 +34,5 @@ func (r Rotate2) Rate(rate int8) Input {
 		panic("Rotate2 expects both X and Y signals to not be nil")
 	}
 	(&r).defaults()
-	return NewInput("Rotate2", rate, 0, 1)
+	return NewUgenInput("Rotate2", rate, 0, 1)
 }

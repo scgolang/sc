@@ -12,5 +12,6 @@ func NewControl(numOutputs int) *Ugen {
 		Rate:         KR,
 		SpecialIndex: 0,
 		Outputs:      outputs,
+		NumOutputs:   numOutputs,
 	}
 }

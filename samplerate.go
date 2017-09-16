@@ -9,5 +9,5 @@ func (s SampleRate) Rate(rate int8) Input {
 	if rate != IR {
 		panic("SampleRate only supports IR")
 	}
-	return NewInput("SampleRate", rate, 0, 1)
+	return NewUgenInput("SampleRate", rate, 0, 1)
 }

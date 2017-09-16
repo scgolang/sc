@@ -31,12 +31,11 @@ func (pan *Pan2) defaults() {
 }
 
 // Rate creates a new ugen at a specific rate.
-// If rate is an unsupported value this method will cause
-// a runtime panic.
+// If rate is an unsupported value this method will cause a runtime panic.
 func (pan Pan2) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&pan).defaults()
-	in := NewInput("Pan2", rate, 0, 1, pan.In, pan.Pos, pan.Level)
-	return Multi(in, in)
+	return NewUgenInput("Pan2", rate, 0, 2, pan.In, pan.Pos, pan.Level)
+	// return Multi(in, in)
 
 }

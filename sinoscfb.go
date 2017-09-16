@@ -24,5 +24,5 @@ func (s *SinOscFB) defaults() {
 func (s SinOscFB) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&s).defaults()
-	return NewInput("SinOscFB", rate, 0, 1, s.Freq, s.Feedback)
+	return NewUgenInput("SinOscFB", rate, 0, 1, s.Freq, s.Feedback)
 }

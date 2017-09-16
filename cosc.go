@@ -32,5 +32,5 @@ func (cosc COsc) Rate(rate int8) Input {
 		panic("COsc requires a buffer number")
 	}
 	(&cosc).defaults()
-	return NewInput("COsc", rate, 0, 1, cosc.BufNum, cosc.Freq, cosc.Beats)
+	return NewUgenInput("COsc", rate, 0, 1, cosc.BufNum, cosc.Freq, cosc.Beats)
 }

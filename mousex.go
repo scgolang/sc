@@ -35,5 +35,5 @@ func (m *MouseX) defaults() {
 func (m MouseX) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&m).defaults()
-	return NewInput("MouseX", rate, 0, 1, m.Min, m.Max, m.Warp, m.Lag)
+	return NewUgenInput("MouseX", rate, 0, 1, m.Min, m.Max, m.Warp, m.Lag)
 }

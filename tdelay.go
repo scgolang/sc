@@ -25,5 +25,5 @@ func (t *TDelay) defaults() {
 func (t TDelay) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&t).defaults()
-	return NewInput("TDelay", rate, 0, 1, t.In, t.Dur)
+	return NewUgenInput("TDelay", rate, 0, 1, t.In, t.Dur)
 }

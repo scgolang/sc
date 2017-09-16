@@ -55,5 +55,5 @@ func (fft FFT) Rate(rate int8) Input {
 		panic("FFT expects In to not be nil")
 	}
 	(&fft).defaults()
-	return NewInput("FFT", rate, 0, 1, fft.Buffer, fft.In, fft.Hop, fft.WinType, fft.Active, fft.WinSize)
+	return NewUgenInput("FFT", rate, 0, 1, fft.Buffer, fft.In, fft.Hop, fft.WinType, fft.Active, fft.WinSize)
 }

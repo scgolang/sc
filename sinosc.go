@@ -22,7 +22,7 @@ func (sin *SinOsc) defaults() {
 func (sin SinOsc) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&sin).defaults()
-	return NewInput("SinOsc", rate, 0, 1, sin.Freq, sin.Phase)
+	return NewUgenInput("SinOsc", rate, 0, 1, sin.Freq, sin.Phase)
 }
 
 func defSineA(params Params) Ugen {

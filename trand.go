@@ -25,5 +25,5 @@ func (t *TRand) defaults() {
 func (t TRand) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&t).defaults()
-	return NewInput("TRand", rate, 0, 1, t.Lo, t.Hi, t.Trig)
+	return NewUgenInput("TRand", rate, 0, 1, t.Lo, t.Hi, t.Trig)
 }

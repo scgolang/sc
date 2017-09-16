@@ -37,5 +37,5 @@ func (ifft *IFFT) defaults() {
 func (ifft IFFT) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&ifft).defaults()
-	return NewInput("IFFT", rate, 0, 1, ifft.Buffer, ifft.WinType, ifft.WinSize)
+	return NewUgenInput("IFFT", rate, 0, 1, ifft.Buffer, ifft.WinType, ifft.WinSize)
 }

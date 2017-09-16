@@ -28,5 +28,5 @@ func (b *Ball) defaults() {
 func (b Ball) Rate(rate int8) Input {
 	CheckRate(rate)
 	(&b).defaults()
-	return NewInput("Ball", rate, 0, 1, b.In, b.Gravity, b.Damp, b.Friction)
+	return NewUgenInput("Ball", rate, 0, 1, b.In, b.Gravity, b.Damp, b.Friction)
 }
